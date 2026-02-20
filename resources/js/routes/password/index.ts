@@ -42,7 +42,7 @@ request.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: request.url(options),
     method: 'head',
 })
-
+    
     /**
 * @see \Laravel\Fortify\Http\Controllers\PasswordResetLinkController::request
  * @see vendor/laravel/fortify/src/Http/Controllers/PasswordResetLinkController.php:22
