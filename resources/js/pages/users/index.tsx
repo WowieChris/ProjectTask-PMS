@@ -77,7 +77,7 @@ export default function UsersIndex({ users }: Props) {
                                                     size="sm"
                                                     onClick={() => handleDelete(user.id)}
                                                 >
-                                                    <link>Delete</link>
+                                                 Delete
                                                 </Button>
                                             </TableCell>
                                     </TableRow>
