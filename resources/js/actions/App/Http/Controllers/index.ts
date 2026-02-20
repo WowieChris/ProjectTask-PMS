@@ -1,7 +1,9 @@
+import UserController from './UserController'
 import Settings from './Settings'
 
 const Controllers = {
-    Settings: Object.assign(Settings, Settings),
+    UserController: Object.assign(UserController, UserController),
+Settings: Object.assign(Settings, Settings),
 }
 
 export default Controllers
