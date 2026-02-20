@@ -58,11 +58,28 @@ export default function UsersIndex({ users }: Props) {
                                         <TableCell>{user.name}</TableCell>
                                         <TableCell>{user.email}</TableCell>
                                         <TableCell>{user.role}</TableCell>
+<<<<<<< Updated upstream
                                         <TableCell>
                                             <Button variant="outline" size="sm" asChild>
                                                 <Link href={`/users/${user.id}/edit`}>Edit</Link>
                                             </Button>
                                         </TableCell>
+=======
+                                        <TableCell className="flex gap-2">
+                                                <Button variant="outline" size="sm" asChild>
+                                                    <Link href={`/users/${user.id}/edit`}>Edit</Link>
+                                                </Button>
+
+                                                <Button
+                                                    variant="destructive"
+                                                    size="sm"
+                                                    className="bg-red-300 text-black hover:bg-red-500 hover:text-white"
+                                                    onClick={() => handleDelete(user.id)}
+                                                >
+                                                    <Link href="#">Delete</Link>
+                                                </Button>
+                                            </TableCell>
+>>>>>>> Stashed changes
                                     </TableRow>
                                 ))}
                             </TableBody>
