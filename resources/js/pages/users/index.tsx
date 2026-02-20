@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -29,6 +29,11 @@ interface Props {
 }
 
 export default function UsersIndex({ users }: Props) {
+    const handleDelete = (id: number) => {
+        if (confirm('Are you sure you want to delete this user?')) {
+            // Implement delete logic here, e.g., make an API call to delete the user
+            router.delete(`/users/${id}`);
+        }}
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Users" />
@@ -58,16 +63,6 @@ export default function UsersIndex({ users }: Props) {
                                         <TableCell>{user.name}</TableCell>
                                         <TableCell>{user.email}</TableCell>
                                         <TableCell>{user.role}</TableCell>
-<<<<<<< Updated upstream
-                                        <TableCell>
-                                            <Button variant="outline" size="sm" asChild>
-                                                <Link href={`/users/${user.id}/edit`}>Edit</Link>
-                                            </Button>
-                                            <Button variant="outline" size="sm" className="ml-2 bg-red-500 hover:bg-red-300" asChild>
-                                                <Link href={`/users/${user.id}/delete`} className="text-white hover:text-red-600" >Delete</Link>
-                                            </Button>
-                                        </TableCell>
-=======
                                         <TableCell className="flex gap-2">
                                                 <Button variant="outline" size="sm" asChild>
                                                     <Link href={`/users/${user.id}/edit`}>Edit</Link>
@@ -82,7 +77,6 @@ export default function UsersIndex({ users }: Props) {
                                                     <Link href="#">Delete</Link>
                                                 </Button>
                                             </TableCell>
->>>>>>> Stashed changes
                                     </TableRow>
                                 ))}
                             </TableBody>
