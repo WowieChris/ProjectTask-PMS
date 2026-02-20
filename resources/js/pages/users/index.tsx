@@ -58,6 +58,7 @@ export default function UsersIndex({ users }: Props) {
                                         <TableCell>{user.name}</TableCell>
                                         <TableCell>{user.email}</TableCell>
                                         <TableCell>{user.role}</TableCell>
+                                        
                                         <TableCell>
                                             <Button variant="outline" size="sm" asChild>
                                                 <Link href={`/users/${user.id}/edit`}>Edit</Link>
