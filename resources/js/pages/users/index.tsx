@@ -74,10 +74,11 @@ export default function UsersIndex({ users }: Props) {
 
                                                 <Button
                                                     variant="destructive"
-                                                    size="sm"
+                                                    size="sm" className="bg-red-500 text-white hover:bg-red-600"
                                                     onClick={() => handleDelete(user.id)}
                                                 >
-                                                    <link>Delete</link>
+                                                    <Link href='#' >Delete</Link>
+                                                 
                                                 </Button>
                                             </TableCell>
                                     </TableRow>
