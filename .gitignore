@@ -30,7 +30,7 @@ Homestead.json
 auth.json
 /public/Images
 
-
+*.exe
 /public/images/*.exe
 /public/Images
 
