@@ -13,7 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: dashboard().url,
     },
     {
-        title: 'Users',
+        title: 'User Maintenance',
         href: '/users',
     },
 ];
@@ -44,7 +44,7 @@ export default function UsersIndex({ users }: Props) {
                 <Card>
                     <CardHeader>
                         <div className="flex items-center justify-between">
-                            <CardTitle>Users</CardTitle>
+                            <CardTitle>User Maintenance</CardTitle>
                             <Button asChild>
                                 <Link href="/users/create">Add User</Link>
                             </Button>
