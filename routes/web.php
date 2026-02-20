@@ -16,5 +16,6 @@ Route::get('dashboard', function () {
 
 Route::resource('users', \App\Http\Controllers\UserController::class)->middleware(['auth', 'verified']);
 
+
 require __DIR__.'/settings.php';
 
