@@ -30,13 +30,6 @@ interface Props {
 }
 
 export default function UsersIndex({ users }: Props) {
-
-    const handleDelete = (id: number) => {
-  if (confirm('Are you sure you want to delete this user?')) {
-    router.delete(`/users/${id}`);
-  }
-};
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Users" />
