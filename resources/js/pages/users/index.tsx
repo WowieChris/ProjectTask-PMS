@@ -63,6 +63,9 @@ export default function UsersIndex({ users }: Props) {
                                             <Button variant="outline" size="sm" asChild>
                                                 <Link href={`/users/${user.id}/edit`}>Edit</Link>
                                             </Button>
+                                            <Button variant="outline" size="sm" className="ml-2 bg-red-500 hover:bg-red-300" asChild>
+                                                <Link href={`/users/${user.id}/delete`} className="text-white hover:text-red-600" >Delete</Link>
+                                            </Button>
                                         </TableCell>
 =======
                                         <TableCell className="flex gap-2">
