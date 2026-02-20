@@ -14,5 +14,7 @@ Route::get('dashboard', function () {
     return Inertia::render('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::resource('users', \App\Http\Controllers\UserController::class)->middleware(['auth', 'verified']);
+
 require __DIR__.'/settings.php';
 
