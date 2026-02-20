@@ -30,13 +30,6 @@ interface Props {
 }
 
 export default function UsersIndex({ users }: Props) {
-
-    const handleDelete = (id: number) => {
-  if (confirm('Are you sure you want to delete this user?')) {
-    router.delete(`/users/${id}`);
-  }
-};
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Users" />
@@ -67,19 +60,11 @@ export default function UsersIndex({ users }: Props) {
                                         <TableCell>{user.name}</TableCell>
                                         <TableCell>{user.email}</TableCell>
                                         <TableCell>{user.role}</TableCell>
-                                        <TableCell className="flex gap-2">
-                                                <Button variant="outline" size="sm" asChild>
-                                                    <Link href={`/users/${user.id}/edit`}>Edit</Link>
-                                                </Button>
-
-                                                <Button
-                                                    variant="destructive"
-                                                    size="sm"
-                                                    onClick={() => handleDelete(user.id)}
-                                                >
-                                                    <Link href="#">Delete</Link>
-                                                </Button>
-                                            </TableCell>
+                                        <TableCell>
+                                            <Button variant="outline" size="sm" asChild>
+                                                <Link href={`/users/${user.id}/edit`}>Edit</Link>
+                                            </Button>
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
