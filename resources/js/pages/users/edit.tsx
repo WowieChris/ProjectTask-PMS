@@ -14,7 +14,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: dashboard().url,
     },
     {
-        title: 'Users',
+        title: 'User Maintenance',
         href: '/users',
     },
     {
@@ -41,10 +41,25 @@ export default function UsersEdit({ user }: Props) {
         role: user.role,
     });
 
+    // const submit = (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     put(`/users/${user.id}`);
+    // };
+
     const submit = (e: React.FormEvent) => {
-        e.preventDefault();
-        put(`/users/${user.id}`);
-    };
+    e.preventDefault();
+
+    const changed =
+        data.name !== user.name ||
+        data.email !== user.email ||
+        data.role !== user.role;
+
+    if (changed && !window.confirm('Save the changes to this user?')) {
+        return;
+    }
+
+    put(`/users/${user.id}`);
+};
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
