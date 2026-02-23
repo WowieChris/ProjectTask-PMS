@@ -28,4 +28,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('settings/two-factor', [TwoFactorAuthenticationController::class, 'show'])
         ->name('two-factor.show');
+
+    // allow choosing two-factor method (email or totp)
+    Route::post('settings/two-factor/method', [\App\Http\Controllers\Settings\TwoFactorMethodController::class, 'store'])
+        ->name('two-factor.method.store');
+
+    Route::delete('settings/two-factor/method', [\App\Http\Controllers\Settings\TwoFactorMethodController::class, 'destroy'])
+        ->name('two-factor.method.destroy');
 });
