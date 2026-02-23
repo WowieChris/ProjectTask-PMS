@@ -49,8 +49,8 @@ export default function UsersEdit({ user }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit User" />
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <Card>
+            <div className="flex h-full flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
+                <Card className="w-1/2 mx-auto">
                     <CardHeader>
                         <CardTitle>Edit User</CardTitle>
                     </CardHeader>
