@@ -9,9 +9,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use App\Models\User;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use Laravel\Fortify\Events\TwoFactorAuthenticationChallenged;
+use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider as TwoFactorAuthenticationProviderContract;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -31,6 +38,39 @@ class FortifyServiceProvider extends ServiceProvider
         $this->configureActions();
         $this->configureViews();
         $this->configureRateLimiting();
+
+        // Bind a custom two factor provider that supports email codes
+        $this->app->singleton(TwoFactorAuthenticationProviderContract::class, function ($app) {
+            $default = new \Laravel\Fortify\TwoFactorAuthenticationProvider(
+                $app->make(\PragmaRX\Google2FA\Google2FA::class),
+                $app['cache.store'] ?? null
+            );
+
+            return new \App\Providers\EmailTwoFactorProvider($default, $app['cache.store'] ?? null);
+        });
+
+        // Override Fortify's redirect action to also support email-based challenges
+        $this->app->singleton(\Laravel\Fortify\Contracts\RedirectsIfTwoFactorAuthenticatable::class, function ($app) {
+            return $app->make(\App\Actions\RedirectIfTwoFactorAuthenticatable::class);
+        });
+
+        // Send an email code when Fortify triggers the two-factor challenge
+        Event::listen(TwoFactorAuthenticationChallenged::class, function ($event) {
+            $user = $event->user;
+
+            try {
+                $code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+                Cache::put('fortify.email_2fa.'.$user->getKey(), $code, now()->addMinutes(10));
+
+                    Log::debug('email 2fa generated', ['user' => $user->getKey(), 'code' => $code]);
+
+                Mail::to($user->email)->send(new \App\Mail\TwoFactorCode($user, $code));
+            } catch (\Throwable $e) {
+                    Log::error('failed to send email 2fa', ['exception' => $e->getMessage()]);
+                    // swallowing any exceptions to avoid breaking the login flow
+            }
+        });
     }
 
     /**
@@ -68,7 +108,14 @@ class FortifyServiceProvider extends ServiceProvider
 
         Fortify::registerView(fn () => Inertia::render('auth/register'));
 
-        Fortify::twoFactorChallengeView(fn () => Inertia::render('auth/two-factor-challenge'));
+        Fortify::twoFactorChallengeView(function (Request $request) {
+            $user = User::find($request->session()->get('login.id'));
+
+            return Inertia::render('auth/two-factor-challenge', [
+                'twoFactorMethod' => $user?->two_factor_method ?? null,
+                'email' => $user?->email ?? null,
+            ]);
+        });
 
         Fortify::confirmPasswordView(fn () => Inertia::render('auth/confirm-password'));
     }

@@ -13,7 +13,12 @@ import { OTP_MAX_LENGTH } from '@/hooks/use-two-factor-auth';
 import AuthLayout from '@/layouts/auth-layout';
 import { store } from '@/routes/two-factor/login';
 
-export default function TwoFactorChallenge() {
+type Props = {
+    twoFactorMethod?: string | null;
+    email?: string | null;
+};
+
+export default function TwoFactorChallenge({ twoFactorMethod = null, email = null }: Props) {
     const [showRecoveryInput, setShowRecoveryInput] = useState<boolean>(false);
     const [code, setCode] = useState<string>('');
 
@@ -53,6 +58,18 @@ export default function TwoFactorChallenge() {
             <Head title="Two-Factor Authentication" />
 
             <div className="space-y-6">
+                {twoFactorMethod === 'email' && (
+                    <div className="text-center">
+                        <p className="text-sm text-muted-foreground">
+                            A verification code has been (or will be) sent to <strong>{email ?? 'your email'}</strong>. Check your inbox.
+                        </p>
+                        <div className="mt-2">
+                            <Form method="post" action="/two-factor/resend">
+                                <Button type="submit">Resend code to email</Button>
+                            </Form>
+                        </div>
+                    </div>
+                )}
                 <Form
                     {...store.form()}
                     className="space-y-4"

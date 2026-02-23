@@ -218,7 +218,7 @@ registerForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 register.form = registerForm
 
 /**
-* @see routes/web.php:7
+* @see routes/web.php:9
 * @route '/'
 */
 export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -232,7 +232,7 @@ home.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:7
+* @see routes/web.php:9
 * @route '/'
 */
 home.url = (options?: RouteQueryOptions) => {
@@ -240,7 +240,7 @@ home.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/web.php:7
+* @see routes/web.php:9
 * @route '/'
 */
 home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -249,7 +249,7 @@ home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:7
+* @see routes/web.php:9
 * @route '/'
 */
 home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -258,7 +258,7 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see routes/web.php:7
+* @see routes/web.php:9
 * @route '/'
 */
 const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -267,7 +267,7 @@ const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:7
+* @see routes/web.php:9
 * @route '/'
 */
 homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -276,7 +276,7 @@ homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:7
+* @see routes/web.php:9
 * @route '/'
 */
 homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -292,7 +292,7 @@ homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 home.form = homeForm
 
 /**
-* @see routes/web.php:13
+* @see routes/web.php:15
 * @route '/dashboard'
 */
 export const dashboard = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -306,7 +306,7 @@ dashboard.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:13
+* @see routes/web.php:15
 * @route '/dashboard'
 */
 dashboard.url = (options?: RouteQueryOptions) => {
@@ -314,7 +314,7 @@ dashboard.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/web.php:13
+* @see routes/web.php:15
 * @route '/dashboard'
 */
 dashboard.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -323,7 +323,7 @@ dashboard.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:13
+* @see routes/web.php:15
 * @route '/dashboard'
 */
 dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -332,7 +332,7 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see routes/web.php:13
+* @see routes/web.php:15
 * @route '/dashboard'
 */
 const dashboardForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -341,7 +341,7 @@ const dashboardForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> 
 })
 
 /**
-* @see routes/web.php:13
+* @see routes/web.php:15
 * @route '/dashboard'
 */
 dashboardForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -350,7 +350,7 @@ dashboardForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 })
 
 /**
-* @see routes/web.php:13
+* @see routes/web.php:15
 * @route '/dashboard'
 */
 dashboardForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -364,3 +364,84 @@ dashboardForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =
 })
 
 dashboard.form = dashboardForm
+
+/**
+* @see \App\Http\Controllers\Settings\TwoFactorAuthenticationController::verify
+* @see app/Http/Controllers/Settings/TwoFactorAuthenticationController.php:0
+* @route '/verify'
+*/
+export const verify = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: verify.url(options),
+    method: 'get',
+})
+
+verify.definition = {
+    methods: ["get","head"],
+    url: '/verify',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\Settings\TwoFactorAuthenticationController::verify
+* @see app/Http/Controllers/Settings/TwoFactorAuthenticationController.php:0
+* @route '/verify'
+*/
+verify.url = (options?: RouteQueryOptions) => {
+    return verify.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Settings\TwoFactorAuthenticationController::verify
+* @see app/Http/Controllers/Settings/TwoFactorAuthenticationController.php:0
+* @route '/verify'
+*/
+verify.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: verify.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Settings\TwoFactorAuthenticationController::verify
+* @see app/Http/Controllers/Settings/TwoFactorAuthenticationController.php:0
+* @route '/verify'
+*/
+verify.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: verify.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\Settings\TwoFactorAuthenticationController::verify
+* @see app/Http/Controllers/Settings/TwoFactorAuthenticationController.php:0
+* @route '/verify'
+*/
+const verifyForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: verify.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Settings\TwoFactorAuthenticationController::verify
+* @see app/Http/Controllers/Settings/TwoFactorAuthenticationController.php:0
+* @route '/verify'
+*/
+verifyForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: verify.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Settings\TwoFactorAuthenticationController::verify
+* @see app/Http/Controllers/Settings/TwoFactorAuthenticationController.php:0
+* @route '/verify'
+*/
+verifyForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: verify.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+verify.form = verifyForm

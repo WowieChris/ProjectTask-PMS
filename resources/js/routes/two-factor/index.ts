@@ -1,5 +1,6 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 import loginDf2c2a from './login'
+import method from './method'
 /**
 * @see \Laravel\Fortify\Http\Controllers\TwoFactorAuthenticatedSessionController::login
 * @see vendor/laravel/fortify/src/Http/Controllers/TwoFactorAuthenticatedSessionController.php:41
@@ -649,6 +650,7 @@ const twoFactor = {
     recoveryCodes: Object.assign(recoveryCodes, recoveryCodes),
     regenerateRecoveryCodes: Object.assign(regenerateRecoveryCodes, regenerateRecoveryCodes),
     show: Object.assign(show, show),
+    method: Object.assign(method, method),
 }
 
 export default twoFactor
