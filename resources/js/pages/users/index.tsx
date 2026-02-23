@@ -1,6 +1,8 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
@@ -30,6 +32,26 @@ interface Props {
 }
 
 export default function UsersIndex({ users }: Props) {
+    const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+
+    const handleSelectAll = (checked: boolean) => {
+        if (checked) {
+            setSelectedUsers(users.map(u => u.id));
+        } else {
+            setSelectedUsers([]);
+        }
+    };
+
+    const handleSelectUser = (userId: number, checked: boolean) => {
+        if (checked) {
+            setSelectedUsers(prev => [...prev, userId]);
+        } else {
+            setSelectedUsers(prev => prev.filter(id => id !== userId));
+        }
+    };
+
+    const isAllSelected = selectedUsers.length === users.length && users.length > 0;
+    const isIndeterminate = selectedUsers.length > 0 && selectedUsers.length < users.length;
 
     const handleDelete = (id: number) => {
   if (confirm('Are you sure you want to delete this user?')) {
@@ -67,26 +89,37 @@ export default function UsersIndex({ users }: Props) {
                         <Table>
                             <TableHeader>
                                 <TableRow>
+                                    <TableHead>
+                                        <Checkbox
+                                            checked={isAllSelected}
+                                            indeterminate={isIndeterminate}
+                                            onCheckedChange={handleSelectAll}
+                                        />
+                                    </TableHead>
                                     <TableHead>Name</TableHead>
                                     <TableHead>Email</TableHead>
                                     <TableHead>Role</TableHead>
-                                    <TableHead>Actions</TableHead>
                                     
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {users.map((user) => (
-                                    <TableRow key={user.id}>
+                                    <TableRow
+                                        key={user.id}
+                                        className="cursor-pointer hover:bg-muted/50"
+                                        onClick={() => router.visit(`/users/${user.id}/edit`)}
+                                    >
+                                        <TableCell>
+                                            <Checkbox
+                                                checked={selectedUsers.includes(user.id)}
+                                                onCheckedChange={(checked) => handleSelectUser(user.id, checked as boolean)}
+                                                onClick={(e) => e.stopPropagation()}
+                                            />
+                                        </TableCell>
                                         <TableCell>{user.name}</TableCell>
                                         <TableCell>{user.email}</TableCell>
                                         <TableCell>{user.role}</TableCell>
-                                        <TableCell className="flex gap-2">
-                                                <Button variant="outline" size="sm" asChild>
-                                                    <Link href={`/users/${user.id}/edit`}>Edit</Link>
-                                                </Button>
 
-
-                                            </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
