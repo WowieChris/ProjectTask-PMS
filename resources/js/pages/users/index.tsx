@@ -71,14 +71,22 @@ export default function UsersIndex({ users }: Props) {
                             <CardTitle>User Maintenance</CardTitle>
                             </div>
                             <div className="flex gap-2 mr-10">
-                            <Button asChild
+                            <Button
                                 variant="destructive"
                                 className="bg-red-500 text-white hover:bg-red-600"
-                                onClick={() => handleDelete(user.id)}
-                            >
-                                <Link href='#' >Delete</Link>
-                                                 
-                            </Button>
+                                disabled={selectedUsers.length === 0}
+                                onClick={() => {
+                                    if (!confirm(`Delete ${selectedUsers.length} selected user(s)?`)) return;
+
+                                    router.delete('/users/bulk-delete', {
+                                    data: { ids: selectedUsers },
+                                    preserveScroll: true,
+                                    onSuccess: () => setSelectedUsers([]),
+                                    });
+                                }}
+                                >
+                                Delete
+                                </Button>
                             <Button asChild>
                                 <Link href="/users/create">Add User</Link>
                             </Button>
@@ -91,9 +99,8 @@ export default function UsersIndex({ users }: Props) {
                                 <TableRow>
                                     <TableHead>
                                         <Checkbox
-                                            checked={isAllSelected}
-                                            indeterminate={isIndeterminate}
-                                            onCheckedChange={handleSelectAll}
+                                        checked={isAllSelected ? true : isIndeterminate ? "indeterminate" : false}
+                                        onCheckedChange={(checked) => handleSelectAll(checked === true)}
                                         />
                                     </TableHead>
                                     <TableHead>Name</TableHead>
