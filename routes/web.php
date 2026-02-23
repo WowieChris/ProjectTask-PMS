@@ -1,5 +1,7 @@
 <?php
 
+
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -14,8 +16,17 @@ Route::get('dashboard', function () {
     return Inertia::render('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
+Route::delete('/users/bulk-delete', [UserController::class, 'bulkDelete'])
+    ->name('users.bulk-delete');
+
 Route::resource('users', \App\Http\Controllers\UserController::class)->middleware(['auth', 'verified']);
 
 
+
+// Route::delete('/users/bulk-delete', [UserController::class, 'bulkDelete'])
+//     ->name('users.bulk-delete');
+
+// Route::resource('users', UserController::class);
 require __DIR__.'/settings.php';
 
