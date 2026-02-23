@@ -14,7 +14,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: dashboard().url,
     },
     {
-        title: 'Users',
+        title: 'Users Maintenance',
         href: '/users',
     },
     {
@@ -40,7 +40,7 @@ export default function UsersCreate() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create User" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <Card>
+                <Card className="w-1/2 mx-auto">
                     <CardHeader>
                         <CardTitle>Create User</CardTitle>
                     </CardHeader>

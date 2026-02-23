@@ -43,11 +43,24 @@ export default function UsersIndex({ users }: Props) {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <Card>
                     <CardHeader>
-                        <div className="flex items-center justify-between">
+                        
+                        <div className="flex items-right justify-between">
+                            <div className="flex items-center">
                             <CardTitle>User Maintenance</CardTitle>
+                            </div>
+                            <div className="flex gap-2 mr-10">
+                            <Button asChild
+                                variant="destructive"
+                                className="bg-red-500 text-white hover:bg-red-600"
+                                onClick={() => handleDelete(user.id)}
+                            >
+                                <Link href='#' >Delete</Link>
+                                                 
+                            </Button>
                             <Button asChild>
                                 <Link href="/users/create">Add User</Link>
                             </Button>
+                            </div>
                         </div>
                     </CardHeader>
                     <CardContent>
@@ -72,13 +85,7 @@ export default function UsersIndex({ users }: Props) {
                                                     <Link href={`/users/${user.id}/edit`}>Edit</Link>
                                                 </Button>
 
-                                                <Button
-                                                    variant="destructive"
-                                                    size="sm"
-                                                    onClick={() => handleDelete(user.id)}
-                                                >
-                                                    <Link href="#">Delete</Link>
-                                                </Button>
+
                                             </TableCell>
                                     </TableRow>
                                 ))}
