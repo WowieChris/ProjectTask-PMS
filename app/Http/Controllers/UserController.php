@@ -31,7 +31,7 @@ class UserController extends Controller
             'password' => 'required|string|min:8',
             'role' => 'required|string|in:user,admin',
             'designation' => 'nullable|string|max:255',
-            'employee_num' => 'required|string|max:255',
+            'employee_id' => 'required|string|max:255',
         ]);
 
         User::create([
@@ -40,7 +40,7 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'designation' => $request->designation,
-            'employee_num' => $request->employee_num,
+            'employee_id' => $request->employee_id,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
