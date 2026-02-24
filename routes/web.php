@@ -20,6 +20,9 @@ Route::get('dashboard', function () {
 Route::delete('/users/bulk-delete', [UserController::class, 'bulkDelete'])
     ->name('users.bulk-delete');
 
+Route::patch('/users/{user}/inline-update', [UserController::class, 'updateInline'])
+    ->name('users.inline-update');
+
 Route::resource('users', \App\Http\Controllers\UserController::class)->middleware(['auth', 'verified']);
 
 

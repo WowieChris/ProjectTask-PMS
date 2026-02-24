@@ -30,6 +30,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
             'role' => 'required|string|in:user,admin',
+            'designation' => 'nullable|string|max:255',
         ]);
 
         User::create([
@@ -37,6 +38,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
+            'designation' => $request->designation,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
@@ -55,15 +57,36 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'role' => 'required|string|in:user,admin',
+            'designation' => 'nullable|string|max:255',
         ]);
 
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
+            'designation' => $request->designation,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
+    }
+
+    public function updateInline(Request $request, User $user)
+    {
+        $field = $request->input('field');
+        $value = $request->input('value');
+
+        $validated = match ($field) {
+            'designation' => $request->validate(['value' => 'nullable|string|max:255']),
+            default => throw new \Exception('Invalid field'),
+        };
+
+        $user->update([$field => $value]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User updated successfully.',
+            'user' => $user,
+        ]);
     }
 
     public function destroy(User $user)

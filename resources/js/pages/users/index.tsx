@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-// import { Input } from '@/components/ui/input';
 // import {
 //   Select,
 //   SelectContent,
@@ -27,6 +26,7 @@ interface User {
   name: string;
   email: string;
   role: string;
+  designation: string | null;
 }
 
 interface Props {
@@ -35,19 +35,9 @@ interface Props {
 
 export default function UsersIndex({ users }: Props) {
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
-  const [filterText] = useState('');
-    const [filterRole] = useState('all');
 
 
-  const filteredUsers = users.filter((u) => {
-  const matchesText =
-    u.name.toLowerCase().includes(filterText.toLowerCase());
-
-  const matchesRole =
-    filterRole === 'all' || u.role === filterRole;
-
-  return matchesText && matchesRole;
-});
+  const filteredUsers = users;
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -138,8 +128,10 @@ export default function UsersIndex({ users }: Props) {
                       onCheckedChange={(checked) => handleSelectAll(checked === true)}
                     />
                   </TableHead>
+                  <TableHead>Employee ID</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
+                  <TableHead>Designation</TableHead>
                   <TableHead>Role</TableHead>
                 </TableRow>
               </TableHeader>
@@ -158,16 +150,17 @@ export default function UsersIndex({ users }: Props) {
                         onClick={(e) => e.stopPropagation()}
                       />
                     </TableCell>
-
+                    <TableCell>{user.id}</TableCell>
                     <TableCell>{user.name}</TableCell>
                     <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.designation}</TableCell>
                     <TableCell>{user.role}</TableCell>
                   </TableRow>
                 ))}
 
                 {filteredUsers.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center text-muted-foreground">
+                    <TableCell colSpan={6} className="text-center text-muted-foreground">
                       No users found.
                     </TableCell>
                   </TableRow>

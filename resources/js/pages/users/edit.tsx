@@ -28,6 +28,7 @@ interface User {
     name: string;
     email: string;
     role: string;
+    designation?: string;
 }
 
 interface Props {
@@ -39,6 +40,7 @@ export default function UsersEdit({ user }: Props) {
         name: user.name,
         email: user.email,
         role: user.role,
+        designation: user.designation || '',
     });
 
     // const submit = (e: React.FormEvent) => {
@@ -105,6 +107,19 @@ export default function UsersEdit({ user }: Props) {
                                 </Select>
                                 {errors.role && <p className="text-red-500">{errors.role}</p>}
                             </div>
+                                     
+                            <div>
+                                <Label htmlFor="role">Designation</Label>
+                               <Input
+                                    id="designation"
+                                    type="text"
+                                    value={data.designation || ''}
+                                    onChange={(e) => setData('designation', e.target.value)}
+                                />
+                                {errors.designation && <p className="text-red-500">{errors.designation}</p>}
+                                                        
+                            </div>
+
                             <div className="flex gap-2">
                                 <Button type="submit" disabled={processing}>
                                     Update
