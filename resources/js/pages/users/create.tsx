@@ -30,7 +30,7 @@ export default function UsersCreate() {
         password: '',
         role: 'user',
         designation: '',
-        employee_num: '',
+        employee_id: '',
     });
 
     const submit = (e: React.FormEvent) => {
@@ -101,18 +101,18 @@ export default function UsersCreate() {
                             </div>
                             <div className="flex w-full flex-col gap-2">
                                 <div>
-                                    <Label htmlFor="employee_num">ID Number</Label>
+                                    <Label htmlFor="employee_id">ID Number</Label>
                                     <Input
-                                        id="employee_num"
+                                        id="employee_id"
                                         placeholder="Employee Number"
-                                        name="employee_num"
-                                        autoComplete="employee_num"
+                                        name="employee_id"
+                                        autoComplete="employee_id"
                                         type="text"
-                                        value={data.employee_num}
-                                        onChange={(e) => setData('employee_num', e.target.value)}
+                                        value={data.employee_id}
+                                        onChange={(e) => setData('employee_id', e.target.value)}
                                         required
                                     />
-                                    {errors.employee_num && <p className="text-red-500">{errors.employee_num}</p>}
+                                    {errors.employee_id && <p className="text-red-500">{errors.employee_id}</p>}
                                 </div>    
                                 <div>
                                     <Label htmlFor="role">Role</Label>
