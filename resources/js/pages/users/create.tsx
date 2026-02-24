@@ -29,6 +29,7 @@ export default function UsersCreate() {
         email: '',
         password: '',
         role: 'user',
+        designation: '',
     });
 
     const submit = (e: React.FormEvent) => {
@@ -98,6 +99,18 @@ export default function UsersCreate() {
                                     </SelectContent>
                                 </Select>
                                 {errors.role && <p className="text-red-500">{errors.role}</p>}
+                            </div>
+                            <div>
+                                    <Label htmlFor="designation">Designation</Label>
+                                    <Input
+                                        id="designation"
+                                        name="designation"
+                                        autoComplete="designation"
+                                        type="text"
+                                        value={data.designation || ''}
+                                        onChange={(e) => setData('designation', e.target.value)}
+                                    />
+                                    {errors.designation && <p className="text-red-500">{errors.designation}</p>}
                             </div>
                             <div className="flex gap-2">
                                 <Button type="submit" disabled={processing}>

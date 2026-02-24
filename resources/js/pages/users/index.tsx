@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-// import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/input';
 // import {
 //   Select,
 //   SelectContent,
@@ -27,6 +27,7 @@ interface User {
   name: string;
   email: string;
   role: string;
+  designation: string | null;
 }
 
 interface Props {
@@ -36,18 +37,21 @@ interface Props {
 export default function UsersIndex({ users }: Props) {
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const [filterText] = useState('');
-    const [filterRole] = useState('all');
+  const [filterRole] = useState('all');
+  const [editingCells, setEditingCells] = useState<Set<string>>(new Set());
+  const [editValues, setEditValues] = useState<Record<string, string>>({});
+  const [usersList, setUsersList] = useState(users);
 
 
-  const filteredUsers = users.filter((u) => {
-  const matchesText =
-    u.name.toLowerCase().includes(filterText.toLowerCase());
+  const filteredUsers = usersList.filter((u) => {
+    const matchesText =
+      u.name.toLowerCase().includes(filterText.toLowerCase());
 
-  const matchesRole =
-    filterRole === 'all' || u.role === filterRole;
+    const matchesRole =
+      filterRole === 'all' || u.role === filterRole;
 
-  return matchesText && matchesRole;
-});
+    return matchesText && matchesRole;
+  });
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -60,6 +64,49 @@ export default function UsersIndex({ users }: Props) {
   const handleSelectUser = (userId: number, checked: boolean) => {
     if (checked) setSelectedUsers((prev) => [...prev, userId]);
     else setSelectedUsers((prev) => prev.filter((id) => id !== userId));
+  };
+
+  const startEditing = (userId: number, field: string, value: string) => {
+    const cellKey = `${userId}-${field}`;
+    setEditingCells((prev) => new Set(prev).add(cellKey));
+    setEditValues((prev) => ({ ...prev, [cellKey]: value }));
+  };
+
+  const cancelEditing = (userId: number, field: string) => {
+    const cellKey = `${userId}-${field}`;
+    setEditingCells((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(cellKey);
+      return newSet;
+    });
+    setEditValues((prev) => {
+      const newValues = { ...prev };
+      delete newValues[cellKey];
+      return newValues;
+    });
+  };
+
+  const saveEdit = async (userId: number, field: string, value: string) => {
+    try {
+      const response = await fetch(`/users/${userId}/inline-update`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || '',
+        },
+        body: JSON.stringify({ field, value }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUsersList((prev) =>
+          prev.map((u) => (u.id === userId ? { ...u, [field]: value } : u))
+        );
+        cancelEditing(userId, field);
+      }
+    } catch (error) {
+      console.error('Failed to update:', error);
+    }
   };
 
   const isAllSelected = filteredUsers.length > 0 && selectedUsers.length === filteredUsers.length;
@@ -138,36 +185,55 @@ export default function UsersIndex({ users }: Props) {
                       onCheckedChange={(checked) => handleSelectAll(checked === true)}
                     />
                   </TableHead>
+                  <TableHead>Employee ID</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
+                  <TableHead>Designation</TableHead>
                   <TableHead>Role</TableHead>
                 </TableRow>
               </TableHeader>
 
               <TableBody>
-                {filteredUsers.map((user) => (
-                  <TableRow
-                    key={user.id}
-                    className="cursor-pointer hover:bg-muted/50"
-                    onClick={() => router.visit(`/users/${user.id}/edit`)}
-                  >
-                    <TableCell>
-                      <Checkbox
-                        checked={selectedUsers.includes(user.id)}
-                        onCheckedChange={(checked) => handleSelectUser(user.id, checked === true)}
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                    </TableCell>
+                {filteredUsers.map((user) => {
+                  const employeeIdKey = `${user.id}-id`;
+                  const designationKey = `${user.id}-designation`;
+                  const isEditingEmployeeId = editingCells.has(employeeIdKey);
+                  const isEditingDesignation = editingCells.has(designationKey);
 
-                    <TableCell>{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.role}</TableCell>
-                  </TableRow>
-                ))}
+                  return (
+                    <TableRow
+                      key={user.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                    >
+                      <TableCell>
+                        <Checkbox
+                          checked={selectedUsers.includes(user.id)}
+                          onCheckedChange={(checked) => handleSelectUser(user.id, checked === true)}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </TableCell>
+                        <TableCell onClick={() => router.visit(`/users/${user.id}/edit`)}>
+                        {user.id}
+                      </TableCell>
+                      <TableCell onClick={() => router.visit(`/users/${user.id}/edit`)}>
+                        {user.name}
+                      </TableCell>
+                      <TableCell onClick={() => router.visit(`/users/${user.id}/edit`)}>
+                        {user.email}
+                      </TableCell>
+                      <TableCell onClick={() => router.visit(`/users/${user.id}/edit`)}>
+                        {user.designation}
+                      </TableCell>
+                      <TableCell onClick={() => router.visit(`/users/${user.id}/edit`)}>
+                        {user.role}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
 
                 {filteredUsers.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center text-muted-foreground">
+                    <TableCell colSpan={6} className="text-center text-muted-foreground">
                       No users found.
                     </TableCell>
                   </TableRow>
