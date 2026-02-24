@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { LayoutGrid, User,} from 'lucide-react';
 // import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -17,19 +17,6 @@ import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
 import AppLogo from './app-logo';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-    {
-        title: 'User Maintenance',
-        href: '/users',
-        icon: User,
-    },
-];
-
 // const footerNavItems: NavItem[] = [
 //     {
 //         title: 'Repository',
@@ -44,6 +31,24 @@ const mainNavItems: NavItem[] = [
 // ];
 
 export function AppSidebar() {
+    const { auth } = usePage().props;
+    const userRole = auth.user.role;
+
+    const mainNavItems: NavItem[] = [
+        {
+            title: 'Dashboard',
+            href: dashboard(),
+            icon: LayoutGrid,
+        },
+    ];
+
+    if (userRole !== 'user') {
+        mainNavItems.push({
+            title: 'User Maintenance',
+            href: '/users',
+            icon: User,
+        });
+    }
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
