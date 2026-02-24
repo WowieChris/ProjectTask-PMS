@@ -1,9 +1,9 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\UserController::bulkDelete
- * @see app/Http/Controllers/UserController.php:76
- * @route '/users/bulk-delete'
- */
+* @see app/Http/Controllers/UserController.php:76
+* @route '/users/bulk-delete'
+*/
 export const bulkDelete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: bulkDelete.url(options),
     method: 'delete',
@@ -16,54 +16,55 @@ bulkDelete.definition = {
 
 /**
 * @see \App\Http\Controllers\UserController::bulkDelete
- * @see app/Http/Controllers/UserController.php:76
- * @route '/users/bulk-delete'
- */
+* @see app/Http/Controllers/UserController.php:76
+* @route '/users/bulk-delete'
+*/
 bulkDelete.url = (options?: RouteQueryOptions) => {
     return bulkDelete.definition.url + queryParams(options)
 }
 
 /**
 * @see \App\Http\Controllers\UserController::bulkDelete
- * @see app/Http/Controllers/UserController.php:76
- * @route '/users/bulk-delete'
- */
+* @see app/Http/Controllers/UserController.php:76
+* @route '/users/bulk-delete'
+*/
 bulkDelete.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: bulkDelete.url(options),
     method: 'delete',
 })
 
-    /**
+/**
 * @see \App\Http\Controllers\UserController::bulkDelete
- * @see app/Http/Controllers/UserController.php:76
- * @route '/users/bulk-delete'
- */
-    const bulkDeleteForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: bulkDelete.url({
-                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                        _method: 'DELETE',
-                        ...(options?.query ?? options?.mergeQuery ?? {}),
-                    }
-                }),
-        method: 'post',
-    })
+* @see app/Http/Controllers/UserController.php:76
+* @route '/users/bulk-delete'
+*/
+const bulkDeleteForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: bulkDelete.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
 
-            /**
+/**
 * @see \App\Http\Controllers\UserController::bulkDelete
- * @see app/Http/Controllers/UserController.php:76
- * @route '/users/bulk-delete'
- */
-        bulkDeleteForm.delete = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: bulkDelete.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'DELETE',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'post',
-        })
-    
-    bulkDelete.form = bulkDeleteForm
+* @see app/Http/Controllers/UserController.php:76
+* @route '/users/bulk-delete'
+*/
+bulkDeleteForm.delete = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: bulkDelete.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+bulkDelete.form = bulkDeleteForm
+
 /**
 * @see \App\Http\Controllers\UserController::index
 * @see app/Http/Controllers/UserController.php:12
@@ -676,20 +677,21 @@ const destroyForm = (args: { user: number | { id: number } } | [user: number | {
 
 /**
 * @see \App\Http\Controllers\UserController::destroy
- * @see app/Http/Controllers/UserController.php:69
- * @route '/users/{user}'
- */
-        destroyForm.delete = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: destroy.url(args, {
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'DELETE',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'post',
-        })
-    
-    destroy.form = destroyForm
+* @see app/Http/Controllers/UserController.php:69
+* @route '/users/{user}'
+*/
+destroyForm.delete = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: destroy.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+destroy.form = destroyForm
+
 const UserController = { bulkDelete, index, create, store, show, edit, update, destroy }
 
 export default UserController

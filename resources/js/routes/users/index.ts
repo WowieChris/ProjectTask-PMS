@@ -1,9 +1,9 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\UserController::bulkDelete
- * @see app/Http/Controllers/UserController.php:76
- * @route '/users/bulk-delete'
- */
+* @see app/Http/Controllers/UserController.php:76
+* @route '/users/bulk-delete'
+*/
 export const bulkDelete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: bulkDelete.url(options),
     method: 'delete',
@@ -16,54 +16,55 @@ bulkDelete.definition = {
 
 /**
 * @see \App\Http\Controllers\UserController::bulkDelete
- * @see app/Http/Controllers/UserController.php:76
- * @route '/users/bulk-delete'
- */
+* @see app/Http/Controllers/UserController.php:76
+* @route '/users/bulk-delete'
+*/
 bulkDelete.url = (options?: RouteQueryOptions) => {
     return bulkDelete.definition.url + queryParams(options)
 }
 
 /**
 * @see \App\Http\Controllers\UserController::bulkDelete
- * @see app/Http/Controllers/UserController.php:76
- * @route '/users/bulk-delete'
- */
+* @see app/Http/Controllers/UserController.php:76
+* @route '/users/bulk-delete'
+*/
 bulkDelete.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: bulkDelete.url(options),
     method: 'delete',
 })
 
-    /**
+/**
 * @see \App\Http\Controllers\UserController::bulkDelete
- * @see app/Http/Controllers/UserController.php:76
- * @route '/users/bulk-delete'
- */
-    const bulkDeleteForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: bulkDelete.url({
-                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                        _method: 'DELETE',
-                        ...(options?.query ?? options?.mergeQuery ?? {}),
-                    }
-                }),
-        method: 'post',
-    })
+* @see app/Http/Controllers/UserController.php:76
+* @route '/users/bulk-delete'
+*/
+const bulkDeleteForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: bulkDelete.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
 
-            /**
+/**
 * @see \App\Http\Controllers\UserController::bulkDelete
- * @see app/Http/Controllers/UserController.php:76
- * @route '/users/bulk-delete'
- */
-        bulkDeleteForm.delete = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: bulkDelete.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'DELETE',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'post',
-        })
-    
-    bulkDelete.form = bulkDeleteForm
+* @see app/Http/Controllers/UserController.php:76
+* @route '/users/bulk-delete'
+*/
+bulkDeleteForm.delete = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: bulkDelete.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+bulkDelete.form = bulkDeleteForm
+
 /**
 * @see \App\Http\Controllers\UserController::index
 * @see app/Http/Controllers/UserController.php:12
@@ -693,13 +694,13 @@ destroy.form = destroyForm
 
 const users = {
     bulkDelete: Object.assign(bulkDelete, bulkDelete),
-index: Object.assign(index, index),
-create: Object.assign(create, create),
-store: Object.assign(store, store),
-show: Object.assign(show, show),
-edit: Object.assign(edit, edit),
-update: Object.assign(update, update),
-destroy: Object.assign(destroy, destroy),
+    index: Object.assign(index, index),
+    create: Object.assign(create, create),
+    store: Object.assign(store, store),
+    show: Object.assign(show, show),
+    edit: Object.assign(edit, edit),
+    update: Object.assign(update, update),
+    destroy: Object.assign(destroy, destroy),
 }
 
 export default users
