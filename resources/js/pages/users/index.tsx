@@ -1,139 +1,182 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import { dashboard } from '@/routes';
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard().url,
-    },
-    {
-        title: 'User Maintenance',
-        href: '/users',
-    },
+  { title: 'Dashboard', href: dashboard().url },
+  { title: 'User Maintenance', href: '/users' },
 ];
 
 interface User {
-    id: number;
-    name: string;
-    email: string;
-    role: string;
+  id: number;
+  name: string;
+  email: string;
+  role: string;
 }
 
 interface Props {
-    users: User[];
+  users: User[];
 }
 
 export default function UsersIndex({ users }: Props) {
-    const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
+  const [filterText, setFilterText] = useState('');
+    const [filterRole, setFilterRole] = useState('all');
 
-    const handleSelectAll = (checked: boolean) => {
-        if (checked) {
-            setSelectedUsers(users.map(u => u.id));
-        } else {
-            setSelectedUsers([]);
-        }
-    };
 
-    const handleSelectUser = (userId: number, checked: boolean) => {
-        if (checked) {
-            setSelectedUsers(prev => [...prev, userId]);
-        } else {
-            setSelectedUsers(prev => prev.filter(id => id !== userId));
-        }
-    };
+  const filteredUsers = users.filter((u) => {
+  const matchesText =
+    u.name.toLowerCase().includes(filterText.toLowerCase());
 
-    const isAllSelected = selectedUsers.length === users.length && users.length > 0;
-    const isIndeterminate = selectedUsers.length > 0 && selectedUsers.length < users.length;
+  const matchesRole =
+    filterRole === 'all' || u.role === filterRole;
 
-    const handleDelete = (id: number) => {
-  if (confirm('Are you sure you want to delete this user?')) {
-    router.delete(`/users/${id}`);
-  }
-};
+  return matchesText && matchesRole;
+});
 
-    return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Users" />
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <Card>
-                    <CardHeader>
-                        
-                        <div className="flex items-right justify-between">
-                            <div className="flex items-center">
-                            <CardTitle>User Maintenance</CardTitle>
-                            </div>
-                            <div className="flex gap-2 mr-10">
-                            <Button
-                                variant="destructive"
-                                className="bg-red-500 text-white hover:bg-red-600"
-                                disabled={selectedUsers.length === 0}
-                                onClick={() => {
-                                    if (!confirm(`Delete ${selectedUsers.length} selected user(s)?`)) return;
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedUsers(filteredUsers.map((u) => u.id)); // select only filtered rows
+    } else {
+      setSelectedUsers([]);
+    }
+  };
 
-                                    router.delete('/users/bulk-delete', {
-                                    data: { ids: selectedUsers },
-                                    preserveScroll: true,
-                                    onSuccess: () => setSelectedUsers([]),
-                                    });
-                                }}
-                                >
-                                Delete
-                                </Button>
-                            <Button asChild>
-                                <Link href="/users/create">Add User</Link>
-                            </Button>
-                            </div>
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>
-                                        <Checkbox
-                                        checked={isAllSelected ? true : isIndeterminate ? "indeterminate" : false}
-                                        onCheckedChange={(checked) => handleSelectAll(checked === true)}
-                                        />
-                                    </TableHead>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Email</TableHead>
-                                    <TableHead>Role</TableHead>
-                                    
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {users.map((user) => (
-                                    <TableRow
-                                        key={user.id}
-                                        className="cursor-pointer hover:bg-muted/50"
-                                        onClick={() => router.visit(`/users/${user.id}/edit`)}
-                                    >
-                                        <TableCell>
-                                            <Checkbox
-                                                checked={selectedUsers.includes(user.id)}
-                                                onCheckedChange={(checked) => handleSelectUser(user.id, checked as boolean)}
-                                                onClick={(e) => e.stopPropagation()}
-                                            />
-                                        </TableCell>
-                                        <TableCell>{user.name}</TableCell>
-                                        <TableCell>{user.email}</TableCell>
-                                        <TableCell>{user.role}</TableCell>
+  const handleSelectUser = (userId: number, checked: boolean) => {
+    if (checked) setSelectedUsers((prev) => [...prev, userId]);
+    else setSelectedUsers((prev) => prev.filter((id) => id !== userId));
+  };
 
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
+  const isAllSelected = filteredUsers.length > 0 && selectedUsers.length === filteredUsers.length;
+  const isIndeterminate = selectedUsers.length > 0 && selectedUsers.length < filteredUsers.length;
+  return (
+    <AppLayout breadcrumbs={breadcrumbs}>
+      <Head title="Users" />
+
+      <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>User Maintenance</CardTitle>
+
+              <div className="flex gap-2 mr-10">
+                <Button
+                  variant="destructive"
+                  className="bg-red-500 text-white hover:bg-red-600"
+                  disabled={selectedUsers.length === 0}
+                  onClick={() => {
+                    if (!confirm(`Delete ${selectedUsers.length} selected user(s)?`)) return;
+
+                    router.delete('/users/bulk-delete', {
+                      data: { ids: selectedUsers },
+                      preserveScroll: true,
+                      onSuccess: () => setSelectedUsers([]),
+                    });
+                  }}
+                >
+                  Delete
+                </Button>
+
+                <Button asChild>
+                  <Link href="/users/create">Add User</Link>
+                </Button>
+              </div>
             </div>
-        </AppLayout>
-    );
+          </CardHeader>
+
+          <CardContent>
+            <div className="mb-3 flex items-center gap-2">
+
+                {/* SEARCH INPUT */}
+                {/* <Input
+                    placeholder="Search name..."
+                    value={filterText}
+                    onChange={(e) => setFilterText(e.target.value)}
+                    className="h-9 w-[220px]"
+                /> */}
+
+                {/* ROLE FILTER */}
+                {/* <Select value={filterRole} onValueChange={setFilterRole}>
+                    <SelectTrigger className="w-[150px] h-9">
+                    <SelectValue placeholder="Filter role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                    <SelectItem value="all">All Roles</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="user">User</SelectItem>
+                    </SelectContent>
+                </Select> */}
+
+                {/* FILTER BUTTON */}
+                {/* <Button variant="outline">
+                    Filter
+                </Button> */}
+
+                </div>
+
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[50px]">
+                    <Checkbox
+                      checked={isAllSelected ? true : isIndeterminate ? 'indeterminate' : false}
+                      onCheckedChange={(checked) => handleSelectAll(checked === true)}
+                    />
+                  </TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Role</TableHead>
+                </TableRow>
+              </TableHeader>
+
+              <TableBody>
+                {filteredUsers.map((user) => (
+                  <TableRow
+                    key={user.id}
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => router.visit(`/users/${user.id}/edit`)}
+                  >
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedUsers.includes(user.id)}
+                        onCheckedChange={(checked) => handleSelectUser(user.id, checked === true)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    </TableCell>
+
+                    <TableCell>{user.name}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.role}</TableCell>
+                  </TableRow>
+                ))}
+
+                {filteredUsers.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center text-muted-foreground">
+                      No users found.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
+    </AppLayout>
+  );
 }
