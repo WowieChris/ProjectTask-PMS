@@ -55,6 +55,7 @@ export default function UsersCreate() {
                                         id="name"
                                         name="name"
                                         autoComplete="name"
+                                        placeholder='Full Name'
                                         value={data.name}
                                         onChange={(e) => setData('name', e.target.value)}
                                         required
@@ -65,6 +66,7 @@ export default function UsersCreate() {
                                     <Label htmlFor="email">Email</Label>
                                     <Input
                                         id="email"
+                                        placeholder="Email Address"
                                         name="email"
                                         autoComplete="email"
                                         type="email"
@@ -78,6 +80,7 @@ export default function UsersCreate() {
                                     <Label htmlFor="password">Password</Label>
                                     <Input
                                         id="password"
+                                        placeholder="Enter Password"
                                         name="password"
                                         autoComplete="new-password"
                                         type="password"
@@ -100,8 +103,8 @@ export default function UsersCreate() {
                                 <div>
                                     <Label htmlFor="employee_num">ID Number</Label>
                                     <Input
-                                        className="w-1/2"
                                         id="employee_num"
+                                        placeholder="Employee Number"
                                         name="employee_num"
                                         autoComplete="employee_num"
                                         type="text"
@@ -113,7 +116,7 @@ export default function UsersCreate() {
                                 </div>    
                                 <div>
                                     <Label htmlFor="role">Role</Label>
-                                    <Input type="hidden" name="role" value={data.role} />
+                                    <Input type="hidden" name="role" value={data.role} required />
                                     <Select value={data.role} onValueChange={(value) => setData('role', value)}>
                                         <SelectTrigger id="role" aria-labelledby="role-label" className="w-full">
                                         <SelectValue placeholder="Select role" />
@@ -129,7 +132,7 @@ export default function UsersCreate() {
                                 </div>
                                 <div>
                                         <Label htmlFor="designation">Designation</Label>
-                                        <Input type="hidden" name="designation" value={data.designation || ''} />
+                                        <Input type="hidden" name="designation" value={data.designation || ''} required />
                                         <Select value={data.designation} onValueChange={(value) => setData('designation', value)}>
                                         <SelectTrigger id="designation" aria-labelledby="designation-label" className="w-full">
                                         <SelectValue placeholder="Select designation" />
