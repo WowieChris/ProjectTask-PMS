@@ -31,6 +31,7 @@ class UserController extends Controller
             'password' => 'required|string|min:8',
             'role' => 'required|string|in:user,admin',
             'designation' => 'nullable|string|max:255',
+            'employee_num' => 'required|string|max:255',
         ]);
 
         User::create([
@@ -39,6 +40,7 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'designation' => $request->designation,
+            'employee_num' => $request->employee_num,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
@@ -58,6 +60,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'role' => 'required|string|in:user,admin',
             'designation' => 'nullable|string|max:255',
+            'employee_num' => 'required|string|max:255',
         ]);
 
         $user->update([
@@ -65,6 +68,7 @@ class UserController extends Controller
             'email' => $request->email,
             'role' => $request->role,
             'designation' => $request->designation,
+            'employee_num' => $request->employee_num,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
