@@ -1,20 +1,20 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
-
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: 'Dashboard', href: dashboard().url },
@@ -33,27 +33,80 @@ interface Props {
   users: User[];
 }
 
+type AnyFilter = 'all' | string;
+
 export default function UsersIndex({ users }: Props) {
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
 
+  // LIVE FILTER STATE
+  const [filterText, setFilterText] = useState<string>('');
+  const [filterRole, setFilterRole] = useState<AnyFilter>('all');
+  const [filterDesignation, setFilterDesignation] = useState<AnyFilter>('all');
 
-  const filteredUsers = users;
+  // Dynamic dropdown options
+  const roleOptions = useMemo(() => {
+    return Array.from(new Set(users.map((u) => u.role))).sort();
+  }, [users]);
+
+  const designationOptions = useMemo(() => {
+    return Array.from(new Set(users.map((u) => u.designation).filter(Boolean) as string[])).sort();
+  }, [users]);
+
+  // LIVE FILTERING
+  const filteredUsers = useMemo(() => {
+    const text = filterText.trim().toLowerCase();
+
+    return users.filter((u) => {
+      const matchesText =
+        text === '' ||
+        String(u.id).includes(text) ||
+        u.name.toLowerCase().includes(text) ||
+        u.email.toLowerCase().includes(text) ||
+        (u.designation ?? '').toLowerCase().includes(text) ||
+        u.role.toLowerCase().includes(text);
+
+      const matchesRole =
+        filterRole === 'all' || u.role.toLowerCase() === filterRole.toLowerCase();
+
+      const matchesDesignation =
+        filterDesignation === 'all' ||
+        (u.designation ?? '').toLowerCase() === filterDesignation.toLowerCase();
+
+      return matchesText && matchesRole && matchesDesignation;
+    });
+  }, [users, filterText, filterRole, filterDesignation]);
+
+  // Selection logic that respects filtered rows
+  const filteredIds = useMemo(() => filteredUsers.map((u) => u.id), [filteredUsers]);
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedUsers(filteredUsers.map((u) => u.id)); // select only filtered rows
+      setSelectedUsers((prev) => Array.from(new Set([...prev, ...filteredIds])));
     } else {
-      setSelectedUsers([]);
+      setSelectedUsers((prev) => prev.filter((id) => !filteredIds.includes(id)));
     }
   };
 
   const handleSelectUser = (userId: number, checked: boolean) => {
-    if (checked) setSelectedUsers((prev) => [...prev, userId]);
+    if (checked) setSelectedUsers((prev) => Array.from(new Set([...prev, userId])));
     else setSelectedUsers((prev) => prev.filter((id) => id !== userId));
   };
 
-  const isAllSelected = filteredUsers.length > 0 && selectedUsers.length === filteredUsers.length;
-  const isIndeterminate = selectedUsers.length > 0 && selectedUsers.length < filteredUsers.length;
+  const isAllSelected =
+    filteredUsers.length > 0 && filteredIds.every((id) => selectedUsers.includes(id));
+
+  const isIndeterminate =
+    filteredUsers.length > 0 &&
+    filteredIds.some((id) => selectedUsers.includes(id)) &&
+    !isAllSelected;
+
+  const handleClear = () => {
+    setFilterText('');
+    setFilterRole('all');
+    setFilterDesignation('all');
+    setSelectedUsers([]); 
+  };
+
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Users" />
@@ -90,34 +143,53 @@ export default function UsersIndex({ users }: Props) {
           </CardHeader>
 
           <CardContent>
+            {/* FILTER BAR (LIVE) */}
             <div className="mb-3 flex items-center gap-2">
+              <Input
+                placeholder="Search ID, name, email, designation..."
+                value={filterText}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFilterText(e.target.value)}
+                className="h-9 w-[260px]"
+              />
 
-                {/* SEARCH INPUT */}
-                {/* <Input
-                    placeholder="Search name..."
-                    value={filterText}
-                    onChange={(e) => setFilterText(e.target.value)}
-                    className="h-9 w-[220px]"
-                /> */}
+              {/* ROLE FILTER */}
+              <Select value={filterRole} onValueChange={(v) => setFilterRole(v)}>
+                <SelectTrigger className="w-[160px] h-9">
+                  <SelectValue placeholder="Filter role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Roles</SelectItem>
+                  {roleOptions.map((r) => (
+                    <SelectItem key={r} value={r}>
+                      {r}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-                {/* ROLE FILTER */}
-                {/* <Select value={filterRole} onValueChange={setFilterRole}>
-                    <SelectTrigger className="w-[150px] h-9">
-                    <SelectValue placeholder="Filter role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                    <SelectItem value="all">All Roles</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="user">User</SelectItem>
-                    </SelectContent>
-                </Select> */}
+              {/* DESIGNATION FILTER (optional) */}
+              <Select value={filterDesignation} onValueChange={(v) => setFilterDesignation(v)}>
+                <SelectTrigger className="w-[190px] h-9">
+                  <SelectValue placeholder="Filter designation" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Designations</SelectItem>
+                  {designationOptions.map((d) => (
+                    <SelectItem key={d} value={d}>
+                      {d}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-                {/* FILTER BUTTON */}
-                {/* <Button variant="outline">
-                    Filter
-                </Button> */}
+              <Button variant="ghost" onClick={handleClear}>
+                Clear
+              </Button>
 
-                </div>
+              <div className="ml-auto text-sm text-muted-foreground">
+                Showing {filteredUsers.length} of {users.length}
+              </div>
+            </div>
 
             <Table>
               <TableHeader>
