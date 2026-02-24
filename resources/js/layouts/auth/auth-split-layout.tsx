@@ -1,5 +1,4 @@
-import { Link, usePage } from '@inertiajs/react';
-import AppLogoIcon, { AppLogoIconTest } from '@/components/app-logo-icon';
+import { Link } from '@inertiajs/react';
 import type { AuthLayoutProps } from '@/types';
 import { home } from '@/routes';
 
@@ -8,7 +7,6 @@ export default function AuthSplitLayout({
     title,
     description,
 }: AuthLayoutProps) {
-    const { name } = usePage().props;
 
     return (
         <div className="relative grid h-dvh flex-col items-center justify-center px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0">

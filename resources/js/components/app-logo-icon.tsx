@@ -21,13 +21,12 @@ export function AppLogoIconTest(props: SVGAttributes<SVGElement>) {
 
 
 
-export default function IICTDLogo(props: ImgHTMLAttributes<HTMLImageElement>) {
+export default function IICTDLogo() {
     return (
         <img
             src="/import-image/lbf-logo.png"
             alt="IICTD PMS Logo"
             className="w-[150px] h-auto"
-            {...props}
         />
     );
 }

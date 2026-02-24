@@ -1,21 +1,12 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import { dashboard } from '@/routes';
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: 'Dashboard', href: dashboard().url },
@@ -35,19 +26,9 @@ interface Props {
 
 export default function UsersIndex({ users }: Props) {
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
-  const [filterText, setFilterText] = useState('');
-    const [filterRole, setFilterRole] = useState('all');
 
 
-  const filteredUsers = users.filter((u) => {
-  const matchesText =
-    u.name.toLowerCase().includes(filterText.toLowerCase());
-
-  const matchesRole =
-    filterRole === 'all' || u.role === filterRole;
-
-  return matchesText && matchesRole;
-});
+  const filteredUsers = users;
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
