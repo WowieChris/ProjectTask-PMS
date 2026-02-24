@@ -15,7 +15,6 @@ import { disable, enable, show } from '@/routes/two-factor';
 type Props = {
     requiresConfirmation?: boolean;
     twoFactorEnabled?: boolean;
-    twoFactorMethod?: string | null;
 };
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -28,7 +27,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function TwoFactor({
     requiresConfirmation = false,
     twoFactorEnabled = false,
-    twoFactorMethod = null,
 }: Props) {
     const {
         qrCodeSvg,
@@ -84,13 +82,6 @@ export default function TwoFactor({
                                     )}
                                 </Form>
                             </div>
-                            <div className="pt-2">
-                                <p className="text-sm text-muted-foreground">Current 2FA method: <strong>{twoFactorMethod ?? 'totp'}</strong></p>
-                                <Form method="post" action="/settings/two-factor/method" className="inline-block mt-2">
-                                    <input type="hidden" name="method" value="email" />
-                                    <Button type="submit">Switch to Email 2FA</Button>
-                                </Form>
-                            </div>
                         </div>
                     ) : (
                         <div className="flex flex-col items-start justify-start space-y-4">
@@ -128,16 +119,6 @@ export default function TwoFactor({
                                         )}
                                     </Form>
                                 )}
-
-                                <div className="mt-3">
-                                    <p className="text-sm text-muted-foreground">Or enable email-based 2FA (receive codes by email)</p>
-                                    <Form method="post" action="/settings/two-factor/method" className="inline-block mt-2">
-                                        <input type="hidden" name="method" value="email" />
-                                        {({ processing }: any) => (
-                                            <Button type="submit">Enable Email 2FA</Button>
-                                        )}
-                                    </Form>
-                                </div>
                             </div>
                         </div>
                     )}
