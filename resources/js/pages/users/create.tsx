@@ -30,6 +30,7 @@ export default function UsersCreate() {
         password: '',
         role: 'user',
         designation: '',
+        employee_id: '',
     });
 
     const submit = (e: React.FormEvent) => {
@@ -47,6 +48,20 @@ export default function UsersCreate() {
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={submit} className="space-y-4" name="formCreateUser">
+                            <div>
+                                <Label htmlFor="employee_id">Employee ID</Label>
+                                <Input
+                                    id="employee_id"
+                                    name="employee_id"
+                                    autoComplete="off"
+                                    type="text"
+                                    value={data.employee_id || ''}
+                                    onChange={(e) => setData('employee_id', e.target.value)}
+                                    className="w-32"
+                                    maxLength={15}
+                                />
+                                {errors.employee_id && <p className="text-red-500">{errors.employee_id}</p>}
+                            </div>
                             <div>
                                 <Label htmlFor="name">Name</Label>
                                 <Input

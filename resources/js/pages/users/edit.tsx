@@ -29,6 +29,7 @@ interface User {
     email: string;
     role: string;
     designation?: string;
+    employee_id?: string;
 }
 
 interface Props {
@@ -41,6 +42,7 @@ export default function UsersEdit({ user }: Props) {
         email: user.email,
         role: user.role,
         designation: user.designation || '',
+        employee_id: user.employee_id || '',
     });
 
     // const submit = (e: React.FormEvent) => {
@@ -73,6 +75,18 @@ export default function UsersEdit({ user }: Props) {
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={submit} className="space-y-4">
+                            <div>
+                                <Label htmlFor="employee_id">Employee ID</Label>
+                               <Input
+                                    id="employee_id"
+                                    type="text"
+                                    value={data.employee_id || ''}
+                                    onChange={(e) => setData('employee_id', e.target.value)}
+                                    className="w-32"
+                                    maxLength={15}
+                                />
+                                {errors.employee_id && <p className="text-red-500">{errors.employee_id}</p>}
+                            </div>
                             <div>
                                 <Label htmlFor="name">Name</Label>
                                 <Input

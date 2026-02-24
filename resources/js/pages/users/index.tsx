@@ -27,6 +27,7 @@ interface User {
   email: string;
   role: string;
   designation: string | null;
+  employee_id: string | null;
 }
 
 interface Props {
@@ -128,7 +129,7 @@ export default function UsersIndex({ users }: Props) {
                       onCheckedChange={(checked) => handleSelectAll(checked === true)}
                     />
                   </TableHead>
-                  <TableHead>Employee ID</TableHead>
+                  <TableHead className="w-26">Employee ID</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Designation</TableHead>
@@ -150,7 +151,7 @@ export default function UsersIndex({ users }: Props) {
                         onClick={(e) => e.stopPropagation()}
                       />
                     </TableCell>
-                    <TableCell>{user.id}</TableCell>
+                    <TableCell className="w-24">{user.employee_id}</TableCell>
                     <TableCell>{user.name}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>{user.designation}</TableCell>
