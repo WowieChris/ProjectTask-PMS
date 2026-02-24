@@ -13,7 +13,7 @@ export default function AuthSplitLayout({
     return (
         <div className="relative grid h-dvh flex-col items-center justify-center px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0">
             <div className="relative hidden h-full flex-col bg-black p-10 text-white lg:flex dark:border-r">
-                <div className="absolute inset-0 bg-no-repeat bg-contain bg-center my-auto w-[650px] h-[400px]" style={{backgroundImage: "url('/import-image/IICTDLogowithBackground.png')"}} />
+                <div className="absolute inset-0 bg-no-repeat bg-contain bg-center my-auto mx-auto w-[650px] h-[400px]" style={{backgroundImage: "url('/import-image/IICTDLogowithBackground.png')"}} />
                 <Link
                     href={home()}
                     className="relative z-20 flex items-center text-xl font-medium text-yellow-400"
