@@ -50,6 +50,7 @@ export default function UsersCreate() {
                             <div>
                                 <Label htmlFor="name">Name</Label>
                                 <Input
+                                    className="w-1/2"
                                     id="name"
                                     name="name"
                                     autoComplete="name"
@@ -62,6 +63,7 @@ export default function UsersCreate() {
                             <div>
                                 <Label htmlFor="email">Email</Label>
                                 <Input
+                                    className="w-1/2"
                                     id="email"
                                     name="email"
                                     autoComplete="email"
@@ -75,6 +77,7 @@ export default function UsersCreate() {
                             <div>
                                 <Label htmlFor="password">Password</Label>
                                 <Input
+                                    className="w-1/2"
                                     id="password"
                                     name="password"
                                     autoComplete="new-password"
@@ -87,29 +90,34 @@ export default function UsersCreate() {
                             </div>
                             <div>
                                 <Label htmlFor="role">Role</Label>
-                                  <input type="hidden" name="role" value={data.role} />
+                                  <Input type="hidden" name="role" value={data.role} />
                                  <Select value={data.role} onValueChange={(value) => setData('role', value)}>
-                                    <SelectTrigger id="role" aria-labelledby="role-label" className="w-full">
+                                    <SelectTrigger id="role" aria-labelledby="role-label" className="w-1/3">
                                     <SelectValue placeholder="Select role" />
                                     </SelectTrigger>
 
                                     <SelectContent>
                                     <SelectItem value="user">User</SelectItem>
-                                    <SelectItem value="admin">Admin</SelectItem>
+                                    <SelectItem value="admin">Administrator</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 {errors.role && <p className="text-red-500">{errors.role}</p>}
                             </div>
                             <div>
                                     <Label htmlFor="designation">Designation</Label>
-                                    <Input
-                                        id="designation"
-                                        name="designation"
-                                        autoComplete="designation"
-                                        type="text"
-                                        value={data.designation || ''}
-                                        onChange={(e) => setData('designation', e.target.value)}
-                                    />
+                                    <Input type="hidden" name="designation" value={data.designation || ''} />
+                                    <Select value={data.designation} onValueChange={(value) => setData('designation', value)}>
+                                    <SelectTrigger id="designation" aria-labelledby="designation-label" className="w-1/2">
+                                    <SelectValue placeholder="Select designation" />
+                                    </SelectTrigger>
+
+                                    <SelectContent>
+                                    <SelectItem value="Technical Support Engineer">Technical Support Engineer</SelectItem>
+                                    <SelectItem value="Field Engineer">Field Engineer</SelectItem>
+                                    <SelectItem value="System Operator">System Operator</SelectItem>
+                                    <SelectItem value="Infrastructure Engineer">Infrastructure Engineer</SelectItem>
+                                    </SelectContent>
+                                    </Select>
                                     {errors.designation && <p className="text-red-500">{errors.designation}</p>}
                             </div>
                             <div className="flex gap-2">
