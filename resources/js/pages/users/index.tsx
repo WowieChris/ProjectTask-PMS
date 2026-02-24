@@ -23,6 +23,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 interface User {
   id: number;
+  employee_id:string;
   name: string;
   email: string;
   role: string;
@@ -222,7 +223,7 @@ export default function UsersIndex({ users }: Props) {
                         onClick={(e) => e.stopPropagation()}
                       />
                     </TableCell>
-                    <TableCell>{user.id}</TableCell>
+                    <TableCell>{user.employee_id}</TableCell>
                     <TableCell>{user.name}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>{user.designation}</TableCell>
