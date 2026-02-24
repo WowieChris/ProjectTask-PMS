@@ -19,11 +19,11 @@ export default function IICTDLogo() {
     return (
         <>
             <div className="flex aspect-square size-8 items-center justify-center rounded-md bg-sidebar-primary bg-transparent text-sidebar-primary-foreground">
-                <AppLogoIcon className="fill-current text-white dark:text-black" />
+                <AppLogoIcon/>
             </div>
             <div className="ml-1 grid flex-1 text-left text-sm items-center">
-                <span className="mt-1 truncate leading-tight font-semibold items-center">
-                    IICTD PMS
+                <span className="mt-2 leading-tight font-semibold items-center">
+                    Service Order Tracking System
                 </span>
             </div>
         </>
