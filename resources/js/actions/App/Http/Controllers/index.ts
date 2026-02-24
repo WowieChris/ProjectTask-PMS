@@ -1,4 +1,3 @@
-import UserController from './UserController'
 import Settings from './Settings'
 
 const Controllers = {

@@ -1,5 +1,5 @@
-import type { SVGAttributes } from 'react';
-import type { ImgHTMLAttributes } from "react";
+// import type { SVGAttributes } from 'react';
+// import type { ImgHTMLAttributes } from "react";
 
 // export default function AppLogoIcon(props: SVGAttributes<SVGElement>) {
 //     return (
@@ -13,21 +13,21 @@ import type { ImgHTMLAttributes } from "react";
 //     );
 // }
 
-export function AppLogoIconTest(props: SVGAttributes<SVGElement>) {
-    return (
-        <img src="/Images/LifebankLogo.png" className="w-150 h-120" />
-    );
-}
+// export function AppLogoIconTest() {
+//     return (
+//         <img src="/Images/LifebankLogo.png" className="w-150 h-120" />
+//     );
+// }
 
 
 
-export default function IICTDLogo(props: ImgHTMLAttributes<HTMLImageElement>) {
+export default function IICTDLogo() {
     return (
         <img
             src="/import-image/lbf-logo.png"
             alt="IICTD PMS Logo"
             className="w-[150px] h-auto"
-            {...props}
+            
         />
     );
 }
