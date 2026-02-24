@@ -1,8 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\UserController::bulkDelete
- * @see app/Http/Controllers/UserController.php:97
+ * @see app/Http/Controllers/UserController.php:99
  * @route '/users/bulk-delete'
  */
 export const bulkDelete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -17,7 +16,7 @@ bulkDelete.definition = {
 
 /**
 * @see \App\Http\Controllers\UserController::bulkDelete
- * @see app/Http/Controllers/UserController.php:97
+ * @see app/Http/Controllers/UserController.php:99
  * @route '/users/bulk-delete'
  */
 bulkDelete.url = (options?: RouteQueryOptions) => {
@@ -26,7 +25,7 @@ bulkDelete.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\UserController::bulkDelete
- * @see app/Http/Controllers/UserController.php:97
+ * @see app/Http/Controllers/UserController.php:99
  * @route '/users/bulk-delete'
  */
 bulkDelete.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -36,7 +35,7 @@ bulkDelete.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => 
 
     /**
 * @see \App\Http\Controllers\UserController::bulkDelete
- * @see app/Http/Controllers/UserController.php:97
+ * @see app/Http/Controllers/UserController.php:99
  * @route '/users/bulk-delete'
  */
     const bulkDeleteForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -51,7 +50,7 @@ bulkDelete.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => 
 
             /**
 * @see \App\Http\Controllers\UserController::bulkDelete
- * @see app/Http/Controllers/UserController.php:97
+ * @see app/Http/Controllers/UserController.php:99
  * @route '/users/bulk-delete'
  */
         bulkDeleteForm.delete = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -67,7 +66,7 @@ bulkDelete.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => 
     bulkDelete.form = bulkDeleteForm
 /**
 * @see \App\Http\Controllers\UserController::updateInline
- * @see app/Http/Controllers/UserController.php:71
+ * @see app/Http/Controllers/UserController.php:73
  * @route '/users/{user}/inline-update'
  */
 export const updateInline = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -82,7 +81,7 @@ updateInline.definition = {
 
 /**
 * @see \App\Http\Controllers\UserController::updateInline
- * @see app/Http/Controllers/UserController.php:71
+ * @see app/Http/Controllers/UserController.php:73
  * @route '/users/{user}/inline-update'
  */
 updateInline.url = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -115,7 +114,7 @@ updateInline.url = (args: { user: number | { id: number } } | [user: number | { 
 
 /**
 * @see \App\Http\Controllers\UserController::updateInline
- * @see app/Http/Controllers/UserController.php:71
+ * @see app/Http/Controllers/UserController.php:73
  * @route '/users/{user}/inline-update'
  */
 updateInline.patch = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -125,7 +124,7 @@ updateInline.patch = (args: { user: number | { id: number } } | [user: number | 
 
     /**
 * @see \App\Http\Controllers\UserController::updateInline
- * @see app/Http/Controllers/UserController.php:71
+ * @see app/Http/Controllers/UserController.php:73
  * @route '/users/{user}/inline-update'
  */
     const updateInlineForm = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -140,7 +139,7 @@ updateInline.patch = (args: { user: number | { id: number } } | [user: number | 
 
             /**
 * @see \App\Http\Controllers\UserController::updateInline
- * @see app/Http/Controllers/UserController.php:71
+ * @see app/Http/Controllers/UserController.php:73
  * @route '/users/{user}/inline-update'
  */
         updateInlineForm.patch = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -464,7 +463,7 @@ show.head = (args: { user: string | number } | [user: string | number ] | string
     show.form = showForm
 /**
 * @see \App\Http\Controllers\UserController::edit
- * @see app/Http/Controllers/UserController.php:45
+ * @see app/Http/Controllers/UserController.php:47
  * @route '/users/{user}/edit'
  */
 export const edit = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -479,7 +478,7 @@ edit.definition = {
 
 /**
 * @see \App\Http\Controllers\UserController::edit
- * @see app/Http/Controllers/UserController.php:45
+ * @see app/Http/Controllers/UserController.php:47
  * @route '/users/{user}/edit'
  */
 edit.url = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -512,7 +511,7 @@ edit.url = (args: { user: number | { id: number } } | [user: number | { id: numb
 
 /**
 * @see \App\Http\Controllers\UserController::edit
- * @see app/Http/Controllers/UserController.php:45
+ * @see app/Http/Controllers/UserController.php:47
  * @route '/users/{user}/edit'
  */
 edit.get = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -521,7 +520,7 @@ edit.get = (args: { user: number | { id: number } } | [user: number | { id: numb
 })
 /**
 * @see \App\Http\Controllers\UserController::edit
- * @see app/Http/Controllers/UserController.php:45
+ * @see app/Http/Controllers/UserController.php:47
  * @route '/users/{user}/edit'
  */
 edit.head = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -531,7 +530,7 @@ edit.head = (args: { user: number | { id: number } } | [user: number | { id: num
 
     /**
 * @see \App\Http\Controllers\UserController::edit
- * @see app/Http/Controllers/UserController.php:45
+ * @see app/Http/Controllers/UserController.php:47
  * @route '/users/{user}/edit'
  */
     const editForm = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -541,7 +540,7 @@ edit.head = (args: { user: number | { id: number } } | [user: number | { id: num
 
             /**
 * @see \App\Http\Controllers\UserController::edit
- * @see app/Http/Controllers/UserController.php:45
+ * @see app/Http/Controllers/UserController.php:47
  * @route '/users/{user}/edit'
  */
         editForm.get = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -550,7 +549,7 @@ edit.head = (args: { user: number | { id: number } } | [user: number | { id: num
         })
             /**
 * @see \App\Http\Controllers\UserController::edit
- * @see app/Http/Controllers/UserController.php:45
+ * @see app/Http/Controllers/UserController.php:47
  * @route '/users/{user}/edit'
  */
         editForm.head = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -566,7 +565,7 @@ edit.head = (args: { user: number | { id: number } } | [user: number | { id: num
     edit.form = editForm
 /**
 * @see \App\Http\Controllers\UserController::update
- * @see app/Http/Controllers/UserController.php:52
+ * @see app/Http/Controllers/UserController.php:54
  * @route '/users/{user}'
  */
 export const update = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -581,7 +580,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\UserController::update
- * @see app/Http/Controllers/UserController.php:52
+ * @see app/Http/Controllers/UserController.php:54
  * @route '/users/{user}'
  */
 update.url = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -614,7 +613,7 @@ update.url = (args: { user: number | { id: number } } | [user: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\UserController::update
- * @see app/Http/Controllers/UserController.php:52
+ * @see app/Http/Controllers/UserController.php:54
  * @route '/users/{user}'
  */
 update.put = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -623,7 +622,7 @@ update.put = (args: { user: number | { id: number } } | [user: number | { id: nu
 })
 /**
 * @see \App\Http\Controllers\UserController::update
- * @see app/Http/Controllers/UserController.php:52
+ * @see app/Http/Controllers/UserController.php:54
  * @route '/users/{user}'
  */
 update.patch = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -633,7 +632,7 @@ update.patch = (args: { user: number | { id: number } } | [user: number | { id: 
 
     /**
 * @see \App\Http\Controllers\UserController::update
- * @see app/Http/Controllers/UserController.php:52
+ * @see app/Http/Controllers/UserController.php:54
  * @route '/users/{user}'
  */
     const updateForm = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -648,7 +647,7 @@ update.patch = (args: { user: number | { id: number } } | [user: number | { id: 
 
             /**
 * @see \App\Http\Controllers\UserController::update
- * @see app/Http/Controllers/UserController.php:52
+ * @see app/Http/Controllers/UserController.php:54
  * @route '/users/{user}'
  */
         updateForm.put = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -662,7 +661,7 @@ update.patch = (args: { user: number | { id: number } } | [user: number | { id: 
         })
             /**
 * @see \App\Http\Controllers\UserController::update
- * @see app/Http/Controllers/UserController.php:52
+ * @see app/Http/Controllers/UserController.php:54
  * @route '/users/{user}'
  */
         updateForm.patch = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -678,7 +677,7 @@ update.patch = (args: { user: number | { id: number } } | [user: number | { id: 
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\UserController::destroy
- * @see app/Http/Controllers/UserController.php:90
+ * @see app/Http/Controllers/UserController.php:92
  * @route '/users/{user}'
  */
 export const destroy = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -693,7 +692,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\UserController::destroy
- * @see app/Http/Controllers/UserController.php:90
+ * @see app/Http/Controllers/UserController.php:92
  * @route '/users/{user}'
  */
 destroy.url = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -726,7 +725,7 @@ destroy.url = (args: { user: number | { id: number } } | [user: number | { id: n
 
 /**
 * @see \App\Http\Controllers\UserController::destroy
- * @see app/Http/Controllers/UserController.php:90
+ * @see app/Http/Controllers/UserController.php:92
  * @route '/users/{user}'
  */
 destroy.delete = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -736,7 +735,7 @@ destroy.delete = (args: { user: number | { id: number } } | [user: number | { id
 
     /**
 * @see \App\Http\Controllers\UserController::destroy
- * @see app/Http/Controllers/UserController.php:90
+ * @see app/Http/Controllers/UserController.php:92
  * @route '/users/{user}'
  */
     const destroyForm = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -751,7 +750,7 @@ destroy.delete = (args: { user: number | { id: number } } | [user: number | { id
 
             /**
 * @see \App\Http\Controllers\UserController::destroy
- * @see app/Http/Controllers/UserController.php:90
+ * @see app/Http/Controllers/UserController.php:92
  * @route '/users/{user}'
  */
         destroyForm.delete = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
