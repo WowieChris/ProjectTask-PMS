@@ -61,6 +61,7 @@ export default function UsersIndex({ users }: Props) {
       const matchesText =
         text === '' ||
         String(u.id).includes(text) ||
+        u.employee_id.toLowerCase().includes(text) ||
         u.name.toLowerCase().includes(text) ||
         u.email.toLowerCase().includes(text) ||
         (u.designation ?? '').toLowerCase().includes(text) ||
@@ -78,7 +79,7 @@ export default function UsersIndex({ users }: Props) {
   }, [users, filterText, filterRole, filterDesignation]);
 
   // Selection logic that respects filtered rows
-  const filteredIds = useMemo(() => filteredUsers.map((u) => u.id), [filteredUsers]);
+  const filteredIds = useMemo(() => filteredUsers.map((u) => u.id), [filteredUsers]); 
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
