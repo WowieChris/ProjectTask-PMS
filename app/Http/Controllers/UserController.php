@@ -41,6 +41,7 @@ class UserController extends Controller
             'role' => $request->role,
             'designation' => $request->designation,
             'employee_id' => $request->employee_id,
+            'status' => 'active',
         ]);
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
@@ -61,6 +62,7 @@ class UserController extends Controller
             'role' => 'required|string|in:user,admin',
             'designation' => 'nullable|string|max:255',
             'employee_id' => 'required|string|max:255',
+            'status' => 'required|string|in:active,inactive',
         ]);
 
         $user->update([
@@ -69,6 +71,7 @@ class UserController extends Controller
             'role' => $request->role,
             'designation' => $request->designation,
             'employee_id' => $request->employee_id,
+            'status' => $request->status,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
