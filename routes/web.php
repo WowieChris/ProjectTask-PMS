@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -14,6 +15,10 @@ Route::get('/', function () {
 Route::get('dashboard', function () {
     return Inertia::render('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/dashboard/designations', [DashboardController::class, 'designations'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard.designations');
 
 Route::delete('/users/bulk-delete', [UserController::class, 'bulkDelete'])
     ->name('users.bulk-delete');
