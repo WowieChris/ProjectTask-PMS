@@ -122,7 +122,7 @@ export default function UsersIndex({ users }: Props) {
               <div className="flex gap-2 mr-10">
                 <Button
                   variant="destructive"
-                  className="bg-red-500 text-white hover:bg-red-600"
+                  className="text-white hover:bg-red-600"
                   disabled={selectedUsers.length === 0}
                   onClick={() => {
                     if (!confirm(`Delete ${selectedUsers.length} selected user(s)?`)) return;
@@ -217,7 +217,7 @@ export default function UsersIndex({ users }: Props) {
                 {filteredUsers.map((user) => (
                   <TableRow
                     key={user.id}
-                    className="cursor-pointer hover:bg-muted/50"
+                    className="cursor-pointer hover:bg-muted/30"
                     onClick={() => router.visit(`/users/${user.id}/edit`)}
                   >
                     <TableCell onClick={(e) => e.stopPropagation()} className="px-0">
