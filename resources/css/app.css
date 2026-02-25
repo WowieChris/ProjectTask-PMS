@@ -6,6 +6,7 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant midnight (&:is(.midnight *));
 
 @theme {
     --font-sans:
@@ -130,6 +131,41 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(0.269 0 0);
     --sidebar-ring: oklch(0.439 0 0);
+}
+
+.midnight {
+    --background: #040622;
+    --foreground: #e6e6ff;
+    --card: #151345;
+    --card-foreground: #e6e6ff;
+    --popover: #151345;
+    --popover-foreground: #e6e6ff;
+    --primary: #26236b;
+    --primary-foreground: #ffffff;
+    --secondary: #1a1a5c;
+    --secondary-foreground: #e6e6ff;
+    --muted: #0f0f2a;
+    --muted-foreground: #b3b3ff;
+    --accent: #26236b;
+    --accent-foreground: #ffffff;
+    --destructive: #ff2057;
+    --destructive-foreground: #ffffff;
+    --border: #404080;
+    --input: #404080;
+    --ring: #26236b;
+    --chart-1: #040622;
+    --chart-2: #151345;
+    --chart-3: #26236b;
+    --chart-4: #333399;
+    --chart-5: #4d4d99;
+    --sidebar: #040622;
+    --sidebar-foreground: #e6e6ff;
+    --sidebar-primary: #26236b;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #151345;
+    --sidebar-accent-foreground: #e6e6ff;
+    --sidebar-border: #26236b;
+    --sidebar-ring: #26236b;
 }
 
 @layer base {
