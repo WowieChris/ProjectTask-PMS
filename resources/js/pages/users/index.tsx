@@ -198,6 +198,7 @@ export default function UsersIndex({ users }: Props) {
                 <TableRow>
                   <TableHead className="w-[50px]">
                     <Checkbox
+                      className="border-gray-500 dark:border-gray-400"
                       checked={isAllSelected ? true : isIndeterminate ? 'indeterminate' : false}
                       onCheckedChange={(checked) => handleSelectAll(checked === true)}
                     />
@@ -219,6 +220,7 @@ export default function UsersIndex({ users }: Props) {
                   >
                     <TableCell>
                       <Checkbox
+                      className="border-gray-500 dark:border-gray-400"
                         checked={selectedUsers.includes(user.id)}
                         onCheckedChange={(checked) => handleSelectUser(user.id, checked === true)}
                         onClick={(e) => e.stopPropagation()}
