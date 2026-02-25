@@ -135,23 +135,23 @@
 
 .midnight {
     --background: #040622;
-    --foreground: #ffffff;
+    --foreground: #e6e6ff;
     --card: #151345;
-    --card-foreground: #ffffff;
+    --card-foreground: #e6e6ff;
     --popover: #151345;
-    --popover-foreground: #ffffff;
+    --popover-foreground: #e6e6ff;
     --primary: #26236b;
     --primary-foreground: #ffffff;
-    --secondary: #151345;
-    --secondary-foreground: #ffffff;
-    --muted: #151345;
-    --muted-foreground: #cccccc;
+    --secondary: #1a1a5c;
+    --secondary-foreground: #e6e6ff;
+    --muted: #0f0f2a;
+    --muted-foreground: #b3b3ff;
     --accent: #26236b;
     --accent-foreground: #ffffff;
-    --destructive: #ff4444;
+    --destructive: #ff2057;
     --destructive-foreground: #ffffff;
-    --border: #26236b;
-    --input: #151345;
+    --border: #404080;
+    --input: #404080;
     --ring: #26236b;
     --chart-1: #040622;
     --chart-2: #151345;
@@ -159,11 +159,11 @@
     --chart-4: #333399;
     --chart-5: #4d4d99;
     --sidebar: #040622;
-    --sidebar-foreground: #ffffff;
+    --sidebar-foreground: #e6e6ff;
     --sidebar-primary: #26236b;
     --sidebar-primary-foreground: #ffffff;
     --sidebar-accent: #151345;
-    --sidebar-accent-foreground: #ffffff;
+    --sidebar-accent-foreground: #e6e6ff;
     --sidebar-border: #26236b;
     --sidebar-ring: #26236b;
 }
