@@ -13,7 +13,15 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('dashboard', function () {
-    return Inertia::render('dashboard');
+    $usersByDesignation = \App\Models\User::select('designation', \DB::raw('count(*) as total'))
+        ->whereNotNull('designation')
+        ->groupBy('designation')
+        ->get()
+        ->toArray();
+
+    return Inertia::render('dashboard', [
+        'usersByDesignation' => $usersByDesignation,
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
