@@ -10,9 +10,7 @@ class EmailOtpNotification extends Notification
 {
     use Queueable;
 
-    public function __construct(protected string $code)
-    {
-    }
+    public function __construct(protected string $code) {}
 
     public function via($notifiable)
     {
@@ -23,7 +21,7 @@ class EmailOtpNotification extends Notification
     {
         return (new MailMessage)
             ->subject('Your login code')
-            ->line('Your login code is: '. $this->code)
+            ->line('Your login code is: '.$this->code)
             ->line('This code will expire in 10 minutes.')
             ->line('If you did not request this code, please ignore this email.');
     }

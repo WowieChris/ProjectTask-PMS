@@ -9,10 +9,22 @@ use Laravel\Fortify\Contracts\RedirectsIfTwoFactorAuthenticatable as RedirectsCo
 use Laravel\Fortify\Events\TwoFactorAuthenticationChallenged;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\LoginRateLimiter;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 
 class RedirectIfEmailTwoFactorAuthenticatable implements RedirectsContract
 {
+    /**
+     * The guard implementation.
+     *
+     * @var \Illuminate\Contracts\Auth\StatefulGuard
+     */
     protected $guard;
+
+    /**
+     * The login rate limiter instance.
+     *
+     * @var \Laravel\Fortify\LoginRateLimiter
+     */
     protected $limiter;
 
     public function __construct(StatefulGuard $guard, LoginRateLimiter $limiter)
@@ -25,18 +37,19 @@ class RedirectIfEmailTwoFactorAuthenticatable implements RedirectsContract
     {
         $user = $this->validateCredentials($request);
 
-        // If credentials are valid, always redirect to email OTP challenge
-        if ($user) {
-            $request->session()->put([
-                'login.id' => $user->getKey(),
-                'login.remember' => $request->boolean('remember'),
-            ]);
+        if (Fortify::confirmsTwoFactorAuthentication()) {
+            if (optional($user)->two_factor_secret &&
+                ! is_null(optional($user)->two_factor_confirmed_at) &&
+                in_array(TwoFactorAuthenticatable::class, class_uses_recursive($user))) {
+                return $this->twoFactorChallengeResponse($request, $user);
+            } else {
+                return $next($request);
+            }
+        }
 
-            TwoFactorAuthenticationChallenged::dispatch($user);
-
-            return $request->wantsJson()
-                ? response()->json(['two_factor' => true])
-                : redirect()->route('two-factor.login');
+        if (optional($user)->two_factor_secret &&
+            in_array(TwoFactorAuthenticatable::class, class_uses_recursive($user))) {
+            return $this->twoFactorChallengeResponse($request, $user);
         }
 
         return $next($request);
@@ -44,6 +57,16 @@ class RedirectIfEmailTwoFactorAuthenticatable implements RedirectsContract
 
     protected function validateCredentials($request)
     {
+        if (Fortify::$authenticateUsingCallback) {
+            return tap(call_user_func(Fortify::$authenticateUsingCallback, $request), function ($user) use ($request) {
+                if (! $user) {
+                    $this->fireFailedEvent($request);
+
+                    $this->throwFailedAuthenticationException($request);
+                }
+            });
+        }
+
         $provider = $this->guard->getProvider();
 
         return tap($provider->retrieveByCredentials($request->only(Fortify::username(), 'password')), function ($user) use ($provider, $request) {
@@ -74,5 +97,19 @@ class RedirectIfEmailTwoFactorAuthenticatable implements RedirectsContract
             Fortify::username() => $request->{Fortify::username()},
             'password' => $request->password,
         ]));
+    }
+
+    protected function twoFactorChallengeResponse($request, $user)
+    {
+        $request->session()->put([
+            'login.id' => $user->getKey(),
+            'login.remember' => $request->boolean('remember'),
+        ]);
+
+        TwoFactorAuthenticationChallenged::dispatch($user);
+
+        return $request->wantsJson()
+            ? response()->json(['two_factor' => true])
+            : redirect()->route('two-factor.login');
     }
 }

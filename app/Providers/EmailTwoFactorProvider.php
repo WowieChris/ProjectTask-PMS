@@ -2,10 +2,9 @@
 
 namespace App\Providers;
 
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Hash;
-use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
 use App\Models\EmailOtp;
+use Carbon\Carbon;
+use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
 
 class EmailTwoFactorProvider implements TwoFactorAuthenticationProvider
 {

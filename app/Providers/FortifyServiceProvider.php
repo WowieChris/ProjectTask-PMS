@@ -37,8 +37,6 @@ class FortifyServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
     }
 
-    
-
     /**
      * Configure Fortify actions.
      */
@@ -87,13 +85,8 @@ class FortifyServiceProvider extends ServiceProvider
                     if (empty($user->two_factor_secret)) {
                         $secret = Fortify::currentEncrypter()->encrypt(\Illuminate\Support\Str::random(32));
                         $user->two_factor_secret = $secret;
+                        $user->save();
                     }
-
-                    if (Fortify::confirmsTwoFactorAuthentication() && empty($user->two_factor_confirmed_at)) {
-                        $user->two_factor_confirmed_at = now();
-                    }
-
-                    $user->save();
 
                     // generate a 6-digit code
                     $code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
