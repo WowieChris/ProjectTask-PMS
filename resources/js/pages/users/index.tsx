@@ -196,12 +196,14 @@ export default function UsersIndex({ users }: Props) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[50px]">
-                    <Checkbox
-                      className="border-gray-500 dark:border-gray-400"
-                      checked={isAllSelected ? true : isIndeterminate ? 'indeterminate' : false}
-                      onCheckedChange={(checked) => handleSelectAll(checked === true)}
-                    />
+                  <TableHead className="w-[50px] px-0">
+                    <div className="flex items-center justify-center">
+                      <Checkbox
+                        className="border-gray-500 dark:border-gray-400"
+                        checked={isAllSelected ? true : isIndeterminate ? 'indeterminate' : false}
+                        onCheckedChange={(checked) => handleSelectAll(checked === true)}
+                      />
+                    </div>
                   </TableHead>
                   <TableHead>Employee ID</TableHead>
                   <TableHead>Name</TableHead>
@@ -218,13 +220,15 @@ export default function UsersIndex({ users }: Props) {
                     className="cursor-pointer hover:bg-muted/50"
                     onClick={() => router.visit(`/users/${user.id}/edit`)}
                   >
-                    <TableCell onClick={(e) => e.stopPropagation()}>
-                      <Checkbox
-                      className="border-gray-500 dark:border-gray-400"
-                        checked={selectedUsers.includes(user.id)}
-                        onCheckedChange={(checked) => handleSelectUser(user.id, checked === true)}
-                        onClick={(e) => e.stopPropagation()}
-                      />
+                    <TableCell onClick={(e) => e.stopPropagation()} className="px-0">
+                      <div className="flex items-center justify-center">
+                        <Checkbox
+                          className="border-gray-500 dark:border-gray-400"
+                          checked={selectedUsers.includes(user.id)}
+                          onCheckedChange={(checked) => handleSelectUser(user.id, checked === true)}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </div>
                     </TableCell>
                     <TableCell>{user.employee_id}</TableCell>
                     <TableCell>{user.name}</TableCell>
