@@ -218,7 +218,7 @@ export default function UsersIndex({ users }: Props) {
                     className="cursor-pointer hover:bg-muted/50"
                     onClick={() => router.visit(`/users/${user.id}/edit`)}
                   >
-                    <TableCell>
+                    <TableCell onClick={(e) => e.stopPropagation()}>
                       <Checkbox
                       className="border-gray-500 dark:border-gray-400"
                         checked={selectedUsers.includes(user.id)}
