@@ -26,8 +26,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'role',
         'employee_id',
         'designation',
-        'two_factor_secret',
-        'two_factor_recovery_codes',
+        'location',
+        'district',
+        'employment_status',
+        'date_employed',
     ];
 
     /**
