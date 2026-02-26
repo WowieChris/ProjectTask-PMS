@@ -37,18 +37,10 @@ class RedirectIfEmailTwoFactorAuthenticatable implements RedirectsContract
     {
         $user = $this->validateCredentials($request);
 
-        if (Fortify::confirmsTwoFactorAuthentication()) {
-            if (optional($user)->two_factor_secret &&
-                ! is_null(optional($user)->two_factor_confirmed_at) &&
-                in_array(TwoFactorAuthenticatable::class, class_uses_recursive($user))) {
-                return $this->twoFactorChallengeResponse($request, $user);
-            } else {
-                return $next($request);
-            }
-        }
-
-        if (optional($user)->two_factor_secret &&
-            in_array(TwoFactorAuthenticatable::class, class_uses_recursive($user))) {
+        // For email OTP-based 2FA, all users are always challenged regardless
+        // of whether they have a two_factor_secret set. The challenge view
+        // handles provisioning a secret for new users on the fly.
+        if (in_array(TwoFactorAuthenticatable::class, class_uses_recursive($user))) {
             return $this->twoFactorChallengeResponse($request, $user);
         }
 

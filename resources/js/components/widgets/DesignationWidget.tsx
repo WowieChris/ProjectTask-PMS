@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import type { CSSProperties } from 'react';
 
 type Row = {
     designation: string | null;
@@ -13,17 +14,16 @@ export default function DesignationWidget() {
         let mounted = true;
 
         fetch('/dashboard/designations', { credentials: 'same-origin' })
-            .then((r) => {
+            .then(async (r: Response) => {
                 if (!r.ok) throw new Error('Failed to load');
-                return r.json();
-            })
-            .then((data) => {
+                const data = (await r.json()) as Row[];
                 if (!mounted) return;
-                setRows(data as Row[]);
+                setRows(data);
             })
-            .catch((err) => {
+            .catch((err: unknown) => {
                 if (!mounted) return;
-                setError(err.message || 'Error');
+                const message = err instanceof Error ? err.message : String(err);
+                setError(message || 'Error');
             });
 
         return () => {
@@ -31,7 +31,7 @@ export default function DesignationWidget() {
         };
     }, []);
 
-    const chartData = useMemo(() => {
+    const chartData = useMemo<{ rows: Row[]; max: number } | null>(() => {
         if (!rows || rows.length === 0) return null;
         const max = Math.max(...rows.map((r) => r.count));
         return { rows, max };
@@ -51,9 +51,9 @@ export default function DesignationWidget() {
                         height={chartData.rows.length * 40}
                         role="img"
                         aria-label="Bar chart of user counts by designation"
-                        style={{ ['--bar' as any]: '#00b7ff' }}
+                        style={{ ['--bar']: '#00b7ff' } as CSSProperties}
                     >
-                        {chartData.rows.map((r, i) => {
+                        {chartData.rows.map((r: Row, i: number) => {
                             const y = i * 40 + 8;
                             const maxBar = 260;
                             const barWidth = r.count === 0 ? 0 : (r.count / chartData.max) * maxBar;
