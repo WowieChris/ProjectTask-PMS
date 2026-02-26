@@ -32,7 +32,6 @@ edit.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(options),
     method: 'get',
 })
-
 /**
 * @see \App\Http\Controllers\Settings\ProfileController::edit
 * @see app/Http/Controllers/Settings/ProfileController.php:20
