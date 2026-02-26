@@ -28,8 +28,9 @@ class AuthenticationTest extends TestCase
             'password' => 'password',
         ]);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        // With email-based 2FA enabled, all users are redirected to the two-factor challenge
+        $response->assertRedirect(route('two-factor.login'));
+        $response->assertSessionHas('login.id', $user->id);
     }
 
     public function test_users_with_two_factor_enabled_are_redirected_to_two_factor_challenge()
