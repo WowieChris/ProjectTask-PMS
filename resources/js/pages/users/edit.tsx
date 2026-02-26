@@ -30,10 +30,6 @@ interface User {
     role: string;
     designation?: string;
     employee_id?: string;
-    location?: string;
-    district?: string;
-    employment_status?: string;
-    date_employed?: string;
 }
 
 interface Props {
@@ -41,17 +37,12 @@ interface Props {
 }
 
 export default function UsersEdit({ user }: Props) {
-    const isInitiallyActive = user.employment_status === 'active';
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
         email: user.email,
         role: user.role,
         designation: user.designation || '',
         employee_id: user.employee_id || '',
-        location: user.location || '',
-        district: user.district || '',
-        employment_status: user.employment_status || 'active',
-        date_employed: user.date_employed || '',
     });
 
     // const submit = (e: React.FormEvent) => {
@@ -65,13 +56,7 @@ export default function UsersEdit({ user }: Props) {
     const changed =
         data.name !== user.name ||
         data.email !== user.email ||
-        data.role !== user.role ||
-        data.designation !== (user.designation || '') ||
-        data.employee_id !== (user.employee_id || '') ||
-        data.location !== (user.location || '') ||
-        data.district !== (user.district || '') ||
-        data.employment_status !== (user.employment_status || 'active') ||
-        data.date_employed !== (user.date_employed || '');
+        data.role !== user.role;
 
     if (changed && !window.confirm('Save the changes to this user?')) {
         return;
@@ -84,7 +69,7 @@ export default function UsersEdit({ user }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit User" />
             <div className="flex h-full flex flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <Card className="w-2/3 mx-auto">
+                <Card className="w-1/2 mx-auto">
                     <CardHeader>
                         <CardTitle>Edit User</CardTitle>
                     </CardHeader>
@@ -97,7 +82,6 @@ export default function UsersEdit({ user }: Props) {
                                     id="name"
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
-                                    disabled={!isInitiallyActive}
                                     required
                                 />
                                 {errors.name && <p className="text-red-500">{errors.name}</p>}
@@ -109,14 +93,13 @@ export default function UsersEdit({ user }: Props) {
                                     type="email"
                                     value={data.email}
                                     onChange={(e) => setData('email', e.target.value)}
-                                    disabled={!isInitiallyActive}
                                     required
                                 />
                                 {errors.email && <p className="text-red-500">{errors.email}</p>}
                             </div>
                             <div>
                                 <Label htmlFor="role">Role</Label>
-                                <Select value={data.role} onValueChange={(value) => setData('role', value)} disabled={!isInitiallyActive}>
+                                <Select value={data.role} onValueChange={(value) => setData('role', value)}>
                                     <SelectTrigger>
                                         <SelectValue />
                                     </SelectTrigger>
@@ -128,32 +111,15 @@ export default function UsersEdit({ user }: Props) {
                                 {errors.role && <p className="text-red-500">{errors.role}</p>}
                             </div>
                             <div className="flex gap-2 mt-10">
-                                {isInitiallyActive && (
-                                    data.employment_status === 'terminated' ? (
-                                        <Button 
-                                            type="button"
-                                            variant="destructive"
-                                            disabled={processing}
-                                            onClick={() => {
-                                                if (window.confirm('Are you sure you want to deactivate this user? They will no longer be able to log in.')) {
-                                                    put(`/users/${user.id}`);
-                                                }
-                                            }}
-                                        >
-                                            Deactivate
-                                        </Button>
-                                    ) : (
-                                        <Button type="submit" disabled={processing}>
-                                            Update
-                                        </Button>
-                                    )
-                                )}
+                                <Button type="submit" disabled={processing}>
+                                    Update
+                                </Button>
                                 <Button variant="outline" asChild>
                                     <Link href="/users">Cancel</Link>
                                 </Button>
                             </div>
                         </div>
-                        <div className="flex w-full h-full flex-col gap-2">
+                        <div className="flex w-full flex-col gap-2">
                             <div>
                                 <Label htmlFor="id_number">ID Number</Label>
                                <Input
@@ -161,13 +127,12 @@ export default function UsersEdit({ user }: Props) {
                                     type="text"
                                     value={data.employee_id}
                                     onChange={(e) => setData('employee_id', e.target.value)}
-                                    disabled={!isInitiallyActive}
                                 />
                                 {errors.employee_id && <p className="text-red-500">{errors.employee_id}</p>}
                             </div>             
                             <div>
                                 <Label htmlFor="role">Designation</Label>
-                                        <Select value={data.designation} onValueChange={(value) => setData('designation', value)} disabled={!isInitiallyActive}>
+                                        <Select value={data.designation} onValueChange={(value) => setData('designation', value)}>
                                         <SelectTrigger id="designation" aria-labelledby="designation-label" className="w-full">
                                         <SelectValue placeholder="Select designation" />
                                         </SelectTrigger>
@@ -181,71 +146,8 @@ export default function UsersEdit({ user }: Props) {
                                         </Select>
                                         {errors.designation && <p className="text-red-500">{errors.designation}</p>}
                             </div>
-                            <div>
-                                <Label htmlFor="employment_status">Employment Status</Label>
-                                <Select value={data.employment_status} onValueChange={(value) => setData('employment_status', value)} disabled={!isInitiallyActive}>
-                                    <SelectTrigger id="employment_status" aria-labelledby="employment_status-label" className="w-full">
-                                        <SelectValue placeholder="Select employment status" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="active">Active</SelectItem>
-                                        <SelectItem value="inactive">Inactive</SelectItem>
-                                        <SelectItem value="terminated">Terminated</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                {errors.employment_status && <p className="text-red-500">{errors.employment_status}</p>}
-                            </div>
-                        </div>
-                            <div className="flex w-full h-full flex-col gap-2">
-                                <div>
-                                    <Label htmlFor="location">Location</Label>
-                                    <Input type="hidden" name="location" value={data.location} required />
-                                    <Select value={data.location} onValueChange={(value) => setData('location', value)} disabled={!isInitiallyActive}>
-                                        <SelectTrigger id="location" aria-labelledby="location-label" className="w-full">
-                                            <SelectValue placeholder="Select location" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="central office">Central Office</SelectItem>
-                                            <SelectItem value="division 1">Division 1</SelectItem>
-                                            <SelectItem value="division 2">Division 2</SelectItem>
-                                            <SelectItem value="division 3">Division 3</SelectItem>
-                                            <SelectItem value="division 4">Division 4</SelectItem>
-                                            <SelectItem value="division 5">Division 5</SelectItem>
-                                            <SelectItem value="division 6">Division 6</SelectItem>
-                                            <SelectItem value="division 7">Division 7</SelectItem>
-                                            <SelectItem value="division 8">Division 8</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    {errors.location && <p className="text-red-500">{errors.location}</p>}
-                                </div>
-                                {data.location && data.location !== 'central office' && (
-                                    <div>
-                                        <Label htmlFor="district">District</Label>
-                                        <Input
-                                            id="district"
-                                            placeholder="District"
-                                            name="district"
-                                            autoComplete="district"
-                                            type="text"
-                                            value={data.district}
-                                            onChange={(e) => setData('district', e.target.value)}
-                                            disabled={!isInitiallyActive}
-                                        />
-                                        {errors.district && <p className="text-red-500">{errors.district}</p>}
-                                    </div>
-                                )}
-                                <div>
-                                    <Label htmlFor="date_employed">Date Employed</Label>
-                                    <Input 
-                                    name="date_employed"
-                                    id="date_employed" 
-                                    type="date" value={data.date_employed} onChange={(e) => setData('date_employed', e.target.value)} 
-                                    className='w-3/5' 
-                                    disabled={!isInitiallyActive}
-                                    />
-                                        {errors.date_employed && <p className="text-red-500">{errors.date_employed}</p>}
-                                </div>
-                                
+
+                            
                         </div>
                         </form>
                     </CardContent>

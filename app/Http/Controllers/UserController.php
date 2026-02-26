@@ -32,9 +32,6 @@ class UserController extends Controller
             'role' => 'required|string|in:user,admin',
             'designation' => 'nullable|string|max:255',
             'employee_id' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
-            'district' => 'nullable|string|max:255',
-            'date_employed' => 'nullable|date',
         ]);
 
         User::create([
@@ -44,10 +41,6 @@ class UserController extends Controller
             'role' => $request->role,
             'designation' => $request->designation,
             'employee_id' => $request->employee_id,
-            'location' => $request->location,
-            'district' => $request->district,
-            'employment_status' => 'active',
-            'date_employed' => $request->date_employed,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
@@ -68,10 +61,6 @@ class UserController extends Controller
             'role' => 'required|string|in:user,admin',
             'designation' => 'nullable|string|max:255',
             'employee_id' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
-            'district' => 'nullable|string|max:255',
-            'employment_status' => 'required|string|max:255',
-            'date_employed' => 'nullable|date',
         ]);
 
         $user->update([
@@ -80,10 +69,6 @@ class UserController extends Controller
             'role' => $request->role,
             'designation' => $request->designation,
             'employee_id' => $request->employee_id,
-            'location' => $request->location,
-            'district' => $request->district,
-            'employment_status' => $request->employment_status,
-            'date_employed' => $request->date_employed,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
