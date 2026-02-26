@@ -1,6 +1,6 @@
 import DashboardController from './DashboardController'
-import UserController from './UserController'
 import Settings from './Settings'
+import UserController from './UserController'
 
 const Controllers = {
     DashboardController: Object.assign(DashboardController, DashboardController),
