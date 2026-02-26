@@ -23,9 +23,14 @@ Route::middleware('guest')->group(function () {
     // Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+});
+
 Route::middleware('auth')->group(function () {
     Route::get('/otp', [OtpController::class, 'show'])->name('otp.show');
     Route::post('/otp/verify', [OtpController::class, 'verify'])->name('otp.verify');
     Route::post('/otp/resend', [OtpController::class, 'resend'])->name('otp.resend');
 });
+
 require __DIR__.'/settings.php';

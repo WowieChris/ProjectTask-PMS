@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -14,22 +14,18 @@ class AuthenticatedSessionController extends Controller
         return inertia('auth/login');
     }
 
-    public function store(Request $request)
+    public function store(LoginRequest $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
-            ]);
-        }
-
+        $request->authenticate();
         $request->session()->regenerate();
 
-        return redirect()->intended('/dashboard');
+        $user = $request->user();
+
+        if (is_null($user->otp_verified_at)) {
+            return redirect()->route('otp.show');
+        }
+
+        return redirect()->intended(route('dashboard'));
     }
 
     public function destroy(Request $request)
