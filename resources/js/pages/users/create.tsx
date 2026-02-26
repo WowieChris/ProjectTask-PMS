@@ -31,9 +31,6 @@ export default function UsersCreate() {
         role: 'user',
         designation: '',
         employee_id: '',
-        location: '',
-        district: '',
-        date_employed: new Date().toISOString().split('T')[0],
     });
 
     const submit = (e: React.FormEvent) => {
@@ -45,7 +42,7 @@ export default function UsersCreate() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create User" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <Card className="w-2/3 mx-auto">
+                <Card className="w-1/2 mx-auto">
                     <CardHeader>
                         <CardTitle>Create User</CardTitle>
                     </CardHeader>
@@ -149,55 +146,6 @@ export default function UsersCreate() {
                                         </SelectContent>
                                         </Select>
                                         {errors.designation && <p className="text-red-500">{errors.designation}</p>}
-                                </div>
-                                
-                            </div>
-                            <div className="flex w-full flex-col gap-2">
-                                <div>
-                                    <Label htmlFor="location">Location</Label>
-                                    <Input type="hidden" name="location" value={data.location} required />
-                                    <Select value={data.location} onValueChange={(value) => setData('location', value)}>
-                                        <SelectTrigger id="location" aria-labelledby="location-label" className="w-full">
-                                            <SelectValue placeholder="Select location" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="central office">Central Office</SelectItem>
-                                            <SelectItem value="division 1">Division 1</SelectItem>
-                                            <SelectItem value="division 2">Division 2</SelectItem>
-                                            <SelectItem value="division 3">Division 3</SelectItem>
-                                            <SelectItem value="division 4">Division 4</SelectItem>
-                                            <SelectItem value="division 5">Division 5</SelectItem>
-                                            <SelectItem value="division 6">Division 6</SelectItem>
-                                            <SelectItem value="division 7">Division 7</SelectItem>
-                                            <SelectItem value="division 8">Division 8</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    {errors.location && <p className="text-red-500">{errors.location}</p>}
-                                </div>
-                                {data.location && data.location !== 'central office' && (
-                                    <div>
-                                        <Label htmlFor="district">District</Label>
-                                        <Input
-                                            id="district"
-                                            placeholder="District"
-                                            name="district"
-                                            autoComplete="district"
-                                            type="text"
-                                            value={data.district}
-                                            onChange={(e) => setData('district', e.target.value)}
-                                        />
-                                        {errors.district && <p className="text-red-500">{errors.district}</p>}
-                                    </div>
-                                )}
-                                <div>
-                                    <Label htmlFor="date_employed">Date Employed</Label>
-                                    <Input 
-                                    name="date_employed"
-                                    id="date_employed" 
-                                    type="date" value={data.date_employed} onChange={(e) => setData('date_employed', e.target.value)} 
-                                    className='w-3/5' 
-                                    />
-                                        {errors.date_employed && <p className="text-red-500">{errors.date_employed}</p>}
                                 </div>
                             </div>   
                         </form>
