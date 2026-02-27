@@ -133,7 +133,89 @@ logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     
     logout.form = logoutForm
 /**
+<<<<<<< HEAD
  * @see routes/web.php:9
+=======
+* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
+ * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
+ * @route '/register'
+ */
+export const register = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: register.url(options),
+    method: 'get',
+})
+
+register.definition = {
+    methods: ["get","head"],
+    url: '/register',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
+ * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
+ * @route '/register'
+ */
+register.url = (options?: RouteQueryOptions) => {
+    return register.definition.url + queryParams(options)
+}
+
+/**
+* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
+ * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
+ * @route '/register'
+ */
+register.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: register.url(options),
+    method: 'get',
+})
+/**
+* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
+ * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
+ * @route '/register'
+ */
+register.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: register.url(options),
+    method: 'head',
+})
+
+    /**
+* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
+ * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
+ * @route '/register'
+ */
+    const registerForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: register.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
+ * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
+ * @route '/register'
+ */
+        registerForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: register.url(options),
+            method: 'get',
+        })
+            /**
+* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
+ * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
+ * @route '/register'
+ */
+        registerForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: register.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    register.form = registerForm
+/**
+ * @see routes/web.php:8
+>>>>>>> origin/main
  * @route '/'
  */
 export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -147,7 +229,11 @@ home.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
+<<<<<<< HEAD
  * @see routes/web.php:9
+=======
+ * @see routes/web.php:8
+>>>>>>> origin/main
  * @route '/'
  */
 home.url = (options?: RouteQueryOptions) => {
@@ -155,7 +241,11 @@ home.url = (options?: RouteQueryOptions) => {
 }
 
 /**
+<<<<<<< HEAD
  * @see routes/web.php:9
+=======
+ * @see routes/web.php:8
+>>>>>>> origin/main
  * @route '/'
  */
 home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -163,7 +253,11 @@ home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     method: 'get',
 })
 /**
+<<<<<<< HEAD
  * @see routes/web.php:9
+=======
+ * @see routes/web.php:8
+>>>>>>> origin/main
  * @route '/'
  */
 home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -172,7 +266,11 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
+<<<<<<< HEAD
  * @see routes/web.php:9
+=======
+ * @see routes/web.php:8
+>>>>>>> origin/main
  * @route '/'
  */
     const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -181,7 +279,11 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
+<<<<<<< HEAD
  * @see routes/web.php:9
+=======
+ * @see routes/web.php:8
+>>>>>>> origin/main
  * @route '/'
  */
         homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -189,7 +291,11 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
             /**
+<<<<<<< HEAD
  * @see routes/web.php:9
+=======
+ * @see routes/web.php:8
+>>>>>>> origin/main
  * @route '/'
  */
         homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -204,7 +310,11 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     home.form = homeForm
 /**
+<<<<<<< HEAD
  * @see routes/web.php:15
+=======
+ * @see routes/web.php:14
+>>>>>>> origin/main
  * @route '/dashboard'
  */
 export const dashboard = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -218,7 +328,11 @@ dashboard.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
+<<<<<<< HEAD
  * @see routes/web.php:15
+=======
+ * @see routes/web.php:14
+>>>>>>> origin/main
  * @route '/dashboard'
  */
 dashboard.url = (options?: RouteQueryOptions) => {
@@ -226,7 +340,11 @@ dashboard.url = (options?: RouteQueryOptions) => {
 }
 
 /**
+<<<<<<< HEAD
  * @see routes/web.php:15
+=======
+ * @see routes/web.php:14
+>>>>>>> origin/main
  * @route '/dashboard'
  */
 dashboard.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -234,7 +352,11 @@ dashboard.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     method: 'get',
 })
 /**
+<<<<<<< HEAD
  * @see routes/web.php:15
+=======
+ * @see routes/web.php:14
+>>>>>>> origin/main
  * @route '/dashboard'
  */
 dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -243,7 +365,11 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
+<<<<<<< HEAD
  * @see routes/web.php:15
+=======
+ * @see routes/web.php:14
+>>>>>>> origin/main
  * @route '/dashboard'
  */
     const dashboardForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -252,7 +378,11 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
+<<<<<<< HEAD
  * @see routes/web.php:15
+=======
+ * @see routes/web.php:14
+>>>>>>> origin/main
  * @route '/dashboard'
  */
         dashboardForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -260,7 +390,11 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
             /**
+<<<<<<< HEAD
  * @see routes/web.php:15
+=======
+ * @see routes/web.php:14
+>>>>>>> origin/main
  * @route '/dashboard'
  */
         dashboardForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

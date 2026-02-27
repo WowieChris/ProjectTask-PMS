@@ -58,7 +58,7 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
             'role' => 'required|string|in:user,admin',
             'designation' => 'nullable|string|max:255',
             'employee_id' => 'required|string|max:255',
@@ -102,6 +102,7 @@ class UserController extends Controller
     }
 
 
+<<<<<<< HEAD
             public function bulkDelete(Request $request)
             {
                 $validated = $request->validate([
@@ -114,3 +115,14 @@ class UserController extends Controller
                 return back()->with('success', 'Selected users deleted.');
             }
 }
+=======
+        if (! is_array($ids) || count($ids) === 0) {
+            return back()->with('error', 'No users selected.');
+        }
+
+        User::whereIn('id', $ids)->delete();
+
+        return back()->with('success', 'Selected users deleted.');
+    }
+}
+>>>>>>> origin/main

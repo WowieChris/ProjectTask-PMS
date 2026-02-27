@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useSyncExternalStore } from 'react';
 
-export type ResolvedAppearance = 'light' | 'dark';
+export type ResolvedAppearance = 'light' | 'dark' | 'midnight';
 export type Appearance = ResolvedAppearance | 'system';
 
 export type UseAppearanceReturn = {
@@ -31,7 +31,7 @@ const getStoredAppearance = (): Appearance => {
 };
 
 const isDarkMode = (appearance: Appearance): boolean => {
-    return appearance === 'dark' || (appearance === 'system' && prefersDark());
+    return appearance === 'dark' || appearance === 'midnight' || (appearance === 'system' && prefersDark());
 };
 
 const applyTheme = (appearance: Appearance): void => {
@@ -39,7 +39,8 @@ const applyTheme = (appearance: Appearance): void => {
 
     const isDark = isDarkMode(appearance);
 
-    document.documentElement.classList.toggle('dark', isDark);
+    document.documentElement.classList.toggle('dark', appearance === 'dark');
+    document.documentElement.classList.toggle('midnight', appearance === 'midnight');
     document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
 };
 
@@ -82,7 +83,10 @@ export function useAppearance(): UseAppearanceReturn {
     );
 
     const resolvedAppearance: ResolvedAppearance = useMemo(
-        () => (isDarkMode(appearance) ? 'dark' : 'light'),
+        () => {
+            if (appearance === 'midnight') return 'midnight';
+            return isDarkMode(appearance) ? 'dark' : 'light';
+        },
         [appearance],
     );
 

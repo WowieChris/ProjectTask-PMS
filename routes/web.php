@@ -1,6 +1,9 @@
 <?php
 
+<<<<<<< HEAD
 use App\Http\Controllers\Auth\OtpController;
+=======
+>>>>>>> origin/main
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -16,6 +19,7 @@ Route::get('dashboard', function () {
     return Inertia::render('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+<<<<<<< HEAD
 Route::middleware(['auth'])->group(function () {
     Route::delete('/users/bulk-delete', [UserController::class, 'bulkDelete'])
         ->name('users.bulk-delete');
@@ -28,3 +32,18 @@ Route::middleware(['auth'])->group(function () {
 });
 
 require __DIR__.'/settings.php';
+=======
+Route::delete('/users/bulk-delete', [UserController::class, 'bulkDelete'])
+    ->name('users.bulk-delete');
+
+Route::patch('/users/{user}/inline-update', [UserController::class, 'updateInline'])
+    ->name('users.inline-update');
+
+Route::resource('users', \App\Http\Controllers\UserController::class)->middleware(['auth', 'verified']);
+
+// Route::delete('/users/bulk-delete', [UserController::class, 'bulkDelete'])
+//     ->name('users.bulk-delete');
+
+// Route::resource('users', UserController::class);
+require __DIR__.'/settings.php';
+>>>>>>> origin/main
