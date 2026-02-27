@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\OtpController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -11,20 +12,25 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('dashboard', function () {
-    return Inertia::render('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+/**
+ * Authenticated routes
+ */
+Route::middleware(['auth'])->group(function () {
 
-Route::delete('/users/bulk-delete', [UserController::class, 'bulkDelete'])
-    ->name('users.bulk-delete');
+    // OTP routes
+    Route::get('/otp', [OtpController::class, 'show'])->name('otp.show');
+    Route::post('/otp/verify', [OtpController::class, 'verify'])->name('otp.verify');
+    Route::post('/otp/resend', [OtpController::class, 'resend'])->name('otp.resend');
 
-Route::patch('/users/{user}/inline-update', [UserController::class, 'updateInline'])
-    ->name('users.inline-update');
+    // Protected after OTP
+    Route::middleware(['otp.verified'])->group(function () {
+        Route::get('/dashboard', fn () => Inertia::render('dashboard'))->name('dashboard');
 
-Route::resource('users', \App\Http\Controllers\UserController::class)->middleware(['auth', 'verified']);
+        // users...
+        Route::delete('/users/bulk-delete', [UserController::class, 'bulkDelete'])->name('users.bulk-delete');
+        Route::patch('/users/{user}/inline-update', [UserController::class, 'updateInline'])->name('users.inline-update');
+        Route::resource('users', UserController::class)->except(['show']);
 
-// Route::delete('/users/bulk-delete', [UserController::class, 'bulkDelete'])
-//     ->name('users.bulk-delete');
-
-// Route::resource('users', UserController::class);
-require __DIR__.'/settings.php';
+        require __DIR__ . '/settings.php';
+    });
+});
