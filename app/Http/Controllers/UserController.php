@@ -37,6 +37,7 @@ class UserController extends Controller
             'date_employed' => 'nullable|date',
         ]);
 
+        
         User::create([
             'name' => $request->name,
             'email' => $request->email,

@@ -37,6 +37,7 @@ export default function AppearanceToggleTab({
                             : 'text-neutral-500 hover:bg-neutral-200/60 hover:text-black dark:text-neutral-400 dark:hover:bg-neutral-700/60 midnight:text-[#b3b3ff] midnight:hover:bg-[#26236b]/60',
                     )}
                 >
+                    
                     <Icon className="-ml-1 h-4 w-4" />
                     <span className="ml-1.5 text-sm">{label}</span>
                 </button>
