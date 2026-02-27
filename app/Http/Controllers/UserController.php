@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
+
 class UserController extends Controller
 {
     public function index()
@@ -100,17 +101,16 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 
-    public function bulkDelete(Request $request)
-    {
-        $ids = $request->input('ids', []);
 
-        if (!is_array($ids) || count($ids) === 0) {
-            return back()->with('error', 'No users selected.');
-        }
+            public function bulkDelete(Request $request)
+            {
+                $validated = $request->validate([
+                    'ids' => ['required', 'array', 'min:1'],
+                    'ids.*' => ['integer', 'exists:users,id'],
+                ]);
 
-        User::whereIn('id', $ids)->delete();
+                User::whereIn('id', $validated['ids'])->delete();
 
-        return back()->with('success', 'Selected users deleted.');
-    }
-
+                return back()->with('success', 'Selected users deleted.');
+            }
 }
