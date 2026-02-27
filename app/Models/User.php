@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use App\Models\UserPhoto;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -60,6 +63,24 @@ class User extends Authenticatable implements MustVerifyEmail
     'email_verified_at' => 'datetime',
     'otp_verified_at' => 'datetime',
 ];
+
+public function photos(): HasMany
+{
+    return $this->hasMany(UserPhoto::class);
+}
+
+public function currentPhoto(): HasOne
+{
+    return $this->hasOne(UserPhoto::class)->where('is_current', true);
+}
+
+// Optional accessor for Inertia (photo_url)
+protected $appends = ['photo_url'];
+
+public function getPhotoUrlAttribute(): ?string
+{
+    return $this->currentPhoto ? $this->currentPhoto->url() : null;
+}
 
     // Force Fortify to treat users as two-factor authenticatable so the email OTP
 }

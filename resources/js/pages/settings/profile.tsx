@@ -1,5 +1,5 @@
 import { Transition } from '@headlessui/react';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import * as React from 'react';
 
 import Heading from '@/components/heading';
@@ -19,8 +19,6 @@ type PageProps = {
     user: {
       name: string;
       email: string;
-      email_verified_at: string | null;
-      // optional if you already have it coming from backend:
       photo_url?: string | null;
     };
   };
@@ -30,6 +28,9 @@ type ProfileForm = {
   name: string;
   email: string;
   photo: File | null;
+
+  // ✅ for file uploads with "post" while still doing PATCH on backend
+  _method?: 'patch';
 };
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -39,23 +40,21 @@ const breadcrumbs: BreadcrumbItem[] = [
   },
 ];
 
-export default function Profile({
-  mustVerifyEmail,
-  status,
-}: {
-  mustVerifyEmail: boolean;
-  status?: string;
-}) {
+export default function Profile() {
   const { auth } = usePage<PageProps>().props;
 
   const [photoPreview, setPhotoPreview] = React.useState<string | null>(
     auth.user.photo_url ?? null
   );
 
+  // Track blob URL so we only revoke blobs we created
+  const blobUrlRef = React.useRef<string | null>(null);
+
   const form = useForm<ProfileForm>({
     name: auth.user.name ?? '',
     email: auth.user.email ?? '',
     photo: null,
+    _method: 'patch',
   });
 
   const onPhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,28 +62,35 @@ export default function Profile({
 
     form.setData('photo', file);
 
+    // Revoke old blob if it exists
+    if (blobUrlRef.current) {
+      URL.revokeObjectURL(blobUrlRef.current);
+      blobUrlRef.current = null;
+    }
+
     if (!file) {
       setPhotoPreview(auth.user.photo_url ?? null);
       return;
     }
 
     const url = URL.createObjectURL(file);
+    blobUrlRef.current = url;
     setPhotoPreview(url);
   };
 
   React.useEffect(() => {
     return () => {
-      if (photoPreview?.startsWith('blob:')) URL.revokeObjectURL(photoPreview);
+      if (blobUrlRef.current) {
+        URL.revokeObjectURL(blobUrlRef.current);
+      }
     };
-  }, [photoPreview]);
+  }, []);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // For file upload:
-    // - If patch() works in your setup, keep patch() + forceFormData
-    // - If it fails, switch to post() + forceFormData
-    form.patch(route('profile.update'), {
+    // ✅ safest for files: POST + _method=patch + forceFormData
+    form.post(route('profile.update'), {
       preserveScroll: true,
       forceFormData: true,
     });
@@ -104,9 +110,12 @@ export default function Profile({
             description="Update your name, email address, and profile photo"
           />
 
-          <form onSubmit={submit} className="space-y-6">
+          <form
+            onSubmit={submit}
+            className="space-y-6"
+            encType="multipart/form-data"
+          >
             <div className="grid gap-8 md:grid-cols-[1fr_220px] items-start">
-              {/* LEFT SIDE — FORM FIELDS */}
               <div className="space-y-6">
                 <div className="grid gap-2">
                   <Label htmlFor="name">Name</Label>
@@ -144,7 +153,6 @@ export default function Profile({
                 </div>
               </div>
 
-              {/* RIGHT SIDE — PROFILE PHOTO */}
               <div className="flex flex-col items-center gap-3">
                 <div className="h-40 w-40 overflow-hidden rounded-full border bg-muted shadow">
                   {photoPreview ? (
@@ -172,30 +180,6 @@ export default function Profile({
               </div>
             </div>
 
-            {/* ✅ KEEP THIS: verification message */}
-            {mustVerifyEmail && auth.user.email_verified_at === null && (
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  Your email address is unverified.{' '}
-                  <Link
-                    href="/email/verification-notification"
-                    method="post"
-                    as="button"
-                    className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
-                  >
-                    Click here to resend the verification email.
-                  </Link>
-                </p>
-
-                {status === 'verification-link-sent' && (
-                  <div className="mt-2 text-sm font-medium text-green-600">
-                    A new verification link has been sent to your email address.
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* ✅ KEEP THIS: save button + saved transition */}
             <div className="flex items-center gap-4">
               <Button disabled={form.processing} data-test="update-profile-button">
                 Save
