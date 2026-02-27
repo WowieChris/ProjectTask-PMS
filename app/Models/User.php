@@ -29,8 +29,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'role',
         'employee_id',
         'designation',
-        'two_factor_secret',
-        'two_factor_recovery_codes',
+        'location',
+        'district',
+        'employment_status',
+        'date_employed',
     ];
 
     /**
@@ -63,24 +65,6 @@ class User extends Authenticatable implements MustVerifyEmail
     'email_verified_at' => 'datetime',
     'otp_verified_at' => 'datetime',
 ];
-
-public function photos(): HasMany
-{
-    return $this->hasMany(UserPhoto::class);
-}
-
-public function currentPhoto(): HasOne
-{
-    return $this->hasOne(UserPhoto::class)->where('is_current', true);
-}
-
-// Optional accessor for Inertia (photo_url)
-protected $appends = ['photo_url'];
-
-public function getPhotoUrlAttribute(): ?string
-{
-    return $this->currentPhoto ? $this->currentPhoto->url() : null;
-}
 
     // Force Fortify to treat users as two-factor authenticatable so the email OTP
 }

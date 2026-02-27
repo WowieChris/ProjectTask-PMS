@@ -1,18 +1,13 @@
-import { Form, Head } from '@inertiajs/react';
-import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Spinner } from '@/components/ui/spinner';
+import { Head } from '@inertiajs/react';
+// import InputError from '@/components/input-error';
+// import { Button } from '@/components/ui/button';
+// import { Input } from '@/components/ui/input';
+// import { Label } from '@/components/ui/label';
+// import { Spinner } from '@/components/ui/spinner';
 import AuthLayout from '@/layouts/auth-layout';
-import { update } from '@/routes/password';
+// import { update } from '@/routes/password';
 
-type Props = {
-    token: string;
-    email: string;
-};
-
-export default function ResetPassword({ token, email }: Props) {
+export default function ResetPassword() {
     return (
         <AuthLayout
             title="Reset password"
@@ -20,7 +15,7 @@ export default function ResetPassword({ token, email }: Props) {
         >
             <Head title="Reset password" />
 
-            <Form
+            {/* <Form
                 {...update.form()}
                 transform={(data) => ({ ...data, token, email })}
                 resetOnSuccess={['password', 'password_confirmation']}
@@ -87,7 +82,7 @@ export default function ResetPassword({ token, email }: Props) {
                         </Button>
                     </div>
                 )}
-            </Form>
+            </Form> */}
         </AuthLayout>
     );
 }
