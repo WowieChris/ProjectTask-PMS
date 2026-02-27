@@ -9,7 +9,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { regenerateRecoveryCodes } from '@/routes/two-factor';
+// import { regenerateRecoveryCodes } from '@/routes/two-factor';
 import AlertError from './alert-error';
 
 type Props = {
@@ -79,24 +79,24 @@ export default function TwoFactorRecoveryCodes({
                         {codesAreVisible ? 'Hide' : 'View'} Recovery Codes
                     </Button>
 
-                    {canRegenerateCodes && (
-                        <Form
-                            {...regenerateRecoveryCodes.form()}
-                            options={{ preserveScroll: true }}
-                            onSuccess={fetchRecoveryCodes}
-                        >
-                            {({ processing }) => (
-                                <Button
-                                    variant="secondary"
-                                    type="submit"
-                                    disabled={processing}
-                                    aria-describedby="regenerate-warning"
-                                >
-                                    <RefreshCw /> Regenerate Codes
-                                </Button>
-                            )}
-                        </Form>
-                    )}
+                    {/* {canRegenerateCodes && (
+                        // <Form
+                        //     {...regenerateRecoveryCodes.form()}
+                        //     options={{ preserveScroll: true }}
+                        //     onSuccess={fetchRecoveryCodes}
+                        // >
+                        //     {({ processing }) => (
+                        //         <Button
+                        //             variant="secondary"
+                        //             type="submit"
+                        //             disabled={processing}
+                        //             aria-describedby="regenerate-warning"
+                        //         >
+                        //             <RefreshCw /> Regenerate Codes
+                        //         </Button>
+                        //     )}
+                        // </Form>
+                    )} */}
                 </div>
                 <div
                     id="recovery-codes-section"
