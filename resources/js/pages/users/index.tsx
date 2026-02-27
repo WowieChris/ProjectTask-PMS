@@ -61,6 +61,7 @@ export default function UsersIndex({ users }: Props) {
       const matchesText =
         text === '' ||
         String(u.id).includes(text) ||
+        u.employee_id.toLowerCase().includes(text) ||
         u.name.toLowerCase().includes(text) ||
         u.email.toLowerCase().includes(text) ||
         (u.designation ?? '').toLowerCase().includes(text) ||
@@ -78,7 +79,7 @@ export default function UsersIndex({ users }: Props) {
   }, [users, filterText, filterRole, filterDesignation]);
 
   // Selection logic that respects filtered rows
-  const filteredIds = useMemo(() => filteredUsers.map((u) => u.id), [filteredUsers]);
+  const filteredIds = useMemo(() => filteredUsers.map((u) => u.id), [filteredUsers]); 
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -121,7 +122,7 @@ export default function UsersIndex({ users }: Props) {
               <div className="flex gap-2 mr-10">
                 <Button
                   variant="destructive"
-                  className="bg-red-500 text-white hover:bg-red-600"
+                  className="text-white hover:bg-red-600"
                   disabled={selectedUsers.length === 0}
                   onClick={() => {
                     if (!confirm(`Delete ${selectedUsers.length} selected user(s)?`)) return;
@@ -195,11 +196,14 @@ export default function UsersIndex({ users }: Props) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[50px]">
-                    <Checkbox
-                      checked={isAllSelected ? true : isIndeterminate ? 'indeterminate' : false}
-                      onCheckedChange={(checked) => handleSelectAll(checked === true)}
-                    />
+                  <TableHead className="w-[50px] px-0">
+                    <div className="flex items-center justify-center">
+                      <Checkbox
+                        className="border-gray-500 dark:border-gray-400"
+                        checked={isAllSelected ? true : isIndeterminate ? 'indeterminate' : false}
+                        onCheckedChange={(checked) => handleSelectAll(checked === true)}
+                      />
+                    </div>
                   </TableHead>
                   <TableHead>Employee ID</TableHead>
                   <TableHead>Name</TableHead>
@@ -213,15 +217,18 @@ export default function UsersIndex({ users }: Props) {
                 {filteredUsers.map((user) => (
                   <TableRow
                     key={user.id}
-                    className="cursor-pointer hover:bg-muted/50"
+                    className="cursor-pointer hover:bg-muted/30"
                     onClick={() => router.visit(`/users/${user.id}/edit`)}
                   >
-                    <TableCell>
-                      <Checkbox
-                        checked={selectedUsers.includes(user.id)}
-                        onCheckedChange={(checked) => handleSelectUser(user.id, checked === true)}
-                        onClick={(e) => e.stopPropagation()}
-                      />
+                    <TableCell onClick={(e) => e.stopPropagation()} className="px-0">
+                      <div className="flex items-center justify-center">
+                        <Checkbox
+                          className="border-gray-500 dark:border-gray-400"
+                          checked={selectedUsers.includes(user.id)}
+                          onCheckedChange={(checked) => handleSelectUser(user.id, checked === true)}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </div>
                     </TableCell>
                     <TableCell>{user.employee_id}</TableCell>
                     <TableCell>{user.name}</TableCell>

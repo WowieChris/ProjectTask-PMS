@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
-
 class UserController extends Controller
 {
     public function index()
@@ -33,6 +32,9 @@ class UserController extends Controller
             'role' => 'required|string|in:user,admin',
             'designation' => 'nullable|string|max:255',
             'employee_id' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+            'district' => 'nullable|string|max:255',
+            'date_employed' => 'nullable|date',
         ]);
 
         User::create([
@@ -42,6 +44,10 @@ class UserController extends Controller
             'role' => $request->role,
             'designation' => $request->designation,
             'employee_id' => $request->employee_id,
+            'location' => $request->location,
+            'district' => $request->district,
+            'employment_status' => 'active',
+            'date_employed' => $request->date_employed,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
@@ -58,10 +64,14 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
             'role' => 'required|string|in:user,admin',
             'designation' => 'nullable|string|max:255',
             'employee_id' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+            'district' => 'nullable|string|max:255',
+            'employment_status' => 'required|string|max:255',
+            'date_employed' => 'nullable|date',
         ]);
 
         $user->update([
@@ -70,6 +80,10 @@ class UserController extends Controller
             'role' => $request->role,
             'designation' => $request->designation,
             'employee_id' => $request->employee_id,
+            'location' => $request->location,
+            'district' => $request->district,
+            'employment_status' => $request->employment_status,
+            'date_employed' => $request->date_employed,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
@@ -101,16 +115,16 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids', []);
 
-            public function bulkDelete(Request $request)
-            {
-                $validated = $request->validate([
-                    'ids' => ['required', 'array', 'min:1'],
-                    'ids.*' => ['integer', 'exists:users,id'],
-                ]);
+        if (! is_array($ids) || count($ids) === 0) {
+            return back()->with('error', 'No users selected.');
+        }
 
-                User::whereIn('id', $validated['ids'])->delete();
+        User::whereIn('id', $ids)->delete();
 
-                return back()->with('success', 'Selected users deleted.');
-            }
+        return back()->with('success', 'Selected users deleted.');
+    }
 }
