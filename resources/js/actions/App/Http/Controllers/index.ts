@@ -1,12 +1,9 @@
-import UserController from './UserController'
 import Auth from './Auth'
+import UserController from './UserController'
 import Settings from './Settings'
 const Controllers = {
-    UserController: Object.assign(UserController, UserController),
-<<<<<<< HEAD
-Auth: Object.assign(Auth, Auth),
-=======
->>>>>>> origin/main
+    Auth: Object.assign(Auth, Auth),
+UserController: Object.assign(UserController, UserController),
 Settings: Object.assign(Settings, Settings),
 }
 

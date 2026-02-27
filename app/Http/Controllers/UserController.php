@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
-
 class UserController extends Controller
 {
     public function index()
@@ -26,22 +25,22 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'role' => 'required|string|in:user,admin',
+        $validated = $request->validate([
+            'name'        => 'required|string|max:255',
+            'email'       => 'required|string|email|max:255|unique:users,email',
+            'password'    => 'required|string|min:8',
+            'role'        => 'required|string|in:user,admin',
             'designation' => 'nullable|string|max:255',
             'employee_id' => 'required|string|max:255',
         ]);
 
         User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
-            'designation' => $request->designation,
-            'employee_id' => $request->employee_id,
+            'name'        => $validated['name'],
+            'email'       => $validated['email'],
+            'password'    => Hash::make($validated['password']),
+            'role'        => $validated['role'],
+            'designation' => $validated['designation'] ?? null,
+            'employee_id' => $validated['employee_id'],
         ]);
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
@@ -56,20 +55,20 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
-            'role' => 'required|string|in:user,admin',
+        $validated = $request->validate([
+            'name'        => 'required|string|max:255',
+            'email'       => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'role'        => 'required|string|in:user,admin',
             'designation' => 'nullable|string|max:255',
             'employee_id' => 'required|string|max:255',
         ]);
 
         $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'role' => $request->role,
-            'designation' => $request->designation,
-            'employee_id' => $request->employee_id,
+            'name'        => $validated['name'],
+            'email'       => $validated['email'],
+            'role'        => $validated['role'],
+            'designation' => $validated['designation'] ?? null,
+            'employee_id' => $validated['employee_id'],
         ]);
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
@@ -78,19 +77,27 @@ class UserController extends Controller
     public function updateInline(Request $request, User $user)
     {
         $field = $request->input('field');
-        $value = $request->input('value');
 
-        $validated = match ($field) {
-            'designation' => $request->validate(['value' => 'nullable|string|max:255']),
-            default => throw new \Exception('Invalid field'),
-        };
+        // Only allow specific fields to be edited inline
+        if ($field !== 'designation') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid field.',
+            ], 422);
+        }
 
-        $user->update([$field => $value]);
+        $validated = $request->validate([
+            'value' => 'nullable|string|max:255',
+        ]);
+
+        $user->update([
+            $field => $validated['value'],
+        ]);
 
         return response()->json([
             'success' => true,
             'message' => 'User updated successfully.',
-            'user' => $user,
+            'user'    => $user->fresh(),
         ]);
     }
 
@@ -101,28 +108,15 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 
+    public function bulkDelete(Request $request)
+    {
+        $validated = $request->validate([
+            'ids'   => ['required', 'array', 'min:1'],
+            'ids.*' => ['integer', 'exists:users,id'],
+        ]);
 
-<<<<<<< HEAD
-            public function bulkDelete(Request $request)
-            {
-                $validated = $request->validate([
-                    'ids' => ['required', 'array', 'min:1'],
-                    'ids.*' => ['integer', 'exists:users,id'],
-                ]);
-
-                User::whereIn('id', $validated['ids'])->delete();
-
-                return back()->with('success', 'Selected users deleted.');
-            }
-}
-=======
-        if (! is_array($ids) || count($ids) === 0) {
-            return back()->with('error', 'No users selected.');
-        }
-
-        User::whereIn('id', $ids)->delete();
+        User::whereIn('id', $validated['ids'])->delete();
 
         return back()->with('success', 'Selected users deleted.');
     }
 }
->>>>>>> origin/main
