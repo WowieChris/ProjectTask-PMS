@@ -56,5 +56,10 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    protected $casts = [
+    'email_verified_at' => 'datetime',
+    'otp_verified_at' => 'datetime',
+];
+
     // Force Fortify to treat users as two-factor authenticatable so the email OTP
 }

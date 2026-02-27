@@ -11,7 +11,13 @@ class OtpController extends Controller
 {
     public function show(Request $request)
     {
-        $this->sendOtp($request);
+        $user = $request->user();
+        $key  = 'login_otp_' . $user->id;
+
+        // Don't resend OTP on every refresh
+        if (! Cache::has($key)) {
+            $this->sendOtp($user, $key);
+        }
 
         return inertia('auth/otp', [
             'status' => 'OTP sent to your email.',
@@ -20,7 +26,12 @@ class OtpController extends Controller
 
     public function resend(Request $request)
     {
-        $this->sendOtp($request);
+        $user = $request->user();
+        $key  = 'login_otp_' . $user->id;
+
+        // Force a new OTP
+        Cache::forget($key);
+        $this->sendOtp($user, $key);
 
         return back()->with('status', 'OTP resent to your email.');
     }
@@ -32,48 +43,37 @@ class OtpController extends Controller
         ]);
 
         $user = $request->user();
-        $key = 'login_otp_' . $user->id;
+        $key  = 'login_otp_' . $user->id;
 
         $expected = Cache::get($key);
 
-        if (!$expected || $expected !== $request->otp) {
+        if (! $expected || $expected !== $request->otp) {
             return back()->withErrors([
                 'otp' => 'Invalid or expired OTP.',
             ]);
         }
 
-        // OTP ok
+        // OTP correct
         Cache::forget($key);
+
+        // ✅ session-based OTP verification (no database)
         $request->session()->put('otp_passed', true);
+        $request->session()->regenerate();
 
         return redirect()->route('dashboard');
     }
 
-    // private function sendOtp(Request $request): void
-    // {
-    //     $user = $request->user();
+    private function sendOtp($user, string $key): void
+    {
+        $otp = (string) random_int(100000, 999999);
 
-    //     $otp = (string) random_int(100000, 999999);
+        Cache::put($key, $otp, now()->addMinutes(10));
 
-    //     Cache::put('login_otp_' . $user->id, $otp, now()->addMinutes(10));
-
-    //     $user->notify(new LoginOtpNotification($otp)); // ✅ this sends
-    // }
-
-    private function sendOtp(Request $request): void
-        {
-            $user = $request->user();
-            $otp = (string) random_int(100000, 999999);
-
-            Cache::put('login_otp_' . $user->id, $otp, now()->addMinutes(10));
-
-            try {
-                $user->notify(new LoginOtpNotification($otp));
-            } catch (\Throwable $e) {
-                report($e);
-                // optional: throw a validation-like error
-                abort(500, 'Mail sending failed. Check SMTP settings.');
-            }
+        try {
+            $user->notify(new LoginOtpNotification($otp));
+        } catch (\Throwable $e) {
+            report($e);
+            abort(500, 'Mail sending failed. Check SMTP settings.');
         }
-
+    }
 }
