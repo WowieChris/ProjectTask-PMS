@@ -9,10 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
-import { edit } from '@/routes/profile';
+import { edit, update } from '@/routes/profile';
 import type { BreadcrumbItem } from '@/types';
-
-declare function route(name: string): string;
 
 type PageProps = {
   auth: {
@@ -103,8 +101,12 @@ export default function Profile() {
       <h1 className="sr-only">Profile Settings</h1>
 
       <SettingsLayout>
-        <div className="space-y-6">
-          <Heading
+        <div className="flex flex-col w-full">
+          <form onSubmit={submit} className="flex w-9/10 border rounded-lg p-4">
+            <div className="flex flex-1 items-start justify-between">
+              {/* LEFT SIDE — FORM FIELDS */}
+              <div className=" flex flex-col w-1/2 gap-6">
+              <Heading
             variant="small"
             title="Profile information"
             description="Update your name, email address, and profile photo"
@@ -122,7 +124,7 @@ export default function Profile() {
 
                   <Input
                     id="name"
-                    className="mt-1 block w-full"
+                    className="mt-1 block w-3/4"
                     value={form.data.name}
                     onChange={(e) => form.setData('name', e.target.value)}
                     name="name"
@@ -140,7 +142,7 @@ export default function Profile() {
                   <Input
                     id="email"
                     type="email"
-                    className="mt-1 block w-full"
+                    className="mt-1 block w-3/4"
                     value={form.data.email}
                     onChange={(e) => form.setData('email', e.target.value)}
                     name="email"
@@ -195,8 +197,43 @@ export default function Profile() {
                 <p className="text-sm text-neutral-600">Saved</p>
               </Transition>
             </div>
+           </div> 
+          </div>
+            {/*end of left */}
+             
+
+             {/* RIGHT SIDE — PROFILE PHOTO */}
+              <div className="flex flex-col w-5/12 gap-5 border p-4 rounded-lg">
+                <div className="flex w-full  my-auto aspect-square overflow-hidden rounded-full border bg-muted shadow" >
+                  {photoPreview ? (
+                    <img
+                      src={photoPreview}
+                      alt="Profile preview"
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">
+                      No photo
+                    </div>
+                  )}
+                </div>
+
+             <Input
+                id="photo"
+                name="photo"
+                type="file"
+                accept="image/*"
+                onChange={onPhotoChange}
+                className="max-w-[180px] mx-auto"
+              />
+
+                <InputError className="mt-2 text-center" message={form.errors.photo} />
+              </div>
+            </div>
+
           </form>
         </div>
+            
       </SettingsLayout>
     </AppLayout>
   );

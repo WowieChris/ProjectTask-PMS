@@ -44,7 +44,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'two_factor_secret',
         'two_factor_recovery_codes',
-        'remember_token',
+        'remember_token', 
     ];
 
     /**
@@ -58,6 +58,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
+            'date_employed' => 'date', // Added cast for date_employed
         ];
     }
 
