@@ -72,7 +72,7 @@ export default function Profile() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-
+    console.log('photo in form:', form.data.photo); // should be a File
     form.post(update().url, {
       preserveScroll: true,
       forceFormData: true,
@@ -169,13 +169,14 @@ export default function Profile() {
                   )}
                 </div>
 
-                <Input
-                  id="photo"
-                  type="file"
-                  accept="image/*"
-                  onChange={onPhotoChange}
-                  className="max-w-[180px] mx-auto"
-                />
+             <Input
+                id="photo"
+                name="photo"
+                type="file"
+                accept="image/*"
+                onChange={onPhotoChange}
+                className="max-w-[180px] mx-auto"
+              />
 
                 <InputError className="mt-2 text-center" message={form.errors.photo} />
               </div>

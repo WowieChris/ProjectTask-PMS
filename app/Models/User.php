@@ -41,7 +41,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'two_factor_secret',
         'two_factor_recovery_codes',
-        'remember_token', 
+        'remember_token',
     ];
 
     /**
@@ -65,18 +65,14 @@ class User extends Authenticatable implements MustVerifyEmail
     // In app/Models/User.php - this part is already correct
     public function photos()
     {
-        return $this->hasMany(UserPhoto::class);
+        return $this->hasMany(\App\Models\UserPhoto::class);
     }
 
     // Optional: Add a helper to get current photo
     public function currentPhoto()
     {
 
-
-
-
-
-        return $this->hasOne(UserPhoto::class)->where('is_current', true);
+        return $this->hasOne(\App\Models\UserPhoto::class)->where('is_current', true);
     }
     /**
      * Determine if the user has two-factor authentication enabled.
