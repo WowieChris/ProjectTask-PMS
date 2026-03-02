@@ -128,25 +128,23 @@ export default function UsersEdit({ user }: Props) {
                                 {errors.role && <p className="text-red-500">{errors.role}</p>}
                             </div>
                             <div className="flex gap-2 mt-10">
-                                {isInitiallyActive && (
-                                    data.employment_status === 'terminated' ? (
-                                        <Button 
-                                            type="button"
-                                            variant="destructive"
-                                            disabled={processing}
-                                            onClick={() => {
-                                                if (window.confirm('Are you sure you want to deactivate this user? They will no longer be able to log in.')) {
-                                                    put(`/users/${user.id}`);
-                                                }
-                                            }}
-                                        >
-                                            Deactivate
-                                        </Button>
-                                    ) : (
-                                        <Button type="submit" disabled={processing}>
-                                            Update
-                                        </Button>
-                                    )
+                                {isInitiallyActive && data.employment_status === 'terminated' ? (
+                                    <Button
+                                        type="button"
+                                        variant="destructive"
+                                        disabled={processing}
+                                        onClick={() => {
+                                            if (window.confirm('Are you sure you want to deactivate this user? They will no longer be able to log in.')) {
+                                                put(`/users/${user.id}`);
+                                            }
+                                        }}
+                                    >
+                                        Deactivate
+                                    </Button>
+                                ) : (
+                                    <Button type="submit" disabled={processing}>
+                                        Update
+                                    </Button>
                                 )}
                                 <Button variant="outline" asChild>
                                     <Link href="/users">Cancel</Link>
@@ -183,7 +181,7 @@ export default function UsersEdit({ user }: Props) {
                             </div>
                             <div>
                                 <Label htmlFor="employment_status">Employment Status</Label>
-                                <Select value={data.employment_status} onValueChange={(value) => setData('employment_status', value)} disabled={!isInitiallyActive}>
+                                <Select value={data.employment_status} onValueChange={(value) => setData('employment_status', value)}>
                                     <SelectTrigger id="employment_status" aria-labelledby="employment_status-label" className="w-full">
                                         <SelectValue placeholder="Select employment status" />
                                     </SelectTrigger>
