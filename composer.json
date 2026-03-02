@@ -16,8 +16,7 @@
         "laravel/tinker": "^2.10.1",
         "laravel/wayfinder": "^0.1.9",
         "spatie/laravel-one-time-passwords": "*",
-        "symfony/http-client": "*",
-        "symfony/mailtrap-mailer": "*"
+        "tightenco/ziggy": "^2.6"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

@@ -26,8 +26,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'role',
         'employee_id',
         'designation',
-        'two_factor_secret',
-        'two_factor_recovery_codes',
+        'location',
+        'district',
+        'employment_status',
+        'date_employed',
     ];
 
     /**
@@ -39,7 +41,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'two_factor_secret',
         'two_factor_recovery_codes',
-        'remember_token',
+        'remember_token', 
     ];
 
     /**
@@ -53,8 +55,36 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
+            'date_employed' => 'date', // Added cast for date_employed
         ];
     }
 
-    // Force Fortify to treat users as two-factor authenticatable so the email OTP
+    /**
+     * Get the photos for the user.asdasdf l;
+     */
+    // In app/Models/User.php - this part is already correct
+    public function photos()
+    {
+        return $this->hasMany(UserPhoto::class);
+    }
+
+    // Optional: Add a helper to get current photo
+    public function currentPhoto()
+    {
+
+
+
+
+
+        return $this->hasOne(UserPhoto::class)->where('is_current', true);
+    }
+    /**
+     * Determine if the user has two-factor authentication enabled.
+     *
+     * @return bool
+     */
+    // public function hasTwoFactorEnabled()
+    // {
+    //     return !is_null($this->two_factor_secret);
+    // }
 }

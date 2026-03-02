@@ -54,7 +54,7 @@ export function UserMenuContent({ user }: Props) {
                     onClick={handleLogout}
                     data-test="logout-button"
                 >
-                    <LogOut className="mr-2" />
+                    <LogOut className="mr-2" onClick={() => router.post('/logout')}/>
                     Log out
                 </Link>
             </DropdownMenuItem>

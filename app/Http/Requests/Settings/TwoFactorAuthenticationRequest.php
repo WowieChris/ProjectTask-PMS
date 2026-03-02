@@ -15,7 +15,8 @@ class TwoFactorAuthenticationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Features::enabled(Features::twoFactorAuthentication());
+        // return Features::enabled(Features::twoFactorAuthentication());
+        return $this->user() !== null;
     }
 
     /**
