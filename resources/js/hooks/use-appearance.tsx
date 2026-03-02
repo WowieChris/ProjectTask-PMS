@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useSyncExternalStore } from 'react';
 
-export type ResolvedAppearance = 'light' | 'dark' | 'midnight';
+export type ResolvedAppearance = 'light' | 'dark' | 'midnight' | 'vegas' | 'candy';
 export type Appearance = ResolvedAppearance | 'system';
 
 export type UseAppearanceReturn = {
@@ -31,7 +31,13 @@ const getStoredAppearance = (): Appearance => {
 };
 
 const isDarkMode = (appearance: Appearance): boolean => {
-    return appearance === 'dark' || appearance === 'midnight' || (appearance === 'system' && prefersDark());
+    // consider our dark-ish themes dark for color-scheme purposes
+    return (
+        appearance === 'dark' ||
+        appearance === 'midnight' ||
+        appearance === 'vegas' ||
+        (appearance === 'system' && prefersDark())
+    );
 };
 
 const applyTheme = (appearance: Appearance): void => {
@@ -41,6 +47,8 @@ const applyTheme = (appearance: Appearance): void => {
 
     document.documentElement.classList.toggle('dark', appearance === 'dark');
     document.documentElement.classList.toggle('midnight', appearance === 'midnight');
+    document.documentElement.classList.toggle('vegas', appearance === 'vegas');
+    document.documentElement.classList.toggle('candy', appearance === 'candy');
     document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
 };
 
@@ -85,6 +93,8 @@ export function useAppearance(): UseAppearanceReturn {
     const resolvedAppearance: ResolvedAppearance = useMemo(
         () => {
             if (appearance === 'midnight') return 'midnight';
+            if (appearance === 'candy') return 'candy';
+            if (appearance === 'vegas') return 'vegas';
             return isDarkMode(appearance) ? 'dark' : 'light';
         },
         [appearance],
