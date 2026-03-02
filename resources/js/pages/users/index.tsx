@@ -14,6 +14,7 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
+import { Badge } from '@/components/ui/badge';
 import type { BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -28,6 +29,9 @@ interface User {
   email: string;
   role: string;
   designation: string | null;
+  location: string;
+  district: string;
+  employment_status: string;
 }
 
 interface Props {
@@ -65,6 +69,9 @@ export default function UsersIndex({ users }: Props) {
         u.name.toLowerCase().includes(text) ||
         u.email.toLowerCase().includes(text) ||
         (u.designation ?? '').toLowerCase().includes(text) ||
+        u.location.toLowerCase().includes(text) ||
+        u.district.toLowerCase().includes(text) ||
+        u.employment_status.toLowerCase().includes(text) ||
         u.role.toLowerCase().includes(text);
 
       const matchesRole =
@@ -123,7 +130,7 @@ export default function UsersIndex({ users }: Props) {
                 <Button
                   variant="destructive"
                   className="text-white hover:bg-red-600"
-                  disabled={selectedUsers.length === 0}
+                  hidden={selectedUsers.length === 0}
                   onClick={() => {
                     if (!confirm(`Delete ${selectedUsers.length} selected user(s)?`)) return;
 
@@ -209,6 +216,8 @@ export default function UsersIndex({ users }: Props) {
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Designation</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead>Role</TableHead>
                 </TableRow>
               </TableHeader>
@@ -234,6 +243,20 @@ export default function UsersIndex({ users }: Props) {
                     <TableCell>{user.name}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>{user.designation}</TableCell>
+                    <TableCell>{user.location}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          user.employment_status.toLowerCase() === 'active'
+                            ? 'default'
+                            : user.employment_status.toLowerCase() === 'inactive'
+                            ? 'secondary'
+                            : 'destructive'
+                        }
+                      >
+                        {user.employment_status}
+                      </Badge>
+                    </TableCell>
                     <TableCell>{user.role}</TableCell>
                   </TableRow>
                 ))}
