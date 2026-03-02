@@ -79,6 +79,12 @@ return [
             'transport' => 'array',
         ],
 
+        'mailtrap' => [
+            'transport' => 'mailtrap',
+            'api_token' => env('MAILTRAP_API_TOKEN'),
+            'inbox_id' => env('MAILTRAP_INBOX_ID'),
+        ],
+
         'failover' => [
             'transport' => 'failover',
             'mailers' => [
