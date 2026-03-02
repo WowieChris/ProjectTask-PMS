@@ -34,3 +34,12 @@ Route::middleware(['auth'])->group(function () {
         require __DIR__ . '/settings.php';
     });
 });
+
+
+Route::middleware(['auth'])->group(function () {
+    // Photo upload routes
+    Route::post('/user/photo/upload', [UserController::class, 'uploadPhoto'])->name('user.photo.upload');
+    Route::get('/user/photos', [UserController::class, 'getPhotos'])->name('user.photos');
+    Route::delete('/user/photo/{photo}', [UserController::class, 'deletePhoto'])->name('user.photo.delete');
+    Route::post('/user/photo/{photo}/set-current', [UserController::class, 'setCurrentPhoto'])->name('user.photo.set-current');
+});
