@@ -1,5 +1,5 @@
 import { Transition } from '@headlessui/react';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import * as React from 'react';
 
 import Heading from '@/components/heading';
@@ -9,18 +9,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
-import { edit } from '@/routes/profile';
+import { edit, update } from '@/routes/profile';
 import type { BreadcrumbItem } from '@/types';
-
-declare function route(name: string): string;
 
 type PageProps = {
   auth: {
     user: {
       name: string;
       email: string;
-      email_verified_at: string | null;
-      // optional if you already have it coming from backend:
       photo_url?: string | null;
     };
   };
@@ -30,6 +26,7 @@ type ProfileForm = {
   name: string;
   email: string;
   photo: File | null;
+  _method?: 'patch';
 };
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -39,13 +36,7 @@ const breadcrumbs: BreadcrumbItem[] = [
   },
 ];
 
-export default function Profile({
-  mustVerifyEmail,
-  status,
-}: {
-  mustVerifyEmail: boolean;
-  status?: string;
-}) {
+export default function Profile() {
   const { auth } = usePage<PageProps>().props;
 
   const [photoPreview, setPhotoPreview] = React.useState<string | null>(
@@ -56,6 +47,7 @@ export default function Profile({
     name: auth.user.name ?? '',
     email: auth.user.email ?? '',
     photo: null,
+    _method: 'patch',
   });
 
   const onPhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,10 +73,7 @@ export default function Profile({
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // For file upload:
-    // - If patch() works in your setup, keep patch() + forceFormData
-    // - If it fails, switch to post() + forceFormData
-    form.patch(route('profile.update'), {
+    form.post(update().url, {
       preserveScroll: true,
       forceFormData: true,
     });
@@ -107,7 +96,10 @@ export default function Profile({
             title="Profile information"
             description="Update your name, email address, and profile photo"
           />
-              <div className="flex flex-col w-full max-w-xl gap-8"> 
+
+          <form onSubmit={submit} className="space-y-6" encType="multipart/form-data">
+            <div className="grid gap-8 md:grid-cols-[1fr_220px] items-start">
+              <div className="space-y-6">
                 <div className="grid gap-2">
                   <Label htmlFor="name">Name</Label>
 
@@ -143,52 +135,8 @@ export default function Profile({
                   <InputError className="mt-2" message={form.errors.email} />
                 </div>
 
-            {/* ✅ KEEP THIS: save button + saved transition */}
-            <div className="flex items-center gap-4">
-              <Button disabled={form.processing} data-test="update-profile-button">
-                Save
-              </Button>
-
-              <Transition
-                show={form.recentlySuccessful}
-                enter="transition ease-in-out"
-                enterFrom="opacity-0"
-                leave="transition ease-in-out"
-                leaveTo="opacity-0"
-              >
-                <p className="text-sm text-neutral-600">Saved</p>
-              </Transition>
-            </div>
-           </div> 
-          </div>
-            {/*end of left */}
-             
-            {/* ✅ KEEP THIS: verification message */}
-            {mustVerifyEmail && auth.user.email_verified_at === null && (
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  Your email address is unverified.{' '}
-                  <Link
-                    href="/email/verification-notification"
-                    method="post"
-                    as="button"
-                    className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
-                  >
-                    Click here to resend the verification email.
-                  </Link>
-                </p>
-
-                {status === 'verification-link-sent' && (
-                  <div className="mt-2 text-sm font-medium text-green-600">
-                    A new verification link has been sent to your email address.
-                  </div>
-                )}
-              </div>
-            )}
-
-             {/* RIGHT SIDE — PROFILE PHOTO */}
-              <div className="flex flex-col w-5/12 gap-5 border p-4 rounded-lg">
-                <div className="flex w-full  my-auto aspect-square overflow-hidden rounded-full border bg-muted shadow" >
+              <div className="flex flex-col items-center gap-3">
+                <div className="h-40 w-40 overflow-hidden rounded-full border bg-muted shadow">
                   {photoPreview ? (
                     <img
                       src={photoPreview}
@@ -201,6 +149,30 @@ export default function Profile({
                     </div>
                   )}
                 </div>
+
+                <Input
+                  id="photo"
+                  type="file"
+                  accept="image/*"
+                  onChange={onPhotoChange}
+                  className="max-w-[180px]"
+                />
+
+              <Transition
+                show={form.recentlySuccessful}
+                enter="transition ease-in-out"
+                enterFrom="opacity-0"
+                leave="transition ease-in-out"
+                leaveTo="opacity-0"
+              >
+                <p className="text-sm text-neutral-600">Saved</p>
+              </Transition>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <Button disabled={form.processing} data-test="update-profile-button">
+                Save
+              </Button>
 
                 <Input
                   id="photo"
