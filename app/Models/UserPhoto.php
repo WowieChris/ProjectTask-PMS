@@ -11,8 +11,12 @@ class UserPhoto extends Model
 
     protected $fillable = [
         'user_id',
-        'photo_path',
-        'is_primary',
+        'disk',
+        'path',
+        'original_name',
+        'size',
+        'mime_type',
+        'is_current',
     ];
 
     public function user()

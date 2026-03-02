@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
+use App\Http\Controllers\Settings\ProfileController;
 
 Route::get('/', function () {
     return Inertia::render('auth/login', [
@@ -24,22 +25,27 @@ Route::middleware(['auth'])->group(function () {
 
     // Protected after OTP
     Route::middleware(['otp.verified'])->group(function () {
-        Route::get('/dashboard', fn () => Inertia::render('dashboard'))->name('dashboard');
+        Route::get('/dashboard', fn() => Inertia::render('dashboard'))->name('dashboard');
 
         // users...
         Route::delete('/users/bulk-delete', [UserController::class, 'bulkDelete'])->name('users.bulk-delete');
         Route::patch('/users/{user}/inline-update', [UserController::class, 'updateInline'])->name('users.inline-update');
         Route::resource('users', UserController::class)->except(['show']);
 
+
+        // routes/web.php
+
+            Route::middleware(['auth'])->group(function () {
+                Route::get('/settings/profile', [\App\Http\Controllers\Settings\ProfileController::class, 'edit'])
+                    ->name('profile.edit');
+
+                Route::patch('/settings/profile', [\App\Http\Controllers\Settings\ProfileController::class, 'update'])
+                    ->name('profile.update');
+
+                Route::delete('/settings/profile', [\App\Http\Controllers\Settings\ProfileController::class, 'destroy'])
+                    ->name('profile.destroy');
+            });
+
         require __DIR__ . '/settings.php';
     });
-});
-
-
-Route::middleware(['auth'])->group(function () {
-    // Photo upload routes
-    Route::post('/user/photo/upload', [UserController::class, 'uploadPhoto'])->name('user.photo.upload');
-    Route::get('/user/photos', [UserController::class, 'getPhotos'])->name('user.photos');
-    Route::delete('/user/photo/{photo}', [UserController::class, 'deletePhoto'])->name('user.photo.delete');
-    Route::post('/user/photo/{photo}/set-current', [UserController::class, 'setCurrentPhoto'])->name('user.photo.set-current');
 });
