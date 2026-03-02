@@ -164,7 +164,7 @@ confirmation.form = confirmationForm
 
 const password = {
     confirm: Object.assign(confirm, confirmD7e05f),
-confirmation: Object.assign(confirmation, confirmation),
+    confirmation: Object.assign(confirmation, confirmation),
 }
 
 export default password
