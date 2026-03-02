@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Auth\OtpController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -24,7 +23,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/otp/resend', [OtpController::class, 'resend'])->name('otp.resend');
 
     // Protected after OTP
-    Route::middleware(['otp.verified'])->group(function () {
+    Route::middleware(['otp.verified', 'verified'])->group(function () {
         Route::get('/dashboard', fn () => Inertia::render('dashboard'))->name('dashboard');
 
         // users...
@@ -32,10 +31,9 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('/users/{user}/inline-update', [UserController::class, 'updateInline'])->name('users.inline-update');
         Route::resource('users', UserController::class)->except(['show']);
 
-        require __DIR__ . '/settings.php';
+        require __DIR__.'/settings.php';
     });
 });
-
 
 Route::middleware(['auth'])->group(function () {
     // Photo upload routes

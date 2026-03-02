@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
-
 
 class UserController extends Controller
 {
@@ -38,7 +38,7 @@ class UserController extends Controller
             'date_employed' => 'nullable|date',
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -50,6 +50,8 @@ class UserController extends Controller
             'employment_status' => 'active',
             'date_employed' => $request->date_employed,
         ]);
+
+        event(new Registered($user));
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
