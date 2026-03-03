@@ -178,7 +178,7 @@ export default function UsersEdit({ user }: Props) {
                             </div>
                             <div>
                                 <Label htmlFor="employment_status">Employment Status</Label>
-                                <Select value={data.employment_status} onValueChange={(value) => setData('employment_status', value)} disabled={!isInitiallyActive}>
+                                <Select value={data.employment_status} onValueChange={(value) => setData('employment_status', value)}>
                                     <SelectTrigger id="employment_status" aria-labelledby="employment_status-label" className="w-full">
                                         <SelectValue placeholder="Select employment status" />
                                     </SelectTrigger>
