@@ -238,6 +238,41 @@
     --sidebar-ring: #ff006e;
 }
 
+.mondstadt {
+    --background: #e0f2f1; /* light mint */
+    --foreground: #4e342e; /* brown text */
+    --card: #e0f2f198;
+    --card-foreground: #4e342e;
+    --popover: #fafafa;
+    --popover-foreground: #4e342e;
+    --primary: #4caf50; /* green */
+    --primary-foreground: #ffffff;
+    --secondary: #8d6e63; /* brown */
+    --secondary-foreground: #ffffff;
+    --muted: #c8e6c9;
+    --muted-foreground: #4e342e;
+    --accent: #54dcb4; /* turquoise */
+    --accent-foreground: #000000;
+    --destructive: #e57373;
+    --destructive-foreground: #000000;
+    --border: #bdbdbd;
+    --input: #4e342e;
+    --ring: #4caf50;
+    --chart-1: #4caf50;
+    --chart-2: #8d6e63;
+    --chart-3: #54dcb4;
+    --chart-4: #a5d6a7;
+    --chart-5: #d7ccc8;
+    --sidebar: #e0f2f1;
+    --sidebar-foreground: #4e342e;
+    --sidebar-primary: #4caf50;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #54dcb4;
+    --sidebar-accent-foreground: #000000;
+    --sidebar-border: #bdbdbd;
+    --sidebar-ring: #4caf50;
+}
+
 @layer base {
     * {
         @apply border-border;

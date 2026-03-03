@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
-import { Lollipop, Martini, Monitor, Moon, Rocket, Star, Sun } from 'lucide-react';
+import { Lollipop, Martini, Monitor, Moon, Star, Sun, Leaf } from 'lucide-react';
 import type { HTMLAttributes } from 'react';
 import type { Appearance } from '@/hooks/use-appearance';
 import { useAppearance } from '@/hooks/use-appearance';
@@ -17,6 +17,7 @@ export default function AppearanceToggleTab({
         { value: 'midnight', icon: Star, label: 'Midnight' },
         { value: 'vegas', icon: Martini, label: 'Vegas' },
         { value: 'candy', icon: Lollipop, label: 'Candy' },
+        { value: 'mondstadt', icon: Leaf, label: 'Mondstadt' },
         { value: 'system', icon: Monitor, label: 'System' },
     ];
 
@@ -35,8 +36,8 @@ export default function AppearanceToggleTab({
                     className={cn(
                         'flex items-center rounded-md px-3.5 py-1.5 transition-colors',
                         appearance === value
-                            ? 'bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100 midnight:bg-[#26236b] midnight:text-[#e6e6ff] vegas:bg-[#00ff00] vegas:text-[#000000] candy:bg-gradient-to-r candy:from-pink-500 candy:to-purple-500 candy:text-white'
-                            : 'text-neutral-500 hover:bg-neutral-200/60 hover:text-black dark:text-neutral-400 dark:hover:bg-neutral-700/60 midnight:text-[#b3b3ff] midnight:hover:bg-[#26236b]/60 vegas:text-[#00ff00] vegas:hover:bg-[#1a1a1a] candy:text-purple-600 candy:hover:bg-white/50',
+                            ? 'bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100 midnight:bg-[#26236b] midnight:text-[#e6e6ff] vegas:bg-[#00ff00] vegas:text-[#000000] candy:bg-pink-500 candy:text-white mondstadt:bg-green-600 mondstadt:text-white'
+                            : 'text-neutral-500 hover:bg-neutral-200/60 hover:text-black dark:text-neutral-400 dark:hover:bg-neutral-700/60 midnight:text-[#b3b3ff] midnight:hover:bg-[#26236b]/60 vegas:text-[#00ff00] vegas:hover:bg-[#1a1a1a] candy:text-purple-600 candy:hover:bg-white/50 mondstadt:text-green-600 mondstadt:hover:bg-green-100',
                     )}
                 >
                     
