@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Auth\PasswordSetupController::update
 * @see app/Http/Controllers/Auth/PasswordSetupController.php:17
@@ -32,6 +32,28 @@ update.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: update.url(options),
     method: 'post',
 })
+
+/**
+* @see \App\Http\Controllers\Auth\PasswordSetupController::update
+* @see app/Http/Controllers/Auth/PasswordSetupController.php:17
+* @route '/password-setup'
+*/
+const updateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: update.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Auth\PasswordSetupController::update
+* @see app/Http/Controllers/Auth/PasswordSetupController.php:17
+* @route '/password-setup'
+*/
+updateForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: update.url(options),
+    method: 'post',
+})
+
+update.form = updateForm
 
 const setup = {
     update: Object.assign(update, update),
