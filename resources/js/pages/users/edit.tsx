@@ -26,6 +26,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 interface User {
     id: number;
     name: string;
+    last_name?: string;
     email: string;
     role: string;
     designation?: string;
@@ -44,6 +45,7 @@ export default function UsersEdit({ user }: Props) {
     const isInitiallyActive = user.employment_status === 'active';
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
+        last_name: user.last_name || '',
         email: user.email,
         role: user.role,
         designation: user.designation || '',
@@ -64,6 +66,7 @@ export default function UsersEdit({ user }: Props) {
 
     const changed =
         data.name !== user.name ||
+        data.last_name !== (user.last_name || '') ||
         data.email !== user.email ||
         data.role !== user.role ||
         data.designation !== (user.designation || '') ||
@@ -89,18 +92,29 @@ export default function UsersEdit({ user }: Props) {
                         <CardTitle>Edit User</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={submit} className="space-y-4 flex flex-row w-full gap-2">
+                        <form onSubmit={submit} className="space-y-4 gap-2">
                         <div className="flex w-full flex-col gap-2"> 
                             <div>
                                 <Label htmlFor="name">Name</Label>
-                                <Input
-                                    id="name"
-                                    value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
-                                    disabled={!isInitiallyActive}
-                                    required
-                                />
-                                {errors.name && <p className="text-red-500">{errors.name}</p>}
+                                    <div className='flex flex-row gap-4'>
+                                    <Input
+                                        id="name"
+                                        value={data.name}
+                                        onChange={(e) => setData('name', e.target.value)}
+                                        disabled={!isInitiallyActive}
+                                        required
+                                    />
+                                    {errors.name && <p className="text-red-500">{errors.name}</p>}
+                                    <Input 
+                                        id="last_name"
+                                        placeholder="Last Name"
+                                        value={data.last_name}
+                                        onChange={(e) => setData('last_name', e.target.value)}
+                                        disabled={!isInitiallyActive}
+                                        required
+                                    />
+                                    {errors.last_name && <p className="text-red-500">{errors.last_name}</p>}
+                                </div>
                             </div>
                             <div>
                                 <Label htmlFor="email">Email</Label>
@@ -127,42 +141,31 @@ export default function UsersEdit({ user }: Props) {
                                 </Select>
                                 {errors.role && <p className="text-red-500">{errors.role}</p>}
                             </div>
-                            <div className="flex gap-2 mt-10">
-                                {isInitiallyActive && data.employment_status === 'terminated' ? (
-                                    <Button
-                                        type="button"
-                                        variant="destructive"
-                                        disabled={processing}
-                                        onClick={() => {
-                                            if (window.confirm('Are you sure you want to deactivate this user? They will no longer be able to log in.')) {
-                                                put(`/users/${user.id}`);
-                                            }
-                                        }}
-                                    >
-                                        Deactivate
-                                    </Button>
-                                ) : (
-                                    <Button type="submit" disabled={processing}>
-                                        Update
-                                    </Button>
-                                )}
-                                <Button variant="outline" asChild>
-                                    <Link href="/users">Cancel</Link>
-                                </Button>
-                            </div>
-                        </div>
-                        <div className="flex w-full h-full flex-col gap-2">
-                            <div>
-                                <Label htmlFor="id_number">ID Number</Label>
-                               <Input
-                                    id="id_number"
-                                    type="text"
-                                    value={data.employee_id}
-                                    onChange={(e) => setData('employee_id', e.target.value)}
+                            
+                            <div className='flex flex-row gap-4'>
+                                <div className='w-full'>
+                                    <Label htmlFor="id_number">ID Number</Label>
+                                <Input
+                                        id="id_number"
+                                        type="text"
+                                        value={data.employee_id}
+                                        onChange={(e) => setData('employee_id', e.target.value)}
+                                        disabled={!isInitiallyActive}
+                                    />
+                                    {errors.employee_id && <p className="text-red-500">{errors.employee_id}</p>}
+                                </div>
+                                <div className='w-full'>
+                                    <Label htmlFor="date_employed">Date Employed</Label>
+                                    <Input 
+                                    name="date_employed"
+                                    id="date_employed" 
+                                    type="date" value={data.date_employed} onChange={(e) => setData('date_employed', e.target.value)} 
                                     disabled={!isInitiallyActive}
-                                />
-                                {errors.employee_id && <p className="text-red-500">{errors.employee_id}</p>}
-                            </div>             
+                                    />
+                                        {errors.date_employed && <p className="text-red-500">{errors.date_employed}</p>}
+                                </div>
+                            </div> 
+
                             <div>
                                 <Label htmlFor="role">Designation</Label>
                                         <Select value={data.designation} onValueChange={(value) => setData('designation', value)} disabled={!isInitiallyActive}>
@@ -193,8 +196,7 @@ export default function UsersEdit({ user }: Props) {
                                 </Select>
                                 {errors.employment_status && <p className="text-red-500">{errors.employment_status}</p>}
                             </div>
-                        </div>
-                            <div className="flex w-full h-full flex-col gap-2">
+
                                 <div>
                                     <Label htmlFor="location">Location</Label>
                                     <Input type="hidden" name="location" value={data.location} required />
@@ -232,18 +234,32 @@ export default function UsersEdit({ user }: Props) {
                                         {errors.district && <p className="text-red-500">{errors.district}</p>}
                                     </div>
                                 )}
-                                <div>
-                                    <Label htmlFor="date_employed">Date Employed</Label>
-                                    <Input 
-                                    name="date_employed"
-                                    id="date_employed" 
-                                    type="date" value={data.date_employed} onChange={(e) => setData('date_employed', e.target.value)} 
-                                    className='w-3/5' 
-                                    disabled={!isInitiallyActive}
-                                    />
-                                        {errors.date_employed && <p className="text-red-500">{errors.date_employed}</p>}
-                                </div>
                                 
+                            <div className="flex gap-2 mt-5">
+                                {isInitiallyActive && (
+                                    data.employment_status === 'terminated' ? (
+                                        <Button 
+                                            type="button"
+                                            variant="destructive"
+                                            disabled={processing}
+                                            onClick={() => {
+                                                if (window.confirm('Are you sure you want to deactivate this user? They will no longer be able to log in.')) {
+                                                    put(`/users/${user.id}`);
+                                                }
+                                            }}
+                                        >
+                                            Deactivate
+                                        </Button>
+                                    ) : (
+                                        <Button type="submit" disabled={processing}>
+                                            Update
+                                        </Button>
+                                    )
+                                )}
+                                <Button variant="outline" asChild>
+                                    <Link href="/users">Cancel</Link>
+                                </Button>
+                            </div>    
                         </div>
                         </form>
                     </CardContent>

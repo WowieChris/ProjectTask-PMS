@@ -26,6 +26,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function UsersCreate() {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
+        last_name: '',
         email: '',
         password: '',
         role: 'user',
@@ -50,21 +51,33 @@ export default function UsersCreate() {
                         <CardTitle>Create User</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={submit} className="space-y-4 flex flex-row gap-6" name="formCreateUser">
-                            <div className="flex w-full flex-col gap-2">
-                                <div>
+                        <form onSubmit={submit} className="space-y-4" name="formCreateUser">
+                        <div className='grid grid-cols-2 gap-4'> 
+
+                            <div>
                                     <Label htmlFor="name">Name</Label>
+                                    <div className='flex flex-row gap-4'>
                                     <Input
                                         id="name"
                                         name="name"
                                         autoComplete="name"
-                                        placeholder='Full Name'
+                                        placeholder='First Name'
                                         value={data.name}
                                         onChange={(e) => setData('name', e.target.value)}
                                         required
                                     />
-                                    {errors.name && <p className="text-red-500">{errors.name}</p>}
-                                </div>
+                                    <Input
+                                    id="last_name"
+                                    name="last_name"
+                                    placeholder="Last Name"
+                                    value={data.last_name}
+                                    onChange={(e) => setData('last_name', e.target.value)}
+                                    required
+                                    />
+                                    {errors.last_name && <p className="text-red-500">{errors.last_name}</p>}
+                                    </div>
+                            </div>
+
                                 <div>
                                     <Label htmlFor="email">Email</Label>
                                     <Input
@@ -79,7 +92,8 @@ export default function UsersCreate() {
                                     />
                                     {errors.email && <p className="text-red-500">{errors.email}</p>}
                                 </div>
-                                <div>
+{/*                                 
+                                    <div>
                                     <Label htmlFor="password">Password</Label>
                                     <Input
                                         id="password"
@@ -93,30 +107,32 @@ export default function UsersCreate() {
                                     />
                                     {errors.password && <p className="text-red-500">{errors.password}</p>}
                                 </div>
-                                   <div className="flex gap-2 mt-10">
-                                    <Button type="submit" disabled={processing}>
-                                        Create
-                                    </Button>
-                                    <Button variant="outline" asChild>
-                                        <Link href="/users">Cancel</Link>
-                                    </Button>
+                                                                         */}
+                                <div className='flex flex-row gap-2'>
+                                    <div>
+                                        <Label htmlFor="employee_id">ID Number</Label>
+                                        <Input
+                                            id="employee_id"
+                                            placeholder="Employee Number"
+                                            name="employee_id"
+                                            autoComplete="employee_id"
+                                            type="text"
+                                            value={data.employee_id}
+                                            onChange={(e) => setData('employee_id', e.target.value)}
+                                            required
+                                        />
+                                        {errors.employee_id && <p className="text-red-500">{errors.employee_id}</p>}
+                                    </div>    
+                                    <div>
+                                        <Label htmlFor="date_employed">Date Employed</Label>
+                                        <Input 
+                                        name="date_employed"
+                                        id="date_employed" 
+                                        type="date" value={data.date_employed} onChange={(e) => setData('date_employed', e.target.value)} 
+                                        />
+                                            {errors.date_employed && <p className="text-red-500">{errors.date_employed}</p>}
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="flex w-full flex-col gap-2">
-                                <div>
-                                    <Label htmlFor="employee_id">ID Number</Label>
-                                    <Input
-                                        id="employee_id"
-                                        placeholder="Employee Number"
-                                        name="employee_id"
-                                        autoComplete="employee_id"
-                                        type="text"
-                                        value={data.employee_id}
-                                        onChange={(e) => setData('employee_id', e.target.value)}
-                                        required
-                                    />
-                                    {errors.employee_id && <p className="text-red-500">{errors.employee_id}</p>}
-                                </div>    
                                 <div>
                                     <Label htmlFor="role">Role</Label>
                                     <Input type="hidden" name="role" value={data.role} required />
@@ -124,10 +140,9 @@ export default function UsersCreate() {
                                         <SelectTrigger id="role" aria-labelledby="role-label" className="w-full">
                                         <SelectValue placeholder="Select role" />
                                         </SelectTrigger>
-
                                         <SelectContent>
-                                        <SelectItem value="user">User</SelectItem>
-                                        <SelectItem value="admin">Administrator</SelectItem>
+                                        <SelectItem value="User">User</SelectItem>
+                                        <SelectItem value="Admin">Administrator</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     {errors.role && <p className="text-red-500">{errors.role}</p>}
@@ -151,8 +166,7 @@ export default function UsersCreate() {
                                         {errors.designation && <p className="text-red-500">{errors.designation}</p>}
                                 </div>
                                 
-                            </div>
-                            <div className="flex w-full flex-col gap-2">
+                            
                                 <div>
                                     <Label htmlFor="location">Location</Label>
                                     <Input type="hidden" name="location" value={data.location} required />
@@ -161,15 +175,15 @@ export default function UsersCreate() {
                                             <SelectValue placeholder="Select location" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="central office">Central Office</SelectItem>
-                                            <SelectItem value="division 1">Division 1</SelectItem>
-                                            <SelectItem value="division 2">Division 2</SelectItem>
-                                            <SelectItem value="division 3">Division 3</SelectItem>
-                                            <SelectItem value="division 4">Division 4</SelectItem>
-                                            <SelectItem value="division 5">Division 5</SelectItem>
-                                            <SelectItem value="division 6">Division 6</SelectItem>
-                                            <SelectItem value="division 7">Division 7</SelectItem>
-                                            <SelectItem value="division 8">Division 8</SelectItem>
+                                            <SelectItem value="Central office">Central Office</SelectItem>
+                                            <SelectItem value="Division 1">Division 1</SelectItem>
+                                            <SelectItem value="Division 2">Division 2</SelectItem>
+                                            <SelectItem value="Division 3">Division 3</SelectItem>
+                                            <SelectItem value="Division 4">Division 4</SelectItem>
+                                            <SelectItem value="Division 5">Division 5</SelectItem>
+                                            <SelectItem value="Division 6">Division 6</SelectItem>
+                                            <SelectItem value="Division 7">Division 7</SelectItem>
+                                            <SelectItem value="Division 8">Division 8</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     {errors.location && <p className="text-red-500">{errors.location}</p>}
@@ -189,17 +203,16 @@ export default function UsersCreate() {
                                         {errors.district && <p className="text-red-500">{errors.district}</p>}
                                     </div>
                                 )}
-                                <div>
-                                    <Label htmlFor="date_employed">Date Employed</Label>
-                                    <Input 
-                                    name="date_employed"
-                                    id="date_employed" 
-                                    type="date" value={data.date_employed} onChange={(e) => setData('date_employed', e.target.value)} 
-                                    className='w-3/5' 
-                                    />
-                                        {errors.date_employed && <p className="text-red-500">{errors.date_employed}</p>}
+                                
+                            </div>    
+                               <div className='flex gap-4'>
+                                    <Button type="submit" disabled={processing}>
+                                        Create
+                                    </Button>
+                                    <Button variant="outline" asChild>
+                                        <Link href="/users">Cancel</Link>
+                                    </Button>
                                 </div>
-                            </div>   
                         </form>
                     </CardContent>
                 </Card>
