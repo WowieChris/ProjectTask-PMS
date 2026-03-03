@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useSyncExternalStore } from 'react';
 
-export type ResolvedAppearance = 'light' | 'dark' | 'midnight' | 'vegas' | 'candy';
+export type ResolvedAppearance = 'light' | 'dark' | 'midnight' | 'vegas' | 'candy' | 'mondstadt';
 export type Appearance = ResolvedAppearance | 'system';
 
 export type UseAppearanceReturn = {
@@ -49,6 +49,7 @@ const applyTheme = (appearance: Appearance): void => {
     document.documentElement.classList.toggle('midnight', appearance === 'midnight');
     document.documentElement.classList.toggle('vegas', appearance === 'vegas');
     document.documentElement.classList.toggle('candy', appearance === 'candy');
+    document.documentElement.classList.toggle('mondstadt', appearance === 'mondstadt');
     document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
 };
 
@@ -95,6 +96,7 @@ export function useAppearance(): UseAppearanceReturn {
             if (appearance === 'midnight') return 'midnight';
             if (appearance === 'candy') return 'candy';
             if (appearance === 'vegas') return 'vegas';
+            if (appearance === 'mondstadt') return 'mondstadt';
             return isDarkMode(appearance) ? 'dark' : 'light';
         },
         [appearance],
