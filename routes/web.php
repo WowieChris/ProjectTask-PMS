@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\OtpController;
+use App\Http\Controllers\Auth\PasswordSetupController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -41,4 +42,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/photos', [UserController::class, 'getPhotos'])->name('user.photos');
     Route::delete('/user/photo/{photo}', [UserController::class, 'deletePhoto'])->name('user.photo.delete');
     Route::post('/user/photo/{photo}/set-current', [UserController::class, 'setCurrentPhoto'])->name('user.photo.set-current');
+    Route::get('password-setup', [PasswordSetupController::class, 'show'])->name('password.setup');
+    Route::post('password-setup', [PasswordSetupController::class, 'update'])->name('password.setup.update');
 });

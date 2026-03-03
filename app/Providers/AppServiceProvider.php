@@ -33,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
     protected function configureMailtrap(): void
     {
         Mail::extend('mailtrap', function (array $config = []) {
-            $factory = new MailtrapTransportFactory();
+            $factory = new MailtrapTransportFactory;
 
             return $factory->create(new Dsn(
                 'mailtrap+sandbox',
