@@ -92,7 +92,7 @@ export default function UsersCreate() {
                                     />
                                     {errors.email && <p className="text-red-500">{errors.email}</p>}
                                 </div>
-{/*                                 
+                              
                                     <div>
                                     <Label htmlFor="password">Password</Label>
                                     <Input
@@ -107,7 +107,7 @@ export default function UsersCreate() {
                                     />
                                     {errors.password && <p className="text-red-500">{errors.password}</p>}
                                 </div>
-                                                                         */}
+                                                                         
                                 <div className='flex flex-row gap-2'>
                                     <div>
                                         <Label htmlFor="employee_id">ID Number</Label>

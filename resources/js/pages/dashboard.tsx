@@ -20,13 +20,13 @@ export default function Dashboard() {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-4">
                     {/* total users card */}
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border bg-neutral-100 dark:bg-neutral-900 midnight:bg-[#040622] flex flex-col items-center justify-center p-4">
+                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border  bg-neutral-100 dark:bg-neutral-900 midnight:bg-[#040622] mondstadt:bg-teal-100 flex flex-col items-center justify-center p-4">
                         <h3 className="text-lg font-semibold">Total Users</h3>
                         <span className="text-4xl font-bold mt-2">24</span>
                     </div>
 
                     {/* users per designation card */}
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border bg-neutral-100 dark:bg-neutral-900 midnight:bg-[#040622] flex flex-col items-center justify-center p-4">
+                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border bg-neutral-100 dark:bg-neutral-900 midnight:bg-[#040622] mondstadt:bg-teal-100 flex flex-col items-center justify-center p-4">
                         <h3 className="text-lg font-semibold">Users per Designation</h3>
                         <span className="text-4xl font-bold mt-2">
                         <ul className="text-2xl mt-2 flex flex-row items-start gap-6">
@@ -38,16 +38,16 @@ export default function Dashboard() {
                     </div>
 
                     {/* active users card */}
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border bg-neutral-100 dark:bg-neutral-900 midnight:bg-[#040622] flex flex-col items-center justify-center p-4">
+                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border bg-neutral-100 dark:bg-neutral-900 midnight:bg-[#040622] mondstadt:bg-teal-100 flex flex-col items-center justify-center p-4">
                         <h3 className="text-lg font-semibold">Active Users</h3>
                         <span className="text-4xl font-bold mt-2">17</span>
                     </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border bg-neutral-100 dark:bg-neutral-900 midnight:bg-[#040622] flex flex-col items-center justify-center p-4">
+                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border bg-neutral-100 dark:bg-neutral-900 midnight:bg-[#040622] mondstadt:bg-teal-100 flex flex-col items-center justify-center p-4">
                         <h3 className="text-lg font-semibold">Inactive Users</h3>
                         <span className="text-4xl font-bold mt-2">7</span>
                     </div>
                 </div>
-                <div className="relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border bg-neutral-100 dark:bg-neutral-900 midnight:bg-[#040622] p-6">
+                <div className="relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border bg-neutral-100 dark:bg-neutral-900 midnight:bg-[#040622] mondstadt:bg-teal-100 p-6">
                     <h3 className="text-2xl font-semibold mb-4">Users Activity - Last 7 Days</h3>
                     <svg viewBox="0 0 800 300" className="w-full h-full max-h-96" preserveAspectRatio="xMidYMid meet">
                         {/* Grid lines */}
