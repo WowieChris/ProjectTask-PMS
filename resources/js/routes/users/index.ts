@@ -1,7 +1,7 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\UserController::bulkDelete
-* @see app/Http/Controllers/UserController.php:122
+* @see app/Http/Controllers/UserController.php:126
 * @route '/users/bulk-delete'
 */
 export const bulkDelete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -16,7 +16,7 @@ bulkDelete.definition = {
 
 /**
 * @see \App\Http\Controllers\UserController::bulkDelete
-* @see app/Http/Controllers/UserController.php:122
+* @see app/Http/Controllers/UserController.php:126
 * @route '/users/bulk-delete'
 */
 bulkDelete.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ bulkDelete.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\UserController::bulkDelete
-* @see app/Http/Controllers/UserController.php:122
+* @see app/Http/Controllers/UserController.php:126
 * @route '/users/bulk-delete'
 */
 bulkDelete.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -34,8 +34,40 @@ bulkDelete.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => 
 })
 
 /**
+* @see \App\Http\Controllers\UserController::bulkDelete
+* @see app/Http/Controllers/UserController.php:126
+* @route '/users/bulk-delete'
+*/
+const bulkDeleteForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: bulkDelete.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\UserController::bulkDelete
+* @see app/Http/Controllers/UserController.php:126
+* @route '/users/bulk-delete'
+*/
+bulkDeleteForm.delete = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: bulkDelete.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+bulkDelete.form = bulkDeleteForm
+
+/**
 * @see \App\Http\Controllers\UserController::inlineUpdate
-* @see app/Http/Controllers/UserController.php:96
+* @see app/Http/Controllers/UserController.php:100
 * @route '/users/{user}/inline-update'
 */
 export const inlineUpdate = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -50,7 +82,7 @@ inlineUpdate.definition = {
 
 /**
 * @see \App\Http\Controllers\UserController::inlineUpdate
-* @see app/Http/Controllers/UserController.php:96
+* @see app/Http/Controllers/UserController.php:100
 * @route '/users/{user}/inline-update'
 */
 inlineUpdate.url = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -83,13 +115,45 @@ inlineUpdate.url = (args: { user: number | { id: number } } | [user: number | { 
 
 /**
 * @see \App\Http\Controllers\UserController::inlineUpdate
-* @see app/Http/Controllers/UserController.php:96
+* @see app/Http/Controllers/UserController.php:100
 * @route '/users/{user}/inline-update'
 */
 inlineUpdate.patch = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: inlineUpdate.url(args, options),
     method: 'patch',
 })
+
+/**
+* @see \App\Http\Controllers\UserController::inlineUpdate
+* @see app/Http/Controllers/UserController.php:100
+* @route '/users/{user}/inline-update'
+*/
+const inlineUpdateForm = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: inlineUpdate.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PATCH',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\UserController::inlineUpdate
+* @see app/Http/Controllers/UserController.php:100
+* @route '/users/{user}/inline-update'
+*/
+inlineUpdateForm.patch = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: inlineUpdate.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PATCH',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+inlineUpdate.form = inlineUpdateForm
 
 /**
 * @see \App\Http\Controllers\UserController::index
@@ -136,6 +200,43 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
+* @see \App\Http\Controllers\UserController::index
+* @see app/Http/Controllers/UserController.php:13
+* @route '/users'
+*/
+const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: index.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\UserController::index
+* @see app/Http/Controllers/UserController.php:13
+* @route '/users'
+*/
+indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: index.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\UserController::index
+* @see app/Http/Controllers/UserController.php:13
+* @route '/users'
+*/
+indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: index.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+index.form = indexForm
+
+/**
 * @see \App\Http\Controllers\UserController::create
 * @see app/Http/Controllers/UserController.php:22
 * @route '/users/create'
@@ -180,6 +281,43 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
+* @see \App\Http\Controllers\UserController::create
+* @see app/Http/Controllers/UserController.php:22
+* @route '/users/create'
+*/
+const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: create.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\UserController::create
+* @see app/Http/Controllers/UserController.php:22
+* @route '/users/create'
+*/
+createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: create.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\UserController::create
+* @see app/Http/Controllers/UserController.php:22
+* @route '/users/create'
+*/
+createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: create.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+create.form = createForm
+
+/**
 * @see \App\Http\Controllers\UserController::store
 * @see app/Http/Controllers/UserController.php:27
 * @route '/users'
@@ -214,8 +352,30 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 })
 
 /**
+* @see \App\Http\Controllers\UserController::store
+* @see app/Http/Controllers/UserController.php:27
+* @route '/users'
+*/
+const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: store.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\UserController::store
+* @see app/Http/Controllers/UserController.php:27
+* @route '/users'
+*/
+storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: store.url(options),
+    method: 'post',
+})
+
+store.form = storeForm
+
+/**
 * @see \App\Http\Controllers\UserController::edit
-* @see app/Http/Controllers/UserController.php:60
+* @see app/Http/Controllers/UserController.php:62
 * @route '/users/{user}/edit'
 */
 export const edit = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -230,7 +390,7 @@ edit.definition = {
 
 /**
 * @see \App\Http\Controllers\UserController::edit
-* @see app/Http/Controllers/UserController.php:60
+* @see app/Http/Controllers/UserController.php:62
 * @route '/users/{user}/edit'
 */
 edit.url = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -263,7 +423,7 @@ edit.url = (args: { user: number | { id: number } } | [user: number | { id: numb
 
 /**
 * @see \App\Http\Controllers\UserController::edit
-* @see app/Http/Controllers/UserController.php:60
+* @see app/Http/Controllers/UserController.php:62
 * @route '/users/{user}/edit'
 */
 edit.get = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -273,7 +433,7 @@ edit.get = (args: { user: number | { id: number } } | [user: number | { id: numb
 
 /**
 * @see \App\Http\Controllers\UserController::edit
-* @see app/Http/Controllers/UserController.php:60
+* @see app/Http/Controllers/UserController.php:62
 * @route '/users/{user}/edit'
 */
 edit.head = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -282,8 +442,45 @@ edit.head = (args: { user: number | { id: number } } | [user: number | { id: num
 })
 
 /**
+* @see \App\Http\Controllers\UserController::edit
+* @see app/Http/Controllers/UserController.php:62
+* @route '/users/{user}/edit'
+*/
+const editForm = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: edit.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\UserController::edit
+* @see app/Http/Controllers/UserController.php:62
+* @route '/users/{user}/edit'
+*/
+editForm.get = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: edit.url(args, options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\UserController::edit
+* @see app/Http/Controllers/UserController.php:62
+* @route '/users/{user}/edit'
+*/
+editForm.head = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: edit.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+edit.form = editForm
+
+/**
 * @see \App\Http\Controllers\UserController::update
-* @see app/Http/Controllers/UserController.php:67
+* @see app/Http/Controllers/UserController.php:69
 * @route '/users/{user}'
 */
 export const update = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -298,7 +495,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\UserController::update
-* @see app/Http/Controllers/UserController.php:67
+* @see app/Http/Controllers/UserController.php:69
 * @route '/users/{user}'
 */
 update.url = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -331,7 +528,7 @@ update.url = (args: { user: number | { id: number } } | [user: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\UserController::update
-* @see app/Http/Controllers/UserController.php:67
+* @see app/Http/Controllers/UserController.php:69
 * @route '/users/{user}'
 */
 update.put = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -341,7 +538,7 @@ update.put = (args: { user: number | { id: number } } | [user: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\UserController::update
-* @see app/Http/Controllers/UserController.php:67
+* @see app/Http/Controllers/UserController.php:69
 * @route '/users/{user}'
 */
 update.patch = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -350,8 +547,55 @@ update.patch = (args: { user: number | { id: number } } | [user: number | { id: 
 })
 
 /**
+* @see \App\Http\Controllers\UserController::update
+* @see app/Http/Controllers/UserController.php:69
+* @route '/users/{user}'
+*/
+const updateForm = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: update.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PUT',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\UserController::update
+* @see app/Http/Controllers/UserController.php:69
+* @route '/users/{user}'
+*/
+updateForm.put = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: update.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PUT',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\UserController::update
+* @see app/Http/Controllers/UserController.php:69
+* @route '/users/{user}'
+*/
+updateForm.patch = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: update.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PATCH',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+update.form = updateForm
+
+/**
 * @see \App\Http\Controllers\UserController::destroy
-* @see app/Http/Controllers/UserController.php:115
+* @see app/Http/Controllers/UserController.php:119
 * @route '/users/{user}'
 */
 export const destroy = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -366,7 +610,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\UserController::destroy
-* @see app/Http/Controllers/UserController.php:115
+* @see app/Http/Controllers/UserController.php:119
 * @route '/users/{user}'
 */
 destroy.url = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -399,13 +643,45 @@ destroy.url = (args: { user: number | { id: number } } | [user: number | { id: n
 
 /**
 * @see \App\Http\Controllers\UserController::destroy
-* @see app/Http/Controllers/UserController.php:115
+* @see app/Http/Controllers/UserController.php:119
 * @route '/users/{user}'
 */
 destroy.delete = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
+
+/**
+* @see \App\Http\Controllers\UserController::destroy
+* @see app/Http/Controllers/UserController.php:119
+* @route '/users/{user}'
+*/
+const destroyForm = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: destroy.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\UserController::destroy
+* @see app/Http/Controllers/UserController.php:119
+* @route '/users/{user}'
+*/
+destroyForm.delete = (args: { user: number | { id: number } } | [user: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: destroy.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+destroy.form = destroyForm
 
 const users = {
     bulkDelete: Object.assign(bulkDelete, bulkDelete),
