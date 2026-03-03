@@ -26,6 +26,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function UsersCreate() {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
+        last_name: '',
         email: '',
         password: '',
         role: 'user',
@@ -66,7 +67,7 @@ export default function UsersCreate() {
                                         required
                                     />
                                     <Input
-                                    id="Lname"
+                                    id="last_name"
                                     name="last_name"
                                     placeholder="Last Name"
                                     value={data.last_name}
@@ -139,7 +140,6 @@ export default function UsersCreate() {
                                         <SelectTrigger id="role" aria-labelledby="role-label" className="w-full">
                                         <SelectValue placeholder="Select role" />
                                         </SelectTrigger>
-
                                         <SelectContent>
                                         <SelectItem value="User">User</SelectItem>
                                         <SelectItem value="Admin">Administrator</SelectItem>

@@ -26,6 +26,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 interface User {
     id: number;
     name: string;
+    last_name?: string;
     email: string;
     role: string;
     designation?: string;
@@ -44,6 +45,7 @@ export default function UsersEdit({ user }: Props) {
     const isInitiallyActive = user.employment_status === 'active';
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
+        last_name: user.last_name || '',
         email: user.email,
         role: user.role,
         designation: user.designation || '',
@@ -64,6 +66,7 @@ export default function UsersEdit({ user }: Props) {
 
     const changed =
         data.name !== user.name ||
+        data.last_name !== (user.last_name || '') ||
         data.email !== user.email ||
         data.role !== user.role ||
         data.designation !== (user.designation || '') ||
@@ -103,12 +106,15 @@ export default function UsersEdit({ user }: Props) {
                                     />
                                     {errors.name && <p className="text-red-500">{errors.name}</p>}
                                     <Input 
-                                        id="Lname"
+                                        id="last_name"
+                                        placeholder="Last Name"
                                         value={data.last_name}
                                         onChange={(e) => setData('last_name', e.target.value)}
                                         disabled={!isInitiallyActive}
-                                        />
-                                    </div>
+                                        required
+                                    />
+                                    {errors.last_name && <p className="text-red-500">{errors.last_name}</p>}
+                                </div>
                             </div>
                             <div>
                                 <Label htmlFor="email">Email</Label>

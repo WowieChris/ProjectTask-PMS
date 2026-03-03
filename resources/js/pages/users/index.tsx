@@ -28,6 +28,7 @@ interface User {
   id: number;
   employee_id:string;
   name: string;
+  last_name?: string;
   email: string;
   role: string;
   designation: string | null;
@@ -73,6 +74,7 @@ export default function UsersIndex({ users }: Props) {
         String(u.id ??'').includes(text) ||
         u.employee_id.includes(text) ||
         u.name.includes(text) ||
+        (u.last_name ?? '').includes(text) ||
         (u.email??'').toLowerCase().includes(text) ||
         (u.designation ?? '').includes(text) ||
         (u.location??'').toLowerCase().includes(text) ||
@@ -246,7 +248,7 @@ export default function UsersIndex({ users }: Props) {
                       </div>
                     </TableCell>
                     <TableCell>{user.employee_id}</TableCell>
-                    <TableCell>{user.name}</TableCell>
+                    <TableCell>{`${user.name}${user.last_name ? ` ${user.last_name}` : ''}`}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>{user.designation}</TableCell>
                     <TableCell>{user.location}</TableCell>
