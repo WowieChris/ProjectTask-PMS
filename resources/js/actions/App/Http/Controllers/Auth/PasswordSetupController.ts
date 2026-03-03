@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Auth\PasswordSetupController::show
 * @see app/Http/Controllers/Auth/PasswordSetupController.php:12
@@ -44,43 +44,6 @@ show.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see \App\Http\Controllers\Auth\PasswordSetupController::show
-* @see app/Http/Controllers/Auth/PasswordSetupController.php:12
-* @route '/password-setup'
-*/
-const showForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: show.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\Auth\PasswordSetupController::show
-* @see app/Http/Controllers/Auth/PasswordSetupController.php:12
-* @route '/password-setup'
-*/
-showForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: show.url(options),
-    method: 'get',
-})
-
-/**
-* @see \App\Http\Controllers\Auth\PasswordSetupController::show
-* @see app/Http/Controllers/Auth/PasswordSetupController.php:12
-* @route '/password-setup'
-*/
-showForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: show.url({
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-show.form = showForm
-
-/**
 * @see \App\Http\Controllers\Auth\PasswordSetupController::update
 * @see app/Http/Controllers/Auth/PasswordSetupController.php:17
 * @route '/password-setup'
@@ -113,28 +76,6 @@ update.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: update.url(options),
     method: 'post',
 })
-
-/**
-* @see \App\Http\Controllers\Auth\PasswordSetupController::update
-* @see app/Http/Controllers/Auth/PasswordSetupController.php:17
-* @route '/password-setup'
-*/
-const updateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: update.url(options),
-    method: 'post',
-})
-
-/**
-* @see \App\Http\Controllers\Auth\PasswordSetupController::update
-* @see app/Http/Controllers/Auth/PasswordSetupController.php:17
-* @route '/password-setup'
-*/
-updateForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: update.url(options),
-    method: 'post',
-})
-
-update.form = updateForm
 
 const PasswordSetupController = { show, update }
 

@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\UserController::upload
 * @see app/Http/Controllers/UserController.php:0
@@ -32,28 +32,6 @@ upload.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: upload.url(options),
     method: 'post',
 })
-
-/**
-* @see \App\Http\Controllers\UserController::upload
-* @see app/Http/Controllers/UserController.php:0
-* @route '/user/photo/upload'
-*/
-const uploadForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: upload.url(options),
-    method: 'post',
-})
-
-/**
-* @see \App\Http\Controllers\UserController::upload
-* @see app/Http/Controllers/UserController.php:0
-* @route '/user/photo/upload'
-*/
-uploadForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: upload.url(options),
-    method: 'post',
-})
-
-upload.form = uploadForm
 
 /**
 * @see \App\Http\Controllers\UserController::deleteMethod
@@ -108,38 +86,6 @@ deleteMethod.delete = (args: { photo: string | number } | [photo: string | numbe
 })
 
 /**
-* @see \App\Http\Controllers\UserController::deleteMethod
-* @see app/Http/Controllers/UserController.php:0
-* @route '/user/photo/{photo}'
-*/
-const deleteMethodForm = (args: { photo: string | number } | [photo: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: deleteMethod.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'DELETE',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'post',
-})
-
-/**
-* @see \App\Http\Controllers\UserController::deleteMethod
-* @see app/Http/Controllers/UserController.php:0
-* @route '/user/photo/{photo}'
-*/
-deleteMethodForm.delete = (args: { photo: string | number } | [photo: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: deleteMethod.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'DELETE',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'post',
-})
-
-deleteMethod.form = deleteMethodForm
-
-/**
 * @see \App\Http\Controllers\UserController::setCurrent
 * @see app/Http/Controllers/UserController.php:0
 * @route '/user/photo/{photo}/set-current'
@@ -190,28 +136,6 @@ setCurrent.post = (args: { photo: string | number } | [photo: string | number ] 
     url: setCurrent.url(args, options),
     method: 'post',
 })
-
-/**
-* @see \App\Http\Controllers\UserController::setCurrent
-* @see app/Http/Controllers/UserController.php:0
-* @route '/user/photo/{photo}/set-current'
-*/
-const setCurrentForm = (args: { photo: string | number } | [photo: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: setCurrent.url(args, options),
-    method: 'post',
-})
-
-/**
-* @see \App\Http\Controllers\UserController::setCurrent
-* @see app/Http/Controllers/UserController.php:0
-* @route '/user/photo/{photo}/set-current'
-*/
-setCurrentForm.post = (args: { photo: string | number } | [photo: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: setCurrent.url(args, options),
-    method: 'post',
-})
-
-setCurrent.form = setCurrentForm
 
 const photo = {
     upload: Object.assign(upload, upload),
