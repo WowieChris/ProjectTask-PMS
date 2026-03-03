@@ -141,8 +141,8 @@ export default function UsersCreate() {
                                         <SelectValue placeholder="Select role" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                        <SelectItem value="User">User</SelectItem>
-                                        <SelectItem value="Admin">Administrator</SelectItem>
+                                        <SelectItem value="user">User</SelectItem>
+                                        <SelectItem value="admin">Administrator</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     {errors.role && <p className="text-red-500">{errors.role}</p>}
@@ -188,7 +188,7 @@ export default function UsersCreate() {
                                     </Select>
                                     {errors.location && <p className="text-red-500">{errors.location}</p>}
                                 </div>
-                                {data.location && data.location !== 'central office' && (
+                                {data.location && data.location !== 'Central office' && (
                                     <div>
                                         <Label htmlFor="district">District</Label>
                                         <Input

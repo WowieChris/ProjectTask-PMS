@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
-import { Monitor, Moon, Star, Leaf } from 'lucide-react';
+import { Monitor, Moon, Star, Sun } from 'lucide-react';
 import type { HTMLAttributes } from 'react';
 import type { Appearance } from '@/hooks/use-appearance';
 import { useAppearance } from '@/hooks/use-appearance';
@@ -12,7 +12,7 @@ export default function AppearanceToggleTab({
     const { appearance, updateAppearance } = useAppearance();
 
     const tabs: { value: Appearance; icon: LucideIcon; label: string }[] = [
-        { value: 'mondstadt', icon: Leaf, label: 'Mondstadt' },
+        { value: 'mondstadt', icon: Sun, label: 'Light' },
         { value: 'dark', icon: Moon, label: 'Dark' },
         { value: 'midnight', icon: Star, label: 'Midnight' },
         { value: 'system', icon: Monitor, label: 'System' },
