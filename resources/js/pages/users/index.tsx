@@ -1,5 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
 import React, { useMemo, useState } from 'react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -14,8 +15,9 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
-import { Badge } from '@/components/ui/badge';
 import type { BreadcrumbItem } from '@/types';
+
+
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: 'Dashboard', href: dashboard().url },
@@ -44,14 +46,18 @@ export default function UsersIndex({ users }: Props) {
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
 
   // LIVE FILTER STATE
+  
   const [filterText, setFilterText] = useState<string>('');
   const [filterRole, setFilterRole] = useState<AnyFilter>('all');
   const [filterDesignation, setFilterDesignation] = useState<AnyFilter>('all');
+  // const [filterDistrict, setFilterDistrict] = useState<AnyFilter>('all');
+  
 
   // Dynamic dropdown options
   const roleOptions = useMemo(() => {
     return Array.from(new Set(users.map((u) => u.role))).sort();
   }, [users]);
+  
 
   const designationOptions = useMemo(() => {
     return Array.from(new Set(users.map((u) => u.designation).filter(Boolean) as string[])).sort();
@@ -59,23 +65,23 @@ export default function UsersIndex({ users }: Props) {
 
   // LIVE FILTERING
   const filteredUsers = useMemo(() => {
-    const text = filterText.trim().toLowerCase();
+    const text = filterText.trim();
 
     return users.filter((u) => {
       const matchesText =
         text === '' ||
-        String(u.id).includes(text) ||
-        u.employee_id.toLowerCase().includes(text) ||
-        u.name.toLowerCase().includes(text) ||
-        u.email.toLowerCase().includes(text) ||
-        (u.designation ?? '').toLowerCase().includes(text) ||
-        u.location.toLowerCase().includes(text) ||
-        u.district.toLowerCase().includes(text) ||
-        u.employment_status.toLowerCase().includes(text) ||
-        u.role.toLowerCase().includes(text);
+        String(u.id ??'').includes(text) ||
+        u.employee_id.includes(text) ||
+        u.name.includes(text) ||
+        (u.email??'').toLowerCase().includes(text) ||
+        (u.designation ?? '').includes(text) ||
+        (u.location??'').toLowerCase().includes(text) ||
+        (u.district??'').toLowerCase().includes(text) ||
+        (u.employment_status??'').includes(text) ||
+        (u.role??'').toLowerCase().includes(text);
 
       const matchesRole =
-        filterRole === 'all' || u.role.toLowerCase() === filterRole.toLowerCase();
+          filterRole === 'all' || (u.role ?? '').toLowerCase() === filterRole.toLowerCase();
 
       const matchesDesignation =
         filterDesignation === 'all' ||
