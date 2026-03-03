@@ -20,6 +20,7 @@ class EnsureOtpVerified
             if ($request->session()->get('otp_passed') === true) {
                 return redirect()->route('dashboard');
             }
+
             return $next($request);
         }
 

@@ -51,6 +51,7 @@ class UserController extends Controller
             'district' => $request->district,
             'employment_status' => 'active',
             'date_employed' => $request->date_employed,
+            'must_change_password' => true,
         ]);
 
         event(new Registered($user));

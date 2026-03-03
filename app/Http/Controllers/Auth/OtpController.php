@@ -12,7 +12,7 @@ class OtpController extends Controller
     public function show(Request $request)
     {
         $user = $request->user();
-        $key  = 'login_otp_' . $user->id;
+        $key = 'login_otp_'.$user->id;
 
         // Don't resend OTP on every refresh
         if (! Cache::has($key)) {
@@ -27,7 +27,7 @@ class OtpController extends Controller
     public function resend(Request $request)
     {
         $user = $request->user();
-        $key  = 'login_otp_' . $user->id;
+        $key = 'login_otp_'.$user->id;
 
         // Force a new OTP
         Cache::forget($key);
@@ -43,7 +43,7 @@ class OtpController extends Controller
         ]);
 
         $user = $request->user();
-        $key  = 'login_otp_' . $user->id;
+        $key = 'login_otp_'.$user->id;
 
         $expected = Cache::get($key);
 

@@ -31,6 +31,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'district',
         'employment_status',
         'date_employed',
+        'must_change_password',
     ];
 
     /**
@@ -56,7 +57,8 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
-            'date_employed' => 'date', // Added cast for date_employed
+            'date_employed' => 'date',
+            'must_change_password' => 'boolean',
         ];
     }
 

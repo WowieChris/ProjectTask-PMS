@@ -27,7 +27,7 @@ class HandleInertiaRequests extends Middleware
                 ->latest('id')
                 ->first();
 
-            $photoUrl = $currentPhoto ? asset('storage/' . $currentPhoto->path) : null;
+            $photoUrl = $currentPhoto ? asset('storage/'.$currentPhoto->path) : null;
         }
 
         return [
@@ -40,6 +40,7 @@ class HandleInertiaRequests extends Middleware
                     'name' => $user->name,
                     'email' => $user->email,
                     'photo_url' => $photoUrl,
+                    'must_change_password' => (bool) $user->must_change_password,
                 ] : null,
             ],
 

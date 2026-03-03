@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
+use App\Fortify\LoginResponse as OtpLoginResponse;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Contracts\LoginResponse;
-use App\Fortify\LoginResponse as OtpLoginResponse;
 use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
