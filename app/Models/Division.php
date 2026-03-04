@@ -9,7 +9,12 @@ class Division extends Model
     protected $fillable = ['area_id', 'name'];
 
     public function area()
-    {
-        return $this->belongsTo(\App\Models\Area::class);
-    }
+{
+    return $this->belongsTo(Area::class);
+}
+
+public function districts()
+{
+    return $this->hasMany(District::class);
+}
 }

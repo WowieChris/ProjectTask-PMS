@@ -9,8 +9,8 @@ class District extends Model
 {
     protected $fillable = ['division_id', 'name'];
 
-    public function division(): BelongsTo
-    {
-        return $this->belongsTo(Division::class);
-    }
+    public function division()
+{
+    return $this->belongsTo(Division::class);
+}
 }
