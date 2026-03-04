@@ -1,6 +1,6 @@
 import { usePage } from '@inertiajs/react';
-import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import PasswordChangeModal from '@/components/password-change-modal';
+import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import type { AppLayoutProps } from '@/types';
 
 export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {

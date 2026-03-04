@@ -1,12 +1,12 @@
-import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { Form } from '@inertiajs/react';
+import * as DialogPrimitive from '@radix-ui/react-dialog';
+import PasswordSetupController from '@/actions/App/Http/Controllers/Auth/PasswordSetupController';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
+import { DialogOverlay, DialogPortal } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import { DialogOverlay, DialogPortal } from '@/components/ui/dialog';
-import PasswordSetupController from '@/actions/App/Http/Controllers/Auth/PasswordSetupController';
 
 export default function PasswordChangeModal({ open }: { open: boolean }) {
     return (

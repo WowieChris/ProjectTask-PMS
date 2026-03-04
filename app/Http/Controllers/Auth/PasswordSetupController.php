@@ -24,6 +24,6 @@ class PasswordSetupController extends Controller
         }
         $user->save();
 
-        return redirect()->route('dashboard');
+        return redirect()->route('Dashboard');
     }
 }
