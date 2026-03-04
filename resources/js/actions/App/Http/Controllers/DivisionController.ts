@@ -56,7 +56,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:33
+ * @see app/Http/Controllers/DivisionController.php:22
  * @route '/divisions/{division}'
  */
 export const destroy = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -71,7 +71,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:33
+ * @see app/Http/Controllers/DivisionController.php:22
  * @route '/divisions/{division}'
  */
 destroy.url = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -104,7 +104,7 @@ destroy.url = (args: { division: number | { id: number } } | [division: number |
 
 /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:33
+ * @see app/Http/Controllers/DivisionController.php:22
  * @route '/divisions/{division}'
  */
 destroy.delete = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -114,7 +114,7 @@ destroy.delete = (args: { division: number | { id: number } } | [division: numbe
 
     /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:33
+ * @see app/Http/Controllers/DivisionController.php:22
  * @route '/divisions/{division}'
  */
     const destroyForm = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -129,7 +129,7 @@ destroy.delete = (args: { division: number | { id: number } } | [division: numbe
 
             /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:33
+ * @see app/Http/Controllers/DivisionController.php:22
  * @route '/divisions/{division}'
  */
         destroyForm.delete = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

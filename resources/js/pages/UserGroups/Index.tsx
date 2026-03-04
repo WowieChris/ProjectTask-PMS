@@ -60,15 +60,16 @@ export default function UserGroupsIndex(props: PageProps) {
     divisionForm.setData('user_group_id', selectedUserGroup?.id ?? '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedUserGroup?.id]);
+const submitDivision = (e: React.FormEvent) => {
+  e.preventDefault();
 
-  const submitDivision = (e: React.FormEvent) => {
-    e.preventDefault();
-    divisionForm.setData('user_group_id', selectedUserGroup?.id ?? '');
-    divisionForm.post('/divisions', {
-      onSuccess: () => divisionForm.reset('name'),
-      preserveScroll: true,
-    });
-  };
+  divisionForm.setData('user_group_id', selectedUserGroup?.id ?? '');
+
+  divisionForm.post('/divisions', {
+    preserveScroll: true,
+    onSuccess: () => divisionForm.reset('name'),
+  });
+};
 
   const deleteDivision = (id: number) => {
     if (!confirm('Delete this Division?')) return;
@@ -120,7 +121,7 @@ export default function UserGroupsIndex(props: PageProps) {
               <form onSubmit={submitUG} className="flex gap-3">
                 <div className="w-full">
                   <Input
-                    placeholder="e.g. Luzon A"
+                    placeholder="e.g. District 1" 
                     value={ugForm.data.name}
                     onChange={(e) => ugForm.setData('name', e.target.value)}
                   />
