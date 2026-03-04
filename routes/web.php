@@ -6,6 +6,9 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
+use App\Http\Controllers\DistrictController;
+use App\Http\Controllers\DivisionController;
+use App\Http\Controllers\UserGroupController;
 
 Route::get('/', function () {
     return Inertia::render('auth/login', [
@@ -44,4 +47,18 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user/photo/{photo}/set-current', [UserController::class, 'setCurrentPhoto'])->name('user.photo.set-current');
     Route::get('password-setup', [PasswordSetupController::class, 'show'])->name('password.setup');
     Route::post('password-setup', [PasswordSetupController::class, 'update'])->name('password.setup.update');
+            //District and Division routes
+    Route::get('/districts', [DistrictController::class, 'index'])->name('districts.index');
+    Route::post('/districts', [DistrictController::class, 'store'])->name('districts.store');
+    Route::delete('/districts/{district}', [DistrictController::class, 'destroy'])->name('districts.destroy');
+
+    Route::get('/divisions', [DivisionController::class, 'index'])->name('divisions.index');
+    Route::post('/divisions', [DivisionController::class, 'store'])->name('divisions.store');
+    Route::delete('/divisions/{division}', [DivisionController::class, 'destroy'])->name('divisions.destroy');
+
+    Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
+    Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
+    Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
+
+    
 });

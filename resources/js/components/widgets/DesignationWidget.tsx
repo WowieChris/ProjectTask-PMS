@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { designations } from '@/routes/dashboard';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { designations } from '@/routes/dashboard';
 
 interface DesignationCount {
     designation: string | null;
