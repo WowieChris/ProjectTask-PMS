@@ -9,10 +9,13 @@ class DivisionController extends Controller
 {
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'area_id' => ['required', 'exists:areas,id'],
-            'name' => ['required', 'string', 'max:255'],
-        ]);
+       $data = $request->validate([
+  'user_group_id' => ['required','exists:user_groups,id'],
+  'name' => ['required','string','max:255'],
+]);
+
+Division::create($data);
+return back()->with('success','Division added.');
 
         $exists = Division::where('area_id', $data['area_id'])
             ->where('name', $data['name'])

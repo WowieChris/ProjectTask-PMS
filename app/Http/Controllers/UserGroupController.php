@@ -20,9 +20,11 @@ class UserGroupController extends Controller
 
     $selectedUserGroup = $ugId ? UserGroup::find($ugId, ['id','name']) : null;
 
-    $divisions = $ugId
-        ? Division::where('user_group_id', $ugId)->orderBy('name')->get(['id','user_group_id','name'])
-        : collect();
+   $ugId = $request->integer('ug');
+
+$divisions = $ugId
+  ? Division::where('user_group_id', $ugId)->orderBy('name')->get(['id','user_group_id','name'])
+  : collect();
 
     if ($divisionId && !$divisions->contains('id', $divisionId)) {
         $divisionId = null;
