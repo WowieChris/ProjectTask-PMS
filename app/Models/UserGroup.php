@@ -11,6 +11,6 @@ class UserGroup extends Model
 
     public function areas(): HasMany
     {
-        return $this->hasMany(Area::class);
+       return $this->hasMany(\App\Models\Area::class);
     }
 }

@@ -48,17 +48,32 @@ Route::middleware(['auth'])->group(function () {
     Route::get('password-setup', [PasswordSetupController::class, 'show'])->name('password.setup');
     Route::post('password-setup', [PasswordSetupController::class, 'update'])->name('password.setup.update');
             //District and Division routes
-    Route::get('/districts', [DistrictController::class, 'index'])->name('districts.index');
-    Route::post('/districts', [DistrictController::class, 'store'])->name('districts.store');
-    Route::delete('/districts/{district}', [DistrictController::class, 'destroy'])->name('districts.destroy');
+Route::middleware(['auth'])->group(function () {
+    Route::post('/divisions', [DivisionController::class, 'store']);
+    Route::delete('/divisions/{division}', [DivisionController::class, 'destroy']);
 
-    Route::get('/divisions', [DivisionController::class, 'index'])->name('divisions.index');
-    Route::post('/divisions', [DivisionController::class, 'store'])->name('divisions.store');
-    Route::delete('/divisions/{division}', [DivisionController::class, 'destroy'])->name('divisions.destroy');
-
+    Route::post('/districts', [DistrictController::class, 'store']);
+    Route::delete('/districts/{district}', [DistrictController::class, 'destroy']);
+});
+  Route::middleware(['auth'])->group(function () {
+    // User Group routes
     Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
+    Route::get('/user-groups/{userGroup}', [UserGroupController::class, 'show'])->name('user-groups.show');
     Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
     Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
+    Route::get('/user-groups', [UserGroupController::class, 'index'])->middleware('auth');
+    });
+Route::middleware(['auth'])->group(function () {
+    // Area routes
+    Route::post('/areas', [AreaController::class, 'store'])->name('areas.store');
+    Route::delete('/areas/{area}', [AreaController::class, 'destroy'])->name('areas.destroy');
+    Route::get('/areas', [AreaBrowseController::class, 'index'])->name('areas.browse.index');
+    Route::get('/areas/{area}', [AreaBrowseController::class, 'showArea'])->name('areas.browse.area');
+    Route::get('/areas/{area}/divisions/{division}', [AreaBrowseController::class, 'showDivision'])->name('areas.browse.division');
+    Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
 
+    Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
+    Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
+});
     
 });

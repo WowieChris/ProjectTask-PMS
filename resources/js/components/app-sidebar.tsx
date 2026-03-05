@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { Database, LayoutGrid, User } from 'lucide-react';
+import { Database, LayoutGrid, Search, User } from 'lucide-react';
 
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -31,13 +31,18 @@ export function AppSidebar() {
   const { auth } = usePage<PageProps>().props;
   const userRole = auth.user.role;
 
-  const mainNavItems: NavItem[] = [
-    {
-      title: 'Dashboard',
-      href: dashboard().url,
-      icon: LayoutGrid,
-    },
-  ];
+ const mainNavItems: NavItem[] = [
+  {
+    title: 'Dashboard',
+    href: dashboard().url,
+    icon: LayoutGrid,
+  },
+  {
+    title: 'Browse',
+    href: '/areas',
+    icon: Search,
+  },
+];
 
   // ✅ Show admin menus
   if (userRole !== 'user') {
