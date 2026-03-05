@@ -84,12 +84,12 @@ Route::middleware(['auth'])->group(function () {
     });
 Route::middleware(['auth'])->group(function () {
     // Area routes
-    Route::post('/areas', [AreaController::class, 'store'])->name('areas.store');
-    Route::delete('/areas/{area}', [AreaController::class, 'destroy'])->name('areas.destroy');
-    Route::get('/areas', [AreaBrowseController::class, 'index'])->name('areas.browse.index');
-    Route::get('/areas/{area}', [AreaBrowseController::class, 'showArea'])->name('areas.browse.area');
-    Route::get('/areas/{area}/divisions/{division}', [AreaBrowseController::class, 'showDivision'])->name('areas.browse.division');
-    Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
+    // Route::post('/areas', [AreaController::class, 'store'])->name('areas.store');
+    // Route::delete('/areas/{area}', [AreaController::class, 'destroy'])->name('areas.destroy');
+    // Route::get('/areas', [AreaBrowseController::class, 'index'])->name('areas.browse.index');
+    // Route::get('/areas/{area}', [AreaBrowseController::class, 'showArea'])->name('areas.browse.area');
+    // Route::get('/areas/{area}/divisions/{division}', [AreaBrowseController::class, 'showDivision'])->name('areas.browse.division');
+    // Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
 
     Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
     Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');

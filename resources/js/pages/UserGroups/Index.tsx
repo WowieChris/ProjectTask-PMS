@@ -26,9 +26,14 @@ type PageProps = {
   selectedDivision: Division | null;
 
   districts: District[];
+
+  // ✅ add this from controller
+  isFE?: boolean;
 };
 
 export default function UserGroupsIndex(props: PageProps) {
+  const isFE = props.isFE === true;
+
   const userGroups = props.userGroups ?? [];
   const selectedUserGroup = props.selectedUserGroup ?? null;
 
@@ -60,20 +65,14 @@ export default function UserGroupsIndex(props: PageProps) {
     divisionForm.setData('user_group_id', selectedUserGroup?.id ?? '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedUserGroup?.id]);
-const submitDivision = (e: React.FormEvent) => {
-  e.preventDefault();
 
-  divisionForm.setData('user_group_id', selectedUserGroup?.id ?? '');
-
-  divisionForm.post('/divisions', {
-    preserveScroll: true,
-    onSuccess: () => divisionForm.reset('name'),
-  });
-};
-
-  const deleteDivision = (id: number) => {
-    if (!confirm('Delete this Division?')) return;
-    router.delete(`/divisions/${id}`, { preserveScroll: true });
+  const submitDivision = (e: React.FormEvent) => {
+    e.preventDefault();
+    divisionForm.setData('user_group_id', selectedUserGroup?.id ?? '');
+    divisionForm.post('/divisions', {
+      preserveScroll: true,
+      onSuccess: () => divisionForm.reset('name'),
+    });
   };
 
   // RIGHT: districts form (depends on selectedDivision)
@@ -96,11 +95,6 @@ const submitDivision = (e: React.FormEvent) => {
     });
   };
 
-  const deleteDistrict = (id: number) => {
-    if (!confirm('Delete this District?')) return;
-    router.delete(`/districts/${id}`, { preserveScroll: true });
-  };
-
   return (
     <AppLayout
       breadcrumbs={[
@@ -111,91 +105,95 @@ const submitDivision = (e: React.FormEvent) => {
       <Head title="User Groups" />
 
       <div className="grid gap-6 lg:grid-cols-3 p-6">
-        {/* LEFT SIDE */}
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>User Group Entry</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={submitUG} className="flex gap-3">
-                <div className="w-full">
-                  <Input
-                    placeholder="e.g. District 1" 
-                    value={ugForm.data.name}
-                    onChange={(e) => ugForm.setData('name', e.target.value)}
-                  />
-                  {ugForm.errors.name && (
-                    <p className="mt-1 text-sm text-red-500">{ugForm.errors.name}</p>
-                  )}
-                </div>
+        {/* LEFT SIDE - HIDDEN FOR FE */}
+        {!isFE && (
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>User Group Entry</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={submitUG} className="flex gap-3">
+                  <div className="w-full">
+                    <Input
+                      placeholder="e.g. Luzon A"
+                      value={ugForm.data.name}
+                      onChange={(e) => ugForm.setData('name', e.target.value)}
+                    />
+                    {ugForm.errors.name && (
+                      <p className="mt-1 text-sm text-red-500">{ugForm.errors.name}</p>
+                    )}
+                  </div>
 
-                <Button type="submit" disabled={ugForm.processing}>
-                  {ugForm.processing ? 'Saving...' : 'Save'}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+                  <Button type="submit" disabled={ugForm.processing}>
+                    {ugForm.processing ? 'Saving...' : 'Save'}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
 
-          {/* ✅ USERGROUPS TABLE IS CLICKABLE */}
-          <Card>
-            <CardHeader>
-              <CardTitle>User Groups</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead className="w-[160px] text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-
-                <TableBody>
-                  {userGroups.length === 0 ? (
+            {/* ✅ USERGROUPS TABLE IS CLICKABLE */}
+            <Card>
+              <CardHeader>
+                <CardTitle>User Groups</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
                     <TableRow>
-                      <TableCell colSpan={2} className="text-center text-muted-foreground">
-                        No user groups yet.
-                      </TableCell>
+                      <TableHead>Name</TableHead>
+                      <TableHead className="w-[160px] text-right">Actions</TableHead>
                     </TableRow>
-                  ) : (
-                    userGroups.map((ug) => {
-                      const active = selectedUserGroup?.id === ug.id;
+                  </TableHeader>
 
-                      return (
-                        <TableRow key={ug.id} className={active ? 'bg-muted/50' : ''}>
-                          <TableCell className="font-medium w-3/5">
-                            <button
-                              type="button"
-                              onClick={() =>
-                                router.get('/user-groups', { ug: ug.id }, { preserveScroll: true })
-                              }
-                              className="w-full text-left hover:underline"
-                            >
-                              {ug.name}
-                            </button>
-                          </TableCell>
+                  <TableBody>
+                    {userGroups.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={2} className="text-center text-muted-foreground">
+                          No user groups yet.
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      userGroups.map((ug) => {
+                        const active = selectedUserGroup?.id === ug.id;
 
-                          <TableCell className="text-right w-2/5">
-                            <Button variant="destructive" size="sm" onClick={() => deleteUG(ug.id)}>
-                              Delete
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })
-                  )}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </div>
+                        return (
+                          <TableRow key={ug.id} className={active ? 'bg-muted/50' : ''}>
+                            <TableCell className="font-medium w-3/5">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  router.get('/user-groups', { ug: ug.id }, { preserveScroll: true })
+                                }
+                                className="w-full text-left hover:underline"
+                              >
+                                {ug.name}
+                              </button>
+                            </TableCell>
+
+                            <TableCell className="text-right w-2/5">
+                              <Button variant="destructive" size="sm" onClick={() => deleteUG(ug.id)}>
+                                Delete
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                    )}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* RIGHT SIDE */}
-        <div className="space-y-6 col-span-2">
+        <div className={`space-y-6 ${isFE ? 'lg:col-span-3' : 'col-span-2'}`}>
           <Card>
             <CardHeader>
-              <CardTitle>User Group → Divisions → Districts</CardTitle>
+              <CardTitle>
+                {isFE ? 'Divisions → Districts' : 'User Group → Divisions → Districts'}
+              </CardTitle>
             </CardHeader>
 
             <CardContent className="space-y-6 grid grid-cols-2 gap-4">
@@ -205,30 +203,35 @@ const submitDivision = (e: React.FormEvent) => {
                   Divisions {selectedUserGroup ? `for ${selectedUserGroup.name}` : ''}
                 </div>
 
-                {!selectedUserGroup ? (
+                {!isFE && !selectedUserGroup ? (
                   <p className="text-sm text-muted-foreground">
                     Select a User Group (Luzon/Visayas/Mindanao) to view divisions.
                   </p>
                 ) : (
                   <>
-                    <form onSubmit={submitDivision} className="flex gap-3">
-                      <div className="w-full">
-                        <Input
-                          placeholder="e.g. Division 1"
-                          value={divisionForm.data.name}
-                          onChange={(e) => divisionForm.setData('name', e.target.value)}
-                        />
-                        {divisionForm.errors.name && (
-                          <p className="mt-1 text-sm text-red-500">{divisionForm.errors.name}</p>
-                        )}
-                      </div>
-                      <Button type="submit" disabled={divisionForm.processing}>
-                        Add
-                      </Button>
-                    </form>
+                    {/* ✅ hide add form for FE */}
+                    {!isFE && (
+                      <form onSubmit={submitDivision} className="flex gap-3">
+                        <div className="w-full">
+                          <Input
+                            placeholder="e.g. Division 1"
+                            value={divisionForm.data.name}
+                            onChange={(e) => divisionForm.setData('name', e.target.value)}
+                          />
+                          {divisionForm.errors.name && (
+                            <p className="mt-1 text-sm text-red-500">{divisionForm.errors.name}</p>
+                          )}
+                        </div>
+                        <Button type="submit" disabled={divisionForm.processing}>
+                          Add
+                        </Button>
+                      </form>
+                    )}
 
                     {divisions.length === 0 ? (
-                      <p className="text-sm text-muted-foreground">No divisions yet.</p>
+                      <p className="text-sm text-muted-foreground">
+                        {isFE ? 'No assigned division found.' : 'No divisions yet.'}
+                      </p>
                     ) : (
                       <div className="space-y-2">
                         {divisions.map((d) => (
@@ -243,7 +246,9 @@ const submitDivision = (e: React.FormEvent) => {
                               onClick={() =>
                                 router.get(
                                   '/user-groups',
-                                  { ug: selectedUserGroup.id, division: d.id },
+                                  isFE
+                                    ? { division: d.id } // FE can just switch division (if you ever allow multi)
+                                    : { ug: selectedUserGroup?.id, division: d.id },
                                   { preserveScroll: true },
                                 )
                               }
@@ -251,10 +256,6 @@ const submitDivision = (e: React.FormEvent) => {
                             >
                               {d.name}
                             </button>
-
-                            {/* <Button variant="destructive" size="sm" onClick={() => deleteDivision(d.id)}>
-                              Delete
-                            </Button> */}
                           </div>
                         ))}
                       </div>
@@ -273,21 +274,24 @@ const submitDivision = (e: React.FormEvent) => {
                   <p className="text-sm text-muted-foreground">Select a Division to view districts.</p>
                 ) : (
                   <>
-                    <form onSubmit={submitDistrict} className="flex gap-3">
-                      <div className="w-full">
-                        <Input
-                          placeholder="e.g. District 1"
-                          value={districtForm.data.name}
-                          onChange={(e) => districtForm.setData('name', e.target.value)}
-                        />
-                        {districtForm.errors.name && (
-                          <p className="mt-1 text-sm text-red-500">{districtForm.errors.name}</p>
-                        )}
-                      </div>
-                      <Button type="submit" disabled={districtForm.processing}>
-                        Add
-                      </Button>
-                    </form>
+                    {/* ✅ hide add form for FE */}
+                    {!isFE && (
+                      <form onSubmit={submitDistrict} className="flex gap-3">
+                        <div className="w-full">
+                          <Input
+                            placeholder="e.g. District 1"
+                            value={districtForm.data.name}
+                            onChange={(e) => districtForm.setData('name', e.target.value)}
+                          />
+                          {districtForm.errors.name && (
+                            <p className="mt-1 text-sm text-red-500">{districtForm.errors.name}</p>
+                          )}
+                        </div>
+                        <Button type="submit" disabled={districtForm.processing}>
+                          Add
+                        </Button>
+                      </form>
+                    )}
 
                     {districts.length === 0 ? (
                       <p className="text-sm text-muted-foreground">No districts yet.</p>
@@ -296,9 +300,6 @@ const submitDivision = (e: React.FormEvent) => {
                         {districts.map((x) => (
                           <div key={x.id} className="flex items-center justify-between rounded-md border p-2">
                             <span className="font-medium text-sm">{x.name}</span>
-                            {/* <Button variant="destructive" size="sm" onClick={() => deleteDistrict(x.id)}>
-                              Delete
-                            </Button> */}
                           </div>
                         ))}
                       </div>

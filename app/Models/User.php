@@ -62,10 +62,7 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    /**
-     * Get the photos for the user.asdasdf l;
-     */
-    // In app/Models/User.php - this part is already correct
+
     public function photos()
     {
         return $this->hasMany(\App\Models\UserPhoto::class);
@@ -86,4 +83,30 @@ class User extends Authenticatable implements MustVerifyEmail
     // {
     //     return !is_null($this->two_factor_secret);
     // }
+
+    public function userGroups()
+    {
+        return $this->belongsToMany(\App\Models\UserGroup::class, 'user_user_group');
+    }
+
+    public function divisions()
+    {
+        return $this->belongsToMany(\App\Models\Division::class, 'user_division');
+    }
+
+    public function isAdminLike(): bool
+    {
+        $d = $this->designation?->name;
+        return in_array($d, ['Admin', 'Administrator'], true);
+    }
+
+    public function isSfe(): bool
+    {
+        return $this->designation?->name === 'SFE';
+    }
+
+    public function isFe(): bool
+    {
+        return $this->designation?->name === 'FE';
+    }
 }

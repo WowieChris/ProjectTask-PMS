@@ -11,6 +11,11 @@ class UserGroup extends Model
 
     public function areas(): HasMany
     {
-       return $this->hasMany(\App\Models\Area::class);
+        return $this->hasMany(\App\Models\Area::class);
+    }
+
+    public function divisions()
+    {
+        return $this->hasMany(\App\Models\Division::class);
     }
 }
