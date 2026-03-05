@@ -1,9 +1,9 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\DistrictController::store
-* @see app/Http/Controllers/DistrictController.php:10
-* @route '/districts'
-*/
+ * @see app/Http/Controllers/DistrictController.php:10
+ * @route '/districts'
+ */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
     method: 'post',
@@ -16,50 +16,49 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\DistrictController::store
-* @see app/Http/Controllers/DistrictController.php:10
-* @route '/districts'
-*/
+ * @see app/Http/Controllers/DistrictController.php:10
+ * @route '/districts'
+ */
 store.url = (options?: RouteQueryOptions) => {
     return store.definition.url + queryParams(options)
 }
 
 /**
 * @see \App\Http\Controllers\DistrictController::store
-* @see app/Http/Controllers/DistrictController.php:10
-* @route '/districts'
-*/
+ * @see app/Http/Controllers/DistrictController.php:10
+ * @route '/districts'
+ */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
     method: 'post',
 })
 
-/**
+    /**
 * @see \App\Http\Controllers\DistrictController::store
-* @see app/Http/Controllers/DistrictController.php:10
-* @route '/districts'
-*/
-const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: store.url(options),
-    method: 'post',
-})
+ * @see app/Http/Controllers/DistrictController.php:10
+ * @route '/districts'
+ */
+    const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: store.url(options),
+        method: 'post',
+    })
 
-/**
+            /**
 * @see \App\Http\Controllers\DistrictController::store
-* @see app/Http/Controllers/DistrictController.php:10
-* @route '/districts'
-*/
-storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: store.url(options),
-    method: 'post',
-})
-
-store.form = storeForm
-
+ * @see app/Http/Controllers/DistrictController.php:10
+ * @route '/districts'
+ */
+        storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: store.url(options),
+            method: 'post',
+        })
+    
+    store.form = storeForm
 /**
 * @see \App\Http\Controllers\DistrictController::destroy
-* @see app/Http/Controllers/DistrictController.php:30
-* @route '/districts/{district}'
-*/
+ * @see app/Http/Controllers/DistrictController.php:30
+ * @route '/districts/{district}'
+ */
 export const destroy = (args: { district: number | { id: number } } | [district: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
@@ -72,31 +71,31 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\DistrictController::destroy
-* @see app/Http/Controllers/DistrictController.php:30
-* @route '/districts/{district}'
-*/
+ * @see app/Http/Controllers/DistrictController.php:30
+ * @route '/districts/{district}'
+ */
 destroy.url = (args: { district: number | { id: number } } | [district: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { district: args }
     }
 
-    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-        args = { district: args.id }
-    }
-
+            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+            args = { district: args.id }
+        }
+    
     if (Array.isArray(args)) {
         args = {
-            district: args[0],
-        }
+                    district: args[0],
+                }
     }
 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-        district: typeof args.district === 'object'
-        ? args.district.id
-        : args.district,
-    }
+                        district: typeof args.district === 'object'
+                ? args.district.id
+                : args.district,
+                }
 
     return destroy.definition.url
             .replace('{district}', parsedArgs.district.toString())
@@ -105,46 +104,45 @@ destroy.url = (args: { district: number | { id: number } } | [district: number |
 
 /**
 * @see \App\Http\Controllers\DistrictController::destroy
-* @see app/Http/Controllers/DistrictController.php:30
-* @route '/districts/{district}'
-*/
+ * @see app/Http/Controllers/DistrictController.php:30
+ * @route '/districts/{district}'
+ */
 destroy.delete = (args: { district: number | { id: number } } | [district: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
 
-/**
+    /**
 * @see \App\Http\Controllers\DistrictController::destroy
-* @see app/Http/Controllers/DistrictController.php:30
-* @route '/districts/{district}'
-*/
-const destroyForm = (args: { district: number | { id: number } } | [district: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: destroy.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'DELETE',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'post',
-})
+ * @see app/Http/Controllers/DistrictController.php:30
+ * @route '/districts/{district}'
+ */
+    const destroyForm = (args: { district: number | { id: number } } | [district: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: destroy.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'DELETE',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
 
-/**
+            /**
 * @see \App\Http\Controllers\DistrictController::destroy
-* @see app/Http/Controllers/DistrictController.php:30
-* @route '/districts/{district}'
-*/
-destroyForm.delete = (args: { district: number | { id: number } } | [district: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: destroy.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'DELETE',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'post',
-})
-
-destroy.form = destroyForm
-
+ * @see app/Http/Controllers/DistrictController.php:30
+ * @route '/districts/{district}'
+ */
+        destroyForm.delete = (args: { district: number | { id: number } } | [district: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: destroy.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'DELETE',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    destroy.form = destroyForm
 const DistrictController = { store, destroy }
 
 export default DistrictController
