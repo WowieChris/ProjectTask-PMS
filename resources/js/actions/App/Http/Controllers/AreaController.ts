@@ -1,5 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
-import browse from './browse'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\AreaController::store
 * @see app/Http/Controllers/AreaController.php:10
@@ -146,10 +145,6 @@ destroyForm.delete = (args: { area: number | { id: number } } | [area: number | 
 
 destroy.form = destroyForm
 
-const areas = {
-    store: Object.assign(store, store),
-    destroy: Object.assign(destroy, destroy),
-    browse: Object.assign(browse, browse),
-}
+const AreaController = { store, destroy }
 
-export default areas
+export default AreaController
