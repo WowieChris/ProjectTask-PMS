@@ -8,6 +8,6 @@ class BrowseController extends Controller
 {
     public function index()
     {
-        return Inertia::render('browse/index');
+        return Inertia::render('Browse/Index');
     }
 }

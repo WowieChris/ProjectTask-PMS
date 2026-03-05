@@ -4,6 +4,9 @@
  */
 
 import React, { useState, useMemo } from 'react';
+import { Head } from '@inertiajs/react';
+// import type { BreadcrumbItem } from '@/types';
+// import { dashboard } from '@/routes';
 import { 
   ChevronRight, 
   Search, 
@@ -20,6 +23,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import AppLayout from '@/layouts/app-layout';
 
 // --- Types ---
 
@@ -128,11 +132,14 @@ export default function App() {
     if (item.level === 'district') handleLevelChange('area', item.id);
     else if (item.level === 'area') handleLevelChange('branch', item.id);
   };
+ 
 
   // --- Components ---
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] text-slate-900 font-sans flex flex-col">
+    <AppLayout>
+      <Head title="Browse Locations" />
+    <div className="min-h-screen bg-[#F8F9FA] text-slate-900 font-sans flex flex-col overflow-y-auto">
       {/* Header */}
       <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shrink-0">
         <div className="flex items-center gap-3">
@@ -556,5 +563,6 @@ export default function App() {
         </div>
       </main>
     </div>
+    </AppLayout>
   );
 }
