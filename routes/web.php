@@ -6,6 +6,10 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
+use App\Http\Controllers\AreaBrowseController;
+use App\Http\Controllers\AreaController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\UserGroupController;
@@ -15,6 +19,21 @@ Route::get('/', function () {
         'canRegister' => Features::enabled(Features::registration()),
     ]);
 })->name('home');
+
+// Inertia confirm-password routes (override Fortify default views)
+Route::get('/user/confirm-password', function (Request $request) {
+    return Inertia::render('auth/confirm-password');
+})->middleware(['auth'])->name('password.confirm');
+
+Route::post('/user/confirm-password', function (Request $request) {
+    $request->validate([
+        'password' => ['required', 'current_password'],
+    ]);
+
+    $request->session()->put('auth.password_confirmed_at', Date::now()->unix());
+
+    return redirect()->intended('/');
+})->middleware(['auth'])->name('password.confirm.store');
 
 /**
  * Authenticated routes
