@@ -93,7 +93,7 @@ export default function UsersCreate() {
                                     {errors.email && <p className="text-red-500">{errors.email}</p>}
                                 </div>
                               
-                                    <div>
+                                    {/* <div>
                                     <Label htmlFor="password">Password</Label>
                                     <Input
                                         id="password"
@@ -106,10 +106,10 @@ export default function UsersCreate() {
                                         required
                                     />
                                     {errors.password && <p className="text-red-500">{errors.password}</p>}
-                                </div>
+                                </div> */}
                                                                          
-                                <div className='flex flex-row gap-2'>
-                                    <div>
+                                <div className='flex flex-row gap-4 w-full'>
+                                    <div className='w-full'>
                                         <Label htmlFor="employee_id">ID Number</Label>
                                         <Input
                                             id="employee_id"
@@ -123,7 +123,7 @@ export default function UsersCreate() {
                                         />
                                         {errors.employee_id && <p className="text-red-500">{errors.employee_id}</p>}
                                     </div>    
-                                    <div>
+                                    {/* <div>
                                         <Label htmlFor="date_employed">Date Employed</Label>
                                         <Input 
                                         name="date_employed"
@@ -131,9 +131,8 @@ export default function UsersCreate() {
                                         type="date" value={data.date_employed} onChange={(e) => setData('date_employed', e.target.value)} 
                                         />
                                             {errors.date_employed && <p className="text-red-500">{errors.date_employed}</p>}
-                                    </div>
-                                </div>
-                                <div>
+                                    </div> */}
+                                    <div className='w-full'>
                                     <Label htmlFor="role">Role</Label>
                                     <Input type="hidden" name="role" value={data.role} required />
                                     <Select value={data.role} onValueChange={(value) => setData('role', value)}>
@@ -148,6 +147,8 @@ export default function UsersCreate() {
                                     {errors.role && <p className="text-red-500">{errors.role}</p>}
                                     
                                 </div>
+                                </div>
+                                
                                 <div>
                                         <Label htmlFor="designation">Designation</Label>
                                         <Input type="hidden" name="designation" value={data.designation || ''} required />
@@ -167,7 +168,7 @@ export default function UsersCreate() {
                                 </div>
                                 
                             
-                                <div>
+                                {/* <div>
                                     <Label htmlFor="location">Location</Label>
                                     <Input type="hidden" name="location" value={data.location} required />
                                     <Select value={data.location} onValueChange={(value) => setData('location', value)}>
@@ -203,8 +204,9 @@ export default function UsersCreate() {
                                         {errors.district && <p className="text-red-500">{errors.district}</p>}
                                     </div>
                                 )}
+                                */}
                                 
-                            </div>    
+                            </div>     
                                <div className='flex gap-4'>
                                     <Button type="submit" disabled={processing}>
                                         Create
