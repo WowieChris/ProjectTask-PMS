@@ -33,8 +33,9 @@ return [
         // Features::registration(),
         // Features::resetPasswords(),
         Features::emailVerification(),
+        // Using the app's custom OTP flow, disable Fortify's built-in two-factor
+        // Features::twoFactorAuthentication(),
         // Features::updateProfileInformation(),
         // Features::updatePasswords(),
-        // Features::twoFactorAuthentication(),
     ],
 ];

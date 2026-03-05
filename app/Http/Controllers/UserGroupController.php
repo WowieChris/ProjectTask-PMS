@@ -1,8 +1,70 @@
 <?php
 
+// namespace App\Http\Controllers;
+
+// use App\Models\Area;
+// use App\Models\District;
+// use App\Models\Division;
+// use App\Models\UserGroup;
+// use Illuminate\Http\Request;
+// use Inertia\Inertia;
+
+// class UserGroupController extends Controller
+// {
+//     public function index(Request $request)
+// {
+//     $ugId = $request->integer('ug');
+//     $divisionId = $request->integer('division');
+
+//     $userGroups = UserGroup::orderBy('name')->get(['id','name']);
+
+//     $selectedUserGroup = $ugId ? UserGroup::find($ugId, ['id','name']) : null;
+
+//    $ugId = $request->integer('ug');
+
+// $divisions = $ugId
+//   ? Division::where('user_group_id', $ugId)->orderBy('name')->get(['id','user_group_id','name'])
+//   : collect();
+
+//     if ($divisionId && !$divisions->contains('id', $divisionId)) {
+//         $divisionId = null;
+//     }
+
+//     $selectedDivision = $divisionId ? Division::find($divisionId, ['id','user_group_id','name']) : null;
+
+//     $districts = $divisionId
+//         ? District::where('division_id', $divisionId)->orderBy('name')->get(['id','division_id','name'])
+//         : collect();
+
+//     return Inertia::render('UserGroups/Index', [
+//         'userGroups' => $userGroups,
+//         'selectedUserGroup' => $selectedUserGroup,
+//         'divisions' => $divisions,
+//         'selectedDivision' => $selectedDivision,
+//         'districts' => $districts,
+//     ]);
+// }
+//     public function store(Request $request)
+//     {
+//         $data = $request->validate([
+//             'name' => ['required','string','max:255','unique:user_groups,name'],
+//         ]);
+
+//         UserGroup::create($data);
+
+//         return back()->with('success', 'User Group saved.');
+//     }
+
+//     public function destroy(UserGroup $userGroup)
+//     {
+//         $userGroup->delete();
+//         return back()->with('success', 'User Group deleted.');
+//     }
+// }
+
+
 namespace App\Http\Controllers;
 
-use App\Models\Area;
 use App\Models\District;
 use App\Models\Division;
 use App\Models\UserGroup;
@@ -12,42 +74,89 @@ use Inertia\Inertia;
 class UserGroupController extends Controller
 {
     public function index(Request $request)
-{
-    $ugId = $request->integer('ug');
-    $divisionId = $request->integer('division');
+    {
+        $user = $request->user();
 
-    $userGroups = UserGroup::orderBy('name')->get(['id','name']);
+        // FE RULE: only their assigned division + districts
+        if ($user && strtolower((string)$user->designation) === 'field engineer') {
 
-    $selectedUserGroup = $ugId ? UserGroup::find($ugId, ['id','name']) : null;
+            $divisionId = $user->division_id;
 
-   $ugId = $request->integer('ug');
+            // If FE has no assigned division, show empty
+            if (!$divisionId) {
+                return Inertia::render('UserGroups/Index', [
+                    'userGroups' => collect(),          // hide
+                    'selectedUserGroup' => null,
+                    'divisions' => collect(),
+                    'selectedDivision' => null,
+                    'districts' => collect(),
+                    'isFE' => true,
+                ]);
+            }
 
-$divisions = $ugId
-  ? Division::where('user_group_id', $ugId)->orderBy('name')->get(['id','user_group_id','name'])
-  : collect();
+            $division = Division::with('userGroup')
+                ->find($divisionId, ['id', 'user_group_id', 'name']);
 
-    if ($divisionId && !$divisions->contains('id', $divisionId)) {
-        $divisionId = null;
+            if (!$division) abort(403);
+
+            $divisions = collect([$division]);
+
+            $districts = District::where('division_id', $division->id)
+                ->orderBy('name')
+                ->get(['id', 'division_id', 'name']);
+
+            return Inertia::render('UserGroups/Index', [
+                'userGroups' => collect(),          // hide list
+                'selectedUserGroup' => null,
+                'divisions' => $divisions,
+                'selectedDivision' => $division,    // auto-selected
+                'districts' => $districts,
+                'isFE' => true,
+            ]);
+        }
+
+        // NORMAL (Admin / others)
+        $ugId = $request->integer('ug');
+        $divisionId = $request->integer('division');
+
+        $userGroups = UserGroup::orderBy('name')->get(['id', 'name']);
+
+        $selectedUserGroup = null;
+        if ($ugId) {
+            $selectedUserGroup = UserGroup::whereKey($ugId)->first(['id', 'name']);
+            if (!$selectedUserGroup) $ugId = null;
+        }
+
+        $divisions = $ugId
+            ? Division::where('user_group_id', $ugId)->orderBy('name')->get(['id', 'user_group_id', 'name'])
+            : collect();
+
+        if ($divisionId && !$divisions->contains('id', $divisionId)) {
+            $divisionId = null;
+        }
+
+        $selectedDivision = $divisionId
+            ? Division::whereKey($divisionId)->first(['id', 'user_group_id', 'name'])
+            : null;
+
+        $districts = $divisionId
+            ? District::where('division_id', $divisionId)->orderBy('name')->get(['id', 'division_id', 'name'])
+            : collect();
+
+        return Inertia::render('UserGroups/Index', [
+            'userGroups' => $userGroups,
+            'selectedUserGroup' => $selectedUserGroup,
+            'divisions' => $divisions,
+            'selectedDivision' => $selectedDivision,
+            'districts' => $districts,
+            'isFE' => false,
+        ]);
     }
 
-    $selectedDivision = $divisionId ? Division::find($divisionId, ['id','user_group_id','name']) : null;
-
-    $districts = $divisionId
-        ? District::where('division_id', $divisionId)->orderBy('name')->get(['id','division_id','name'])
-        : collect();
-
-    return Inertia::render('UserGroups/Index', [
-        'userGroups' => $userGroups,
-        'selectedUserGroup' => $selectedUserGroup,
-        'divisions' => $divisions,
-        'selectedDivision' => $selectedDivision,
-        'districts' => $districts,
-    ]);
-}
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => ['required','string','max:255','unique:user_groups,name'],
+            'name' => ['required', 'string', 'max:255', 'unique:user_groups,name'],
         ]);
 
         UserGroup::create($data);

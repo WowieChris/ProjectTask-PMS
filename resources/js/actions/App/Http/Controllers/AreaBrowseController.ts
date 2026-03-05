@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\AreaBrowseController::index
 * @see app/Http/Controllers/AreaBrowseController.php:13
@@ -81,26 +81,26 @@ indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 index.form = indexForm
 
 /**
-* @see \App\Http\Controllers\AreaBrowseController::area
+* @see \App\Http\Controllers\AreaBrowseController::showArea
 * @see app/Http/Controllers/AreaBrowseController.php:25
 * @route '/areas/{area}'
 */
-export const area = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: area.url(args, options),
+export const showArea = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: showArea.url(args, options),
     method: 'get',
 })
 
-area.definition = {
+showArea.definition = {
     methods: ["get","head"],
     url: '/areas/{area}',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Http\Controllers\AreaBrowseController::area
+* @see \App\Http\Controllers\AreaBrowseController::showArea
 * @see app/Http/Controllers/AreaBrowseController.php:25
 * @route '/areas/{area}'
 */
-area.url = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+showArea.url = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { area: args }
     }
@@ -123,58 +123,58 @@ area.url = (args: { area: number | { id: number } } | [area: number | { id: numb
         : args.area,
     }
 
-    return area.definition.url
+    return showArea.definition.url
             .replace('{area}', parsedArgs.area.toString())
             .replace(/\/+$/, '') + queryParams(options)
 }
 
 /**
-* @see \App\Http\Controllers\AreaBrowseController::area
+* @see \App\Http\Controllers\AreaBrowseController::showArea
 * @see app/Http/Controllers/AreaBrowseController.php:25
 * @route '/areas/{area}'
 */
-area.get = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: area.url(args, options),
+showArea.get = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: showArea.url(args, options),
     method: 'get',
 })
 
 /**
-* @see \App\Http\Controllers\AreaBrowseController::area
+* @see \App\Http\Controllers\AreaBrowseController::showArea
 * @see app/Http/Controllers/AreaBrowseController.php:25
 * @route '/areas/{area}'
 */
-area.head = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: area.url(args, options),
+showArea.head = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: showArea.url(args, options),
     method: 'head',
 })
 
 /**
-* @see \App\Http\Controllers\AreaBrowseController::area
+* @see \App\Http\Controllers\AreaBrowseController::showArea
 * @see app/Http/Controllers/AreaBrowseController.php:25
 * @route '/areas/{area}'
 */
-const areaForm = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: area.url(args, options),
+const showAreaForm = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: showArea.url(args, options),
     method: 'get',
 })
 
 /**
-* @see \App\Http\Controllers\AreaBrowseController::area
+* @see \App\Http\Controllers\AreaBrowseController::showArea
 * @see app/Http/Controllers/AreaBrowseController.php:25
 * @route '/areas/{area}'
 */
-areaForm.get = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: area.url(args, options),
+showAreaForm.get = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: showArea.url(args, options),
     method: 'get',
 })
 
 /**
-* @see \App\Http\Controllers\AreaBrowseController::area
+* @see \App\Http\Controllers\AreaBrowseController::showArea
 * @see app/Http/Controllers/AreaBrowseController.php:25
 * @route '/areas/{area}'
 */
-areaForm.head = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: area.url(args, {
+showAreaForm.head = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: showArea.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -183,29 +183,29 @@ areaForm.head = (args: { area: number | { id: number } } | [area: number | { id:
     method: 'get',
 })
 
-area.form = areaForm
+showArea.form = showAreaForm
 
 /**
-* @see \App\Http\Controllers\AreaBrowseController::division
+* @see \App\Http\Controllers\AreaBrowseController::showDivision
 * @see app/Http/Controllers/AreaBrowseController.php:39
 * @route '/areas/{area}/divisions/{division}'
 */
-export const division = (args: { area: number | { id: number }, division: number | { id: number } } | [area: number | { id: number }, division: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: division.url(args, options),
+export const showDivision = (args: { area: number | { id: number }, division: number | { id: number } } | [area: number | { id: number }, division: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: showDivision.url(args, options),
     method: 'get',
 })
 
-division.definition = {
+showDivision.definition = {
     methods: ["get","head"],
     url: '/areas/{area}/divisions/{division}',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Http\Controllers\AreaBrowseController::division
+* @see \App\Http\Controllers\AreaBrowseController::showDivision
 * @see app/Http/Controllers/AreaBrowseController.php:39
 * @route '/areas/{area}/divisions/{division}'
 */
-division.url = (args: { area: number | { id: number }, division: number | { id: number } } | [area: number | { id: number }, division: number | { id: number } ], options?: RouteQueryOptions) => {
+showDivision.url = (args: { area: number | { id: number }, division: number | { id: number } } | [area: number | { id: number }, division: number | { id: number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
             area: args[0],
@@ -224,59 +224,59 @@ division.url = (args: { area: number | { id: number }, division: number | { id: 
         : args.division,
     }
 
-    return division.definition.url
+    return showDivision.definition.url
             .replace('{area}', parsedArgs.area.toString())
             .replace('{division}', parsedArgs.division.toString())
             .replace(/\/+$/, '') + queryParams(options)
 }
 
 /**
-* @see \App\Http\Controllers\AreaBrowseController::division
+* @see \App\Http\Controllers\AreaBrowseController::showDivision
 * @see app/Http/Controllers/AreaBrowseController.php:39
 * @route '/areas/{area}/divisions/{division}'
 */
-division.get = (args: { area: number | { id: number }, division: number | { id: number } } | [area: number | { id: number }, division: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: division.url(args, options),
+showDivision.get = (args: { area: number | { id: number }, division: number | { id: number } } | [area: number | { id: number }, division: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: showDivision.url(args, options),
     method: 'get',
 })
 
 /**
-* @see \App\Http\Controllers\AreaBrowseController::division
+* @see \App\Http\Controllers\AreaBrowseController::showDivision
 * @see app/Http/Controllers/AreaBrowseController.php:39
 * @route '/areas/{area}/divisions/{division}'
 */
-division.head = (args: { area: number | { id: number }, division: number | { id: number } } | [area: number | { id: number }, division: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: division.url(args, options),
+showDivision.head = (args: { area: number | { id: number }, division: number | { id: number } } | [area: number | { id: number }, division: number | { id: number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: showDivision.url(args, options),
     method: 'head',
 })
 
 /**
-* @see \App\Http\Controllers\AreaBrowseController::division
+* @see \App\Http\Controllers\AreaBrowseController::showDivision
 * @see app/Http/Controllers/AreaBrowseController.php:39
 * @route '/areas/{area}/divisions/{division}'
 */
-const divisionForm = (args: { area: number | { id: number }, division: number | { id: number } } | [area: number | { id: number }, division: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: division.url(args, options),
+const showDivisionForm = (args: { area: number | { id: number }, division: number | { id: number } } | [area: number | { id: number }, division: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: showDivision.url(args, options),
     method: 'get',
 })
 
 /**
-* @see \App\Http\Controllers\AreaBrowseController::division
+* @see \App\Http\Controllers\AreaBrowseController::showDivision
 * @see app/Http/Controllers/AreaBrowseController.php:39
 * @route '/areas/{area}/divisions/{division}'
 */
-divisionForm.get = (args: { area: number | { id: number }, division: number | { id: number } } | [area: number | { id: number }, division: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: division.url(args, options),
+showDivisionForm.get = (args: { area: number | { id: number }, division: number | { id: number } } | [area: number | { id: number }, division: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: showDivision.url(args, options),
     method: 'get',
 })
 
 /**
-* @see \App\Http\Controllers\AreaBrowseController::division
+* @see \App\Http\Controllers\AreaBrowseController::showDivision
 * @see app/Http/Controllers/AreaBrowseController.php:39
 * @route '/areas/{area}/divisions/{division}'
 */
-divisionForm.head = (args: { area: number | { id: number }, division: number | { id: number } } | [area: number | { id: number }, division: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: division.url(args, {
+showDivisionForm.head = (args: { area: number | { id: number }, division: number | { id: number } } | [area: number | { id: number }, division: number | { id: number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: showDivision.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -285,12 +285,8 @@ divisionForm.head = (args: { area: number | { id: number }, division: number | {
     method: 'get',
 })
 
-division.form = divisionForm
+showDivision.form = showDivisionForm
 
-const browse = {
-    index: Object.assign(index, index),
-    area: Object.assign(area, area),
-    division: Object.assign(division, division),
-}
+const AreaBrowseController = { index, showArea, showDivision }
 
-export default browse
+export default AreaBrowseController
