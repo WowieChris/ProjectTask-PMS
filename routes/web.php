@@ -6,6 +6,10 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
+use App\Http\Controllers\AreaBrowseController;
+use App\Http\Controllers\AreaController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\UserGroupController;
@@ -16,6 +20,21 @@ Route::get('/', function () {
         'canRegister' => Features::enabled(Features::registration()),
     ]);
 })->name('home');
+
+// Inertia confirm-password routes (override Fortify default views)
+Route::get('/user/confirm-password', function (Request $request) {
+    return Inertia::render('auth/confirm-password');
+})->middleware(['auth'])->name('password.confirm');
+
+Route::post('/user/confirm-password', function (Request $request) {
+    $request->validate([
+        'password' => ['required', 'current_password'],
+    ]);
+
+    $request->session()->put('auth.password_confirmed_at', Date::now()->unix());
+
+    return redirect()->intended('/');
+})->middleware(['auth'])->name('password.confirm.store');
 
 /**
  * Authenticated routes
@@ -66,12 +85,12 @@ Route::middleware(['auth'])->group(function () {
     });
 Route::middleware(['auth'])->group(function () {
     // Area routes
-    Route::post('/areas', [AreaController::class, 'store'])->name('areas.store');
-    Route::delete('/areas/{area}', [AreaController::class, 'destroy'])->name('areas.destroy');
-    Route::get('/areas', [AreaBrowseController::class, 'index'])->name('areas.browse.index');
-    Route::get('/areas/{area}', [AreaBrowseController::class, 'showArea'])->name('areas.browse.area');
-    Route::get('/areas/{area}/divisions/{division}', [AreaBrowseController::class, 'showDivision'])->name('areas.browse.division');
-    Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
+    // Route::post('/areas', [AreaController::class, 'store'])->name('areas.store');
+    // Route::delete('/areas/{area}', [AreaController::class, 'destroy'])->name('areas.destroy');
+    // Route::get('/areas', [AreaBrowseController::class, 'index'])->name('areas.browse.index');
+    // Route::get('/areas/{area}', [AreaBrowseController::class, 'showArea'])->name('areas.browse.area');
+    // Route::get('/areas/{area}/divisions/{division}', [AreaBrowseController::class, 'showDivision'])->name('areas.browse.division');
+    // Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
 
     Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
     Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
