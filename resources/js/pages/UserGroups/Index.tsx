@@ -110,7 +110,7 @@ const submitDivision = (e: React.FormEvent) => {
     >
       <Head title="User Groups" />
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-3 p-6">
         {/* LEFT SIDE */}
         <div className="space-y-6">
           <Card>
@@ -164,7 +164,7 @@ const submitDivision = (e: React.FormEvent) => {
 
                       return (
                         <TableRow key={ug.id} className={active ? 'bg-muted/50' : ''}>
-                          <TableCell className="font-medium">
+                          <TableCell className="font-medium w-3/5">
                             <button
                               type="button"
                               onClick={() =>
@@ -176,7 +176,7 @@ const submitDivision = (e: React.FormEvent) => {
                             </button>
                           </TableCell>
 
-                          <TableCell className="text-right">
+                          <TableCell className="text-right w-2/5">
                             <Button variant="destructive" size="sm" onClick={() => deleteUG(ug.id)}>
                               Delete
                             </Button>
@@ -192,15 +192,15 @@ const submitDivision = (e: React.FormEvent) => {
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="space-y-6">
+        <div className="space-y-6 col-span-2">
           <Card>
             <CardHeader>
               <CardTitle>User Group → Divisions → Districts</CardTitle>
             </CardHeader>
 
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 grid grid-cols-2 gap-4">
               {/* DIVISIONS */}
-              <div className="space-y-3">
+              <div className="space-y-3 border-r pr-4">
                 <div className="text-sm font-semibold">
                   Divisions {selectedUserGroup ? `for ${selectedUserGroup.name}` : ''}
                 </div>
@@ -252,9 +252,9 @@ const submitDivision = (e: React.FormEvent) => {
                               {d.name}
                             </button>
 
-                            <Button variant="destructive" size="sm" onClick={() => deleteDivision(d.id)}>
+                            {/* <Button variant="destructive" size="sm" onClick={() => deleteDivision(d.id)}>
                               Delete
-                            </Button>
+                            </Button> */}
                           </div>
                         ))}
                       </div>
@@ -294,11 +294,11 @@ const submitDivision = (e: React.FormEvent) => {
                     ) : (
                       <div className="space-y-2">
                         {districts.map((x) => (
-                          <div key={x.id} className="flex items-center justify-between rounded-md border p-3">
-                            <span className="font-medium">{x.name}</span>
-                            <Button variant="destructive" size="sm" onClick={() => deleteDistrict(x.id)}>
+                          <div key={x.id} className="flex items-center justify-between rounded-md border p-2">
+                            <span className="font-medium text-sm">{x.name}</span>
+                            {/* <Button variant="destructive" size="sm" onClick={() => deleteDistrict(x.id)}>
                               Delete
-                            </Button>
+                            </Button> */}
                           </div>
                         ))}
                       </div>
