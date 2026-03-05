@@ -12,7 +12,7 @@ class AreaBrowseController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Areas/Browse', [
+        return Inertia::render('/Browse', [
             'userGroups' => UserGroup::orderBy('name')->get(['id','name']),
             'areas' => Area::with('userGroup')->orderBy('name')->get(['id','user_group_id','name']),
             'selectedArea' => null,
@@ -26,7 +26,7 @@ class AreaBrowseController extends Controller
     {
         $area->load('userGroup');
 
-        return Inertia::render('Areas/Browse', [
+        return Inertia::render('/Browse', [
             'userGroups' => UserGroup::orderBy('name')->get(['id','name']),
             'areas' => Area::with('userGroup')->orderBy('name')->get(['id','user_group_id','name']),
             'selectedArea' => $area->only(['id','name','user_group_id']),
@@ -41,7 +41,7 @@ class AreaBrowseController extends Controller
         // Safety: division must belong to area
         abort_unless($division->area_id === $area->id, 404);
 
-        return Inertia::render('Areas/Browse', [
+        return Inertia::render('/Browse', [
             'userGroups' => UserGroup::orderBy('name')->get(['id','name']),
             'areas' => Area::with('userGroup')->orderBy('name')->get(['id','user_group_id','name']),
             'selectedArea' => $area->only(['id','name','user_group_id']),

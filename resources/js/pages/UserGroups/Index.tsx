@@ -296,9 +296,9 @@ export default function UserGroupsIndex(props: PageProps) {
                     {districts.length === 0 ? (
                       <p className="text-sm text-muted-foreground">No districts yet.</p>
                     ) : (
-                      <div className="space-y-2">
+                      <div className="border-t">
                         {districts.map((x) => (
-                          <div key={x.id} className="flex items-center justify-between rounded-md border p-2">
+                          <div key={x.id} className="flex items-center justify-between border-b p-1">
                             <span className="font-medium text-sm">{x.name}</span>
                           </div>
                         ))}
