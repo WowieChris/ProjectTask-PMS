@@ -14,8 +14,18 @@ class Division extends Model
         return $this->belongsTo(Area::class);
     }
 
+    // public function districts()
+    // {
+    //     return $this->hasMany(District::class);
+    // }
+
+    public function userGroup()
+    {
+        return $this->belongsTo(\App\Models\UserGroup::class);
+    }
+
     public function districts()
     {
-        return $this->hasMany(District::class);
+        return $this->hasMany(\App\Models\District::class);
     }
 }
