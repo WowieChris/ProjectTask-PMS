@@ -135,7 +135,6 @@ export default function App() {
     else if (item.level === 'area') handleLevelChange('branch', item.id);
   };
  
-
   // --- Components ---
 
   return (
@@ -355,19 +354,10 @@ export default function App() {
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-widest">
                       <Edit3 size={14} />
-                      Editing {editingItem.level}
+                      Viewing {editingItem.level}
                     </div>
                     <h2 className="text-3xl font-bold text-foreground">{editingItem.name}</h2>
-                    <p className="text-muted-foreground">Manage details and hierarchy for this location.</p>
-                  </div>
-                  <div className="flex gap-3">
-                    <button className="px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted rounded-xl transition-colors">
-                      Cancel
-                    </button>
-                    <button className="flex items-center gap-2 rounded-xl bg-primary px-6 py-2 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90">
-                      <Save size={16} />
-                      Save Changes
-                    </button>
+                    <p className="text-muted-foreground">View details and hierarchy for this location.</p>
                   </div>
                 </div>
 
@@ -375,12 +365,13 @@ export default function App() {
                 <div className="bg-card rounded-3xl border border-border shadow-sm overflow-hidden">
                   <div className="p-8 grid grid-cols-2 gap-8">
                     <div className="space-y-2">
-                      <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">
-                        {editingItem.level === 'branch' ? 'Branch Name' : 'Location Name'}
+                      <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest capitalize">
+                        {editingItem.level}
                       </label>
                       <input 
                         type="text" 
-                        defaultValue={editingItem.name}
+                        readOnly
+                        value={editingItem.name}
                         className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
                       />
                     </div>
@@ -390,32 +381,68 @@ export default function App() {
                       </label>
                       <input 
                         type="text" 
-                        defaultValue={editingItem.code}
+                        readOnly
+                        value={editingItem.code}
                         className="w-full rounded-xl border border-input bg-background px-4 py-3 font-mono text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
                       />
                     </div>
-                    {editingItem.level === 'branch' ? (
+                    
+                    {/* Hierarchy Bases */}
+                    {(() => {
+                      const area = editingItem.level === 'branch' ? MOCK_DATA.find(i => i.id === editingItem.parentId) : null;
+                      const district = editingItem.level === 'area' ? MOCK_DATA.find(i => i.id === editingItem.parentId) : 
+                                      (editingItem.level === 'branch' && area ? MOCK_DATA.find(i => i.id === area.parentId) : null);
+                      const division = editingItem.level === 'district' ? MOCK_DATA.find(i => i.id === editingItem.parentId) :
+                                      (district ? MOCK_DATA.find(i => i.id === district.parentId) : null);
+
+                      return (
+                        <div className="col-span-2 grid grid-flow-col auto-cols gap-4">
+                          {division && (
+                            <div className="space-y-2">
+                              <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Division Base</label>
+                              <input 
+                                type="text" 
+                                readOnly
+                                value={division.name}
+                                className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
+                              />
+                            </div>
+                          )}
+                          {district && (
+                            <div className="space-y-2">
+                              <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">District Base</label>
+                              <input 
+                                type="text" 
+                                readOnly
+                                value={district.name}
+                                className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
+                              />
+                            </div>
+                          )}
+                          {area && (
+                            <div className="space-y-2">
+                              <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Area Base</label>
+                              <input 
+                                type="text" 
+                                readOnly
+                                value={area.name}
+                                className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
+
+                    {editingItem.level === 'branch' && (
                       <div className="space-y-2 col-span-2">
                         <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Address</label>
                         <textarea 
-                          defaultValue={editingItem.address}
+                          readOnly
+                          value={editingItem.address}
                           rows={2}
                           className="w-full resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
                         />
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Status</label>
-                        <div className="flex items-center gap-4 pt-2">
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="status" defaultChecked={editingItem.status === 'active'} className="w-4 h-4 text-indigo-600 focus:ring-indigo-500" />
-                            <span className="text-sm font-medium text-foreground">Active</span>
-                          </label>
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="status" defaultChecked={editingItem.status === 'inactive'} className="w-4 h-4 text-indigo-600 focus:ring-indigo-500" />
-                            <span className="text-sm font-medium text-foreground">Inactive</span>
-                          </label>
-                        </div>
                       </div>
                     )}
                   </div>
@@ -431,19 +458,13 @@ export default function App() {
                          'Branch Details'} 
                         {editingItem.level !== 'branch' && ` (${MOCK_DATA.filter(a => a.parentId === editingItem.id).length})`}
                       </h3>
-                      {editingItem.level !== 'branch' && (
-                        <button className="text-xs font-bold text-primary hover:opacity-90 flex items-center gap-1">
-                          <Plus size={14} />
-                          Add {editingItem.level === 'district' ? 'Area' : 'Branch'}
-                        </button>
-                      )}
                     </div>
                     
                     <div className="grid grid-cols-1 gap-4">
                       {editingItem.level === 'branch' ? (
                         <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm p-6 space-y-6">
                           <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center">
+                            <div className="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center">
                               <Building2 size={24} />
                             </div>
                             <div>
@@ -485,7 +506,7 @@ export default function App() {
                               </div>
                               <div className="flex items-center gap-2">
                                 <span className={`text-[10px] font-bold px-2 py-1 rounded-md uppercase ${
-                                  child.status === 'active' ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-200' : 'bg-muted text-muted-foreground'
+                                  child.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 'bg-muted text-muted-foreground'
                                 }`}>
                                   {child.status}
                                 </span>
@@ -514,42 +535,15 @@ export default function App() {
                                       </div>
                                     </div>
                                   ))}
-                                  <button className="flex items-center justify-center gap-2 p-3 border border-dashed border-border rounded-xl text-xs font-medium text-muted-foreground hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-all">
-                                    <Plus size={14} />
-                                    Add Branch
-                                  </button>
                                 </div>
                               </div>
                             )}
                           </div>
                         ))
                       )}
-                      
-                      {editingItem.level !== 'branch' && (
-                        <button className="w-full py-6 border-2 border-dashed border-border rounded-2xl flex flex-col items-center justify-center gap-2 text-muted-foreground hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-all group">
-                          <div className="w-10 h-10 rounded-full border-2 border-dashed border-border flex items-center justify-center group-hover:border-primary/40 group-hover:bg-primary/10 transition-all">
-                            <Plus size={20} className="group-hover:scale-110 transition-transform" />
-                          </div>
-                          <span className="font-bold text-sm">Assign New {editingItem.level === 'district' ? 'Area' : 'Branch'} to {editingItem.name}</span>
-                        </button>
-                      )}
                     </div>
                   </div>
                 )}
-
-                {/* Danger Zone */}
-                <div className="pt-8 border-t border-border">
-                  <div className="bg-destructive/10 rounded-2xl p-6 flex items-center justify-between border border-destructive/20">
-                    <div>
-                      <h4 className="text-sm font-bold text-destructive">Danger Zone</h4>
-                      <p className="text-xs text-destructive/80">Deleting this location will affect all child entities in the hierarchy.</p>
-                    </div>
-                    <button className="flex items-center gap-2 px-4 py-2 bg-card text-destructive border border-destructive/30 rounded-xl text-xs font-bold hover:bg-destructive hover:text-destructive-foreground transition-all shadow-sm">
-                      <Trash2 size={14} />
-                      Delete {editingItem.level}
-                    </button>
-                  </div>
-                </div>
               </motion.div>
             ) : (
               <div className="h-full flex flex-col items-center justify-center text-muted-foreground">
