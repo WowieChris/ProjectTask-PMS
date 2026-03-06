@@ -279,6 +279,7 @@ export default function EditUserCard({ user }: Props) {
                             <div className='flex flex-row gap-4'>
                             <Input
                                 id="name"
+                                className='w-2/5'
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
                                 disabled={!isInitiallyActive}
@@ -286,6 +287,7 @@ export default function EditUserCard({ user }: Props) {
                             />
                             {errors.name && <p className="text-red-500">{errors.name}</p>}
                             <Input 
+                                className='w-3/5'
                                 id="last_name"
                                 placeholder="Last Name"
                                 value={data.last_name}
@@ -315,13 +317,14 @@ export default function EditUserCard({ user }: Props) {
                         <Input
                                 id="id_number"
                                 type="text"
+                                className='w-full'
                                 value={data.employee_id}
                                 onChange={(e) => setData('employee_id', e.target.value)}
                                 disabled={!isInitiallyActive}
                             />
                             {errors.employee_id && <p className="text-red-500">{errors.employee_id}</p>}
                         </div>
-                        <div>
+                        <div className="w-full">
                         <Label htmlFor="role">Role</Label>
                         <Select value={data.role} onValueChange={(value) => setData('role', value)} disabled={!isInitiallyActive}>
                             <SelectTrigger>
