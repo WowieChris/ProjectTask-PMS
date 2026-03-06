@@ -77,19 +77,19 @@ export default function App() {
 
   const filteredList = useMemo(() => {
     return MOCK_DATA.filter(item => {
-      const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                           item.code.toLowerCase().includes(searchQuery.toLowerCase());
-      
+      const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.code.toLowerCase().includes(searchQuery.toLowerCase());
+
       if (!matchesSearch) return false;
 
       if (isGeneralOverview) {
         return item.level === currentLevel;
       }
-      
+
       if (currentLevel === 'district') {
         return item.level === 'district' && item.parentId === selectedDivision;
       }
-      
+
       if (selectedParentId) {
         return item.level === currentLevel && item.parentId === selectedParentId;
       }
@@ -104,12 +104,12 @@ export default function App() {
     }
 
     const crumbs = [{ label: 'Division', level: 'division' as Level, id: selectedDivision }];
-    
+
     if (currentLevel === 'area' || currentLevel === 'branch') {
       const district = MOCK_DATA.find(d => d.id === selectedParentId || (currentLevel === 'branch' && MOCK_DATA.find(a => a.id === selectedParentId)?.parentId === d.id));
       if (district) crumbs.push({ label: 'District', level: 'district' as Level, id: district.id });
     }
-    
+
     if (currentLevel === 'branch') {
       const area = MOCK_DATA.find(a => a.id === selectedParentId);
       if (area) crumbs.push({ label: 'Area', level: 'area' as Level, id: area.id });
@@ -213,7 +213,6 @@ export default function App() {
                 </select>
                 <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" size={16} />
               </div>
-            </div>
 
             {/* Level Navigation */}
             <div className="flex items-center rounded-xl bg-muted p-1">
@@ -227,16 +226,23 @@ export default function App() {
                       return;
                     }
 
-                    if (level === 'district') handleLevelChange('district');
-                    else if (level === 'area') {
-                      if (currentLevel === 'branch') {
-                        const parentArea = MOCK_DATA.find(a => a.id === selectedParentId);
-                        handleLevelChange('area', parentArea?.parentId || null);
-                      } else {
-                        handleLevelChange('area', editingItem?.id || selectedParentId);
+                      if (level === 'district') handleLevelChange('district');
+                      else if (level === 'area') {
+                        if (currentLevel === 'branch') {
+                          const parentArea = MOCK_DATA.find(a => a.id === selectedParentId);
+                          handleLevelChange('area', parentArea?.parentId || null);
+                        } else {
+                          handleLevelChange('area', editingItem?.id || selectedParentId);
+                        }
+                      } else if (level === 'branch') {
+                        handleLevelChange('branch', editingItem?.id || selectedParentId);
                       }
-                    } else if (level === 'branch') {
-                      handleLevelChange('branch', editingItem?.id || selectedParentId);
+                    }}
+                    disabled={
+                      !isGeneralOverview && (
+                        (level === 'area' && !editingItem && !selectedParentId) ||
+                        (level === 'branch' && (currentLevel !== 'area' || !editingItem) && currentLevel !== 'branch')
+                      )
                     }
                   }}
                   disabled={
@@ -267,7 +273,6 @@ export default function App() {
                 className="w-full rounded-xl border border-input bg-background py-3 pr-4 pl-11 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
               />
             </div>
-          </div>
 
           {/* List Header / Breadcrumbs */}
           <div className="px-6 py-3 bg-muted border-y border-border flex items-center gap-2 overflow-x-auto no-scrollbar">
@@ -359,7 +364,10 @@ export default function App() {
                     <h2 className="text-3xl font-bold text-foreground">{editingItem.name}</h2>
                     <p className="text-muted-foreground">View details and hierarchy for this location.</p>
                   </div>
-                </div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
 
                 {/* Form Card */}
                 <div className="bg-card rounded-3xl border border-border shadow-sm overflow-hidden">
