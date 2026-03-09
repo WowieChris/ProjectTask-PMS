@@ -48,14 +48,14 @@ Route::middleware(['auth'])->group(function () {
 
     // Protected after OTP
     Route::middleware(['otp.verified', 'verified'])->group(function () {
-        Route::get('/dashboard', fn () => Inertia::render('dashboard'))->name('dashboard');
+        Route::get('/dashboard', fn() => Inertia::render('dashboard'))->name('dashboard');
 
         // users...
         Route::delete('/users/bulk-delete', [UserController::class, 'bulkDelete'])->name('users.bulk-delete');
         Route::patch('/users/{user}/inline-update', [UserController::class, 'updateInline'])->name('users.inline-update');
         Route::resource('users', UserController::class)->except(['show']);
 
-        require __DIR__.'/settings.php';
+        require __DIR__ . '/settings.php';
     });
 });
 
@@ -67,38 +67,31 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user/photo/{photo}/set-current', [UserController::class, 'setCurrentPhoto'])->name('user.photo.set-current');
     Route::get('password-setup', [PasswordSetupController::class, 'show'])->name('password.setup');
     Route::post('password-setup', [PasswordSetupController::class, 'update'])->name('password.setup.update');
-            //District and Division routes
-Route::middleware(['auth'])->group(function () {
-    Route::post('/divisions', [DivisionController::class, 'store']);
-    Route::delete('/divisions/{division}', [DivisionController::class, 'destroy']);
+    //District and Division routes
+    Route::middleware(['auth'])->group(function () {
+        Route::post('/divisions', [DivisionController::class, 'store']);
+        Route::delete('/divisions/{division}', [DivisionController::class, 'destroy']);
 
-    Route::post('/districts', [DistrictController::class, 'store']);
-    Route::delete('/districts/{district}', [DistrictController::class, 'destroy']);
-});
-  Route::middleware(['auth'])->group(function () {
-    // User Group routes
-    Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
-    Route::get('/user-groups/{userGroup}', [UserGroupController::class, 'show'])->name('user-groups.show');
-    Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
-    Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
-    Route::get('/user-groups', [UserGroupController::class, 'index'])->middleware('auth');
+        Route::post('/districts', [DistrictController::class, 'store']);
+        Route::delete('/districts/{district}', [DistrictController::class, 'destroy']);
     });
-Route::middleware(['auth'])->group(function () {
-    // Area routes
-    // Route::post('/areas', [AreaController::class, 'store'])->name('areas.store');
-    // Route::delete('/areas/{area}', [AreaController::class, 'destroy'])->name('areas.destroy');
-    // Route::get('/areas', [AreaBrowseController::class, 'index'])->name('areas.browse.index');
-    // Route::get('/areas/{area}', [AreaBrowseController::class, 'showArea'])->name('areas.browse.area');
-    // Route::get('/areas/{area}/divisions/{division}', [AreaBrowseController::class, 'showDivision'])->name('areas.browse.division');
-    // Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
+    Route::middleware(['auth'])->group(function () {
+        // User Group routes
+        Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
+        Route::get('/user-groups/{userGroup}', [UserGroupController::class, 'show'])->name('user-groups.show');
+        Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
+        Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
+        Route::get('/user-groups', [UserGroupController::class, 'index'])->middleware('auth');
+    });
+    Route::middleware(['auth'])->group(function () {
 
-    Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
-    Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
-});
-   route::middleware(['auth'])->group(function (){
-    //browse index
-   Route::get('/browse', [BrowseController::class, 'index'])
-    ->name('browse.index')
-    ->middleware('auth');
-   });
+        Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
+        Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
+    });
+    route::middleware(['auth'])->group(function () {
+        //browse index
+        Route::get('/browse', [BrowseController::class, 'index'])
+            ->name('browse.index')
+            ->middleware('auth');
+    });
 });
