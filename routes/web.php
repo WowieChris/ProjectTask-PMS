@@ -14,6 +14,7 @@ use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\BrowseController;
+use App\Http\Controllers\DesignationsController;
 
 Route::get('/', function () {
     return Inertia::render('auth/login', [
@@ -95,10 +96,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
     Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
 });
-   route::middleware(['auth'])->group(function (){
+   Route::middleware(['auth'])->group(function (){
     //browse index
    Route::get('/browse', [BrowseController::class, 'index'])
     ->name('browse.index')
     ->middleware('auth');
+   });
+   Route::middleware(['auth'])->group(function (){
+    Route::resource('designations', DesignationsController::class);
    });
 });
