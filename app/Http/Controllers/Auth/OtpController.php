@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Notifications\LoginOtpNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class OtpController extends Controller
 {
@@ -53,14 +54,21 @@ class OtpController extends Controller
             ]);
         }
 
-        // OTP correct
+    // OTP correct - clear cache and mark session as verified.
         Cache::forget($key);
 
-        // ✅ session-based OTP verification (no database)
+        // Mark the session as OTP-verified for a short time window.
+        // Store a UNIX timestamp to simplify comparisons in middleware.
+        $request->session()->put('two_factor_verified_at', now()->timestamp);
+
+        // Keep an explicit boolean for older code paths that may check it.
         $request->session()->put('otp_passed', true);
+
+        // Regenerate session once to prevent fixation, preserving session data.
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard');
+        // Redirect to the intended URL (if any), otherwise fall back to dashboard
+        return redirect()->intended(route('dashboard'));
     }
 
     private function sendOtp($user, string $key): void
