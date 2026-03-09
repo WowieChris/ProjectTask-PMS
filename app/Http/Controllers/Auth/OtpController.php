@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Notifications\LoginOtpNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Mail;
 
 class OtpController extends Controller
 {
     public function show(Request $request)
     {
         $user = $request->user();
-        $key = 'login_otp_' . $user->id;
+        $key = 'login_otp_'.$user->id;
 
+        // Don't resend OTP on every refresh
         if (! Cache::has($key)) {
             $this->sendOtp($user, $key);
         }
@@ -26,8 +27,9 @@ class OtpController extends Controller
     public function resend(Request $request)
     {
         $user = $request->user();
-        $key = 'login_otp_' . $user->id;
+        $key = 'login_otp_'.$user->id;
 
+        // Force a new OTP
         Cache::forget($key);
         $this->sendOtp($user, $key);
 
@@ -41,7 +43,7 @@ class OtpController extends Controller
         ]);
 
         $user = $request->user();
-        $key = 'login_otp_' . $user->id;
+        $key = 'login_otp_'.$user->id;
 
         $expected = Cache::get($key);
 
@@ -51,8 +53,10 @@ class OtpController extends Controller
             ]);
         }
 
+        // OTP correct
         Cache::forget($key);
 
+        // ✅ session-based OTP verification (no database)
         $request->session()->put('otp_passed', true);
         $request->session()->regenerate();
 
@@ -66,13 +70,10 @@ class OtpController extends Controller
         Cache::put($key, $otp, now()->addMinutes(10));
 
         try {
-            Mail::raw("Your OTP code is: $otp (expires in 10 minutes)", function ($message) use ($user) {
-                $message->to($user->email)
-                    ->subject('Login OTP');
-            });
+            $user->notify(new LoginOtpNotification($otp));
         } catch (\Throwable $e) {
             report($e);
-            abort(500, 'Mail sending failed.');
+            abort(500, 'Mail sending failed. Check SMTP settings.');
         }
     }
 }

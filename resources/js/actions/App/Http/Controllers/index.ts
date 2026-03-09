@@ -1,12 +1,9 @@
 import Auth from './Auth'
-import UserController from './UserController'
-import Settings from './Settings'
-import DivisionController from './DivisionController'
+import BrowseController from './BrowseController'
 import DistrictController from './DistrictController'
 import AreaController from './AreaController'
 import BranchController from './BranchController'
 import UserGroupController from './UserGroupController'
-import BrowseController from './BrowseController'
 const Controllers = {
     Auth: Object.assign(Auth, Auth),
 UserController: Object.assign(UserController, UserController),
