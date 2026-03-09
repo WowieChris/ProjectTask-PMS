@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class EnsureOtpVerified
 {
@@ -29,11 +30,28 @@ class EnsureOtpVerified
             return $next($request);
         }
 
-        // Block access until OTP is passed in this session
-        if ($request->session()->get('otp_passed') !== true) {
-            return redirect()->route('otp.show');
+        // Time-limited OTP: check a timestamp stored in session. If the
+        // timestamp is within the allowed window, allow access.
+        $verifiedAt = $request->session()->get('two_factor_verified_at');
+
+        // Timeout in minutes. Change this value as desired or read from config.
+        $timeoutMinutes = config('fortify.two_factor_timeout', 5);
+
+        if ($verifiedAt) {
+            try {
+                $ts = Carbon::createFromTimestamp($verifiedAt);
+
+                if ($ts->greaterThanOrEqualTo(now()->subMinutes($timeoutMinutes))) {
+                    return $next($request);
+                }
+            } catch (\Throwable $e) {
+                // If timestamp parsing fails, fall through to require OTP.
+            }
         }
 
-        return $next($request);
+        // Save intended and redirect to OTP
+        $request->session()->put('url.intended', url()->full());
+
+        return redirect()->route('otp.show');
     }
 }
