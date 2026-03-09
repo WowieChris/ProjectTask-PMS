@@ -4,12 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-<<<<<<< HEAD
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-=======
->>>>>>> origin/main
 
 class EnsureOtpVerified
 {

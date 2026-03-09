@@ -54,8 +54,7 @@ class OtpController extends Controller
             ]);
         }
 
-<<<<<<< HEAD
-        // OTP correct - clear cache and mark session as verified.
+    // OTP correct - clear cache and mark session as verified.
         Cache::forget($key);
 
         // Mark the session as OTP-verified for a short time window.
