@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class EnsureOtpVerified
 {
@@ -49,8 +51,17 @@ class EnsureOtpVerified
             }
         }
 
-        // Save intended and redirect to OTP
+        // Save intended and ensure a fresh OTP is issued when we redirect.
         $request->session()->put('url.intended', url()->full());
+
+        try {
+            // Clear any previously cached OTP so `OtpController::show` will
+            // generate and send a new code when the user is redirected.
+            Cache::forget('login_otp_'.$request->user()->id);
+        } catch (\Throwable $e) {
+            // Don't block access if cache clearing fails; log for debugging.
+            Log::warning('Failed to clear OTP cache before redirect', ['user_id' => $request->user()->id, 'error' => $e->getMessage()]);
+        }
 
         return redirect()->route('otp.show');
     }
