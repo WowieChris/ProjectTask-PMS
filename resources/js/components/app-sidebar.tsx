@@ -39,7 +39,7 @@ export function AppSidebar() {
   },
   {
     title: 'Browse',
-    href: '/areas',
+    href: '/browse',
     icon: Search,
   },
 ];

@@ -13,6 +13,7 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\UserGroupController;
+use App\Http\Controllers\BrowseController;
 
 Route::get('/', function () {
     return Inertia::render('auth/login', [
@@ -84,15 +85,20 @@ Route::middleware(['auth'])->group(function () {
     });
 Route::middleware(['auth'])->group(function () {
     // Area routes
-    Route::post('/areas', [AreaController::class, 'store'])->name('areas.store');
-    Route::delete('/areas/{area}', [AreaController::class, 'destroy'])->name('areas.destroy');
-    Route::get('/areas', [AreaBrowseController::class, 'index'])->name('areas.browse.index');
-    Route::get('/areas/{area}', [AreaBrowseController::class, 'showArea'])->name('areas.browse.area');
-    Route::get('/areas/{area}/divisions/{division}', [AreaBrowseController::class, 'showDivision'])->name('areas.browse.division');
-    Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
+    // Route::post('/areas', [AreaController::class, 'store'])->name('areas.store');
+    // Route::delete('/areas/{area}', [AreaController::class, 'destroy'])->name('areas.destroy');
+    // Route::get('/areas', [AreaBrowseController::class, 'index'])->name('areas.browse.index');
+    // Route::get('/areas/{area}', [AreaBrowseController::class, 'showArea'])->name('areas.browse.area');
+    // Route::get('/areas/{area}/divisions/{division}', [AreaBrowseController::class, 'showDivision'])->name('areas.browse.division');
+    // Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
 
     Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
     Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
 });
-    
+   route::middleware(['auth'])->group(function (){
+    //browse index
+   Route::get('/browse', [BrowseController::class, 'index'])
+    ->name('browse.index')
+    ->middleware('auth');
+   });
 });
