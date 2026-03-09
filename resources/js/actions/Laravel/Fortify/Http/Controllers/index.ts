@@ -1,8 +1,8 @@
 import AuthenticatedSessionController from './AuthenticatedSessionController'
-import ConfirmedPasswordStatusController from './ConfirmedPasswordStatusController'
-import EmailVerificationNotificationController from './EmailVerificationNotificationController'
 import EmailVerificationPromptController from './EmailVerificationPromptController'
 import VerifyEmailController from './VerifyEmailController'
+import EmailVerificationNotificationController from './EmailVerificationNotificationController'
+import ConfirmedPasswordStatusController from './ConfirmedPasswordStatusController'
 const Controllers = {
     AuthenticatedSessionController: Object.assign(AuthenticatedSessionController, AuthenticatedSessionController),
 EmailVerificationPromptController: Object.assign(EmailVerificationPromptController, EmailVerificationPromptController),
