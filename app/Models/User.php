@@ -63,9 +63,19 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
 
-    public function photos()
+    public function photo()
     {
-        return $this->hasMany(\App\Models\UserPhoto::class);
+        return $this->hasOne(\App\Models\UserPhoto::class, 'user_id')
+            ->where('is_current', true);
+    }
+
+    public function getPhotoUrlAttribute()
+    {
+        if (!$this->photo) {
+            return null;
+        }
+
+        return asset('storage/' . $this->photo->path);
     }
 
     // Optional: Add a helper to get current photo
