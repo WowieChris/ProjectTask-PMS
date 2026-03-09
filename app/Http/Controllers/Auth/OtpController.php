@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Notifications\LoginOtpNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class OtpController extends Controller
 {
@@ -69,10 +70,15 @@ class OtpController extends Controller
 
         Cache::put($key, $otp, now()->addMinutes(10));
 
+        // Log OTP generation for debugging (temporary)
+        Log::info('OTP generated for user', ['user_id' => $user->id, 'otp' => $otp]);
+
         try {
             $user->notify(new LoginOtpNotification($otp));
+            Log::info('OTP notification invoked', ['user_id' => $user->id]);
         } catch (\Throwable $e) {
             report($e);
+            Log::error('OTP notify failed', ['user_id' => $user->id, 'error' => $e->getMessage()]);
             abort(500, 'Mail sending failed. Check SMTP settings.');
         }
     }
