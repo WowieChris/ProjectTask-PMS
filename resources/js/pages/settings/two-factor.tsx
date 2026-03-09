@@ -4,10 +4,10 @@
 // import type { BreadcrumbItem } from '@/types';
 
 // const breadcrumbs: BreadcrumbItem[] = [
-//     {
-//         title: 'Two-Factor Authentication',
-//         href: show.url(),
-//     },
+    //{
+    //     title: 'Two-Factor Authentication',
+    //     href: show.url(),
+    // },
 // ];
 
 // export default function TwoFactor({

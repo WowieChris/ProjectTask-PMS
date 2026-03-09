@@ -54,7 +54,8 @@ class OtpController extends Controller
             ]);
         }
 
-        // OTP correct
+<<<<<<< HEAD
+        // OTP correct - clear cache and mark session as verified.
         Cache::forget($key);
 
         // Mark the session as OTP-verified for a short time window.
@@ -77,15 +78,10 @@ class OtpController extends Controller
 
         Cache::put($key, $otp, now()->addMinutes(10));
 
-        // Log OTP generation for debugging (temporary)
-        Log::info('OTP generated for user', ['user_id' => $user->id, 'otp' => $otp]);
-
         try {
             $user->notify(new LoginOtpNotification($otp));
-            Log::info('OTP notification invoked', ['user_id' => $user->id]);
         } catch (\Throwable $e) {
             report($e);
-            Log::error('OTP notify failed', ['user_id' => $user->id, 'error' => $e->getMessage()]);
             abort(500, 'Mail sending failed. Check SMTP settings.');
         }
     }

@@ -4,20 +4,38 @@ namespace App\Http\Controllers;
 
 use App\Models\Division;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use App\Models\Area;
+use App\Models\District;
+use App\Models\UserGroup;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DivisionController extends Controller
 {
+
+    public function index()
+    {
+        $areas = Area::with('userGroup')->get();
+        $divisions = Division::with('area.userGroup')->get();
+
+        return Inertia::render('Divisions/Index', [
+            'areas' => $areas,
+            'divisions' => $divisions,
+        ]);
+    }
+
     public function store(Request $request)
-{
-    $data = $request->validate([
-        'user_group_id' => ['required', 'exists:user_groups,id'],
-        'name' => ['required', 'string', 'max:255'],
-    ]);
+    {
+        $data = $request->validate([
+            'user_group_id' => ['required', 'exists:user_groups,id'],
+            'name' => ['required', 'string', 'max:255'],
+        ]);
 
-    Division::create($data);
+        Division::create($data);
 
-    return back()->with('success', 'Division added.');
-}
+        return back()->with('success', 'Division added.');
+    }
 
     public function destroy(Division $division)
     {
