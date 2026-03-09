@@ -2,32 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Area;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use App\Models\Area;
+use App\Models\District;
+use App\Models\Branch;
 
 class AreaController extends Controller
 {
+
+    public function index()
+    {
+        return Inertia::render('Areas/Index', [
+            'districts' => District::all(),
+            'areas' => Area::with('district')->get(),
+        ]);
+    }
+
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'user_group_id' => ['required', 'exists:user_groups,id'],
-            'name' => ['required', 'string', 'max:255'],
+        $request->validate([
+            'district_id' => 'required|exists:districts,id',
+            'name' => 'required|string|max:255',
         ]);
 
-        $exists = Area::where('user_group_id', $data['user_group_id'])
-            ->where('name', $data['name'])
-            ->exists();
+        Area::create([
+            'district_id' => $request->district_id,
+            'name' => $request->name,
+        ]);
 
-        if ($exists) {
-            // ✅ return error under "name" so TSX can show it without "any"
-            return back()->withErrors([
-                'name' => 'Area already exists in this User Group.',
-            ]);
-        }
 
-        Area::create($data);
-
-        return back()->with('success', 'Area added.');
+        return redirect()->back();
     }
 
     public function destroy(Area $area)

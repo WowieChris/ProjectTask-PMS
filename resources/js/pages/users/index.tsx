@@ -16,8 +16,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
-
-
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import UsersCreate from './create';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet"
+import EditUserCard from './edit';
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: 'Dashboard', href: dashboard().url },
@@ -124,6 +131,9 @@ export default function UsersIndex({ users }: Props) {
     setSelectedUsers([]); 
   };
 
+const [selectedUser, setSelectedUser] = useState<User | null>(null)
+const [openEdit, setOpenEdit] = useState(false)
+
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Users" />
@@ -152,9 +162,18 @@ export default function UsersIndex({ users }: Props) {
                   Delete
                 </Button>
 
-                <Button asChild>
+                {/* <Button asChild>
                   <Link href="/users/create">Add User</Link>
-                </Button>
+                </Button> */}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button>Add User</Button>
+                  </DialogTrigger>
+
+                  <DialogContent className="max-w-2xl p-0">
+                    <UsersCreate />
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           </CardHeader>
@@ -235,7 +254,10 @@ export default function UsersIndex({ users }: Props) {
                   <TableRow
                     key={user.id}
                     className="cursor-pointer hover:bg-muted/30"
-                    onClick={() => router.visit(`/users/${user.id}/edit`)}
+                    onClick={() => {
+                      setSelectedUser(user)
+                      setOpenEdit(true)
+                    }}
                   >
                     <TableCell onClick={(e) => e.stopPropagation()} className="px-0">
                       <div className="flex items-center justify-center">
@@ -278,6 +300,14 @@ export default function UsersIndex({ users }: Props) {
                 )}
               </TableBody>
             </Table>
+              <Sheet open={openEdit} onOpenChange={setOpenEdit}>
+                <SheetContent side="right" className="w-[500px] sm:w-[600px] gap-0">
+
+                  {selectedUser && (
+                    <EditUserCard user={selectedUser} />
+                  )}
+                </SheetContent>
+              </Sheet>
           </CardContent>
         </Card>
       </div>

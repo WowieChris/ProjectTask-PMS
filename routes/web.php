@@ -6,15 +6,37 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
+use App\Http\Controllers\AreaBrowseController;
+use App\Http\Controllers\AreaController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\UserGroupController;
+use App\Http\Controllers\BrowseController;
+use App\Http\Controllers\BranchController;
+use App\Http\Controllers\DesignationsController;
 
 Route::get('/', function () {
     return Inertia::render('auth/login', [
         'canRegister' => Features::enabled(Features::registration()),
     ]);
 })->name('home');
+
+// Inertia confirm-password routes (override Fortify default views)
+Route::get('/user/confirm-password', function (Request $request) {
+    return Inertia::render('auth/confirm-password');
+})->middleware(['auth'])->name('password.confirm');
+
+Route::post('/user/confirm-password', function (Request $request) {
+    $request->validate([
+        'password' => ['required', 'current_password'],
+    ]);
+
+    $request->session()->put('auth.password_confirmed_at', Date::now()->unix());
+
+    return redirect()->intended('/');
+})->middleware(['auth'])->name('password.confirm.store');
 
 /**
  * Authenticated routes
@@ -28,14 +50,14 @@ Route::middleware(['auth'])->group(function () {
 
     // Protected after OTP
     Route::middleware(['otp.verified', 'verified'])->group(function () {
-        Route::get('/dashboard', fn () => Inertia::render('dashboard'))->name('dashboard');
+        Route::get('/dashboard', fn() => Inertia::render('dashboard'))->name('dashboard');
 
         // users...
         Route::delete('/users/bulk-delete', [UserController::class, 'bulkDelete'])->name('users.bulk-delete');
         Route::patch('/users/{user}/inline-update', [UserController::class, 'updateInline'])->name('users.inline-update');
         Route::resource('users', UserController::class)->except(['show']);
 
-        require __DIR__.'/settings.php';
+        require __DIR__ . '/settings.php';
     });
 });
 
@@ -47,33 +69,60 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user/photo/{photo}/set-current', [UserController::class, 'setCurrentPhoto'])->name('user.photo.set-current');
     Route::get('password-setup', [PasswordSetupController::class, 'show'])->name('password.setup');
     Route::post('password-setup', [PasswordSetupController::class, 'update'])->name('password.setup.update');
-            //District and Division routes
-Route::middleware(['auth'])->group(function () {
-    Route::post('/divisions', [DivisionController::class, 'store']);
-    Route::delete('/divisions/{division}', [DivisionController::class, 'destroy']);
+    //District, Division, Area and Districts routes
+    Route::middleware(['auth'])->group(function () {
+        //District routes
+        Route::get('/districts', [DistrictController::class, 'index'])->name('districts.index');
+        Route::post('/districts', [DistrictController::class, 'store']);
+        Route::delete('/districts/{district}', [DistrictController::class, 'destroy']);
+        Route::resource('districts', DistrictController::class);
 
-    Route::post('/districts', [DistrictController::class, 'store']);
-    Route::delete('/districts/{district}', [DistrictController::class, 'destroy']);
-});
-  Route::middleware(['auth'])->group(function () {
-    // User Group routes
-    Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
-    Route::get('/user-groups/{userGroup}', [UserGroupController::class, 'show'])->name('user-groups.show');
-    Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
-    Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
-    Route::get('/user-groups', [UserGroupController::class, 'index'])->middleware('auth');
+        //Division routes
+        Route::resource('divisions', DivisionController::class);
+        Route::post('/divisions', [DivisionController::class, 'store']);
+        Route::delete('/divisions/{division}', [DivisionController::class, 'destroy']);
+        //Area routes
+        Route::get('/areas', [AreaController::class, 'index']);
+        Route::get('/areas/{area}', [AreaController::class, 'show']);
+        Route::get('/areas/{area}/divisions/{division}', [AreaController::class, 'division']);
+        Route::get('/areas', [AreaController::class, 'index'])->name('areas.index');
+        Route::post('/areas', [AreaController::class, 'store'])->name('areas.store');
+        Route::delete('/areas/{area}', [AreaController::class, 'destroy'])->name('areas.destroy');
+
+        //Branch routes
+
+        Route::get('/branches', [BranchController::class, 'index'])->name('branches.index');
+        Route::get('/areas/{area}/branches', [BranchController::class, 'index']);
+        Route::post('/branches', [BranchController::class, 'store']);
+        Route::delete('/branches/{branch}', [BranchController::class, 'destroy']);
     });
-Route::middleware(['auth'])->group(function () {
-    // Area routes
-    Route::post('/areas', [AreaController::class, 'store'])->name('areas.store');
-    Route::delete('/areas/{area}', [AreaController::class, 'destroy'])->name('areas.destroy');
-    Route::get('/areas', [AreaBrowseController::class, 'index'])->name('areas.browse.index');
-    Route::get('/areas/{area}', [AreaBrowseController::class, 'showArea'])->name('areas.browse.area');
-    Route::get('/areas/{area}/divisions/{division}', [AreaBrowseController::class, 'showDivision'])->name('areas.browse.division');
-    Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
+    Route::middleware(['auth'])->group(function () {
+        // User Group routes
+        Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
+        Route::get('/user-groups/{userGroup}', [UserGroupController::class, 'show'])->name('user-groups.show');
+        Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
+        Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
+        Route::get('/user-groups', [UserGroupController::class, 'index'])->middleware('auth');
+    });
+    Route::middleware(['auth'])->group(function () {
+        // Area routes
+        // Route::post('/areas', [AreaController::class, 'store'])->name('areas.store');
+        // Route::delete('/areas/{area}', [AreaController::class, 'destroy'])->name('areas.destroy');
+        // Route::get('/areas', [AreaBrowseController::class, 'index'])->name('areas.browse.index');
+        // Route::get('/areas/{area}', [AreaBrowseController::class, 'showArea'])->name('areas.browse.area');
+        // Route::get('/areas/{area}/divisions/{division}', [AreaBrowseController::class, 'showDivision'])->name('areas.browse.division');
+        // Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
 
-    Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
-    Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
-});
-    
+        Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
+        Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
+    });
+    Route::middleware(['auth'])->group(function () {
+        //browse index
+        Route::get('/browse', [BrowseController::class, 'index'])
+            ->name('browse.index')
+            ->middleware('auth');
+    });
+    Route::middleware(['auth'])->group(function () {
+        Route::resource('designations', DesignationsController::class);
+    });
 });
