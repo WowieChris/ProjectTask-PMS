@@ -1,8 +1,8 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../wayfinder'
 /**
-* @see [serialized-closure]:2
-* @route '/user/confirm-password'
-*/
+ * @see routes/web.php:31
+ * @route '/user/confirm-password'
+ */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
     method: 'post',
@@ -14,42 +14,41 @@ store.definition = {
 } satisfies RouteDefinition<["post"]>
 
 /**
-* @see [serialized-closure]:2
-* @route '/user/confirm-password'
-*/
+ * @see routes/web.php:31
+ * @route '/user/confirm-password'
+ */
 store.url = (options?: RouteQueryOptions) => {
     return store.definition.url + queryParams(options)
 }
 
 /**
-* @see [serialized-closure]:2
-* @route '/user/confirm-password'
-*/
+ * @see routes/web.php:31
+ * @route '/user/confirm-password'
+ */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
     method: 'post',
 })
 
-/**
-* @see [serialized-closure]:2
-* @route '/user/confirm-password'
-*/
-const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: store.url(options),
-    method: 'post',
-})
+    /**
+ * @see routes/web.php:31
+ * @route '/user/confirm-password'
+ */
+    const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: store.url(options),
+        method: 'post',
+    })
 
-/**
-* @see [serialized-closure]:2
-* @route '/user/confirm-password'
-*/
-storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: store.url(options),
-    method: 'post',
-})
-
-store.form = storeForm
-
+            /**
+ * @see routes/web.php:31
+ * @route '/user/confirm-password'
+ */
+        storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: store.url(options),
+            method: 'post',
+        })
+    
+    store.form = storeForm
 const confirm = {
     store: Object.assign(store, store),
 }
