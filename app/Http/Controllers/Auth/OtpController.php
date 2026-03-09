@@ -57,11 +57,21 @@ class OtpController extends Controller
         // OTP correct
         Cache::forget($key);
 
-        // ✅ session-based OTP verification (no database)
-        $request->session()->put('otp_passed', true);
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard');
+            // ✅ session-based OTP verification (no database)
+            // Store a timestamp so the OTP remains valid for a short time window.
+            // Use UNIX timestamp to simplify comparisons.
+            $request->session()->put('two_factor_verified_at', now()->timestamp);
+
+            // Regenerate session to prevent fixation.
+            $request->session()->regenerate();
+
+            // Redirect to the intended URL (if any), otherwise fall back to dashboard
+            return redirect()->intended(route('dashboard'));
+
+        // Redirect to the intended URL (if any), otherwise fall back to dashboard
+        return redirect()->intended(route('dashboard'));
     }
 
     private function sendOtp($user, string $key): void

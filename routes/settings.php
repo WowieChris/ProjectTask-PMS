@@ -6,7 +6,7 @@ use App\Http\Controllers\Settings\TwoFactorAuthenticationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::middleware(['auth', 'password.confirm'])->group(function () {
+Route::middleware(['auth', 'otp.verified'])->group(function () {
     Route::redirect('settings', '/settings/profile');
 
     Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -14,7 +14,7 @@ Route::middleware(['auth', 'password.confirm'])->group(function () {
 
 });
 
-Route::middleware(['auth', 'otp.verified', 'password.confirm'])->group(function () {
+Route::middleware(['auth', 'otp.verified'])->group(function () {
     Route::delete('settings/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('settings/password', [PasswordController::class, 'edit'])->name('user-password.edit');

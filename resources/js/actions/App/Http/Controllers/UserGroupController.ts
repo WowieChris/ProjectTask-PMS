@@ -240,7 +240,7 @@ store.form = storeForm
 * @see app/Http/Controllers/UserGroupController.php:167
 * @route '/user-groups/{userGroup}'
 */
-export const destroy = (args: { userGroup: string | number | { id: string | number } } | [userGroup: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { userGroup: number | { id: number } } | [userGroup: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -255,7 +255,7 @@ destroy.definition = {
 * @see app/Http/Controllers/UserGroupController.php:167
 * @route '/user-groups/{userGroup}'
 */
-destroy.url = (args: { userGroup: string | number | { id: string | number } } | [userGroup: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+destroy.url = (args: { userGroup: number | { id: number } } | [userGroup: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { userGroup: args }
     }
@@ -288,7 +288,7 @@ destroy.url = (args: { userGroup: string | number | { id: string | number } } | 
 * @see app/Http/Controllers/UserGroupController.php:167
 * @route '/user-groups/{userGroup}'
 */
-destroy.delete = (args: { userGroup: string | number | { id: string | number } } | [userGroup: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { userGroup: number | { id: number } } | [userGroup: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -298,7 +298,7 @@ destroy.delete = (args: { userGroup: string | number | { id: string | number } }
 * @see app/Http/Controllers/UserGroupController.php:167
 * @route '/user-groups/{userGroup}'
 */
-const destroyForm = (args: { userGroup: string | number | { id: string | number } } | [userGroup: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { userGroup: number | { id: number } } | [userGroup: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -313,7 +313,7 @@ const destroyForm = (args: { userGroup: string | number | { id: string | number 
 * @see app/Http/Controllers/UserGroupController.php:167
 * @route '/user-groups/{userGroup}'
 */
-destroyForm.delete = (args: { userGroup: string | number | { id: string | number } } | [userGroup: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { userGroup: number | { id: number } } | [userGroup: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
