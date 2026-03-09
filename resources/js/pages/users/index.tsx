@@ -1,4 +1,4 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import React, { useMemo, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -25,11 +25,17 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 import EditUserCard from './edit';
+import photo from '@/routes/user/photo';
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: 'Dashboard', href: dashboard().url },
   { title: 'User Maintenance', href: '/users' },
 ];
+interface UserPhoto {
+  id: number
+  user_id: number
+  path: string
+}
 
 interface User {
   id: number;
@@ -42,7 +48,18 @@ interface User {
   location: string;
   district: string;
   employment_status: string;
+  photo?: UserPhoto | null
+
 }
+type PageProps = {
+  auth: {
+    user: {
+      name: string;
+      email: string;
+      photo_url?: string | null;
+    };
+  };
+};
 
 interface Props {
   users: User[];
@@ -270,7 +287,27 @@ const [openEdit, setOpenEdit] = useState(false)
                       </div>
                     </TableCell>
                     <TableCell>{user.employee_id}</TableCell>
-                    <TableCell>{`${user.name}${user.last_name ? ` ${user.last_name}` : ''}`}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+
+                        {user.photo?.path ? (
+                          <img
+                            src={`/storage/${user.photo.path}`}
+                            alt="Profile preview"
+                            className="w-8 h-8 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-semibold">
+                            {user.name[0]}
+                          </div>
+                        )}
+
+                        <span>
+                          {`${user.name}${user.last_name ? ` ${user.last_name}` : ''}`}
+                        </span>
+
+                      </div>
+                    </TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>{user.designation}</TableCell>
                     <TableCell>{user.location}</TableCell>
