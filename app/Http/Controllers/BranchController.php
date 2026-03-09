@@ -9,24 +9,28 @@ use Illuminate\Http\Request;
 
 class BranchController extends Controller
 {
-    public function index($areaId)
+    public function index()
     {
-        $area = Area::findOrFail($areaId);
+        $areas = Area::all();
+        $branches = Branch::with('area')->get();
 
         return Inertia::render('Branches/Index', [
-            'area' => $area,
-            'branches' => Branch::where('area_id', $areaId)->get()
+            'areas' => $areas,
+            'branches' => $branches,
         ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'area_id' => 'required'
+            'area_id' => 'required|exists:areas,id',
+            'name' => 'required|string|max:255',
         ]);
 
-        Branch::create($request->only('name', 'area_id'));
+        Branch::create([
+            'area_id' => $request->area_id,
+            'name' => $request->name,
+        ]);
 
         return redirect()->back();
     }
@@ -36,11 +40,5 @@ class BranchController extends Controller
         Branch::findOrFail($id)->delete();
 
         return redirect()->back();
-    }
-    public function all()
-    {
-        return Inertia::render('Branches/Index', [
-            'branches' => Branch::with('area')->get()
-        ]);
     }
 }

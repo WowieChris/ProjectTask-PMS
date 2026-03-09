@@ -41,9 +41,13 @@ class DistrictController extends Controller
 
     public function index()
     {
-        $districts = District::with('division.area.userGroup')->get();
+        // $districts = District::with('division.area.userGroup')->get();
+        // return Inertia::render('Districts/Index', [
+        //     'districts' => $districts,
+        // ]);
         return Inertia::render('Districts/Index', [
-            'districts' => $districts,
+            'divisions' => Division::all(),
+            'districts' => District::with('division')->get(),
         ]);
     }
 }

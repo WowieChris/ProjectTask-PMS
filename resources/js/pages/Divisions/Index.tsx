@@ -23,39 +23,34 @@ import {
 
 import AppLayout from "@/layouts/app-layout";
 
-type UserGroup = { id: number; name: string };
+type UserGroup = {
+  id: number;
+  name: string;
+};
 
-type Area = {
+type Division = {
   id: number;
   name: string;
   user_group_id: number;
   user_group?: UserGroup;
 };
 
-type Division = {
-  id: number;
-  name: string;
-  area_id: number;
-  area?: Area;
-};
-
 type PageProps = {
-  areas: Area[];
+  userGroups: UserGroup[];
   divisions: Division[];
 };
-
 // Form data type for useForm generic
 interface DivisionForm {
-  area_id: string;
+  user_group_id: string;
   name: string;
 }
 
-export default function DivisionIndex({ areas, divisions }: PageProps) {
+export default function DivisionIndex({ userGroups, divisions }: PageProps) {
   const [q, setQ] = useState("");
 
   // Added generic type to useForm for better TypeScript support
   const { data, setData, post, processing, errors, reset } = useForm<DivisionForm>({
-    area_id: "",
+    user_group_id: "",
     name: "",
   });
 
@@ -65,8 +60,8 @@ export default function DivisionIndex({ areas, divisions }: PageProps) {
 
     return divisions.filter((d) => {
       const div = d.name.toLowerCase();
-      const area = d.area?.name?.toLowerCase() ?? "";
-      const ug = d.area?.user_group?.name?.toLowerCase() ?? "";
+      const area = d.user_group?.name?.toLowerCase() ?? "";
+      const ug = d.user_group?.name?.toLowerCase() ?? "";
       return div.includes(query) || area.includes(query) || ug.includes(query);
     });
   }, [divisions, q]);
@@ -74,7 +69,7 @@ export default function DivisionIndex({ areas, divisions }: PageProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     post("/divisions", {
-      onSuccess: () => reset("area_id", "name"),
+      onSuccess: () => reset("user_group_id", "name"),
     });
   };
 
@@ -100,24 +95,25 @@ export default function DivisionIndex({ areas, divisions }: PageProps) {
           <CardContent>
             <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-3">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Area</label>
-                {/* Shadcn Select requires onValueChange for Inertia's setData */}
-                <Select 
-                  value={data.area_id} 
-                  onValueChange={(v) => setData("area_id", v)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select area..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {areas.map((a) => (
-                      <SelectItem key={a.id} value={String(a.id)}>
-                        {a.user_group?.name ? `${a.user_group.name} - ` : ""}{a.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.area_id && <p className="text-sm text-red-500">{errors.area_id}</p>}
+                <label className="text-sm font-medium">UserGroup</label>
+
+<Select
+  value={data.user_group_id}
+  onValueChange={(v) => setData("user_group_id", v)}
+>
+  <SelectTrigger>
+    <SelectValue placeholder="Select UserGroup..." />
+  </SelectTrigger>
+
+  <SelectContent>
+    {userGroups.map((g) => (
+      <SelectItem key={g.id} value={String(g.id)}>
+        {g.name}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+                {errors.user_group_id && <p className="text-sm text-red-500">{errors.user_group_id}</p>}
               </div>
 
               <div className="space-y-2">
@@ -171,8 +167,8 @@ export default function DivisionIndex({ areas, divisions }: PageProps) {
                     <TableRow key={d.id}>
                       <TableCell>{d.id}</TableCell>
                       <TableCell className="font-medium">{d.name}</TableCell>
-                      <TableCell>{d.area?.name ?? `Area #${d.area_id}`}</TableCell>
-                      <TableCell>{d.area?.user_group?.name ?? "-"}</TableCell>
+                      <TableCell>{d.user_group?.name ?? `UserGroup #${d.user_group_id}`}</TableCell>
+                      <TableCell>{d.user_group?.name ?? "-"}</TableCell>
                       <TableCell className="text-right">
                         <Button variant="destructive" size="sm" onClick={() => handleDelete(d.id)}>
                           Delete

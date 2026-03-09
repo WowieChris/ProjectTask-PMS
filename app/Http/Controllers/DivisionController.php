@@ -16,12 +16,9 @@ class DivisionController extends Controller
 
     public function index()
     {
-        $areas = Area::with('userGroup')->get();
-        $divisions = Division::with('area.userGroup')->get();
-
         return Inertia::render('Divisions/Index', [
-            'areas' => $areas,
-            'divisions' => $divisions,
+            'userGroups' => UserGroup::all(),
+            'divisions' => Division::with('userGroup')->get(),
         ]);
     }
 
