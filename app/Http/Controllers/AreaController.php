@@ -2,11 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Area;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use App\Models\Area;
+use App\Models\District;
+use App\Models\Branch;
 
 class AreaController extends Controller
 {
+
+    public function index()
+    {
+        return Inertia::render('Areas/Index', [
+            'areas' => Area::with('userGroup')->get(),
+            'selectedArea' => null,
+            'divisions' => [],
+            'selectedDivision' => null,
+            'districts' => [],
+        ]);
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([

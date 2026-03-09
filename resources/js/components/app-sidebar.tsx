@@ -62,6 +62,8 @@ export function AppSidebar() {
         { title: 'Designations', href: '/designations' },
         { title: 'Divisions', href: '/divisions' },
         { title: 'Districts', href: '/districts' },
+        { title: 'Areas', href: '/areas' },
+        { title: 'Branches', href: '/branches' },
       ],
     });
   }

@@ -14,6 +14,7 @@ use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\BrowseController;
+use App\Http\Controllers\BranchController;
 
 Route::get('/', function () {
     return Inertia::render('auth/login', [
@@ -67,13 +68,24 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user/photo/{photo}/set-current', [UserController::class, 'setCurrentPhoto'])->name('user.photo.set-current');
     Route::get('password-setup', [PasswordSetupController::class, 'show'])->name('password.setup');
     Route::post('password-setup', [PasswordSetupController::class, 'update'])->name('password.setup.update');
-    //District and Division routes
+    //District, Division, Area and Districts routes
     Route::middleware(['auth'])->group(function () {
+
+        Route::resource('divisions', DivisionController::class);
+        Route::resource('districts', DistrictController::class);
         Route::post('/divisions', [DivisionController::class, 'store']);
         Route::delete('/divisions/{division}', [DivisionController::class, 'destroy']);
-
         Route::post('/districts', [DistrictController::class, 'store']);
         Route::delete('/districts/{district}', [DistrictController::class, 'destroy']);
+        //Area routes
+        Route::get('/areas', [AreaController::class, 'index']);
+        Route::get('/areas/{area}', [AreaController::class, 'show']);
+        Route::get('/areas/{area}/divisions/{division}', [AreaController::class, 'division']);
+        //Branch routes
+        Route::get('/branches', [BranchController::class, 'all']);
+        Route::get('/areas/{area}/branches', [BranchController::class, 'index']);
+        Route::post('/branches', [BranchController::class, 'store']);
+        Route::delete('/branches/{branch}', [BranchController::class, 'destroy']);
     });
     Route::middleware(['auth'])->group(function () {
         // User Group routes

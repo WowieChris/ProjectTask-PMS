@@ -12,12 +12,10 @@ import {
   Network, 
   Layers, 
   Edit3, 
-  Save, 
   Plus, 
   Filter,
   ChevronDown,
   MoreVertical,
-  Trash2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import React, { useState, useMemo } from 'react';

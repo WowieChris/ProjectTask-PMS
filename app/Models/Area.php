@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Inertia\Inertia;
 
 class Area extends Model
 {
@@ -15,8 +16,18 @@ class Area extends Model
         return $this->belongsTo(UserGroup::class);
     }
 
-    public function divisions(): HasMany
+    public function branches(): HasMany
     {
-        return $this->hasMany(Division::class);
+        return $this->hasMany(Branch::class);
+    }
+    public function index()
+    {
+        return Inertia::render('Areas/Index', [
+            'userGroups' => UserGroup::all(),
+            'selectedGroup' => null,
+            'divisions' => [],
+            'selectedDivision' => null,
+            'districts' => [],
+        ]);
     }
 }
