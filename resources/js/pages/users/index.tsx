@@ -302,9 +302,6 @@ const [openEdit, setOpenEdit] = useState(false)
             </Table>
               <Sheet open={openEdit} onOpenChange={setOpenEdit}>
                 <SheetContent side="right" className="w-[500px] sm:w-[600px] gap-0">
-                  <SheetHeader>
-                    <SheetTitle>Edit User</SheetTitle>
-                  </SheetHeader>
 
                   {selectedUser && (
                     <EditUserCard user={selectedUser} />
