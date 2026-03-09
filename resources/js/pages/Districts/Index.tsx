@@ -4,7 +4,12 @@ import React, { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, 
+  SelectTrigger,
+   SelectValue,
+  SelectItem,
+  SelectContent } from "@/components/ui/select";
+
 import {
   Table,
   TableBody,
@@ -33,7 +38,10 @@ type PageProps = {
   districts: District[]; // keep simple (array). You can change to paginator later.
 };
 
-export default function DistrictIndex({ districts }: PageProps) {
+export default function DistrictIndex({
+  divisions = [],
+  districts = [],
+}: PageProps) {
   const [q, setQ] = useState('');
 
   const { data, setData, post, processing, errors, reset } = useForm({
@@ -90,13 +98,13 @@ export default function DistrictIndex({ districts }: PageProps) {
                   <SelectTrigger>
                     <SelectValue placeholder="Select division..." />
                   </SelectTrigger>
-                  {/* <SelectContent>
+                  <SelectContent>
                     {divisions.map((d) => (
                       <SelectItem key={d.id} value={String(d.id)}>
                         {d.name}
                       </SelectItem>
                     ))}
-                  </SelectContent> */}
+                  </SelectContent>
                 </Select>
                 {errors.division_id && (
                   <p className="text-sm text-red-500">{errors.division_id}</p>

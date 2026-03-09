@@ -9,12 +9,7 @@ use Inertia\Inertia;
 
 class Area extends Model
 {
-    protected $fillable = ['user_group_id', 'name'];
-
-    public function userGroup(): BelongsTo
-    {
-        return $this->belongsTo(UserGroup::class);
-    }
+    protected $fillable = ['name', 'district_id'];
 
     public function branches(): HasMany
     {
@@ -23,11 +18,13 @@ class Area extends Model
     public function index()
     {
         return Inertia::render('Areas/Index', [
-            'userGroups' => UserGroup::all(),
-            'selectedGroup' => null,
             'divisions' => [],
             'selectedDivision' => null,
             'districts' => [],
         ]);
+    }
+    public function district()
+    {
+        return $this->belongsTo(District::class);
     }
 }

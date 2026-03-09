@@ -1,5 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\DistrictController::index
  * @see app/Http/Controllers/DistrictController.php:42
@@ -601,6 +600,14 @@ update.patch = (args: { district: string | number } | [district: string | number
         })
     
     update.form = updateForm
-const DistrictController = { index, store, destroy, create, show, edit, update }
+const districts = {
+    index: Object.assign(index, index),
+store: Object.assign(store, store),
+destroy: Object.assign(destroy, destroy),
+create: Object.assign(create, create),
+show: Object.assign(show, show),
+edit: Object.assign(edit, edit),
+update: Object.assign(update, update),
+}
 
-export default DistrictController
+export default districts

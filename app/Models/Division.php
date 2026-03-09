@@ -21,7 +21,7 @@ class Division extends Model
 
     public function userGroup()
     {
-        return $this->belongsTo(\App\Models\UserGroup::class);
+        return $this->belongsTo(UserGroup::class);
     }
 
     public function districts()

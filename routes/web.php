@@ -71,19 +71,27 @@ Route::middleware(['auth'])->group(function () {
     Route::post('password-setup', [PasswordSetupController::class, 'update'])->name('password.setup.update');
     //District, Division, Area and Districts routes
     Route::middleware(['auth'])->group(function () {
-
-        Route::resource('divisions', DivisionController::class);
-        Route::resource('districts', DistrictController::class);
-        Route::post('/divisions', [DivisionController::class, 'store']);
-        Route::delete('/divisions/{division}', [DivisionController::class, 'destroy']);
+        //District routes
+        Route::get('/districts', [DistrictController::class, 'index'])->name('districts.index');
         Route::post('/districts', [DistrictController::class, 'store']);
         Route::delete('/districts/{district}', [DistrictController::class, 'destroy']);
+        Route::resource('districts', DistrictController::class);
+
+        //Division routes
+        Route::resource('divisions', DivisionController::class);
+        Route::post('/divisions', [DivisionController::class, 'store']);
+        Route::delete('/divisions/{division}', [DivisionController::class, 'destroy']);
         //Area routes
         Route::get('/areas', [AreaController::class, 'index']);
         Route::get('/areas/{area}', [AreaController::class, 'show']);
         Route::get('/areas/{area}/divisions/{division}', [AreaController::class, 'division']);
+        Route::get('/areas', [AreaController::class, 'index'])->name('areas.index');
+        Route::post('/areas', [AreaController::class, 'store'])->name('areas.store');
+        Route::delete('/areas/{area}', [AreaController::class, 'destroy'])->name('areas.destroy');
+
         //Branch routes
-        Route::get('/branches', [BranchController::class, 'all']);
+
+        Route::get('/branches', [BranchController::class, 'index'])->name('branches.index');
         Route::get('/areas/{area}/branches', [BranchController::class, 'index']);
         Route::post('/branches', [BranchController::class, 'store']);
         Route::delete('/branches/{branch}', [BranchController::class, 'destroy']);
