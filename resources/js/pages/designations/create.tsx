@@ -2,13 +2,26 @@ import { useForm } from '@inertiajs/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import React from 'react'
 
 export default function CreateDesignation() {
 
-  const { data, setData, post, processing, errors } = useForm({
+  const allPermissions = ['create', 'read', 'update', 'delete']
+
+  const { data, setData, post, processing } = useForm({
     name: '',
     description: '',
+    permissions: [] as string[],
   })
+
+  const togglePermission = (perm: string) => {
+    setData(
+      'permissions',
+      data.permissions.includes(perm)
+        ? data.permissions.filter((p) => p !== perm)
+        : [...data.permissions, perm]
+    )
+  }
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -17,7 +30,7 @@ export default function CreateDesignation() {
 
   return (
 
-    <form onSubmit={submit} className="space-y-4">
+    <form onSubmit={submit} className="space-y-4 mt-4">
 
       <div>
         <Label>Designation Name</Label>
@@ -25,19 +38,37 @@ export default function CreateDesignation() {
           value={data.name}
           onChange={(e) => setData('name', e.target.value)}
         />
-        {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
       </div>
 
+      {/* Permissions */}
       <div>
-        <Label>Description</Label>
-        <Input
-          value={data.description}
-          onChange={(e) => setData('description', e.target.value)}
-        />
+        <Label>Permissions</Label>
+
+        <div className="flex flex-col gap-2 mt-2">
+
+          {allPermissions.map((perm) => (
+
+            <label key={perm} className="flex items-center gap-2">
+
+              <input
+                type="checkbox"
+                checked={data.permissions.includes(perm)}
+                onChange={() => togglePermission(perm)}
+                className="cursor-pointer"
+              />
+
+              {perm.charAt(0).toUpperCase() + perm.slice(1)}
+
+            </label>
+
+          ))}
+
+        </div>
+
       </div>
 
       <Button type="submit" disabled={processing}>
-        Save
+        Create
       </Button>
 
     </form>
