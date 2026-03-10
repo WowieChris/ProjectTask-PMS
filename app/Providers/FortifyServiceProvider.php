@@ -12,6 +12,8 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
+use App\Actions\Fortify\LoginResponse as OtpLoginResponse;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -25,6 +27,13 @@ class FortifyServiceProvider extends ServiceProvider
 
         // Replace Fortify's RedirectsIfTwoFactorAuthenticatable with our email-OTP redirect
         $this->app->bind(\Laravel\Fortify\Contracts\RedirectsIfTwoFactorAuthenticatable::class, \App\Actions\RedirectIfEmailTwoFactorAuthenticatable::class);
+
+        // Ensure Fortify uses our LoginResponse implementation so post-login
+        // redirects go to the two-factor challenge (OTP) as expected.
+        $this->app->singleton(LoginResponseContract::class, OtpLoginResponse::class);
+        // Ensure Fortify uses our LockoutResponse implementation so throttled
+        // login attempts return HTTP 429 as expected by tests.
+        $this->app->singleton(\Laravel\Fortify\Contracts\LockoutResponse::class, \App\Actions\Fortify\LockoutResponse::class);
     }
 
     /**

@@ -48,8 +48,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/otp/verify', [OtpController::class, 'verify'])->name('otp.verify');
     Route::post('/otp/resend', [OtpController::class, 'resend'])->name('otp.resend');
 
-    // Protected after OTP
-    Route::middleware(['otp.verified', 'verified'])->group(function () {
+    // Protected routes (require email verification)
+    Route::middleware(['verified'])->group(function () {
         Route::get('/dashboard', fn() => Inertia::render('dashboard'))->name('dashboard');
 
         // users...
@@ -60,6 +60,33 @@ Route::middleware(['auth'])->group(function () {
         require __DIR__ . '/settings.php';
     });
 });
+
+// Two-factor challenge route (named for compatibility with redirects)
+Route::get('/two-factor-challenge', function () {
+    // If the user is neither authenticated nor in a pending login state,
+    // redirect them to the login page. Otherwise render the challenge.
+    if (! auth()->check() && ! session()->has('login.id')) {
+        return redirect()->route('login');
+    }
+
+    return Inertia::render('auth/two-factor-challenge');
+})->name('two-factor.login');
+
+// Override email verification routes to integrate with the app's OTP flow
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+Route::get('/email/verify', function (\Illuminate\Http\Request $request) {
+    if ($request->user() && $request->user()->hasVerifiedEmail()) {
+        return redirect()->route('otp.show');
+    }
+
+    return Inertia::render('auth/verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return redirect()->route('otp.show', ['verified' => 1]);
+})->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::middleware(['auth'])->group(function () {
     // Photo upload routes
