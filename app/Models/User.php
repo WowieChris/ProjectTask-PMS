@@ -74,7 +74,7 @@ class User extends Authenticatable implements MustVerifyEmail
             return null;
         }
 
-        return asset('storage/'.$this->photo->path);
+        return asset('storage/' . $this->photo->path);
     }
 
     // Optional: Add a helper to get current photo
