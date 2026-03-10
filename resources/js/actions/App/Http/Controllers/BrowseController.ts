@@ -32,7 +32,6 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
     method: 'get',
 })
-
 /**
 * @see \App\Http\Controllers\BrowseController::index
  * @see app/Http/Controllers/BrowseController.php:10
@@ -43,7 +42,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
-/**
+    /**
 * @see \App\Http\Controllers\BrowseController::index
  * @see app/Http/Controllers/BrowseController.php:10
  * @route '/browse'
@@ -53,7 +52,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         method: 'get',
     })
 
-/**
+            /**
 * @see \App\Http\Controllers\BrowseController::index
  * @see app/Http/Controllers/BrowseController.php:10
  * @route '/browse'

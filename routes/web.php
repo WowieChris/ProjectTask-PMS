@@ -1,18 +1,8 @@
 <?php
 
-use App\Http\Controllers\AreaBrowseController;
-use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\OtpController;
 use App\Http\Controllers\Auth\PasswordSetupController;
-use App\Http\Controllers\BranchController;
-use App\Http\Controllers\BrowseController;
-use App\Http\Controllers\DesignationsController;
-use App\Http\Controllers\DistrictController;
-use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\UserGroupController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -26,7 +16,6 @@ use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\BrowseController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DesignationsController;
-use App\Http\Controllers\locationController;
 
 Route::get('/', function () {
     return Inertia::render('auth/login', [
@@ -59,46 +48,18 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/otp/verify', [OtpController::class, 'verify'])->name('otp.verify');
     Route::post('/otp/resend', [OtpController::class, 'resend'])->name('otp.resend');
 
-    // Protected routes (require email verification)
-    Route::middleware(['verified'])->group(function () {
-        Route::get('/dashboard', fn () => Inertia::render('dashboard'))->name('dashboard');
+    // Protected after OTP
+    Route::middleware(['otp.verified', 'verified'])->group(function () {
+        Route::get('/dashboard', fn() => Inertia::render('dashboard'))->name('dashboard');
 
         // users...
         Route::delete('/users/bulk-delete', [UserController::class, 'bulkDelete'])->name('users.bulk-delete');
         Route::patch('/users/{user}/inline-update', [UserController::class, 'updateInline'])->name('users.inline-update');
         Route::resource('users', UserController::class)->except(['show']);
 
-        require __DIR__.'/settings.php';
+        require __DIR__ . '/settings.php';
     });
 });
-
-// Two-factor challenge route (named for compatibility with redirects)
-Route::get('/two-factor-challenge', function () {
-    // If the user is neither authenticated nor in a pending login state,
-    // redirect them to the login page. Otherwise render the challenge.
-    if (! auth()->check() && ! session()->has('login.id')) {
-        return redirect()->route('login');
-    }
-
-    return Inertia::render('auth/two-factor-challenge');
-})->name('two-factor.login');
-
-// Override email verification routes to integrate with the app's OTP flow
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-
-Route::get('/email/verify', function (\Illuminate\Http\Request $request) {
-    if ($request->user() && $request->user()->hasVerifiedEmail()) {
-        return redirect()->route('otp.show');
-    }
-
-    return Inertia::render('auth/verify-email');
-})->middleware('auth')->name('verification.notice');
-
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-
-    return redirect()->route('otp.show', ['verified' => 1]);
-})->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::middleware(['auth'])->group(function () {
     // Photo upload routes
@@ -108,21 +69,19 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user/photo/{photo}/set-current', [UserController::class, 'setCurrentPhoto'])->name('user.photo.set-current');
     Route::get('password-setup', [PasswordSetupController::class, 'show'])->name('password.setup');
     Route::post('password-setup', [PasswordSetupController::class, 'update'])->name('password.setup.update');
-    // District, Division, Area and Districts routes
+    //District, Division, Area and Districts routes
     Route::middleware(['auth'])->group(function () {
-        //location controller
-        Route::get('/locations', [LocationController::class, 'index']);
         //District routes
         Route::get('/districts', [DistrictController::class, 'index'])->name('districts.index');
         Route::post('/districts', [DistrictController::class, 'store']);
         Route::delete('/districts/{district}', [DistrictController::class, 'destroy']);
         Route::resource('districts', DistrictController::class);
 
-        // Division routes
+        //Division routes
         Route::resource('divisions', DivisionController::class);
         Route::post('/divisions', [DivisionController::class, 'store']);
         Route::delete('/divisions/{division}', [DivisionController::class, 'destroy']);
-        // Area routes
+        //Area routes
         Route::get('/areas', [AreaController::class, 'index']);
         Route::get('/areas/{area}', [AreaController::class, 'show']);
         Route::get('/areas/{area}/divisions/{division}', [AreaController::class, 'division']);
@@ -130,7 +89,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/areas', [AreaController::class, 'store'])->name('areas.store');
         Route::delete('/areas/{area}', [AreaController::class, 'destroy'])->name('areas.destroy');
 
-        // Branch routes
+        //Branch routes
 
         Route::get('/branches', [BranchController::class, 'index'])->name('branches.index');
         Route::get('/areas/{area}/branches', [BranchController::class, 'index']);
@@ -158,7 +117,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
     });
     Route::middleware(['auth'])->group(function () {
-        // browse index
+        //browse index
         Route::get('/browse', [BrowseController::class, 'index'])
             ->name('browse.index')
             ->middleware('auth');
