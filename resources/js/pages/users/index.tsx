@@ -136,6 +136,14 @@ export default function UsersIndex({ users }: Props) {
     setFilterDesignation('all')
     setSelectedUsers([])
   }
+const [rowsPerPage, setRowsPerPage] = useState(10)
+const [page, setPage] = useState(1)
+const totalPages = Math.ceil(filteredUsers.length / rowsPerPage)
+const paginatedUsers = useMemo(() => {
+  const start = (page - 1) * rowsPerPage
+  const end = start + rowsPerPage
+  return filteredUsers.slice(start, end)
+}, [filteredUsers, page, rowsPerPage])
 
   return (<AppLayout breadcrumbs={breadcrumbs}> <Head title="Users" />
 
@@ -229,14 +237,40 @@ export default function UsersIndex({ users }: Props) {
 
             <Button variant="ghost" onClick={handleClear}>Clear</Button>
 
-            <div className="ml-auto text-sm text-muted-foreground">
-              Showing {filteredUsers.length} of {users.length}
+            <div className="flex items-center gap-2">
+
+              <span className="text-sm">Rows per page:</span>
+
+              <Select
+                value={String(rowsPerPage)}
+                onValueChange={(value) => {
+                  setRowsPerPage(Number(value))
+                  setPage(1)
+                }}
+              >
+                <SelectTrigger className="w-[70px] h-8">
+                  <SelectValue />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="25">25</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                  <SelectItem value="100">100</SelectItem>
+                </SelectContent>
+
+              </Select>
             </div>
-
-          </div>
-
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-muted-foreground">
+                Showing {paginatedUsers.length} of {filteredUsers.length}
+              </div>
+            </div>
+        </div>
           {/* TABLE */}
+            
 
+          
           <Table>
 
             <TableHeader>
@@ -264,7 +298,7 @@ export default function UsersIndex({ users }: Props) {
 
             <TableBody>
 
-              {filteredUsers.map(user => (
+              {paginatedUsers.map(user => (
 
                 <TableRow
                   key={user.id}
@@ -334,7 +368,29 @@ export default function UsersIndex({ users }: Props) {
             </TableBody>
 
           </Table>
+          <div className="flex justify-end items-center gap-2 mt-4">
 
+  <Button
+    variant="outline"
+    disabled={page === 1}
+    onClick={() => setPage(page - 1)}
+  >
+    Previous
+  </Button>
+
+  <span className="text-sm">
+    Page {page} of {totalPages}
+  </span>
+
+  <Button
+    variant="outline"
+    disabled={page === totalPages}
+    onClick={() => setPage(page + 1)}
+  >
+    Next
+  </Button>
+
+</div>
           {/* EDIT PANEL */}
 
           <Sheet open={openEdit} onOpenChange={setOpenEdit}>
