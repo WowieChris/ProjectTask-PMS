@@ -71,6 +71,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('password-setup', [PasswordSetupController::class, 'update'])->name('password.setup.update');
     //District, Division, Area and Districts routes
     Route::middleware(['auth'])->group(function () {
+        //location controller
+        Route::get('/locations', [LocationController::class, 'index']);
         //District routes
         Route::get('/districts', [DistrictController::class, 'index'])->name('districts.index');
         Route::post('/districts', [DistrictController::class, 'store']);
