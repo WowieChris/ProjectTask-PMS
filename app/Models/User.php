@@ -105,18 +105,28 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isAdminLike(): bool
     {
-        $d = $this->designation?->name;
+        $designation = $this->designation;
 
-        return in_array($d, ['Admin', 'Administrator'], true);
+        $name = is_object($designation) ? ($designation->name ?? null) : $designation;
+
+        return in_array($name, ['Admin', 'Administrator'], true);
     }
 
     public function isSfe(): bool
     {
-        return $this->designation?->name === 'SFE';
+        $designation = $this->designation;
+
+        $name = is_object($designation) ? ($designation->name ?? null) : $designation;
+
+        return $name === 'SFE';
     }
 
     public function isFe(): bool
     {
-        return $this->designation?->name === 'FE';
+        $designation = $this->designation;
+
+        $name = is_object($designation) ? ($designation->name ?? null) : $designation;
+
+        return $name === 'FE';
     }
 }
