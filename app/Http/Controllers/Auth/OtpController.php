@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Notifications\LoginOtpNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
 class OtpController extends Controller
 {
@@ -48,13 +47,37 @@ class OtpController extends Controller
 
         $expected = Cache::get($key);
 
-        if (! $expected || $expected !== $request->otp) {
-            return back()->withErrors([
-                'otp' => 'Invalid or expired OTP.',
-            ]);
+        // First check cache-based login OTP (used by the login/settings flow)
+        if ($expected && $expected === $request->otp) {
+            // matched cache OTP
+        } else {
+            // Fallback: check database-backed EmailOtp entries (Fortify flow)
+            try {
+                $otpRecord = \App\Models\EmailOtp::where('user_id', $user->id)
+                    ->where('used', false)
+                    ->where('expires_at', '>', now())
+                    ->orderByDesc('created_at')
+                    ->first();
+
+                if (! $otpRecord || ! hash_equals($otpRecord->code_hash, hash('sha256', $request->otp))) {
+                    return back()->withErrors([
+                        'otp' => 'Invalid or expired OTP.',
+                    ]);
+                }
+
+                // mark DB OTP as used
+                $otpRecord->used = true;
+                $otpRecord->save();
+
+            } catch (\Throwable $e) {
+                // On any error, return a generic invalid/expired message
+                return back()->withErrors([
+                    'otp' => 'Invalid or expired OTP.',
+                ]);
+            }
         }
 
-    // OTP correct - clear cache and mark session as verified.
+        // OTP correct - clear cache and mark session as verified.
         Cache::forget($key);
 
         // Mark the session as OTP-verified for a short time window.
@@ -63,6 +86,13 @@ class OtpController extends Controller
 
         // Keep an explicit boolean for older code paths that may check it.
         $request->session()->put('otp_passed', true);
+
+        // If the user was redirected here from a settings page, mark settings
+        // as OTP-verified so the middleware lets them through without looping.
+        $intendedUrl = $request->session()->get('url.intended', '');
+        if (str_contains($intendedUrl, '/settings')) {
+            $request->session()->put('settings_otp_verified_at', now()->timestamp);
+        }
 
         // Regenerate session once to prevent fixation, preserving session data.
         $request->session()->regenerate();
