@@ -16,6 +16,7 @@ use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\BrowseController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DesignationsController;
+use App\Http\Controllers\locationController;
 
 Route::get('/', function () {
     return Inertia::render('auth/login', [

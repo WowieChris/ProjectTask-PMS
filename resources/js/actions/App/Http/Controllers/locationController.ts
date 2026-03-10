@@ -1,7 +1,7 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
-* @see \LocationController::index
- * @see [unknown]:0
+* @see \App\Http\Controllers\locationController::index
+ * @see app/Http/Controllers/LocationController.php:14
  * @route '/locations'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -15,8 +15,8 @@ index.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \LocationController::index
- * @see [unknown]:0
+* @see \App\Http\Controllers\locationController::index
+ * @see app/Http/Controllers/LocationController.php:14
  * @route '/locations'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -24,8 +24,8 @@ index.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see \LocationController::index
- * @see [unknown]:0
+* @see \App\Http\Controllers\locationController::index
+ * @see app/Http/Controllers/LocationController.php:14
  * @route '/locations'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -33,8 +33,8 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     method: 'get',
 })
 /**
-* @see \LocationController::index
- * @see [unknown]:0
+* @see \App\Http\Controllers\locationController::index
+ * @see app/Http/Controllers/LocationController.php:14
  * @route '/locations'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -43,8 +43,8 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
-* @see \LocationController::index
- * @see [unknown]:0
+* @see \App\Http\Controllers\locationController::index
+ * @see app/Http/Controllers/LocationController.php:14
  * @route '/locations'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -53,8 +53,8 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
-* @see \LocationController::index
- * @see [unknown]:0
+* @see \App\Http\Controllers\locationController::index
+ * @see app/Http/Controllers/LocationController.php:14
  * @route '/locations'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -62,8 +62,8 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
             /**
-* @see \LocationController::index
- * @see [unknown]:0
+* @see \App\Http\Controllers\locationController::index
+ * @see app/Http/Controllers/LocationController.php:14
  * @route '/locations'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -77,6 +77,6 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
     
     index.form = indexForm
-const LocationController = { index }
+const locationController = { index }
 
-export default LocationController
+export default locationController
