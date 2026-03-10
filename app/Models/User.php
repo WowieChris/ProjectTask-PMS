@@ -74,7 +74,7 @@ class User extends Authenticatable implements MustVerifyEmail
             return null;
         }
 
-        return asset('storage/'.$this->photo->path);
+        return asset('storage/' . $this->photo->path);
     }
 
     // Optional: Add a helper to get current photo
@@ -105,18 +105,16 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isAdminLike(): bool
     {
-        $d = $this->designation?->name;
-
-        return in_array($d, ['Admin', 'Administrator'], true);
+        return in_array($this->designation, ['Admin', 'Administrator'], true);
     }
 
     public function isSfe(): bool
     {
-        return $this->designation?->name === 'SFE';
+        return $this->designation === 'SFE';
     }
 
     public function isFe(): bool
     {
-        return $this->designation?->name === 'FE';
+        return $this->designation === 'FE';
     }
 }
