@@ -2,8 +2,6 @@
 
 namespace App\Actions\Fortify;
 
-use Illuminate\Http\Request;
-use Illuminate\Contracts\Support\Responsable;
 use Laravel\Fortify\Contracts\LockoutResponse as LockoutResponseContract;
 
 class LockoutResponse implements LockoutResponseContract

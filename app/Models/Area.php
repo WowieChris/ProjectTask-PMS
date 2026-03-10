@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Inertia\Inertia;
 
@@ -15,6 +14,7 @@ class Area extends Model
     {
         return $this->hasMany(Branch::class);
     }
+
     public function index()
     {
         return Inertia::render('Areas/Index', [
@@ -23,6 +23,7 @@ class Area extends Model
             'districts' => [],
         ]);
     }
+
     public function district()
     {
         return $this->belongsTo(District::class);

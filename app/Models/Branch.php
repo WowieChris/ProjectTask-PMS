@@ -8,7 +8,7 @@ class Branch extends Model
 {
     protected $fillable = [
         'name',
-        'area_id'
+        'area_id',
     ];
 
     public function area()

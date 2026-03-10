@@ -19,7 +19,7 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->unique(['area_id','name']);
+            $table->unique(['area_id', 'name']);
         });
     }
 
