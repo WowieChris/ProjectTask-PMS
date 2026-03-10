@@ -19,7 +19,7 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->unique(['user_group_id','name']);
+            $table->unique(['user_group_id', 'name']);
         });
     }
 
