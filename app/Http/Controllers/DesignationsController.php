@@ -17,8 +17,8 @@ class DesignationsController extends Controller
         $designations = Designation::orderBy('name')->get();
 
         return Inertia::render('designations/index', [
-    'designations' => $designations
-]);
+            'designations' => $designations,
+        ]);
     }
 
     /**
@@ -28,7 +28,7 @@ class DesignationsController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:designations,name',
-            'description' => 'nullable|string|max:255'
+            'description' => 'nullable|string|max:255',
         ]);
 
         Designation::create($validated);
@@ -44,8 +44,8 @@ class DesignationsController extends Controller
         $designation = Designation::findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:designations,name,' . $designation->id,
-            'description' => 'nullable|string|max:255'
+            'name' => 'required|string|max:255|unique:designations,name,'.$designation->id,
+            'description' => 'nullable|string|max:255',
         ]);
 
         $designation->update($validated);

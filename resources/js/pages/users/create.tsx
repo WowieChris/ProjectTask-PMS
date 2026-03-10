@@ -8,6 +8,7 @@ import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
 
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -22,7 +23,9 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/users/create',
     },
 ];
-
+// $request->validate([
+//     'employee_id' => ['required', 'regex:/^\d{4}-\d{4,5}$/', 'unique:users,employee_id'],
+// ]);
 export default function UsersCreate() {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
@@ -41,7 +44,17 @@ export default function UsersCreate() {
         e.preventDefault();
         post('/users');
     };
+const handleEmployeeId = (value: string) => {
+  const digits = value.replace(/\D/g, '')
 
+  let formatted = digits
+
+  if (digits.length > 4) {
+    formatted = digits.slice(0,4) + '-' + digits.slice(4,9)
+  }
+
+  setData('employee_id', formatted)
+}
     // return (
         // <AppLayout breadcrumbs={breadcrumbs}>
         //     <Head title="Create User" />
@@ -261,6 +274,7 @@ export default function UsersCreate() {
                                         <Label htmlFor="employee_id">ID Number</Label>
                                         <Input
                                             id="employee_id"
+                                            pattern="\d{4}-\d{4,5}"
                                             placeholder="Employee #"
                                             name="employee_id"
                                             autoComplete="employee_id"

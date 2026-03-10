@@ -62,7 +62,6 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-
     public function photo()
     {
         return $this->hasOne(\App\Models\UserPhoto::class, 'user_id')
@@ -71,11 +70,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getPhotoUrlAttribute()
     {
-        if (!$this->photo) {
+        if (! $this->photo) {
             return null;
         }
 
-        return asset('storage/' . $this->photo->path);
+        return asset('storage/'.$this->photo->path);
     }
 
     // Optional: Add a helper to get current photo
@@ -107,6 +106,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isAdminLike(): bool
     {
         $d = $this->designation?->name;
+
         return in_array($d, ['Admin', 'Administrator'], true);
     }
 

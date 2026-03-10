@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use app\Models\Area;
 use App\Models\District;
+use App\Models\Division;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use app\Models\Area;
-use Illuminate\Database\Eloquent\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\Division;
 
 class DistrictController extends Controller
 {
@@ -35,9 +33,9 @@ class DistrictController extends Controller
     public function destroy(District $district)
     {
         $district->delete();
+
         return back()->with('success', 'District deleted.');
     }
-
 
     public function index()
     {

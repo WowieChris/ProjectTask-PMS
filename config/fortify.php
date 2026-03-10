@@ -12,8 +12,8 @@ return [
 
     'email' => 'email',
 
-    // ✅ After login redirect target (we want OTP first)
-    'home' => '/otp',
+    // After login redirect target (application home)
+    'home' => '/dashboard',
 
     'prefix' => '',
 
@@ -33,8 +33,8 @@ return [
         // Features::registration(),
         // Features::resetPasswords(),
         Features::emailVerification(),
-        // Using the app's custom OTP flow, disable Fortify's built-in two-factor
-        // Features::twoFactorAuthentication(),
+        // Enable Fortify's built-in two-factor features for tests.
+        Features::twoFactorAuthentication(),
         // Features::updateProfileInformation(),
         // Features::updatePasswords(),
     ],

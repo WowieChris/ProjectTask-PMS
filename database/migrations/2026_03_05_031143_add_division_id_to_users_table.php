@@ -4,11 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            if (!Schema::hasColumn('users', 'division_id')) {
+            if (! Schema::hasColumn('users', 'division_id')) {
                 $table->foreignId('division_id')
                     ->nullable()
                     ->after('designation')
@@ -23,7 +24,10 @@ return new class extends Migration {
         Schema::table('users', function (Blueprint $table) {
             if (Schema::hasColumn('users', 'division_id')) {
                 // try drop FK safely (name may differ)
-                try { $table->dropForeign(['division_id']); } catch (\Throwable $e) {}
+                try {
+                    $table->dropForeign(['division_id']);
+                } catch (\Throwable $e) {
+                }
                 $table->dropColumn('division_id');
             }
         });

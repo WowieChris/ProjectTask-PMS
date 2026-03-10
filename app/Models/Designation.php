@@ -8,6 +8,6 @@ class Designation extends Model
 {
     protected $fillable = [
         'name',
-        'description'
+        'description',
     ];
 }

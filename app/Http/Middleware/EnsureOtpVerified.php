@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -19,11 +18,6 @@ class EnsureOtpVerified
 
         // Allow OTP routes always
         if ($request->routeIs('otp.*')) {
-            // If already verified in session, skip OTP page
-            if ($request->session()->get('otp_passed') === true) {
-                return redirect()->route('dashboard');
-            }
-
             return $next($request);
         }
 
@@ -32,35 +26,44 @@ class EnsureOtpVerified
             return $next($request);
         }
 
-        // Time-limited OTP: check a timestamp stored in session. If the
-        // timestamp is within the allowed window, allow access.
-        $verifiedAt = $request->session()->get('two_factor_verified_at');
+        $user = $request->user();
 
-        // Timeout in minutes. Change this value as desired or read from config.
-        $timeoutMinutes = config('fortify.two_factor_timeout', 5);
+        // If accessing settings (by route name or URI), require a fresh OTP.
+        // Allow through only if OTP was verified specifically for a settings
+        // redirect (within the last 30 minutes), so login OTP never bypasses
+        // this prompt.
+        if ($request->routeIs('settings.*') || $request->is('settings*')) {
+            $settingsVerifiedAt = $request->session()->get('settings_otp_verified_at');
 
-        if ($verifiedAt) {
-            try {
-                $ts = Carbon::createFromTimestamp($verifiedAt);
-
-                if ($ts->greaterThanOrEqualTo(now()->subMinutes($timeoutMinutes))) {
-                    return $next($request);
-                }
-            } catch (\Throwable $e) {
-                // If timestamp parsing fails, fall through to require OTP.
+            if ($settingsVerifiedAt && (now()->timestamp - $settingsVerifiedAt) < 1800) {
+                return $next($request);
             }
+
+            $request->session()->put('url.intended', url()->full());
+            try {
+                Cache::forget('login_otp_'.$user->id);
+            } catch (\Throwable $e) {
+                Log::warning('Failed to clear OTP cache before redirect to settings', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+            }
+            $request->session()->put('otp_passed', false);
+            $request->session()->forget('settings_otp_verified_at');
+
+            return redirect()->route('otp.show');
         }
 
-        // Save intended and ensure a fresh OTP is issued when we redirect.
-        $request->session()->put('url.intended', url()->full());
+        // For all other routes, only require OTP if the session hasn't been
+        // marked as OTP-verified. Do not re-prompt on a time-based timeout.
+        if ($request->session()->get('otp_passed') === true) {
+            return $next($request);
+        }
 
+        // Not verified in this session: save intended URL, clear cached OTP
+        // so a fresh code will be issued, and redirect to the OTP page.
+        $request->session()->put('url.intended', url()->full());
         try {
-            // Clear any previously cached OTP so `OtpController::show` will
-            // generate and send a new code when the user is redirected.
-            Cache::forget('login_otp_'.$request->user()->id);
+            Cache::forget('login_otp_'.$user->id);
         } catch (\Throwable $e) {
-            // Don't block access if cache clearing fails; log for debugging.
-            Log::warning('Failed to clear OTP cache before redirect', ['user_id' => $request->user()->id, 'error' => $e->getMessage()]);
+            Log::warning('Failed to clear OTP cache before redirect', ['user_id' => $user->id, 'error' => $e->getMessage()]);
         }
 
         return redirect()->route('otp.show');

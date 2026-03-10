@@ -9,6 +9,7 @@ import BranchController from './BranchController'
 import UserGroupController from './UserGroupController'
 import BrowseController from './BrowseController'
 import DesignationsController from './DesignationsController'
+
 const Controllers = {
     Auth: Object.assign(Auth, Auth),
 UserController: Object.assign(UserController, UserController),
