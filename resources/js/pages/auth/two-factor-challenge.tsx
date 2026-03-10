@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-import AppLayout from '@/layouts/app-layout';
+import AuthLayout from '@/layouts/auth-layout';
 
 export default function TwoFactorChallenge() {
   const form = useForm({
@@ -25,7 +25,7 @@ export default function TwoFactorChallenge() {
   };
 
   return (
-    <AppLayout>
+    <AuthLayout title="Two-Factor Authentication" description="Enter the OTP code sent to your email to continue.">
       <Head title="Two-Factor Challenge" />
 
       <form onSubmit={submit} className="space-y-4">
@@ -70,6 +70,6 @@ export default function TwoFactorChallenge() {
           {form.processing ? 'Confirming...' : 'Confirm'}
         </Button>
       </form>
-    </AppLayout>
+    </AuthLayout>
   );
 }

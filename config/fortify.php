@@ -33,8 +33,8 @@ return [
         // Features::registration(),
         // Features::resetPasswords(),
         Features::emailVerification(),
-        // Enable Fortify's built-in two-factor features for tests.
-        Features::twoFactorAuthentication(),
+        // Two-factor authentication is handled by the custom /otp flow (OtpController + EnsureOtpVerified).
+        // Features::twoFactorAuthentication(),
         // Features::updateProfileInformation(),
         // Features::updatePasswords(),
     ],

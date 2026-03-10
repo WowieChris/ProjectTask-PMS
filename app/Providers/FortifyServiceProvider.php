@@ -22,14 +22,8 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Bind the Fortify TwoFactor provider to our email OTP provider
-        $this->app->singleton(\Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider::class, \App\Providers\EmailTwoFactorProvider::class);
-
-        // Replace Fortify's RedirectsIfTwoFactorAuthenticatable with our email-OTP redirect
-        $this->app->bind(\Laravel\Fortify\Contracts\RedirectsIfTwoFactorAuthenticatable::class, \App\Actions\RedirectIfEmailTwoFactorAuthenticatable::class);
-
         // Ensure Fortify uses our LoginResponse implementation so post-login
-        // redirects go to the two-factor challenge (OTP) as expected.
+        // redirects go to the dashboard (EnsureOtpVerified middleware takes over).
         $this->app->singleton(LoginResponseContract::class, OtpLoginResponse::class);
         // Ensure Fortify uses our LockoutResponse implementation so throttled
         // login attempts return HTTP 429 as expected by tests.
@@ -80,40 +74,6 @@ class FortifyServiceProvider extends ServiceProvider
         ]));
 
         Fortify::registerView(fn () => Inertia::render('auth/register'));
-
-        Fortify::twoFactorChallengeView(function () {
-            $userId = session('login.id');
-
-            if ($userId) {
-                $userModel = config('auth.providers.users.model');
-                $user = $userModel::find($userId);
-
-                if ($user) {
-                    // Ensure user has a stored (encrypted) two_factor_secret so Fortify's
-                    // TwoFactorLoginRequest can decrypt it without throwing an exception.
-                    if (empty($user->two_factor_secret)) {
-                        $secret = Fortify::currentEncrypter()->encrypt(\Illuminate\Support\Str::random(32));
-                        $user->two_factor_secret = $secret;
-                        $user->save();
-                    }
-
-                    // generate a 6-digit code
-                    $code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-                    $hash = hash('sha256', $code);
-                    $expiresAt = now()->addMinutes(10);
-
-                    \App\Models\EmailOtp::create([
-                        'user_id' => $user->id,
-                        'code_hash' => $hash,
-                        'expires_at' => $expiresAt,
-                    ]);
-
-                    $user->notify(new \App\Notifications\EmailOtpNotification($code));
-                }
-            }
-
-            return Inertia::render('auth/two-factor-challenge');
-        });
 
         Fortify::confirmPasswordView(fn () => Inertia::render('auth/confirm-password'));
     }

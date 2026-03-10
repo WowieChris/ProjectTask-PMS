@@ -41,6 +41,11 @@ class HandleInertiaRequests extends Middleware
                     'email' => $user->email,
                     'photo_url' => $photoUrl,
                     'must_change_password' => (bool) $user->must_change_password,
+                    // Provide role to the frontend so client-side UI can
+                    // show/hide admin sections. Fallback to 'user' when
+                    // role is not set but designation suggests admin.
+                    'role' => $user->role ?? ($user->isAdminLike() ? 'admin' : 'user'),
+                    'is_admin' => $user->isAdminLike(),
                 ] : null,
             ],
 
