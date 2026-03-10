@@ -29,7 +29,10 @@ type PageProps = {
 
 export function AppSidebar() {
   const { auth } = usePage<PageProps>().props;
-  const userRole = auth.user.role;
+  // Defensive: `auth` or `auth.user` may be null during some hydration paths
+  // (e.g. unauthenticated or server-client mismatch). Default to 'user'
+  // so admin menus are hidden when role is unavailable.
+  const userRole = auth?.user?.role ?? 'user';
 
  const mainNavItems: NavItem[] = [
   {
