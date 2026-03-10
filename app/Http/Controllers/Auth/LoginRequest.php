@@ -41,20 +41,17 @@ class LoginRequest extends FormRequest
 
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
-            return;
-        }
+        if (RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+            event(new Lockout($this));
 
-        event(new Lockout($this));
+            $seconds = RateLimiter::availableIn($this->throttleKey());
 
-        $seconds = RateLimiter::availableIn($this->throttleKey());
-
-        throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
+            // Return HTTP 429 Too Many Requests to match test expectations
+            throw new \Symfony\Component\HttpKernel\Exception\HttpException(429, trans('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
-            ]),
-        ]);
+            ]));
+        }
     }
 
     public function throttleKey(): string
