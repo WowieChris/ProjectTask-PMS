@@ -33,7 +33,7 @@ class UserController extends Controller
             'password' => 'required|string|min:8',
             'role' => 'required|string|in:user,admin',
             'designation' => 'nullable|string|max:255',
-            'employee_id' => 'required|string|max:255',
+            'employee_id' => ['required', 'regex:/^\d{4}-\d{4,5}$/', 'unique:users,employee_id'],
             'location' => 'required|string|max:255',
             'district' => 'nullable|string|max:255',
             'date_employed' => 'nullable|date',

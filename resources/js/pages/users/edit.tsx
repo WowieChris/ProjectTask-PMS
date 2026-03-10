@@ -82,7 +82,18 @@ export default function EditUserCard({ user }: Props) {
 
         put(`/users/${user.id}`);
     };
+    
+const handleEmployeeId = (value: string) => {
+  const digits = value.replace(/\D/g, '')
 
+  let formatted = digits
+
+  if (digits.length > 4) {
+    formatted = digits.slice(0,4) + '-' + digits.slice(4,9)
+  }
+
+  setData('employee_id', formatted)
+}
     return (
         // <AppLayout breadcrumbs={breadcrumbs}>
         //     <Head title="Edit User" />
@@ -318,6 +329,7 @@ export default function EditUserCard({ user }: Props) {
                                     id="id_number"
                                     type="text"
                                     className='w-full'
+                                    pattern="\d{4}-\d{4,5}"
                                     value={data.employee_id}
                                     onChange={(e) => setData('employee_id', e.target.value)}
                                     disabled={!isInitiallyActive}
