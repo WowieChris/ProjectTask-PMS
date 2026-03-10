@@ -1,8 +1,8 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
-* @see \App\Http\Controllers\BrowseController::index
- * @see app/Http/Controllers/BrowseController.php:10
- * @route '/browse'
+* @see \App\Http\Controllers\locationController::index
+ * @see app/Http/Controllers/LocationController.php:14
+ * @route '/locations'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -11,31 +11,31 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: '/browse',
+    url: '/locations',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Http\Controllers\BrowseController::index
- * @see app/Http/Controllers/BrowseController.php:10
- * @route '/browse'
+* @see \App\Http\Controllers\locationController::index
+ * @see app/Http/Controllers/LocationController.php:14
+ * @route '/locations'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
 }
 
 /**
-* @see \App\Http\Controllers\BrowseController::index
- * @see app/Http/Controllers/BrowseController.php:10
- * @route '/browse'
+* @see \App\Http\Controllers\locationController::index
+ * @see app/Http/Controllers/LocationController.php:14
+ * @route '/locations'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
     method: 'get',
 })
 /**
-* @see \App\Http\Controllers\BrowseController::index
- * @see app/Http/Controllers/BrowseController.php:10
- * @route '/browse'
+* @see \App\Http\Controllers\locationController::index
+ * @see app/Http/Controllers/LocationController.php:14
+ * @route '/locations'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -43,9 +43,9 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
-* @see \App\Http\Controllers\BrowseController::index
- * @see app/Http/Controllers/BrowseController.php:10
- * @route '/browse'
+* @see \App\Http\Controllers\locationController::index
+ * @see app/Http/Controllers/LocationController.php:14
+ * @route '/locations'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -53,18 +53,18 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
-* @see \App\Http\Controllers\BrowseController::index
- * @see app/Http/Controllers/BrowseController.php:10
- * @route '/browse'
+* @see \App\Http\Controllers\locationController::index
+ * @see app/Http/Controllers/LocationController.php:14
+ * @route '/locations'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
             method: 'get',
         })
             /**
-* @see \App\Http\Controllers\BrowseController::index
- * @see app/Http/Controllers/BrowseController.php:10
- * @route '/browse'
+* @see \App\Http\Controllers\locationController::index
+ * @see app/Http/Controllers/LocationController.php:14
+ * @route '/locations'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({
@@ -77,8 +77,6 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
     
     index.form = indexForm
-const browse = {
-    index: Object.assign(index, index),
-}
+const locationController = { index }
 
-export default browse
+export default locationController
