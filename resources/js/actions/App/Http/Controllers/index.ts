@@ -1,6 +1,7 @@
 import Auth from './Auth'
 import UserController from './UserController'
 import Settings from './Settings'
+import locationController from './locationController'
 import DistrictController from './DistrictController'
 import DivisionController from './DivisionController'
 import AreaController from './AreaController'
@@ -11,15 +12,16 @@ import DesignationsController from './DesignationsController'
 
 const Controllers = {
     Auth: Object.assign(Auth, Auth),
-    UserController: Object.assign(UserController, UserController),
-    Settings: Object.assign(Settings, Settings),
-    DistrictController: Object.assign(DistrictController, DistrictController),
-    DivisionController: Object.assign(DivisionController, DivisionController),
-    AreaController: Object.assign(AreaController, AreaController),
-    BranchController: Object.assign(BranchController, BranchController),
-    UserGroupController: Object.assign(UserGroupController, UserGroupController),
-    BrowseController: Object.assign(BrowseController, BrowseController),
-    DesignationsController: Object.assign(DesignationsController, DesignationsController),
+UserController: Object.assign(UserController, UserController),
+Settings: Object.assign(Settings, Settings),
+locationController: Object.assign(locationController, locationController),
+DistrictController: Object.assign(DistrictController, DistrictController),
+DivisionController: Object.assign(DivisionController, DivisionController),
+AreaController: Object.assign(AreaController, AreaController),
+BranchController: Object.assign(BranchController, BranchController),
+UserGroupController: Object.assign(UserGroupController, UserGroupController),
+BrowseController: Object.assign(BrowseController, BrowseController),
+DesignationsController: Object.assign(DesignationsController, DesignationsController),
 }
 
 export default Controllers

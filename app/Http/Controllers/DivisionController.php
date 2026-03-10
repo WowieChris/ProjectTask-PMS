@@ -15,6 +15,11 @@ class DivisionController extends Controller
             'userGroups' => UserGroup::all(),
             'divisions' => Division::with('userGroup')->get(),
         ]);
+        $divisions = Division::with('districts.areas.branches')->get();
+
+        return Inertia::render('Browse/Index', [
+            'divisions' => $divisions
+        ]);
     }
 
     public function store(Request $request)
