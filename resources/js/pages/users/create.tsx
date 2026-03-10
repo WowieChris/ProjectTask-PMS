@@ -31,17 +31,16 @@ export default function UsersCreate() {
         name: '',
         last_name: '',
         email: '',
-        password: '',
         role: 'user',
         designation: '',
         employee_id: '',
-        location: '',
         district: '',
         date_employed: new Date().toISOString().split('T')[0],
     });
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
+        console.log('UsersCreate.submit', data)
         post('/users');
     };
 const handleEmployeeId = (value: string) => {
@@ -242,7 +241,7 @@ const handleEmployeeId = (value: string) => {
                         <CardTitle>Create User</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={submit} className="space-y-4" name="formCreateUser">
+                        <form onSubmit={submit} className="space-y-4" name="formCreateUser" noValidate>
                             <div className='flex flex-col gap-4'>
                                 <div className='flex flex-col gap-2'>
                                     <Label htmlFor="name">Name</Label>
@@ -274,13 +273,13 @@ const handleEmployeeId = (value: string) => {
                                         <Label htmlFor="employee_id">ID Number</Label>
                                         <Input
                                             id="employee_id"
-                                            pattern="\d{4}-\d{4,5}"
-                                            placeholder="Employee #"
+                                            pattern="[0-9]{4}-[0-9]{4,5}"
+                                            placeholder="Employee # (e.g. 1234-56789)"
                                             name="employee_id"
                                             autoComplete="employee_id"
                                             type="text"
                                             value={data.employee_id}
-                                            onChange={(e) => setData('employee_id', e.target.value)}
+                                            onChange={(e) => handleEmployeeId(e.target.value)}
                                             required
                                         />
                                         {errors.employee_id && <p className="text-red-500">{errors.employee_id}</p>}
