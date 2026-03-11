@@ -26,11 +26,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'role',
         'employee_id',
-        'designation',
+        'designation_id',
         'location',
         'district',
         'employment_status',
-        'date_employed',
         'must_change_password',
     ];
 
@@ -57,7 +56,6 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
-            'date_employed' => 'date',
             'must_change_password' => 'boolean',
         ];
     }

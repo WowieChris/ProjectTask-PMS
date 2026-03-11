@@ -7,6 +7,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Designation;
 
 class UserController extends Controller
 {
@@ -15,14 +16,17 @@ class UserController extends Controller
         $users = User::with('photo')->get();
 
         return Inertia::render('users/index', [
-            'users' => $users,
-        ]);
+            'users' => User::orderBy('name')->get(),
+            'designations' => Designation::orderBy('name')->get(['id', 'name', 'role']), // ← add this
+    ]);
     }
 
     public function create()
     {
-        return Inertia::render('users/create');
-    }
+    return Inertia::render('users/create', [
+        'designations' => Designation::orderBy('name')->get(['id', 'name', 'role']),
+    ]);
+}
 
     public function store(Request $request)
     {
@@ -30,11 +34,8 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'role' => 'required|string|in:user,admin',
-            'designation' => 'nullable|string|max:255',
+            'designation_id' => 'required|exists:designations,id',
             'employee_id' => ['required', 'regex:/^\d{4}-\d{4,5}$/', 'unique:users,employee_id'],
-            'district' => 'nullable|string|max:255',
-            'date_employed' => 'nullable|date',
         ]);
 
         $user = User::create([
@@ -46,15 +47,13 @@ class UserController extends Controller
             'password' => Hash::make('password'),
 
             'role' => $request->role,
-            'designation' => $request->designation,
+            'designation_id' => $request->designation_id,
             'employee_id' => $request->employee_id,
 
             // location removed from form
             'location' => null,
 
-            'district' => $request->district,
-            'employment_status' => 'active',
-            'date_employed' => $request->date_employed,
+            'employment_status' => 'inactive',
             'must_change_password' => true,
         ]);
 
@@ -76,12 +75,11 @@ class UserController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'role' => 'required|string|in:user,admin',
-            'designation' => 'nullable|string|max:255',
+            'designation_id' => 'nullable|exists:designations,id',
             'employee_id' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'district' => 'nullable|string|max:255',
             'employment_status' => 'required|string|max:255',
-            'date_employed' => 'nullable|date',
         ]);
 
         $user->update([
@@ -89,7 +87,7 @@ class UserController extends Controller
             'last_name' => $request->last_name,
             'email' => $request->email,
             'role' => $request->role,
-            'designation' => $request->designation,
+            'designation_id' => $request->designation,
             'employee_id' => $request->employee_id,
             'location' => $request->location,
             'district' => $request->district,
@@ -106,7 +104,7 @@ class UserController extends Controller
         $value = $request->input('value');
 
         $validated = match ($field) {
-            'designation' => $request->validate(['value' => 'nullable|string|max:255']),
+            'designation_id' => $request->validate(['value' => 'nullable|exists:designations,id']),
             default => throw new \Exception('Invalid field'),
         };
 
