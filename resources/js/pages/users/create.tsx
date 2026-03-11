@@ -1,13 +1,18 @@
 import { Link, useForm } from '@inertiajs/react'
+import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
-export default function UsersCreate() {
+interface Props {
+    onSuccess?: () => void
+}
 
-    const { data, setData, post, processing, errors } = useForm({
+export default function UsersCreate({ onSuccess }: Props) {
+
+    const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         last_name: '',
         email: '',
@@ -22,7 +27,12 @@ export default function UsersCreate() {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault()
-        post('/users')
+        post('/users', {
+            onSuccess: () => {
+                reset()
+                onSuccess?.()
+            },
+        })
     }
 
     const handleEmployeeId = (value: string) => {

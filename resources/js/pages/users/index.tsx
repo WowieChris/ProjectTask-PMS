@@ -42,6 +42,7 @@ export default function UsersIndex({ users }: Props) {
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [openEdit, setOpenEdit] = useState(false)
+  const [openCreate, setOpenCreate] = useState(false)
 
   /* ---------------- ROLE OPTIONS ---------------- */
 
@@ -178,14 +179,14 @@ const paginatedUsers = useMemo(() => {
                 Delete
               </Button>
 
-              <Dialog>
+              <Dialog open={openCreate} onOpenChange={setOpenCreate}>
 
                 <DialogTrigger asChild>
                   <Button>Add User</Button>
                 </DialogTrigger>
 
                 <DialogContent className="max-w-2xl p-0">
-                  <UsersCreate />
+                  <UsersCreate onSuccess={() => setOpenCreate(false)} />
                 </DialogContent>
 
               </Dialog>

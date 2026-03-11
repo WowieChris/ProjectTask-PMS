@@ -4,11 +4,15 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import React from 'react'
 
-export default function CreateDesignation() {
+interface Props {
+  onSuccess?: () => void
+}
+
+export default function CreateDesignation({ onSuccess }: Props) {
 
   const allPermissions = ['create', 'read', 'update', 'delete']
 
-  const { data, setData, post, processing } = useForm({
+  const { data, setData, post, processing, reset } = useForm({
     name: '',
     description: '',
     permissions: [] as string[],
@@ -26,7 +30,12 @@ export default function CreateDesignation() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
-    post('/designations')
+    post('/designations', {
+      onSuccess: () => {
+        reset()
+        onSuccess?.()
+      },
+    })
   }
 
   return (
