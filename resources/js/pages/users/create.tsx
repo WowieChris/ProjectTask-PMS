@@ -5,24 +5,31 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { usePage } from '@inertiajs/react'
 
+interface Designation {
+    id: number
+    name: string
+    role: 'user' | 'admin'
+}
+interface PageProps extends Record<string, unknown> {
+    designations: Designation[]
+}
 interface Props {
     onSuccess?: () => void
 }
 
 export default function UsersCreate({ onSuccess }: Props) {
+    const { designations = [] } = usePage<PageProps>().props
 
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         last_name: '',
         email: '',
-        // password: '',
         role: 'user',
-        designation: '',
+        designation_id: '',  // ← change from designation to designation_id
         employee_id: '',
-        // location: '',
         district: '',
-        date_employed: new Date().toISOString().split('T')[0],
     })
 
     const submit = (e: React.FormEvent) => {
@@ -100,8 +107,34 @@ export default function UsersCreate({ onSuccess }: Props) {
                             {errors.employee_id && <p className="text-red-500">{errors.employee_id}</p>}
                         </div>
 
-
+                        {/* DESIGNATION */}
                         <div>
+                            <Label>Designation</Label>
+
+                            <Select
+                                value={data.designation_id}
+                                onValueChange={(value) => {
+                                    setData('designation_id', value)
+                                    // auto-set role based on selected designation
+                                    const selected = designations.find(d => String(d.id) === value)
+                                    if (selected) setData('role', selected.role)
+                                }}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select designation" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {designations.map((d) => (
+                                        <SelectItem key={d.id} value={String(d.id)}>
+                                            {d.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+
+                            {errors.designation_id && <p className="text-red-500">{errors.designation_id}</p>}
+                        </div>
+                        {/* <div>
                             <Label>Role</Label>
 
                             <Select
@@ -120,7 +153,7 @@ export default function UsersCreate({ onSuccess }: Props) {
                             </Select>
 
                             {errors.role && <p className="text-red-500">{errors.role}</p>}
-                        </div>
+                        </div> */}
 
                     </div>
 
@@ -156,29 +189,7 @@ export default function UsersCreate({ onSuccess }: Props) {
                     </div>
 
 
-                    {/* DESIGNATION */}
-                    <div>
-                        <Label>Designation</Label>
-
-                        <Select
-                            value={data.designation}
-                            onValueChange={(value) => setData('designation', value)}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select designation" />
-                            </SelectTrigger>
-
-                            <SelectContent>
-                                <SelectItem value="Technical Support Engineer">Technical Support Engineer</SelectItem>
-                                <SelectItem value="Field Engineer">Field Engineer</SelectItem>
-                                <SelectItem value="System Operator">System Operator</SelectItem>
-                                <SelectItem value="Infrastructure Engineer">Infrastructure Engineer</SelectItem>
-                            </SelectContent>
-
-                        </Select>
-
-                        {errors.designation && <p className="text-red-500">{errors.designation}</p>}
-                    </div>
+                    
 
 
                     {/* LOCATION */}
