@@ -18,6 +18,7 @@ class DesignationsController extends Controller
 
         return Inertia::render('designations/index', [
             'designations' => $designations,
+            'role' => 'required|in:user,admin',
         ]);
     }
 
@@ -28,7 +29,7 @@ class DesignationsController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:designations,name',
-            'description' => 'nullable|string|max:255',
+            'role' => 'required|in:user,admin',
         ]);
 
         Designation::create($validated);
@@ -45,7 +46,7 @@ class DesignationsController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:designations,name,'.$designation->id,
-            'description' => 'nullable|string|max:255',
+            'role' => 'required|in:user,admin',
         ]);
 
         $designation->update($validated);

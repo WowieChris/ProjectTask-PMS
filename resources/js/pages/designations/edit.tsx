@@ -8,6 +8,7 @@ interface EditDesignationProps {
   designation: {
     id: number
     name: string
+    role: 'user' | 'admin'
     permissions?: string[] // optional, if loaded from backend
   }
 }
@@ -19,6 +20,7 @@ export default function EditDesignation({ designation }: EditDesignationProps) {
 
   const { data, setData, put, processing } = useForm({
     name: designation.name,
+    role: designation.role,
     permissions: designation.permissions ?? [], // initial selected permissions
   })
 
@@ -44,7 +46,17 @@ export default function EditDesignation({ designation }: EditDesignationProps) {
           onChange={(e) => setData('name', e.target.value)}
         />
       </div>
-
+      <div>
+        <Label>Role</Label>
+        <select
+          value={data.role}
+          onChange={(e) => setData('role', e.target.value as 'user' | 'admin')}
+          className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+        >
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
 
       <div>
         <Label>Permissions</Label>
