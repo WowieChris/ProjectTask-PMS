@@ -28,6 +28,7 @@ interface Props {
 export default function DesignationMasterfile({ designations }: Props) {
   const [search, setSearch] = useState("");
   const [selectedDesignation, setSelectedDesignation] = useState<Designation | null>(null);
+  const [openCreate, setOpenCreate] = useState(false);
 
   // filter designations based on search
   const filteredDesignations = useMemo(() => {
@@ -48,7 +49,7 @@ export default function DesignationMasterfile({ designations }: Props) {
             <CardHeader className="flex flex-row items-center justify-between">
   <CardTitle>Designation List</CardTitle>
 
-  <Dialog>
+  <Dialog open={openCreate} onOpenChange={setOpenCreate}>
     <DialogTrigger asChild>
       <Button>Create Designation</Button>
     </DialogTrigger>
@@ -58,7 +59,7 @@ export default function DesignationMasterfile({ designations }: Props) {
         <DialogTitle>Create Designation</DialogTitle>
       </DialogHeader>
 
-      <CreateDesignation />
+      <CreateDesignation onSuccess={() => setOpenCreate(false)} />
     </DialogContent>
   </Dialog>
 
