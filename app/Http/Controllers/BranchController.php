@@ -6,17 +6,22 @@ use App\Models\Area;
 use App\Models\Branch;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\District;
+use App\Models\Division;
 
 class BranchController extends Controller
 {
     public function index()
     {
-        $areas = Area::all();
-        $branches = Branch::with('area')->get();
+        $branches = Branch::with([
+            'area.district.division'
+        ])->get();
 
         return Inertia::render('Branches/Index', [
-            'areas' => $areas,
             'branches' => $branches,
+            'areas' => Area::all(),
+            'districts' => District::all(),
+            'divisions' => Division::all(),
         ]);
     }
 
@@ -25,12 +30,16 @@ class BranchController extends Controller
         $request->validate([
             'area_id' => 'required|exists:areas,id',
             'name' => 'required|string|max:255',
+            'district_id' => 'nullable|exists:districts,id',
+            'division_id' => 'nullable|exists:divisions,id',
         ]);
 
         Branch::create([
             'area_id' => $request->area_id,
             'name' => $request->name,
         ]);
+
+
 
         return redirect()->back();
     }

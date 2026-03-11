@@ -9,10 +9,20 @@ class Branch extends Model
     protected $fillable = [
         'name',
         'area_id',
+        'district_id',
+        'division_id',
     ];
 
     public function area()
     {
         return $this->belongsTo(Area::class);
+    }
+    public function district()
+    {
+        return $this->belongsTo(District::class);
+    }
+    public function division()
+    {
+        return $this->belongsTo(Division::class);
     }
 }

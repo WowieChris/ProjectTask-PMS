@@ -11,14 +11,11 @@ class DivisionController extends Controller
 {
     public function index()
     {
+        $divisions = Division::with('userGroup')->get();
+
         return Inertia::render('Divisions/Index', [
             'userGroups' => UserGroup::all(),
-            'divisions' => Division::with('userGroup')->get(),
-        ]);
-        $divisions = Division::with('districts.areas.branches')->get();
-
-        return Inertia::render('Browse/Index', [
-            'divisions' => $divisions
+            'divisions' => $divisions,
         ]);
     }
 

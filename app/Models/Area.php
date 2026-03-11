@@ -15,14 +15,14 @@ class Area extends Model
         return $this->hasMany(Branch::class);
     }
 
-    public function index()
+    public function division()
     {
-        return Inertia::render('Areas/Index', [
-            'divisions' => [],
-            'selectedDivision' => null,
-            'districts' => [],
-        ]);
+        return $this->hasOneThrough(
+            Division::class,
+            District::class
+        );
     }
+
 
     public function district()
     {
