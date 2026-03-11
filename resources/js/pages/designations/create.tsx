@@ -12,6 +12,7 @@ export default function CreateDesignation() {
     name: '',
     description: '',
     permissions: [] as string[],
+    role: 'user',
   })
 
   const togglePermission = (perm: string) => {
@@ -39,7 +40,17 @@ export default function CreateDesignation() {
           onChange={(e) => setData('name', e.target.value)}
         />
       </div>
-
+      <div>
+        <Label>Role</Label>
+        <select
+          value={data.role}
+          onChange={(e) => setData('role', e.target.value)}
+          className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+        >
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
       {/* Permissions */}
       <div>
         <Label>Permissions</Label>
