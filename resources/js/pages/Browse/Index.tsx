@@ -30,7 +30,6 @@ type Level = 'division' | 'district' | 'area' | 'branch';
 interface LocationItem {
   id: string;
   name: string;
-  code: string;
   parentId?: string;
   level: Level;
   status: 'active' | 'inactive';
@@ -90,7 +89,6 @@ export default function App() {
       list.push({
         id: divisionId,
         name: division.name,
-        code: `DIV-${division.id.toString().padStart(3, '0')}`,
         level: 'division',
         status: 'active',
       });
@@ -101,7 +99,6 @@ export default function App() {
         list.push({
           id: districtId,
           name: district.name,
-          code: `DIST-${district.id.toString().padStart(3, '0')}`,
           parentId: divisionId,
           level: 'district',
           status: 'active',
@@ -113,7 +110,6 @@ export default function App() {
           list.push({
             id: areaId,
             name: area.name,
-            code: `AREA-${area.id.toString().padStart(3, '0')}`,
             parentId: districtId,
             level: 'area',
             status: 'active',
@@ -123,7 +119,6 @@ export default function App() {
             list.push({
               id: `br-${branch.id}`,
               name: branch.name,
-              code: `BR-${branch.id.toString().padStart(3, '0')}`,
               parentId: areaId,
               level: 'branch',
               status: 'active',
@@ -151,8 +146,7 @@ export default function App() {
     if (!selectedDivision && !isGeneralOverview) return [];
 
     return locations.filter(item => {
-      const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.code.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
 
       if (!matchesSearch) return false;
 
@@ -246,9 +240,9 @@ export default function App() {
   return (
     <AppLayout>
       <Head title="Browse Locations" />
-      <div className="min-h-screen text-foreground font-sans flex flex-col overflow-y-auto">
+      <div className="h-screen text-foreground font-sans flex flex-col overflow-hidden">
         {/* Header */}
-        <Card className='m-3 gap-0 py-0'>
+        <Card className='m-3 gap-0 py-0 flex flex-col flex-1 overflow-hidden'>
           <CardHeader className="h-16 border-b border-border flex flex-row mt-3 pb-3 items-center justify-between shrink-0">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-sm">
@@ -259,12 +253,12 @@ export default function App() {
                 <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Module Prototype</p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
+            {/* <div className="flex items-center gap-4">
               <button className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90">
                 <Plus size={16} />
                 Add New Location
               </button>
-            </div>
+            </div> */}
           </CardHeader>
           <CardContent className="p-0 flex-1 flex flex-col overflow-hidden">
             <main className="flex-1 flex overflow-hidden">
@@ -300,7 +294,7 @@ export default function App() {
                   </div>
 
                   {/* Division Selector */}
-                  <div className={`space-y-2 transition-opacity ${isGeneralOverview ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
+                  <div className={`space-y-2 transition-opacity ${isGeneralOverview ? 'hidden' : 'opacity-100'}`}>
                     <Label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Select Division</Label>
                     <div className="relative">
                       <select
@@ -322,7 +316,7 @@ export default function App() {
 
                   {/* Level Navigation */}
                   <div className="flex items-center rounded-xl bg-muted p-1">
-                    {(['district', 'area', 'branch'] as Level[]).map((level) => (
+                    {(['division','district', 'area', 'branch'] as Level[]).map((level) => (
                       <button
                         key={level}
                         onClick={() => {
@@ -332,8 +326,10 @@ export default function App() {
                             return;
                           }
 
-                          if (level === 'district') handleLevelChange('district');
-                          else if (level === 'area') {
+                          if (level === 'division') handleLevelChange('division');
+                          else if (level === 'district') {
+                            handleLevelChange('district', editingItem?.id || selectedParentId);
+                          } else if (level === 'area') {
                             if (currentLevel === 'branch') {
                               const parentArea = locations.find(a => a.id === selectedParentId);
                               handleLevelChange('area', parentArea?.parentId || null);
@@ -346,6 +342,7 @@ export default function App() {
                         }}
                         disabled={
                           !isGeneralOverview && (
+                            (level === 'district' && !editingItem && !selectedParentId) ||
                             (level === 'area' && !editingItem && !selectedParentId) ||
                             (level === 'branch' && (currentLevel !== 'area' || !editingItem) && currentLevel !== 'branch')
                           )
@@ -388,7 +385,8 @@ export default function App() {
                 </div>
 
                 {/* List Content */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-2">
+                <div className="flex-1 min-h-0 overflow-visible">
+                  <div className="h-full overflow-y-auto p-4 space-y-2">
                   <AnimatePresence mode="popLayout">
                     {!selectedDivision && !isGeneralOverview ? (
                       <div className="h-full flex flex-col items-center justify-center text-muted-foreground py-20">
@@ -404,7 +402,7 @@ export default function App() {
                           exit={{ opacity: 0, scale: 0.95 }}
                           key={item.id}
                           onClick={() => handleSelectItem(item)}
-                          className={`group p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${editingItem?.id === item.id
+                          className={`group p-2 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${editingItem?.id === item.id
                             ? 'bg-accent border-border shadow-sm'
                             : 'bg-card border-border hover:border-primary/40 hover:bg-muted/50'
                             }`}
@@ -420,7 +418,6 @@ export default function App() {
                             </div>
                             <div>
                               <h3 className="text-sm font-semibold text-foreground">{item.name}</h3>
-                              <p className="text-xs text-muted-foreground font-mono">{item.code}</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
@@ -446,6 +443,7 @@ export default function App() {
                       </div>
                     )}
                   </AnimatePresence>
+                  </div>
                 </div>
               </div>
 
@@ -486,17 +484,7 @@ export default function App() {
                               className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
                             />
                           </div>
-                          <div className="space-y-2">
-                            <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">
-                              {editingItem.level === 'branch' ? 'Branch ID' : 'Location Code'}
-                            </label>
-                            <input
-                              type="text"
-                              readOnly
-                              value={editingItem.code}
-                              className="w-full rounded-xl border border-input bg-background px-4 py-3 font-mono text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
-                            />
-                          </div>
+                          
 
                           {/* Hierarchy Bases */}
                           {(() => {
@@ -580,7 +568,6 @@ export default function App() {
                                   </div>
                                   <div>
                                     <h4 className="text-lg font-bold text-foreground">{editingItem.name}</h4>
-                                    <p className="text-xs text-muted-foreground font-mono uppercase tracking-wider">ID: {editingItem.code}</p>
                                   </div>
                                 </div>
 
@@ -611,7 +598,6 @@ export default function App() {
                                       </div>
                                       <div>
                                         <h4 className="font-bold text-foreground">{child.name}</h4>
-                                        <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-wider">{child.code}</p>
                                       </div>
                                     </div>
                                     <div className="flex items-center gap-2">
@@ -642,7 +628,6 @@ export default function App() {
                                             </div>
                                             <div className="flex-1 min-w-0">
                                               <p className="text-xs font-semibold text-foreground truncate">{branch.name}</p>
-                                              <p className="text-[10px] text-muted-foreground font-mono">{branch.code}</p>
                                             </div>
                                           </div>
                                         ))}
