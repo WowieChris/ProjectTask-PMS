@@ -12,7 +12,6 @@ import {
   Network,
   Layers,
   Edit3,
-  Plus,
   Filter,
   ChevronDown,
   MoreVertical,
@@ -59,18 +58,20 @@ interface Division {
   name: string;
   districts?: District[];
 }
-
+interface UserGroup {
+  id: number;
+  name: string;
+}
 interface PageProps extends Record<string, unknown> {
+  userGroups: UserGroup[];
   divisions: Division[];
 }
 
 export default function App() {
-  const { divisions } = usePage<PageProps>().props;
+  const { divisions, userGroups } = usePage<PageProps>().props;
 
-  const [selectedDivision, setSelectedDivision] = useState<string>(() =>
-    divisions && divisions.length > 0 ? `div-${divisions[0].id}` : ''
-  );
-  const [currentLevel, setCurrentLevel] = useState<Level>('district');
+  const [selectedUserGroup, setSelectedUserGroup] = useState<string>('');
+  const [currentLevel, setCurrentLevel] = useState<Level>('division');
   const [selectedParentId, setSelectedParentId] = useState<string | null>(null);
   const [editingItem, setEditingItem] = useState<LocationItem | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -143,10 +144,12 @@ export default function App() {
   // --- Derived State ---
 
   const filteredList = useMemo(() => {
-    if (!selectedDivision && !isGeneralOverview) return [];
+    if (!selectedUserGroup && !isGeneralOverview) return [];
 
-    return locations.filter(item => {
-      const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return locations.filter((item) => {
+      const matchesSearch = item.name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
 
       if (!matchesSearch) return false;
 
@@ -154,8 +157,12 @@ export default function App() {
         return item.level === currentLevel;
       }
 
+      if (currentLevel === 'division') {
+        return item.level === 'division';
+      }
+
       if (currentLevel === 'district') {
-        return item.level === 'district' && item.parentId === selectedDivision;
+        return item.level === 'district' && item.parentId === `div-${selectedUserGroup}`;
       }
 
       if (selectedParentId) {
@@ -164,31 +171,42 @@ export default function App() {
 
       return false;
     });
-  }, [locations, selectedDivision, currentLevel, selectedParentId, searchQuery, isGeneralOverview]);
+  }, [
+    locations,
+    selectedUserGroup,
+    currentLevel,
+    selectedParentId,
+    searchQuery,
+    isGeneralOverview,
+  ]);
 
   const breadcrumbs = useMemo(() => {
     if (isGeneralOverview) {
       return [{ label: 'General Overview', level: currentLevel, id: 'overview' }];
     }
 
-    const division = locations.find(d => d.id === selectedDivision);
-    const crumbs = division ? [{ label: division.name, level: 'division' as Level, id: selectedDivision }] : [];
+    const division = locations.find(
+      (d) => d.id === `div-${selectedUserGroup}`
+    );
+
+    const crumbs = division
+      ? [{ label: division.name, level: 'division' as Level, id: division.id }]
+      : [];
 
     if (currentLevel === 'area' || currentLevel === 'branch') {
-      const district = locations.find(d =>
-        d.id === selectedParentId ||
-        (currentLevel === 'branch' && locations.find(a => a.id === selectedParentId)?.parentId === d.id)
-      );
-      if (district) crumbs.push({ label: district.name, level: 'district' as Level, id: district.id });
+      const district = locations.find((d) => d.id === selectedParentId);
+      if (district)
+        crumbs.push({ label: district.name, level: 'district', id: district.id });
     }
 
     if (currentLevel === 'branch') {
-      const area = locations.find(a => a.id === selectedParentId);
-      if (area) crumbs.push({ label: area.name, level: 'area' as Level, id: area.id });
+      const area = locations.find((a) => a.id === selectedParentId);
+      if (area)
+        crumbs.push({ label: area.name, level: 'area', id: area.id });
     }
 
     return crumbs;
-  }, [locations, currentLevel, selectedParentId, selectedDivision, isGeneralOverview]);
+  }, [locations, currentLevel, selectedParentId, selectedUserGroup, isGeneralOverview]);
 
   // --- Handlers ---
 
@@ -283,7 +301,7 @@ export default function App() {
                         if (!isGeneralOverview) {
                           setSelectedParentId(null);
                         } else {
-                          setCurrentLevel('district');
+                          setCurrentLevel('division');
                           setSelectedParentId(null);
                         }
                       }}
@@ -295,19 +313,21 @@ export default function App() {
 
                   {/* Division Selector */}
                   <div className={`space-y-2 transition-opacity ${isGeneralOverview ? 'hidden' : 'opacity-100'}`}>
-                    <Label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Select Division</Label>
+                    <Label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Select UserGroup</Label>
                     <div className="relative">
                       <select
-                        value={selectedDivision}
+                        value={selectedUserGroup}
                         onChange={(e) => {
-                          setSelectedDivision(e.target.value);
-                          handleLevelChange('district');
+                          setSelectedUserGroup(e.target.value);
+                          handleLevelChange('division');
                         }}
                         className="w-full appearance-none rounded-xl border border-input bg-background px-4 py-3 text-sm font-medium text-foreground transition-all cursor-pointer focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
                       >
-                        <option value="">Select a division</option>
-                        {locations.filter(i => i.level === 'division').map(div => (
-                          <option key={div.id} value={div.id}>{div.name}</option>
+                        <option value="">Select User Group</option>
+                        {(userGroups || []).map(group => (
+                          <option key={group.id} value={group.id}>
+                            {group.name}
+                          </option>
                         ))}
                       </select>
                       <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" size={16} />
@@ -316,7 +336,7 @@ export default function App() {
 
                   {/* Level Navigation */}
                   <div className="flex items-center rounded-xl bg-muted p-1">
-                    {(['division','district', 'area', 'branch'] as Level[]).map((level) => (
+                    {(['division', 'district', 'area', 'branch'] as Level[]).map((level) => (
                       <button
                         key={level}
                         onClick={() => {
@@ -342,6 +362,7 @@ export default function App() {
                         }}
                         disabled={
                           !isGeneralOverview && (
+                            (level === 'division' && !editingItem && !selectedParentId) ||
                             (level === 'district' && !editingItem && !selectedParentId) ||
                             (level === 'area' && !editingItem && !selectedParentId) ||
                             (level === 'branch' && (currentLevel !== 'area' || !editingItem) && currentLevel !== 'branch')
@@ -387,62 +408,62 @@ export default function App() {
                 {/* List Content */}
                 <div className="flex-1 min-h-0 overflow-visible">
                   <div className="h-full overflow-y-auto p-4 space-y-2">
-                  <AnimatePresence mode="popLayout">
-                    {!selectedDivision && !isGeneralOverview ? (
-                      <div className="h-full flex flex-col items-center justify-center text-muted-foreground py-20">
-                        <MapPin size={40} strokeWidth={1.5} className="mb-4 opacity-20" />
-                        <p className="text-sm font-medium">Select a division to begin</p>
-                      </div>
-                    ) : filteredList.length > 0 ? (
-                      filteredList.map((item) => (
-                        <motion.div
-                          layout
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.95 }}
-                          key={item.id}
-                          onClick={() => handleSelectItem(item)}
-                          className={`group p-2 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${editingItem?.id === item.id
-                            ? 'bg-accent border-border shadow-sm'
-                            : 'bg-card border-border hover:border-primary/40 hover:bg-muted/50'
-                            }`}
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${item.level === 'district' ? 'bg-amber-100 text-amber-600' :
-                              item.level === 'area' ? 'bg-emerald-100 text-emerald-600' :
-                                'bg-blue-100 text-blue-600'
-                              }`}>
-                              {item.level === 'district' ? <Network size={20} /> :
-                                item.level === 'area' ? <Layers size={20} /> :
-                                  <Building2 size={20} />}
+                    <AnimatePresence mode="popLayout">
+                      {!selectedUserGroup && !isGeneralOverview ? (
+                        <div className="h-full flex flex-col items-center justify-center text-muted-foreground py-20">
+                          <MapPin size={40} strokeWidth={1.5} className="mb-4 opacity-20" />
+                          <p className="text-sm font-medium">Select a user group to begin</p>
+                        </div>
+                      ) : filteredList.length > 0 ? (
+                        filteredList.map((item) => (
+                          <motion.div
+                            layout
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            key={item.id}
+                            onClick={() => handleSelectItem(item)}
+                            className={`group p-2 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${editingItem?.id === item.id
+                              ? 'bg-accent border-border shadow-sm'
+                              : 'bg-card border-border hover:border-primary/40 hover:bg-muted/50'
+                              }`}
+                          >
+                            <div className="flex items-center gap-4">
+                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${item.level === 'district' ? 'bg-amber-100 text-amber-600' :
+                                item.level === 'area' ? 'bg-emerald-100 text-emerald-600' :
+                                  'bg-blue-100 text-blue-600'
+                                }`}>
+                                {item.level === 'district' ? <Network size={20} /> :
+                                  item.level === 'area' ? <Layers size={20} /> :
+                                    <Building2 size={20} />}
+                              </div>
+                              <div>
+                                <h3 className="text-sm font-semibold text-foreground">{item.name}</h3>
+                              </div>
                             </div>
-                            <div>
-                              <h3 className="text-sm font-semibold text-foreground">{item.name}</h3>
+                            <div className="flex items-center gap-2">
+                              {item.level !== 'branch' && (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDrillDown(item);
+                                  }}
+                                  className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                >
+                                  <ChevronRight size={18} />
+                                </button>
+                              )}
                             </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {item.level !== 'branch' && (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDrillDown(item);
-                                }}
-                                className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
-                              >
-                                <ChevronRight size={18} />
-                              </button>
-                            )}
-                          </div>
-                        </motion.div>
-                      ))
-                    ) : (
-                      <div className="h-full flex flex-col items-center justify-center text-muted-foreground py-20">
-                        <Filter size={40} strokeWidth={1.5} className="mb-4 opacity-20" />
-                        <p className="text-sm font-medium">No {currentLevel}s found</p>
-                        <p className="text-xs opacity-60">Try adjusting your filters</p>
-                      </div>
-                    )}
-                  </AnimatePresence>
+                          </motion.div>
+                        ))
+                      ) : (
+                        <div className="h-full flex flex-col items-center justify-center text-muted-foreground py-20">
+                          <Filter size={40} strokeWidth={1.5} className="mb-4 opacity-20" />
+                          <p className="text-sm font-medium">No {currentLevel}s found</p>
+                          <p className="text-xs opacity-60">Try adjusting your filters</p>
+                        </div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
               </div>
@@ -484,7 +505,7 @@ export default function App() {
                               className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
                             />
                           </div>
-                          
+
 
                           {/* Hierarchy Bases */}
                           {(() => {
