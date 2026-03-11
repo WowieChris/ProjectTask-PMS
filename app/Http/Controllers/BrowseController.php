@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Division;
 use Inertia\Inertia;
+use App\Models\UserGroup;
 
 class BrowseController extends Controller
 {
@@ -12,7 +13,8 @@ class BrowseController extends Controller
         $divisions = Division::with('districts.areas.branches')->get();
 
         return Inertia::render('Browse/Index', [
-            'divisions' => $divisions
+            'userGroups' => UserGroup::all(),
+            'divisions' => Division::with('districts.areas.branches')->get(),
         ]);
     }
 }
