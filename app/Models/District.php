@@ -6,15 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class District extends Model
 {
-    protected $fillable = ['division_id', 'name'];
+    protected $fillable = ['user_group_id', 'division_id', 'name'];
 
     public function division()
     {
         return $this->belongsTo(Division::class);
     }
-
     public function areas()
     {
         return $this->hasMany(Area::class);
+    }
+    public function userGroup()
+    {
+        return $this->belongsTo(UserGroup::class);
     }
 }
