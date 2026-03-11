@@ -8,23 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('areas', function (Blueprint $table) {
-            $table->id();
-
+        Schema::table('areas', function (Blueprint $table) {
             $table->foreignId('district_id')
+                ->nullable()
                 ->constrained('districts')
                 ->cascadeOnDelete();
-
-            $table->string('name');
-
-            $table->timestamps();
-
-            $table->unique(['district_id', 'name']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('areas');
+        Schema::table('areas', function (Blueprint $table) {
+            $table->dropForeign(['district_id']);
+            $table->dropColumn('district_id');
+        });
     }
 };
