@@ -4,11 +4,13 @@ import React, { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Select, 
+import {
+  Select,
   SelectTrigger,
-   SelectValue,
+  SelectValue,
   SelectItem,
-  SelectContent } from "@/components/ui/select";
+  SelectContent
+} from "@/components/ui/select";
 
 import {
   Table,
@@ -24,6 +26,7 @@ import AppLayout from "@/layouts/app-layout";
 type Division = {
   id: number;
   name: string;
+  user_group?: UserGroup;
 };
 
 type District = {
@@ -31,11 +34,18 @@ type District = {
   name: string;
   division_id: number;
   division?: Division;
+  user_group_id?: number;
+  user_group?: UserGroup;
+};
+type UserGroup = {
+  id: number;
+  name: string;
 };
 
 type PageProps = {
   divisions: Division[];
   districts: District[]; // keep simple (array). You can change to paginator later.
+  userGroups: UserGroup[];
 };
 
 export default function DistrictIndex({
@@ -56,7 +66,13 @@ export default function DistrictIndex({
     return districts.filter((d) => {
       const div = d.division?.name?.toLowerCase() ?? '';
       const dist = d.name?.toLowerCase() ?? '';
-      return dist.includes(query) || div.includes(query);
+      const group = d.user_group?.name?.toLowerCase() ?? '';
+
+      return (
+        dist.includes(query) ||
+        div.includes(query) ||
+        group.includes(query)
+      );
     });
   }, [districts, q]);
 
@@ -150,6 +166,7 @@ export default function DistrictIndex({
                   <TableHead className="w-[90px]">ID</TableHead>
                   <TableHead>District</TableHead>
                   <TableHead>Division</TableHead>
+                  <TableHead>User Group</TableHead>
                   <TableHead className="w-[140px] text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -157,7 +174,7 @@ export default function DistrictIndex({
               <TableBody>
                 {filtered.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center text-muted-foreground">
+                    <TableCell colSpan={5} className="text-center text-muted-foreground">
                       No records found.
                     </TableCell>
                   </TableRow>
@@ -165,8 +182,19 @@ export default function DistrictIndex({
                   filtered.map((d) => (
                     <TableRow key={d.id}>
                       <TableCell>{d.id}</TableCell>
-                      <TableCell className="font-medium">{d.name}</TableCell>
-                      <TableCell>{d.division?.name ?? `Division #${d.division_id}`}</TableCell>
+
+                      <TableCell className="font-medium">
+                        {d.name}
+                      </TableCell>
+
+                      <TableCell>
+                        {d.division?.name ?? `Division #${d.division_id}`}
+                      </TableCell>
+
+                      <TableCell>
+                        {d.division?.user_group?.name ?? "—"}
+                      </TableCell>
+
                       <TableCell className="text-right">
                         <Button
                           variant="destructive"
