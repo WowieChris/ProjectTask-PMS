@@ -30,11 +30,11 @@ interface LocationItem {
   id: string;
   name: string;
   parentId?: string;
+  userGroupId?: number;
   level: Level;
   status: 'active' | 'inactive';
   address?: string;
 }
-
 interface Branch {
   id: number;
   name: string;
@@ -56,6 +56,7 @@ interface District {
 interface Division {
   id: number;
   name: string;
+  user_group_id: number; // ✅ add this
   districts?: District[];
 }
 interface UserGroup {
@@ -81,16 +82,14 @@ export default function App() {
   const locations: LocationItem[] = useMemo(() => {
     const list: LocationItem[] = [];
 
-    // Ensure divisions is an array
-    const divisionsArray = Array.isArray(divisions) ? divisions : [];
-
-    divisionsArray.forEach((division: Division) => {
+    divisions.forEach((division: Division) => {
       const divisionId = `div-${division.id}`;
 
       list.push({
         id: divisionId,
         name: division.name,
         level: 'division',
+        userGroupId: division.user_group_id, // ⭐ IMPORTANT
         status: 'active',
       });
 
@@ -123,7 +122,7 @@ export default function App() {
               parentId: areaId,
               level: 'branch',
               status: 'active',
-              address: branch.address || 'No address provided',
+              address: branch.address,
             });
           });
         });
@@ -158,11 +157,10 @@ export default function App() {
       }
 
       if (currentLevel === 'division') {
-        return item.level === 'division';
-      }
-
-      if (currentLevel === 'district') {
-        return item.level === 'district' && item.parentId === `div-${selectedUserGroup}`;
+        return (
+          item.level === 'division' &&
+          item.userGroupId === Number(selectedUserGroup)
+        );
       }
 
       if (selectedParentId) {
