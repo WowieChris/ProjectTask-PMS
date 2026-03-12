@@ -410,7 +410,7 @@ export default function App() {
                     {/* List Content / right */}
                   <div className="flex-1 min-h-0 overflow-y-auto p-2 space-y-2">
                   <AnimatePresence mode="popLayout">
-                    {!selectedDivision && !isGeneralOverview ? (
+                    {!selectedUserGroup && !isGeneralOverview ? (
                       <div className="h-full flex flex-col items-center justify-center text-muted-foreground py-20">
                         <MapPin size={40} strokeWidth={1.5} className="mb-4 opacity-20" />
                         <p className="text-sm font-medium">Select a division to begin</p>
@@ -450,7 +450,8 @@ export default function App() {
                                   <ChevronRight size={18} />
                                 </button>
                               )}
-                            </div>
+                          </div>
+                        </div>
                           </motion.div>
                         ))
                       ) : (
