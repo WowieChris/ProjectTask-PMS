@@ -436,6 +436,9 @@ export default function App() {
                                 item.level === 'area' ? <Layers size={20} /> :
                                   <Building2 size={16} />}
                             </div>
+                            <div>
+                              <h3 className="text-sm font-semibold text-foreground">{item.name}</h3>
+                            </div>
                             <div className="flex items-center gap-2">
                               {item.level !== 'branch' && (
                                 <button
@@ -465,7 +468,7 @@ export default function App() {
               </div>
              
               {/* Right Panel: Editor / Details (bottom) */}
-              <div className="h-1/2 bg-muted/40 overflow-y-auto p-8">
+              <div className="h-1/2 bg-muted/40 overflow-y-auto p-4">
                 <AnimatePresence mode="wait">
                   {editingItem ? (
                     <motion.div
@@ -473,23 +476,24 @@ export default function App() {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -20 }}
-                      className="max-w-3xl mx-auto space-y-8"
+                      className="flex gap-6 h-full" 
                     >
-                      {/* Header Info */}
-                      <div className="flex items-end justify-between">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-widest">
-                            <Edit3 size={14} />
-                            Viewing {editingItem.level}
-                          </div>
-                          <h2 className="text-3xl font-bold text-foreground">{editingItem.name}</h2>
-                          <p className="text-muted-foreground">View details and hierarchy for this location.</p>
-                        </div>
+                {/* Header Info */}
+                <div className='flex flex-col overflow-hidden w-2/3'>
+                  <div className="flex items-end justify-between ">
+                    <div className="space-y-1 mx-4">
+                      <div className="flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-widest">
+                        <Edit3 size={14} />
+                        Viewing {editingItem.level}
                       </div>
+                      <h2 className="text-3xl font-bold text-foreground">{editingItem.name}</h2>
+                      <p className="text-muted-foreground">View details and hierarchy for this location.</p>
+                    </div>
+                  </div>
 
                       {/* Form Card */}
-                      <div className="bg-card rounded-3xl border border-border shadow-sm overflow-hidden">
-                        <div className="p-8 grid grid-cols-2 gap-8">
+                      <div className="bg-card rounded-3xl border border-border shadow-sm overflow-visible">
+                        <div className="px-8 py-2 grid grid-cols-2 gap-2">
                           <div className="space-y-2">
                             <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest capitalize">
                               {editingItem.level}
@@ -498,7 +502,7 @@ export default function App() {
                               type="text"
                               readOnly
                               value={editingItem.name}
-                              className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
+                              className="w-full rounded-xl border border-input bg-background px-4 py-2 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
                             />
                           </div>
 
@@ -520,7 +524,7 @@ export default function App() {
                                       type="text"
                                       readOnly
                                       value={division.name}
-                                      className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
+                                      className="w-full rounded-xl border border-input bg-background px-4 py-1 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
                                     />
                                   </div>
                                 )}
@@ -531,7 +535,7 @@ export default function App() {
                                       type="text"
                                       readOnly
                                       value={district.name}
-                                      className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
+                                      className="w-full rounded-xl border border-input bg-background px-4 py-1 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
                                     />
                                   </div>
                                 )}
@@ -542,7 +546,7 @@ export default function App() {
                                       type="text"
                                       readOnly
                                       value={area.name}
-                                      className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
+                                      className="w-full rounded-xl border border-input bg-background px-4 py-1 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
                                     />
                                   </div>
                                 )}
@@ -563,7 +567,7 @@ export default function App() {
                           )}
                         </div>
                       </div>
-
+                </div>
                       {/* Hierarchy View */}
                       {(editingItem.level === 'division' ||
                         editingItem.level === 'district' ||
