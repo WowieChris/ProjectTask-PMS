@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use app\Models\Area;
+use App\Models\Area;
 use App\Models\District;
 use App\Models\Division;
 use Illuminate\Http\Request;
@@ -43,9 +43,13 @@ class DistrictController extends Controller
         // return Inertia::render('Districts/Index', [
         //     'districts' => $districts,
         // ]);
+        $districts = District::with([
+            'division.userGroup'
+        ])->get();
+
         return Inertia::render('Districts/Index', [
-            'divisions' => Division::all(),
-            'districts' => District::with('division')->get(),
+            'districts' => $districts,
+            'divisions' => Division::with('userGroup')->get(),
         ]);
     }
 }
