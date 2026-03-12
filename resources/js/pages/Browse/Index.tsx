@@ -183,28 +183,54 @@ export default function App() {
       return [{ label: 'General Overview', level: currentLevel, id: 'overview' }];
     }
 
-    const division = locations.find(
-      (d) => d.id === `div-${selectedUserGroup}`
+    const crumbs: { label: string; level: Level; id: string }[] = [];
+
+    // UserGroup
+    const userGroup = userGroups.find(
+      (g) => g.id === Number(selectedUserGroup)
     );
 
-    const crumbs = division
-      ? [{ label: division.name, level: 'division' as Level, id: division.id }]
-      : [];
-
-    if (currentLevel === 'area' || currentLevel === 'branch') {
-      const district = locations.find((d) => d.id === selectedParentId);
-      if (district)
-        crumbs.push({ label: district.name, level: 'district', id: district.id });
+    if (userGroup) {
+      crumbs.push({
+        label: userGroup.name,
+        level: 'division',
+        id: `group-${userGroup.id}`,
+      });
     }
 
+    // District breadcrumb
+    if (currentLevel === 'area' || currentLevel === 'branch') {
+      const district = locations.find((d) => d.id === selectedParentId);
+      if (district) {
+        crumbs.push({
+          label: district.name,
+          level: 'district',
+          id: district.id,
+        });
+      }
+    }
+
+    // Area breadcrumb
     if (currentLevel === 'branch') {
       const area = locations.find((a) => a.id === selectedParentId);
-      if (area)
-        crumbs.push({ label: area.name, level: 'area', id: area.id });
+      if (area) {
+        crumbs.push({
+          label: area.name,
+          level: 'area',
+          id: area.id,
+        });
+      }
     }
 
     return crumbs;
-  }, [locations, currentLevel, selectedParentId, selectedUserGroup, isGeneralOverview]);
+  }, [
+    userGroups,
+    locations,
+    currentLevel,
+    selectedParentId,
+    selectedUserGroup,
+    isGeneralOverview,
+  ]);
 
   // --- Handlers ---
 
@@ -389,11 +415,11 @@ export default function App() {
                   </div>
                 </div>
 
-               
+
                 {/* List Content / right */}
                 <div className="flex-1 flex flex-col overflow-hidden">
-                    {/* List Header / Breadcrumbs */}
-                   <div className="px-3 py-2 bg-muted border-b border-border flex items-center gap-2">
+                  {/* List Header / Breadcrumbs */}
+                  <div className="px-3 py-2 bg-muted border-b border-border flex items-center gap-2">
                     {breadcrumbs.length > 0 ? (
                       breadcrumbs.map((crumb, idx) => (
                         <React.Fragment key={crumb.id}>
@@ -402,57 +428,57 @@ export default function App() {
                         </React.Fragment>
                       ))
                     ) : (
-                      <span className="text-[10px] font-bold text-muted-foreground uppercase">Select a division</span>
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase">Select a UserGroup</span>
                     )}
                   </div>
-                    {/* List Content / right */}
+                  {/* List Content / right */}
                   <div className="flex-1 min-h-0 overflow-y-auto p-2 space-y-2">
-                  <AnimatePresence mode="popLayout">
-                    {!selectedUserGroup && !isGeneralOverview ? (
-                      <div className="h-full flex flex-col items-center justify-center text-muted-foreground py-20">
-                        <MapPin size={40} strokeWidth={1.5} className="mb-4 opacity-20" />
-                        <p className="text-sm font-medium">Select a division to begin</p>
-                      </div>
-                    ) : filteredList.length > 0 ? (
-                      filteredList.map((item) => (
-                        <motion.div
-                          layout
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.95 }}
-                          key={item.id}
-                          onClick={() => handleSelectItem(item)}
-                          className={`group p-2 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${editingItem?.id === item.id
-                            ? 'bg-accent border-border shadow-sm'
-                            : 'bg-card border-border hover:border-primary/40 hover:bg-muted/50'
-                            }`}
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${item.level === 'district' ? 'bg-amber-100 text-amber-600' :
-                              item.level === 'area' ? 'bg-emerald-100 text-emerald-600' :
-                                'bg-blue-100 text-blue-600'
-                              }`}>
-                              {item.level === 'district' ? <Network size={20} /> :
-                                item.level === 'area' ? <Layers size={20} /> :
-                                  <Building2 size={16} />}
-                            </div>
-                            <div>
-                              <h3 className="text-sm font-semibold text-foreground">{item.name}</h3>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              {item.level !== 'branch' && (
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDrillDown(item);
-                                  }}
-                                  className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
-                                >
-                                  <ChevronRight size={18} />
-                                </button>
-                              )}
-                          </div>
+                    <AnimatePresence mode="popLayout">
+                      {!selectedUserGroup && !isGeneralOverview ? (
+                        <div className="h-full flex flex-col items-center justify-center text-muted-foreground py-20">
+                          <MapPin size={40} strokeWidth={1.5} className="mb-4 opacity-20" />
+                          <p className="text-sm font-medium">Select a UserGroup to begin</p>
                         </div>
+                      ) : filteredList.length > 0 ? (
+                        filteredList.map((item) => (
+                          <motion.div
+                            layout
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            key={item.id}
+                            onClick={() => handleSelectItem(item)}
+                            className={`group p-2 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${editingItem?.id === item.id
+                              ? 'bg-accent border-border shadow-sm'
+                              : 'bg-card border-border hover:border-primary/40 hover:bg-muted/50'
+                              }`}
+                          >
+                            <div className="flex items-center gap-4">
+                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${item.level === 'district' ? 'bg-amber-100 text-amber-600' :
+                                item.level === 'area' ? 'bg-emerald-100 text-emerald-600' :
+                                  'bg-blue-100 text-blue-600'
+                                }`}>
+                                {item.level === 'district' ? <Network size={20} /> :
+                                  item.level === 'area' ? <Layers size={20} /> :
+                                    <Building2 size={16} />}
+                              </div>
+                              <div>
+                                <h3 className="text-sm font-semibold text-foreground">{item.name}</h3>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                {item.level !== 'branch' && (
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDrillDown(item);
+                                    }}
+                                    className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                  >
+                                    <ChevronRight size={18} />
+                                  </button>
+                                )}
+                              </div>
+                            </div>
                           </motion.div>
                         ))
                       ) : (
@@ -466,7 +492,7 @@ export default function App() {
                   </div>
                 </div>
               </div>
-             
+
               {/* Right Panel: Editor / Details (bottom) */}
               <div className="h-1/2 bg-muted/40 overflow-y-auto p-4">
                 <AnimatePresence mode="wait">
@@ -476,7 +502,7 @@ export default function App() {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -20 }}
-                      className="flex gap-6 h-full" 
+                      className="flex gap-6 h-full"
                     >
                 {/* Header Info */}
                 <div className='flex flex-col overflow-hidden w-2/5'>
@@ -505,6 +531,7 @@ export default function App() {
                               className="w-full rounded-xl border border-input bg-background px-4 py-2 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
                             />
                           </div>
+                        </div>
 
 
                           {/* Hierarchy Bases */}
@@ -559,15 +586,13 @@ export default function App() {
                               <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Address</label>
                               <textarea
                                 readOnly
-                                value={editingItem.address}
-                                rows={2}
-                                className="w-full resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
+                                value={editingItem.name}
+                                className="w-full rounded-xl border border-input bg-background px-4 py-2 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
                               />
                             </div>
                           )} */}
                         </div>
                       </div>
-                </div>
                       {/* Hierarchy View */}
                       {(editingItem.level === 'division' ||
                         editingItem.level === 'district' ||
