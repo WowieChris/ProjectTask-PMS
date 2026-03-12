@@ -10,7 +10,13 @@ use Illuminate\Contracts\Filesystem\Filesystem; // 👈 add this
 class UserPhoto extends Model
 {
     protected $fillable = [
-        'user_id', 'disk', 'path', 'original_name', 'size', 'mime_type', 'is_current',
+        'user_id',
+        'disk',
+        'path',
+        'original_name',
+        'size',
+        'mime_type',
+        'is_current',
     ];
 
     protected $casts = [

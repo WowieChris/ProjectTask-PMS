@@ -12,7 +12,7 @@ export default function AppearanceToggleTab({
     const { appearance, updateAppearance } = useAppearance();
 
     const tabs: { value: Appearance; icon: LucideIcon; label: string }[] = [
-        { value: 'light', icon: Sun, label: 'Light' },
+        { value: 'mondstadt', icon: Sun, label: 'Light' },
         { value: 'dark', icon: Moon, label: 'Dark' },
         { value: 'midnight', icon: Star, label: 'Midnight' },
         { value: 'system', icon: Monitor, label: 'System' },
@@ -21,7 +21,7 @@ export default function AppearanceToggleTab({
     return (
         <div
             className={cn(
-                'inline-flex gap-1 rounded-lg bg-neutral-100 p-1 dark:bg-neutral-800 midnight:bg-[#151345]',
+                'inline-flex gap-1 rounded-lg bg-neutral-100 p-1 dark:bg-neutral-800 midnight:bg-[#151345] mondstadt:bg-green-100',
                 className,
             )}
             {...props}
@@ -31,10 +31,10 @@ export default function AppearanceToggleTab({
                     key={value}
                     onClick={() => updateAppearance(value)}
                     className={cn(
-                        'flex items-center rounded-md px-3.5 py-1.5 transition-colors',
+                        'flex items-center rounded-md px-3.5 py-1.5',
                         appearance === value
-                            ? 'bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100 midnight:bg-[#26236b] midnight:text-[#e6e6ff]'
-                            : 'text-neutral-500 hover:bg-neutral-200/60 hover:text-black dark:text-neutral-400 dark:hover:bg-neutral-700/60 midnight:text-[#b3b3ff] midnight:hover:bg-[#26236b]/60',
+                            ? 'bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100 midnight:bg-[#26236b] midnight:text-[#e6e6ff] mondstadt:bg-green-600 mondstadt:text-white'
+                            : 'text-neutral-500 hover:bg-neutral-200/60 hover:text-black dark:text-neutral-400 dark:hover:bg-neutral-700/60 midnight:text-[#b3b3ff] midnight:hover:bg-[#26236b]/60 mondstadt:text-green-600 mondstadt:hover:bg-green-100',
                     )}
                 >
                     

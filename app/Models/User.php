@@ -24,15 +24,16 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name',
+        'last_name',
         'email',
         'password',
         'role',
         'employee_id',
-        'designation',
+        'designation_id',
         'location',
         'district',
         'employment_status',
-        'date_employed',
+        'must_change_password',
     ];
 
     /**
@@ -44,7 +45,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'two_factor_secret',
         'two_factor_recovery_codes',
-        'remember_token', 
+        'remember_token',
     ];
 
     /**
@@ -58,14 +59,14 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
-            'date_employed' => 'date', // Added cast for date_employed
+            'must_change_password' => 'boolean',
         ];
     }
 
     protected $casts = [
-    'email_verified_at' => 'datetime',
-    'otp_verified_at' => 'datetime',
-];
+        'email_verified_at' => 'datetime',
+        'otp_verified_at' => 'datetime',
+    ];
 
     // Force Fortify to treat users as two-factor authenticatable so the email OTP
 }

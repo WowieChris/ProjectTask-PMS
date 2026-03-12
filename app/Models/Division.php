@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Division extends Model
+{
+    protected $fillable = ['user_group_id', 'name', 'area_id'];
+
+    public function userGroup()
+    {
+        return $this->belongsTo(UserGroup::class);
+    }
+
+    public function districts()
+    {
+        return $this->hasMany(District::class);
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
+    }
+}

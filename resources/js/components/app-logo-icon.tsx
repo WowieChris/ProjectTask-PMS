@@ -21,13 +21,15 @@
 
 
 
-export default function IICTDLogo() {
+import type { ImgHTMLAttributes } from 'react';
+
+export default function AppLogoIcon(props: ImgHTMLAttributes<HTMLImageElement>) {
     return (
         <img
             src="/import-image/lbf-logo.png"
-            alt="IICTD PMS Logo"
-            className="w-[150px] h-auto"
-            
+            alt={props.alt ?? 'IICTD PMS Logo'}
+            className={props.className ?? 'w-[150px] h-auto'}
+            {...props}
         />
     );
 }

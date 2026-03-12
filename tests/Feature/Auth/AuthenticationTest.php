@@ -4,7 +4,6 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Fortify\Features;
 use Tests\TestCase;
 
@@ -28,8 +27,10 @@ class AuthenticationTest extends TestCase
             'password' => 'password',
         ]);
 
+        // After password login, LoginResponse redirects to dashboard;
+        // EnsureOtpVerified middleware then redirects to /otp for the single OTP step.
+        $response->assertRedirect(route('dashboard'));
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
     }
 
     public function test_users_with_two_factor_enabled_are_redirected_to_two_factor_challenge()
@@ -87,7 +88,13 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
 
-        RateLimiter::increment(md5('login'.implode('|', [$user->email, '127.0.0.1'])), amount: 5);
+        // Make 5 failed attempts to exhaust the per-minute limit
+        for ($i = 0; $i < 5; $i++) {
+            $this->post(route('login.store'), [
+                'email' => $user->email,
+                'password' => 'wrong-password',
+            ]);
+        }
 
         $response = $this->post(route('login.store'), [
             'email' => $user->email,

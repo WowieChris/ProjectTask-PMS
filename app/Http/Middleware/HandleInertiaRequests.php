@@ -4,46 +4,52 @@ namespace App\Http\Middleware;
 
 
 use Tighten\Ziggy\Ziggy;
+use App\Models\UserPhoto;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
 {
-    /**
-     * The root template that's loaded on the first page visit.
-     *
-     * @see https://inertiajs.com/server-side-setup#root-template
-     *
-     * @var string
-     */
     protected $rootView = 'app';
 
-    /**
-     * Determines the current asset version.
-     *
-     * @see https://inertiajs.com/asset-versioning
-     */
     public function version(Request $request): ?string
     {
         return parent::version($request);
     }
 
-    /**
-     * Define the props that are shared by default.
-     *
-     * @see https://inertiajs.com/shared-data
-     *
-     * @return array<string, mixed>
-     */
     public function share(Request $request): array
     {
+        $user = $request->user();
+
+        $photoUrl = null;
+
+        if ($user) {
+            $currentPhoto = UserPhoto::where('user_id', $user->id)
+                ->where('is_current', true)
+                ->latest('id')
+                ->first();
+
+            $photoUrl = $currentPhoto ? asset('storage/' . $currentPhoto->path) : null;
+        }
+
         return [
             ...parent::share($request),
 
             'name' => config('app.name'),
 
             'auth' => [
-                'user' => $request->user(),
+                'user' => $user ? [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'photo_url' => $photoUrl,
+                    'must_change_password' => (bool) $user->must_change_password,
+                    // Provide role to the frontend so client-side UI can
+                    // show/hide admin sections. Fallback to 'user' when
+                    // role is not set but designation suggests admin.
+                    'role' => $user->role ?? ($user->isAdminLike() ? 'admin' : 'user'),
+                    'is_admin' => $user->isAdminLike(),
+                ] : null,
             ],
 
             'sidebarOpen' => ! $request->hasCookie('sidebar_state')

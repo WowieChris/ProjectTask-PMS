@@ -9,7 +9,8 @@ import { Spinner } from '@/components/ui/spinner';
 import AuthLayout from '@/layouts/auth-layout';
 // import { register } from '@/routes';
 import { store } from '@/routes/login';
-// import { request } from '@/routes/password';
+// `request` route is not always generated; avoid importing it to prevent
+// dev-server build errors. Use a safe fallback href for "Forgot password?".
 
 type Props = {
     status?: string;
@@ -51,13 +52,13 @@ export default function Login({
                                 />
                                 <InputError message={errors.email} />
                             </div>
-
+                    
                             <div className="grid gap-2">
                                 <div className="flex items-center">
                                     <Label htmlFor="password">Password</Label>
                                     {canResetPassword && (
                                         <TextLink
-                                            // href={request()}
+                                            href="#"
                                             className="ml-auto text-sm"
                                             tabIndex={5}
                                         >

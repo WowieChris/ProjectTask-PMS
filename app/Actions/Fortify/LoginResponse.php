@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Fortify;
+namespace App\Actions\Fortify;
 
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
-use Illuminate\Http\Request;
 
 class LoginResponse implements LoginResponseContract
 {
     public function toResponse($request)
     {
-        // after password login -> require OTP
+        // Ensure otp_passed is false so EnsureOtpVerified redirects to /otp.
         $request->session()->put('otp_passed', false);
 
-        return redirect()->route('otp.show');
+        // Redirect to dashboard; EnsureOtpVerified middleware will intercept
+        // and redirect to /otp for the single OTP verification step.
+        return redirect()->intended(route('dashboard'));
     }
 }

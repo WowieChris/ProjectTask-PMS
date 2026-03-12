@@ -34,7 +34,7 @@ class ProfileController extends Controller
                     'name' => $user->name,
                     'email' => $user->email,
                     // force Laravel URL (8000), not Vite (5173)
-                    'photo_url' => $currentPhoto ? asset('storage/' . $currentPhoto->path) : null,
+                    'photo_url' => $currentPhoto ? asset('storage/'.$currentPhoto->path) : null,
                 ],
             ],
         ]);
