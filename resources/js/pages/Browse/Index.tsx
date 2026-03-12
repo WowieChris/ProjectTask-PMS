@@ -567,98 +567,120 @@ export default function App() {
                       </div>
 
                       {/* Hierarchy View */}
-                      {(editingItem.level === 'district' || editingItem.level === 'area' || editingItem.level === 'branch') && (
-                        <div className="space-y-6">
-                          <div className="flex items-center justify-between">
-                            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
-                              {editingItem.level === 'district' ? 'Assigned Areas' :
-                                editingItem.level === 'area' ? 'Assigned Branches' :
-                                  'Branch Details'}
-                              {editingItem.level !== 'branch' && ` (${locations.filter(a => a.parentId === editingItem.id).length})`}
-                            </h3>
-                          </div>
+                      {(editingItem.level === 'division' ||
+                        editingItem.level === 'district' ||
+                        editingItem.level === 'area' ||
+                        editingItem.level === 'branch') && (
+                          <div className="space-y-6">
+                            <div className="flex items-center justify-between">
+                              <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
+                                {editingItem.level === 'district' ? 'Assigned Areas' :
+                                  editingItem.level === 'area' ? 'Assigned Branches' :
+                                    'Branch Details'}
+                                {editingItem.level !== 'branch' && ` (${locations.filter(a => a.parentId === editingItem.id).length})`}
+                              </h3>
+                            </div>
 
-                          <div className="grid grid-cols-1 gap-4">
-                            {editingItem.level === 'branch' ? (
-                              <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm p-6 space-y-6">
-                                <div className="flex items-center gap-4">
-                                  <div className="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center">
-                                    <Building2 size={24} />
-                                  </div>
-                                  <div>
-                                    <h4 className="text-lg font-bold text-foreground">{editingItem.name}</h4>
-                                  </div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-6 pt-4 border-t border-border">
-                                  <div className="space-y-1">
-                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Current Status</p>
-                                    <div className="flex items-center gap-2">
-                                      <div className={`w-2 h-2 rounded-full ${editingItem.status === 'active' ? 'bg-emerald-500' : 'bg-slate-300'}`} />
-                                      <span className="text-sm font-semibold capitalize text-foreground">{editingItem.status}</span>
-                                    </div>
-                                  </div>
-                                  <div className="space-y-1">
-                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Parent Area</p>
-                                    <p className="text-sm font-semibold text-foreground">
-                                      {locations.find(a => a.id === editingItem.parentId)?.name || 'N/A'}
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            ) : (
-                              locations.filter(child => child.parentId === editingItem.id).map(child => (
-                                <div key={child.id} className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm hover:border-primary/40 transition-all">
-                                  <div className="p-5 bg-muted/40 border-b border-border flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${child.level === 'area' ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'
-                                        }`}>
-                                        {child.level === 'area' ? <Layers size={20} /> : <Building2 size={20} />}
-                                      </div>
-                                      <div>
-                                        <h4 className="font-bold text-foreground">{child.name}</h4>
-                                      </div>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                      <span className={`text-[10px] font-bold px-2 py-1 rounded-md uppercase ${child.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 'bg-muted text-muted-foreground'
-                                        }`}>
-                                        {child.status}
-                                      </span>
-                                      <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg">
-                                        <MoreVertical size={16} />
-                                      </button>
-                                    </div>
-                                  </div>
-
-                                  {child.level === 'area' && (
-                                    <div className="p-5">
-                                      <div className="flex items-center justify-between mb-4">
-                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Branches Under Area</span>
-                                        <span className="text-[10px] font-bold text-muted-foreground">
-                                          {locations.filter(b => b.level === 'branch' && b.parentId === child.id).length} Total
-                                        </span>
-                                      </div>
-
-                                      <div className="grid grid-cols-2 gap-3">
-                                        {locations.filter(b => b.level === 'branch' && b.parentId === child.id).map(branch => (
-                                          <div key={branch.id} className="flex items-center gap-3 p-3 bg-muted rounded-xl border border-border group/branch hover:bg-card hover:border-primary/40 transition-all cursor-pointer">
-                                            <div className="w-8 h-8 bg-primary/10 text-primary rounded-lg flex items-center justify-center group-hover/branch:bg-primary group-hover/branch:text-primary-foreground transition-colors">
-                                              <Building2 size={14} />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                              <p className="text-xs font-semibold text-foreground truncate">{branch.name}</p>
-                                            </div>
+                            <div className="grid grid-cols-1 gap-4">
+                              {editingItem.level === 'division' ? (
+                                locations
+                                  .filter(child => child.level === 'district' && child.parentId === editingItem.id)
+                                  .map(district => (
+                                    <div key={district.id} className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
+                                      <div className="p-5 bg-muted/40 border-b border-border flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-100 text-amber-600">
+                                            <Network size={20} />
                                           </div>
-                                        ))}
+                                          <div>
+                                            <h4 className="font-bold text-foreground">{district.name}</h4>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      {/* Areas under district */}
+                                      <div className="p-5">
+                                        {locations
+                                          .filter(a => a.level === 'area' && a.parentId === district.id)
+                                          .map(area => (
+                                            <div key={area.id} className="mb-4">
+                                              <div className="flex items-center gap-3 mb-3">
+                                                <Layers size={16} />
+                                                <span className="font-semibold">{area.name}</span>
+                                              </div>
+
+                                              {/* branches */}
+                                              <div className="grid grid-cols-2 gap-3">
+                                                {locations
+                                                  .filter(b => b.level === 'branch' && b.parentId === area.id)
+                                                  .map(branch => (
+                                                    <div
+                                                      key={branch.id}
+                                                      className="flex items-center gap-3 p-3 bg-muted rounded-xl border border-border"
+                                                    >
+                                                      <Building2 size={14} />
+                                                      <span className="text-xs font-semibold">{branch.name}</span>
+                                                    </div>
+                                                  ))}
+                                              </div>
+                                            </div>
+                                          ))}
                                       </div>
                                     </div>
-                                  )}
-                                </div>
-                              ))
-                            )}
+                                  ))
+                              ) : (
+                                locations.filter(child => child.parentId === editingItem.id).map(child => (
+                                  <div key={child.id} className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm hover:border-primary/40 transition-all">
+                                    <div className="p-5 bg-muted/40 border-b border-border flex items-center justify-between">
+                                      <div className="flex items-center gap-3">
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${child.level === 'area' ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'
+                                          }`}>
+                                          {child.level === 'area' ? <Layers size={20} /> : <Building2 size={20} />}
+                                        </div>
+                                        <div>
+                                          <h4 className="font-bold text-foreground">{child.name}</h4>
+                                        </div>
+                                      </div>
+                                      <div className="flex items-center gap-2">
+                                        <span className={`text-[10px] font-bold px-2 py-1 rounded-md uppercase ${child.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 'bg-muted text-muted-foreground'
+                                          }`}>
+                                          {child.status}
+                                        </span>
+                                        <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg">
+                                          <MoreVertical size={16} />
+                                        </button>
+                                      </div>
+                                    </div>
+
+                                    {child.level === 'area' && (
+                                      <div className="p-5">
+                                        <div className="flex items-center justify-between mb-4">
+                                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Branches Under Area</span>
+                                          <span className="text-[10px] font-bold text-muted-foreground">
+                                            {locations.filter(b => b.level === 'branch' && b.parentId === child.id).length} Total
+                                          </span>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-3">
+                                          {locations.filter(b => b.level === 'branch' && b.parentId === child.id).map(branch => (
+                                            <div key={branch.id} className="flex items-center gap-3 p-3 bg-muted rounded-xl border border-border group/branch hover:bg-card hover:border-primary/40 transition-all cursor-pointer">
+                                              <div className="w-8 h-8 bg-primary/10 text-primary rounded-lg flex items-center justify-center group-hover/branch:bg-primary group-hover/branch:text-primary-foreground transition-colors">
+                                                <Building2 size={14} />
+                                              </div>
+                                              <div className="flex-1 min-w-0">
+                                                <p className="text-xs font-semibold text-foreground truncate">{branch.name}</p>
+                                              </div>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                ))
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
                     </motion.div>
                   ) : (
                     <div className="h-full flex flex-col items-center justify-center text-muted-foreground">
