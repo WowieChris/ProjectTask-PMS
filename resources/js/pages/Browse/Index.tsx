@@ -479,7 +479,7 @@ export default function App() {
                       className="flex gap-6 h-full" 
                     >
                 {/* Header Info */}
-                <div className='flex flex-col overflow-hidden w-2/3'>
+                <div className='flex flex-col overflow-hidden w-2/5'>
                   <div className="flex items-end justify-between ">
                     <div className="space-y-1 mx-4">
                       <div className="flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-widest">
@@ -554,7 +554,7 @@ export default function App() {
                             );
                           })()}
 
-                          {editingItem.level === 'branch' && (
+                          {/* {editingItem.level === 'branch' && (
                             <div className="space-y-2 col-span-2">
                               <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Address</label>
                               <textarea
@@ -564,7 +564,7 @@ export default function App() {
                                 className="w-full resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
                               />
                             </div>
-                          )}
+                          )} */}
                         </div>
                       </div>
                 </div>
@@ -573,7 +573,7 @@ export default function App() {
                         editingItem.level === 'district' ||
                         editingItem.level === 'area' ||
                         editingItem.level === 'branch') && (
-                          <div className="space-y-6">
+                          <div className="space-y-6 w-3/5 overflow-y-auto">
                             <div className="flex items-center justify-between">
                               <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
                                 {editingItem.level === 'district' ? 'Assigned Areas' :
@@ -583,12 +583,12 @@ export default function App() {
                               </h3>
                             </div>
 
-                            <div className="grid grid-cols-1 gap-4">
+                            <div className="grid grid-cols-2 gap-4 overflow-hidden">
                               {editingItem.level === 'division' ? (
                                 locations
                                   .filter(child => child.level === 'district' && child.parentId === editingItem.id)
                                   .map(district => (
-                                    <div key={district.id} className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
+                                    <div key={district.id} className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm ">
                                       <div className="p-5 bg-muted/40 border-b border-border flex items-center justify-between">
                                         <div className="flex items-center gap-3">
                                           <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-100 text-amber-600">
