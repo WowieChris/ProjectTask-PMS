@@ -278,13 +278,13 @@ export default function App() {
               </button>
             </div> */}
           </CardHeader>
-          <CardContent className="p-0 flex-1 flex flex-col overflow-hidden">
-            <main className="flex-1 flex overflow-hidden">
-              {/* Left Panel: Filter & List */}
-              <div className="w-[450px] border-r border-border flex flex-col shrink-0">
-                <div className="p-6 space-y-6">
-                  {/* General Overview Toggle */}
-                  <div className="flex items-center justify-between rounded-2xl border border-border bg-muted p-4">
+          <CardContent className="p-0 flex-1 flex overflow-hidden">
+            <main className="flex flex-col flex-1 overflow-hidden">
+              {/* Left Panel: Filter & List (top) */}
+              <div className="h-1/2 border-b border-border flex flex-row overflow-hidden">
+                <div className="flex-1 border-r border-border flex flex-col shrink-0 overflow-y-hidden p-3 space-y-2">
+                  {/* General Overview Toggle /left */}
+                  <div className="flex w-[320px] items-center justify-between rounded-2xl border border-border bg-muted p-4">
                     <div className="flex items-center gap-3">
                       <div className={`p-2 rounded-lg ${isGeneralOverview ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
                         <Layers size={18} />
@@ -391,55 +391,52 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* List Header / Breadcrumbs */}
-                <div className="px-6 py-3 bg-muted border-y border-border flex items-center gap-2 overflow-x-auto no-scrollbar">
-                  {breadcrumbs.length > 0 ? (
-                    breadcrumbs.map((crumb, idx) => (
-                      <React.Fragment key={crumb.id}>
-                        <span className="text-[10px] font-bold text-muted-foreground uppercase whitespace-nowrap">{crumb.label}</span>
-                        {idx < breadcrumbs.length - 1 && <ChevronRight size={12} className="text-muted-foreground/70 shrink-0" />}
-                      </React.Fragment>
-                    ))
-                  ) : (
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase">Select a division</span>
-                  )}
-                </div>
-
-                {/* List Content */}
-                <div className="flex-1 min-h-0 overflow-visible">
-                  <div className="h-full overflow-y-auto p-4 space-y-2">
-                    <AnimatePresence mode="popLayout">
-                      {!selectedUserGroup && !isGeneralOverview ? (
-                        <div className="h-full flex flex-col items-center justify-center text-muted-foreground py-20">
-                          <MapPin size={40} strokeWidth={1.5} className="mb-4 opacity-20" />
-                          <p className="text-sm font-medium">Select a user group to begin</p>
-                        </div>
-                      ) : filteredList.length > 0 ? (
-                        filteredList.map((item) => (
-                          <motion.div
-                            layout
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            key={item.id}
-                            onClick={() => handleSelectItem(item)}
-                            className={`group p-2 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${editingItem?.id === item.id
-                              ? 'bg-accent border-border shadow-sm'
-                              : 'bg-card border-border hover:border-primary/40 hover:bg-muted/50'
-                              }`}
-                          >
-                            <div className="flex items-center gap-4">
-                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${item.level === 'district' ? 'bg-amber-100 text-amber-600' :
-                                item.level === 'area' ? 'bg-emerald-100 text-emerald-600' :
-                                  'bg-blue-100 text-blue-600'
-                                }`}>
-                                {item.level === 'district' ? <Network size={20} /> :
-                                  item.level === 'area' ? <Layers size={20} /> :
-                                    <Building2 size={20} />}
-                              </div>
-                              <div>
-                                <h3 className="text-sm font-semibold text-foreground">{item.name}</h3>
-                              </div>
+               
+                {/* List Content / right */}
+                <div className="flex-1 flex flex-col overflow-hidden">
+                    {/* List Header / Breadcrumbs */}
+                   <div className="px-3 py-2 bg-muted border-b border-border flex items-center gap-2">
+                    {breadcrumbs.length > 0 ? (
+                      breadcrumbs.map((crumb, idx) => (
+                        <React.Fragment key={crumb.id}>
+                          <span className="text-[10px] font-bold text-muted-foreground uppercase whitespace-nowrap">{crumb.label}</span>
+                          {idx < breadcrumbs.length - 1 && <ChevronRight size={12} className="text-muted-foreground/70 shrink-0" />}
+                        </React.Fragment>
+                      ))
+                    ) : (
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase">Select a division</span>
+                    )}
+                  </div>
+                    {/* List Content / right */}
+                  <div className="flex-1 min-h-0 overflow-y-auto p-2 space-y-2">
+                  <AnimatePresence mode="popLayout">
+                    {!selectedDivision && !isGeneralOverview ? (
+                      <div className="h-full flex flex-col items-center justify-center text-muted-foreground py-20">
+                        <MapPin size={40} strokeWidth={1.5} className="mb-4 opacity-20" />
+                        <p className="text-sm font-medium">Select a division to begin</p>
+                      </div>
+                    ) : filteredList.length > 0 ? (
+                      filteredList.map((item) => (
+                        <motion.div
+                          layout
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          key={item.id}
+                          onClick={() => handleSelectItem(item)}
+                          className={`group p-2 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${editingItem?.id === item.id
+                            ? 'bg-accent border-border shadow-sm'
+                            : 'bg-card border-border hover:border-primary/40 hover:bg-muted/50'
+                            }`}
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${item.level === 'district' ? 'bg-amber-100 text-amber-600' :
+                              item.level === 'area' ? 'bg-emerald-100 text-emerald-600' :
+                                'bg-blue-100 text-blue-600'
+                              }`}>
+                              {item.level === 'district' ? <Network size={20} /> :
+                                item.level === 'area' ? <Layers size={20} /> :
+                                  <Building2 size={16} />}
                             </div>
                             <div className="flex items-center gap-2">
                               {item.level !== 'branch' && (
@@ -467,9 +464,9 @@ export default function App() {
                   </div>
                 </div>
               </div>
-
-              {/* Right Panel: Editor / Details */}
-              <div className="flex-1 bg-muted/40 overflow-y-auto p-8">
+             
+              {/* Right Panel: Editor / Details (bottom) */}
+              <div className="h-1/2 bg-muted/40 overflow-y-auto p-8">
                 <AnimatePresence mode="wait">
                   {editingItem ? (
                     <motion.div
