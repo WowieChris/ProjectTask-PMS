@@ -1,0 +1,732 @@
+Area_id,Base Office
+36,34 -  Tangub
+36,35 -  Montevista 1
+130,36 -  Mansilingan 1
+130,37 -  Mansilingan 2
+34,40 -  Talisay
+34,41 -  Silay
+43,42 -  Bago 1
+43,43 -  Valladolid
+35,44 -  Hinigaran
+43,45 -  La Carlota
+35,46 -  Binalbagan
+34,47 -  Victorias
+115,48 -  Cadiz
+37,49 -  Kabankalan City
+37,50 -  Cauayan
+115,51 -  Sagay 1
+40,52 -  Escalante
+40,53 -  San Carlos
+43,56 -  La Castellana
+37,57 -  Sipalay
+26,58 -  Cainta
+38,59 -  Bais City
+55,60 -  Buhangin
+26,61 -  Antipolo 1
+38,62 -  Tanjay City
+55,63 -  Matina
+117,64 -  Agdao
+117,65 -  Panacan
+153,66 -  Tayasan
+153,67 -  Guihulngan
+54,68 -  Mintal
+125,69 -  Rodriguez
+125,70 -  San Mateo
+54,71 -  Toril 1
+135,72 -  Angono
+134,74 -  Bayawan 1
+39,75 -  Dumaguete 1
+134,76 -  Siaton
+134,77 -  Bayawan 2
+18,78 -  Malolos
+152,79 -  Sibulan
+54,80 -  Toril 2
+61,81 -  Digos City 1
+61,82 -  Digos City 2
+61,83 -  Bansalan
+120,84 -  Padada
+19,85 -  Csjdm 1
+19,86 -  Sta. Maria 1
+126,87 -  Marilao
+126,88 -  Meycauayan
+126,89 -  Balagtas
+135,90 -  Binangonan
+94,92 -  Kawit
+24,93 -  Bacoor
+94,94 -  Imus
+94,95 -  Dasmari¤as 1
+22,96 -  Silang
+56,97 -  Panabo City 1
+56,98 -  Panabo City 2
+53,99 -  Nabunturan
+53,100 -  Tagum City 1
+53,101 -  Tagum City 2
+12,102 -  Apalit
+18,103 -  Pulilan
+126,104 -  Bulakan
+17,105 -  Baliuag
+19,106 -  Csjdm 2
+58,107 -  General Santos City 1
+58,108 -  General Santos City 2
+96,109 -  Alabel
+58,110 -  Polomolok
+142,111 -  Koronadal 1
+18,112 -  Plaridel
+18,113 -  Calumpit
+19,114 -  Norzagaray
+17,115 -  San Miguel
+17,116 -  San Rafael
+23,117 -  Trece Martirez City
+23,118 -  Indang
+22,119 -  Tagaytay City
+22,120 -  Alfonso
+23,121 -  Gen. Trias
+142,124 -  Koronadal 2
+59,125 -  Surallah 1
+60,126 -  Isulan 1
+60,127 -  Tacurong 1
+60,128 -  Isulan 2
+72,129 -  Valencia City
+72,130 -  Malaybalay City
+67,131 -  Maramag
+67,132 -  Don Carlos
+122,133 -  Manolo Fortich
+106,134 -  Carcar
+105,135 -  Minglanilla
+42,136 -  Naga
+106,137 -  Argao
+106,138 -  Dalaguete
+66,139 -  Balulang
+66,140 -  Bulua
+122,141 -  Bugo
+66,142 -  Lapasan
+66,143 -  Kauswagan
+42,144 -  Toledo City
+42,145 -  Pinamungajan
+42,146 -  Balamban
+49,147 -  Tabuelan
+41,148 -  Barili
+12,149 -  Mexico
+137,150 -  San Fernando
+137,151 -  Lubao
+12,152 -  Arayat
+13,153 -  Porac
+32,154 -  Balayan
+32,155 -  Nasugbu
+32,156 -  Calaca
+32,157 -  Lemery
+32,158 -  Lian
+144,159 -  Tagoloan
+65,160 -  El Salvador City
+122,161 -  Gusa
+144,162 -  Balingasag
+144,163 -  Jasaan
+49,164 -  Danao City
+47,165 -  Bogo City
+49,166 -  Catmon
+48,167 -  Liloan
+48,168 -  Consolacion
+38,169 -  Santander
+41,170 -  Moalboal
+48,171 -  Lapu -  Lapu City
+112,172 -  Bauan
+112,173 -  Batangas
+99,174 -  Rosario
+138,175 -  Tanauan
+99,176 -  Lipa City
+68,177 -  Butuan 1
+68,178 -  Butuan 2
+68,179 -  Nasipit
+69,180 -  Talisayan
+69,181 -  Gingoog
+117,182 -  Samal 1
+121,183 -  Compostela
+56,184 -  Sto. Tomas
+7,185 -  Gapan
+13,186 -  Angeles
+149,187 -  Morong
+149,188 -  Tanay
+45,189 -  Tagbilaran City
+44,190 -  Loon
+44,191 -  Tubigon
+141,192 -  Talibon
+46,193 -  Ubay
+121,194 -  Monkayo
+121,195 -  Trento
+123,196 -  San Francisco
+110,197 -  Cabanatuan
+7,198 -  Cabiao
+108,199 -  Dinalupihan
+14,200 -  Orani
+63,201 -  Iligan 1
+65,202 -  Iligan 2
+65,203 -  Iligan 3
+65,204 -  Initao
+143,205 -  Kidapawan 1
+143,206 -  Matalam
+126,207 -  Sta. Maria 2
+105,208 -  Mandaue City 1
+48,209 -  Mandaue City 2
+14,210 -  Balanga
+14,211 -  Orion
+26,212 -  Antipolo 2
+20,213 -  Caloocan
+110,214 -  Talavera
+10,215 -  San Jose City
+94,216 -  Dasmari¤as 2
+137,217 -  Florida Blanca
+46,218 -  Jagna
+14,219 -  Mariveles
+10,220 -  Mu¤oz
+21,221 -  Valenzuela
+13,222 -  Mabalacat
+31,223 -  Bi¤an
+31,224 -  Sta. Rosa
+31,225 -  Calamba
+123,226 -  Bayugan
+25,227 -  San Pablo
+11,230 -  Dagupan
+15,231 -  Tarlac City
+20,232 -  Quezon City 1
+20,233 -  Quezon City 2
+8,234 -  Urdaneta
+15,235 -  Paniqui
+11,236 -  Lingayen
+15,237 -  Camiling
+136,238 -  Villasis
+107,239 -  San Carlos
+105,240 -  Cebu City 1
+105,241 -  Cebu City 2
+25,242 -  Los Ba¤os
+27,243 -  Sta.cruz
+9,244 -  Alaminos
+20,245 -  Quezon City 3
+125,246 -  Marikina
+24,247 -  Taguig City
+4,248 -  Agoo
+105,249 -  Talisay City
+45,250 -  Alburquerque
+1,251 -  Baguio 1
+74,252 -  Tiaong
+74,253 -  Tayabas
+75,254 -  Lucena City
+68,255 -  Cabadbaran
+71,256 -  Surigao City
+25,257 -  Nagcarlan
+27,258 -  Pagsanjan
+27,259 -  Siniloan
+63,260 -  Ozamiz
+133,261 -  Jimenez
+133,262 -  Oroquieta
+64,263 -  Dipolog
+133,264 -  Dapitan
+12,265 -  Minalin
+1,266 -  Baguio 2
+8,267 -  Pozzorubio
+136,268 -  Tayug
+4,269 -  Bauang
+4,270 -  San Juan
+103,271 -  Kapalong
+24,272 -  Muntinlupa City
+24,273 -  Las Pi¤as City
+46,274 -  Guindulman
+108,275 -  Olongapo
+16,276 -  Iba
+16,277 -  San Antonio
+86,279 -  Balaoan
+86,280 -  Tagudin
+86,281 -  Candon
+86,282 -  Narvacan
+2,283 -  Vigan
+57,284 -  Lupon
+57,285 -  Governor Generoso
+57,286 -  Mati City
+75,287 -  Atimonan
+100,288 -  Gumaca
+75,289 -  Pagbilao
+145,290 -  Placer
+4,291 -  Rosario
+107,292 -  Mangatarem
+93,293 -  Bambang
+93,294 -  Solano
+85,295 -  Santiago
+74,296 -  Candelaria
+100,297 -  Lopez
+100,298 -  Calauag
+28,299 -  Roxas
+28,300 -  Bongabong
+28,301 -  Pinamalayan
+28,302 -  Bansud
+28,303 -  Socorro
+50,304 -  Ormoc
+51,305 -  Bato
+50,306 -  Baybay
+129,307 -  Roxas
+151,308 -  Cauayan
+2,309 -  Cabugao
+3,310 -  Batac
+3,311 -  San Nicolas
+5,312 -  Alicia
+16,313 -  Candelaria
+152,314 -  Siquijor
+47,315 -  Sta. Fe
+49,316 -  Poro
+141,317 -  Inabanga
+16,318 -  San Felipe
+107,319 -  Bayambang
+30,320 -  Mansalay
+29,321 -  Naujan
+29,322 -  Victoria
+29,323 -  Calapan
+10,324 -  Guimba
+33,325 -  Rizal
+123,326 -  Mangagoy
+70,327 -  San Agustin
+70,328 -  Tandag
+70,329 -  Cantilan
+73,330 -  Libmanan
+87,331 -  Naga City 1
+77,332 -  Pili
+77,333 -  Iriga City
+124,334 -  Molave 1
+104,335 -  Kidapawan 2
+120,336 -  Malita
+54,337 -  Calinan
+96,338 -  Glan
+92,339 -  Tuguegarao
+6,340 -  Ilagan
+127,341 -  Abuyog
+51,342 -  Maasin
+51,343 -  Sogod
+7,344 -  Sta. Rosa
+52,345 -  Carigara
+140,346 -  Kananga
+140,347 -  Naval
+87,348 -  Goa
+87,349 -  Naga City 2
+77,350 -  Baao
+62,351 -  Midsayap
+52,352 -  Palo
+116,353 -  Tacloban
+76,354 -  Labo
+76,355 -  Daet
+98,356 -  Lala
+124,357 -  Pagadian City
+64,358 -  Sindangan
+69,359 -  Camiguin
+15,360 -  Capas
+92,361 -  Solana Cagayan Valley
+59,362 -  Surallah 2
+79,363 -  Polangui
+138,364 -  Sto. Tomas
+31,365 -  Cabuyao
+133,366 -  Calamba
+78,367 -  Legazpi City
+140,368 -  Palompon
+30,369 -  San Jose
+37,370 -  Mabinay
+6,371 -  Tumauini
+136,372 -  Umingan
+132,373 -  Sablayan
+78,374 -  Daraga
+74,375 -  Lucban
+132,376 -  Mamburao
+73,377 -  Sipocot
+79,378 -  Ligao City
+78,379 -  Guinobatan
+89,380 -  Tabaco City
+101,381 -  Pilar
+101,382 -  Sorsogon City
+101,383 -  Gubat
+147,384 -  Bulan
+80,385 -  Puerto Princesa 1
+23,386 -  Naic
+1,387 -  La Trinidad
+136,388 -  Asingan
+150,389 -  Lal-lo
+15,390 -  Gerona
+82,391 -  Quezon
+80,392 -  Puerto Princesa 2
+2,393 -  Bangued
+9,394 -  Bolinao
+96,395 -  Malungon
+47,396 -  Medellin
+45,397 -  Panglao
+141,398 -  Carmen
+3,399 -  Bangui
+63,400 -  Maigo
+83,401 -  Masbate City
+110,402 -  Palayan
+33,403 -  Baler
+150,404 -  Aparri
+109,405 -  Gattaran
+97,406 -  Liloy
+1,407 -  Naguillian
+67,408 -  Wao
+97,409 -  Ipil
+84,410 -  Baganga
+84,411 -  Manay
+148,412 -  Aroroy
+109,413 -  Alcala
+6,414 -  Cabagan
+151,415 -  Naguilian
+85,416 -  Cordon
+85,417 -  Maddela
+85,418 -  Cabarroguis
+82,419 -  Narra
+83,420 -  Palanas
+95,421 -  Roxas
+95,422 -  Taytay
+82,423 -  Brookes Point
+82,424 -  Bataraza
+95,425 -  El Nido
+104,426 -  Antipas
+89,427 -  Tiwi
+89,428 -  Bacacay
+147,429 -  Juban
+147,430 -  Irosin
+3,431 -  Bacarra
+3,432 -  Dingras
+127,433 -  Dulag
+51,"434 -  Liloan, Southern Leyte"
+5,435 -  Echague
+55,436 -  Tibungco
+83,437 -  Milagros
+88,438 -  Cataingan
+83,439 -  Uson
+73,440 -  Calabanga
+100,441 -  Catanauan
+43,442 -  Bago 2
+115,443 -  Sagay 2
+81,444 -  Abulug
+81,445 -  Sanchez Mira
+150,446 -  Gonzaga
+129,447 -  Burgos
+33,448 -  Maria Aurora
+93,449 -  Lagawe
+33,450 -  Casiguran
+87,451 -  Tigaon
+73,452 -  San Fernando
+79,453 -  Libon
+79,454 -  Oas
+79,455 -  Pio Duran
+78,456 -  Camalig
+89,457 -  Sto. Domingo
+101,458 -  Castilla
+88,459 -  Cawayan
+88,460 -  Placer
+111,461 -  Bontoc
+4,462 -  San Fernando L. U.
+111,463 -  Bauko
+111,464 -  Buguias
+110,465 -  Dingalan
+99,466 -  San Juan
+29,467 -  Puerto Galera
+30,468 -  Rizal
+30,469 -  Magsaysay
+80,470 -  Puerto Princesa 3
+131,471 -  Para¤aque
+139,472 -  Jiabong
+90,473 -  Borongan
+90,474 -  Guiuan
+116,475 -  Basey
+91,476 -  Calbayog
+91,477 -  Catarman
+123,478 -  Tagbina
+70,479 -  Claver
+98,480 -  Tubod
+117,481 -  Samal 2
+103,482 -  Laak
+9,483 -  Infanta
+118,484 -  Maasim
+139,485 -  Catbalogan
+93,486 -  Banaue
+85,487 -  Alfonso Lista
+97,488 -  Imelda
+124,489 -  Buug
+71,490 -  Siargao 1
+71,491 -  Siargao 2
+98,492 -  Aurora
+148,493 -  Mandaon
+148,494 -  Balud
+124,495 -  Mahayag
+84,496 -  Cateel
+55,497 -  Bunawan Davao City
+102,498 -  San Fernando
+102,499 -  San Jacinto
+102,500 -  Monreal
+118,501 -  Maitum
+120,502 -  Sta. Maria
+40,503 -  Escalante 2
+36,504 -  Tangub 2
+127,505 -  Hinunangan
+141,506 -  Trinidad
+131,507 -  Pasay
+114,508 -  Pasig City 1
+22,509 -  Silang 2
+67,510 -  Kibawe
+143,511 -  Mlang
+129,512 -  Tabuk
+153,513 -  Canlaon
+139,514 -  Gandara
+80,515 -  Puerto Princesa 4
+58,516 -  General Santos City 3
+53,517 -  Maragusan
+56,518 -  Sto. Tomas 2
+132,519 -  Abra De Ilog
+96,520 -  Malungon 2
+25,521 -  Calauan
+97,522 -  Rt Lim
+109,523 -  Amulung
+27,524 -  Infanta Quezon
+150,525 -  Lasam
+95,526 -  San Vicente
+131,527 -  Pasay 2
+77,528 -  Nabua
+151,529 -  San Mariano
+21,530 -  Malabon
+113,531 -  Caloocan 2
+62,532 -  Libungan
+57,533 -  Pantukan
+103,534 -  New Corella
+47,535 -  Madridejos
+62,536 -  Kabacan
+41,537 -  Dumanjug
+106,538 -  Boljoon
+59,539 -  Lake Sebu
+60,540 -  Sen. Ninoy Aquino
+91,541 -  Allen
+90,542 -  Dolores
+90,543 -  Taft
+136,544 -  San Manuel
+9,545 -  Burgos
+8,546 -  San Fabian
+93,547 -  Sta. Fe
+64,548 -  Manukan
+71,549 -  Kitcharao
+70,550 -  Gamut
+65,551 -  Manticao
+66,552 -  Talakag
+131,553 -  Para¤aque 2
+113,554 -  Sampaloc
+130,555 -  Murcia
+114,556 -  Mandaluyong
+114,557 -  Pasig City 2
+31,558 -  Calamba 2
+76,559 -  Basud
+100,560 -  Mulanay
+27,561 -  Famy
+56,562 -  Carmen
+61,563 -  Sta. Cruz
+84,564 -  Compostela 2
+97,565 -  Kabasalan
+137,566 -  Sta. Rita
+14,567 -  Bagac
+7,568 -  Zaragoza
+7,569 -  General Tinio
+76,570 -  Daet 2
+36,571 -  Montevista 2
+119,572 -  Lebak Sultan Kudarat
+103,573 -  Asuncion
+98,574 -  Kapatagan
+123,575 -  Prosperidad
+143,576 -  Makilala
+72,577 -  Cabanglasan
+107,578 -  Calasiao
+5,579 -  Jones
+109,580 -  Allacapan
+113,581 -  Quiapo
+119,582 -  Kalamansig
+142,583 -  Tupi
+118,584 -  Kiamba
+76,585 -  Sta. Elena
+73,586 -  Del Gallego
+50,587 -  Ormoc 2
+34,588 -  Silay 2
+35,589 -  Himamaylan
+36,590 -  Tangub 3
+69,591 -  Salay
+35,592 -  Pontevedra
+67,593 -  Kalilangan
+1,594 -  Tuba
+121,595 -  Loreto
+104,596 -  Arakan
+120,597 -  Sulop
+21,598 -  Valenzuela 2
+11,599 -  Sual
+112,600 -  San Jose
+92,601 -  Tuao
+40,602 -  Calatrava
+117,603 -  Samal 3
+42,604 -  San Fernando Cebu
+6,605 -  Ilagan 2
+59,606 -  Tboli
+24,607 -  Taguig City 2
+113,608 -  Tondo
+20,609 -  Quezon City 4
+60,610 -  Tacurong 2
+61,611 -  Matanao
+44,612 -  Catigbian
+124,613 -  San Miguel
+22,614 -  Gma
+45,"615 -  Valencia, Bohol"
+63,616 -  Tangub City
+125,617 -  Rodriguez 2
+5,618 -  Angadanan
+125,619 -  Marikina 2
+128,620 -  Lucena 2
+74,621 -  Sariaya
+128,622 -  Torrijos
+128,623 -  Boac
+11,624 -  Lingayen 2
+129,625 -  Quezon
+98,626 -  Lala 2
+46,627 -  Pilar
+47,628 -  San Remigio
+50,629 -  Hilongos
+91,630 -  Calbayog 2
+55,631 -  Ma-a
+132,632 -  Sablayan 2
+13,633 -  Magalang
+2,634 -  Pinili
+115,635 -  Manapla
+39,636 -  Dumaguete 2
+130,637 -  Murcia 2
+58,638 -  General Santos City 4
+6,639 -  Pe¤ablanca
+92,640 -  Sto. Ni¤o
+112,641 -  Cuenca
+53,642 -  Mawab
+133,643 -  Plaridel
+152,644 -  Siquijor 2
+104,645 -  Magpet
+145,646 -  San Jose
+130,647 -  Mandalagan
+21,648 -  Navotas
+35,649 -  Isabela
+37,650 -  Kabankalan 2
+127,651 -  Burauen
+114,652 -  San Juan
+135,653 -  Binangonan 2
+122,654 -  Kisolon
+72,655 -  Quezon
+52,656 -  Alangalang
+52,657 -  Tanauan
+149,658 -  Jalajala
+116,659 -  Balangiga
+116,660 -  Tacloban 2
+128,661 -  Gasan
+75,662 -  Unisan
+128,663 -  Sta. Cruz
+81,664 -  Luna
+148,665 -  Baleno
+108,666 -  Subic
+144,667 -  Claveria
+145,668 -  Libjo
+80,669 -  Aborlan
+13,670 -  Angeles 2
+108,671 -  Olongapo 2
+23,672 -  Gen. Trias 2
+112,673 -  Lobo
+10,674 -  Carranglan
+114,675 -  Sta. Ana
+21,676 -  Malabon 2
+9,677 -  Anda
+134,678 -  Hinoba-an
+8,679 -  Manaoag
+38,680 -  Pamplona
+75,681 -  Quezon
+87,682 -  Caramoan
+49,683 -  Borbon
+10,684 -  Quezon
+88,685 -  Pio Corpuz
+83,686 -  Mobo
+39,687 -  Dauin
+142,688 -  Columbio
+135,689 -  Taytay
+48,690 -  Lapu -  Lapu City 2
+30,691 -  San Jose 2
+109,692 -  Baggao
+77,693 -  Buhi
+145,694 -  Cagdianao
+57,695 -  Maco
+26,696 -  Antipolo 3
+92,697 -  Tuguegarao 2
+147,698 -  Matnog
+25,699 -  Alaminos
+62,700 -  Alamada
+90,701 -  Gen. Mac Arthur
+59,702 -  Tboli 2
+119,703 -  Esperanza
+119,704 -  Upi
+146,705 -  Zamboanga City 1
+44,706 -  Antequera
+41,707 -  Alegria
+29,708 -  Baco
+94,709 -  Cavite City
+68,710 -  Butuan City 3
+153,711 -  Jimalalud
+146,712 -  Zamboanga City 2
+86,713 -  Sta. Cruz
+118,714 -  Palimbang
+78,715 -  Legazpi City 2
+138,716 -  Talisay
+82,717 -  Rizal
+72,718 -  Aglayan
+140,719 -  Caibiran
+2,720 -  Dolores
+54,721 -  Marilog
+140,722 -  San Isidro
+146,723 -  Zamboanga City 3
+154,724 -  Cotabato City 1
+2,725 -  Sto. Domingo
+12,726 -  Sta. Ana
+107,727 -  Malasiqui
+101,728 -  Donsol
+100,729 -  San Francisco
+154,730 -  Awang
+154,731 -  Parang
+96,732 -  Malapatan
+3,733 -  Laoag
+46,734 -  Candijay
+8,735 -  Mangaldan
+12,736 -  Masantol
+146,737 -  Zamboanga City 4
+64,738 -  Polanco
+62,739 -  Aleosan
+148,740 -  Balud 2
+139,741 -  Calbiga
+88,742 -  Cawayan 2
+48,743 -  Cordova
+141,744 -  Loboc
+105,745 -  Cebu City 3
+69,746 -  Magsaysay
+145,747 -  Sison
+155,748 -  Iloilo City
+155,749 -  Jaro
+63,750 -  Clarin
+113,751 -  Sta. Cruz
+76,752 -  Jose Panganiban
+147,753 -  Barcelona
+151,754 -  San Mateo
+40,755 -  Toboso
+149,756 -  Baras
+17,757 -  San Ildefonso
+39,758 -  Valencia
+129,759 -  Aurora
+152,760 -  Siquijor 3
+20,761 -  Quezon City 5
+131,762 -  Makati City
+19,763 -  Angat
+110,764 -  Bongabon
+124,765 -  Dumalinao
+48,766 -  Lapu - Lapu City 3
+44,767 -  Sagbayan
+155,768 -  Jaro 2
+155,769 -  Iloilo City 2
+154,770 -  Cotabato City 2
+138,771 -  Malvar
+31,772 -  San Pedro
+112,773 -  San Pascual
+112,774 -  Batangas 2
+99,775 -  Lipa 2
