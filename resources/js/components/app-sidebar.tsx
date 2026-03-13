@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { Database, LayoutGrid, Search, TextSelect, User } from 'lucide-react';
+import { Columns2Icon, Database, LayoutGrid, ListOrderedIcon, NotepadTextDashedIcon, Search, User, Warehouse } from 'lucide-react';
 
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -48,22 +48,22 @@ export function AppSidebar() {
     {
       title: 'Service Order',
       href: 'serviceOrder',
-      icon: TextSelect,
+      icon: ListOrderedIcon,
     },
     {
       title: 'Asset Management',
       href: 'assetManagement',
-      icon: TextSelect,
+      icon: Columns2Icon,
     },
     {
       title: 'Journal Movement',
       href: 'journalMovement',
-      icon: TextSelect,
+      icon: NotepadTextDashedIcon,
     },
     {
       title: 'Office Management',
       href: 'officeManagement',
-      icon: TextSelect,
+      icon: Warehouse,
     },
 
   ];
