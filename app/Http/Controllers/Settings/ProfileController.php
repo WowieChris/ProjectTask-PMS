@@ -29,14 +29,14 @@ class ProfileController extends Controller
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
 
-            'auth' => [
-                'user' => [
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    // force Laravel URL (8000), not Vite (5173)
-                    'photo_url' => $currentPhoto ? asset('storage/'.$currentPhoto->path) : null,
-                ],
-            ],
+            // 'auth' => [
+            //     'user' => [
+            //         'name' => $user->name,
+            //         'email' => $user->email,
+            //         // force Laravel URL (8000), not Vite (5173)
+            //         'photo_url' => $currentPhoto ? asset('storage/' . $currentPhoto->path) : null,
+            //     ],
+            // ],
         ]);
     }
 
