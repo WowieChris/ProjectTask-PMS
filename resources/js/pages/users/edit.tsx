@@ -39,9 +39,10 @@ const BreadcrumbItem: BreadcrumbItem[] = [
 
 interface Props {
     user: User;
+    onSuccess?: () => void;
 }
 
-export default function EditUserCard({ user }: Props) {
+export default function EditUserCard({ user, onSuccess }: Props) {
     const isInitiallyActive = user.employment_status === 'active';
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
@@ -80,7 +81,11 @@ export default function EditUserCard({ user }: Props) {
             return;
         }
 
-        put(`/users/${user.id}`);
+        put(`/users/${user.id}`, {
+            onSuccess: () => {
+                onSuccess?.()
+            }
+        })
     };
 
     // const handleEmployeeId = (value: string) => {

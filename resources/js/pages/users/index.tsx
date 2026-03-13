@@ -18,9 +18,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import AppLayout from '@/layouts/app-layout'
 import { dashboard } from '@/routes'
 import type { BreadcrumbItem } from '@/types'
+import type { User } from "@/types/user"
 import UsersCreate from './create'
 import EditUserCard from './edit'
-import type { User } from "@/types/user"
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: 'Dashboard', href: dashboard().url },
@@ -137,14 +137,14 @@ export default function UsersIndex({ users }: Props) {
     setFilterDesignation('all')
     setSelectedUsers([])
   }
-const [rowsPerPage, setRowsPerPage] = useState(10)
-const [page, setPage] = useState(1)
-const totalPages = Math.ceil(filteredUsers.length / rowsPerPage)
-const paginatedUsers = useMemo(() => {
-  const start = (page - 1) * rowsPerPage
-  const end = start + rowsPerPage
-  return filteredUsers.slice(start, end)
-}, [filteredUsers, page, rowsPerPage])
+  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [page, setPage] = useState(1)
+  const totalPages = Math.ceil(filteredUsers.length / rowsPerPage)
+  const paginatedUsers = useMemo(() => {
+    const start = (page - 1) * rowsPerPage
+    const end = start + rowsPerPage
+    return filteredUsers.slice(start, end)
+  }, [filteredUsers, page, rowsPerPage])
 
   return (<AppLayout breadcrumbs={breadcrumbs}> <Head title="Users" />
 
@@ -267,11 +267,11 @@ const paginatedUsers = useMemo(() => {
                 Showing {paginatedUsers.length} of {filteredUsers.length}
               </div>
             </div>
-        </div>
+          </div>
           {/* TABLE */}
-            
 
-          
+
+
           <Table>
 
             <TableHeader>
@@ -371,27 +371,27 @@ const paginatedUsers = useMemo(() => {
           </Table>
           <div className="flex justify-end items-center gap-2 mt-4">
 
-  <Button
-    variant="outline"
-    disabled={page === 1}
-    onClick={() => setPage(page - 1)}
-  >
-    Previous
-  </Button>
+            <Button
+              variant="outline"
+              disabled={page === 1}
+              onClick={() => setPage(page - 1)}
+            >
+              Previous
+            </Button>
 
-  <span className="text-sm">
-    Page {page} of {totalPages}
-  </span>
+            <span className="text-sm">
+              Page {page} of {totalPages}
+            </span>
 
-  <Button
-    variant="outline"
-    disabled={page === totalPages}
-    onClick={() => setPage(page + 1)}
-  >
-    Next
-  </Button>
+            <Button
+              variant="outline"
+              disabled={page === totalPages}
+              onClick={() => setPage(page + 1)}
+            >
+              Next
+            </Button>
 
-</div>
+          </div>
           {/* EDIT PANEL */}
 
           <Sheet open={openEdit} onOpenChange={setOpenEdit}>
@@ -399,7 +399,7 @@ const paginatedUsers = useMemo(() => {
             <SheetContent side="right" className="w-[600px]">
 
               {selectedUser && (
-                <EditUserCard user={selectedUser} />
+                <EditUserCard user={selectedUser} onSuccess={() => setOpenEdit(false)} />
               )}
 
             </SheetContent>
