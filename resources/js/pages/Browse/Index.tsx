@@ -282,10 +282,10 @@ export default function App() {
   return (
     <AppLayout>
       <Head title="Browse Locations" />
-      <div className="h-screen text-foreground font-sans flex flex-col overflow-hidden">
+      <div className="h-full text-foreground font-sans flex flex-col overflow-hidden">
         {/* Header */}
         <Card className='m-3 gap-0 py-0 flex flex-col flex-1 overflow-hidden'>
-          <CardHeader className="h-16 border-b border-border flex flex-row mt-3 pb-3 items-center justify-between shrink-0">
+          <CardHeader className="h-16 border-b border-border flex items-center justify-between px-6">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-sm">
                 <MapPin size={22} />
@@ -305,8 +305,8 @@ export default function App() {
           <CardContent className="p-0 flex-1 flex overflow-hidden">
             <main className="flex flex-col flex-1 overflow-hidden">
               {/* Left Panel: Filter & List (top) */}
-              <div className="h-1/2 border-b border-border flex flex-row overflow-hidden">
-                <div className="flex-1 border-r border-border flex flex-col shrink-0 overflow-y-hidden p-3 space-y-2">
+              <div className="flex flex-row h-[45%] border-b border-border overflow-hidden">
+                <div className="w-[320px] border-r border-border flex flex-col overflow-y-hidden p-3 space-y-3">
                   {/* General Overview Toggle /left */}
                   <div className="flex w-[320px] items-center justify-between rounded-2xl border border-border bg-muted p-4">
                     <div className="flex items-center gap-3">
@@ -494,7 +494,7 @@ export default function App() {
               </div>
 
               {/* Right Panel: Editor / Details (bottom) */}
-              <div className="h-1/2 bg-muted/40 overflow-y-auto p-4">
+              <div className="flex-1 bg-muted/40 p-4 overflow-hidden">
                 <AnimatePresence mode="wait">
                   {editingItem ? (
                     <motion.div
@@ -502,36 +502,36 @@ export default function App() {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -20 }}
-                      className="flex gap-6 h-full"
+                      className="grid grid-cols-5 gap-6 h-full"
                     >
-                {/* Header Info */}
-                <div className='flex flex-col overflow-hidden w-2/5'>
-                  <div className="flex items-end justify-between ">
-                    <div className="space-y-1 mx-4">
-                      <div className="flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-widest">
-                        <Edit3 size={14} />
-                        Viewing {editingItem.level}
-                      </div>
-                      <h2 className="text-3xl font-bold text-foreground">{editingItem.name}</h2>
-                      <p className="text-muted-foreground">View details and hierarchy for this location.</p>
-                    </div>
-                  </div>
-
-                      {/* Form Card */}
-                      <div className="bg-card rounded-3xl border border-border shadow-sm overflow-visible">
-                        <div className="px-8 py-2 grid grid-cols-2 gap-2">
-                          <div className="space-y-2">
-                            <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest capitalize">
-                              {editingItem.level}
-                            </label>
-                            <input
-                              type="text"
-                              readOnly
-                              value={editingItem.name}
-                              className="w-full rounded-xl border border-input bg-background px-4 py-2 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
-                            />
+                      {/* Header Info */}
+                      <div className="col-span-2 flex flex-col gap-4">
+                        <div className="flex items-end justify-between ">
+                          <div className="space-y-1 mx-4">
+                            <div className="flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-widest">
+                              <Edit3 size={14} />
+                              Viewing {editingItem.level}
+                            </div>
+                            <h2 className="text-3xl font-bold text-foreground">{editingItem.name}</h2>
+                            <p className="text-muted-foreground">View details and hierarchy for this location.</p>
                           </div>
                         </div>
+
+                        {/* Form Card */}
+                        <div className="bg-card rounded-2xl border border-border shadow-sm p-4">
+                          <div className="px-8 py-2 grid grid-cols-2 gap-2">
+                            <div className="space-y-2">
+                              <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest capitalize">
+                                {editingItem.level}
+                              </label>
+                              <input
+                                type="text"
+                                readOnly
+                                value={editingItem.name}
+                                className="w-full rounded-xl border border-input bg-background px-4 py-2 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
+                              />
+                            </div>
+                          </div>
 
 
                           {/* Hierarchy Bases */}
@@ -598,7 +598,7 @@ export default function App() {
                         editingItem.level === 'district' ||
                         editingItem.level === 'area' ||
                         editingItem.level === 'branch') && (
-                          <div className="space-y-6 w-3/5 overflow-y-auto">
+                          <div className="col-span-3 flex flex-col gap-4 overflow-y-auto h-full pr-2">
                             <div className="flex items-center justify-between">
                               <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
                                 {editingItem.level === 'district' ? 'Assigned Areas' :
@@ -608,7 +608,7 @@ export default function App() {
                               </h3>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4 overflow-hidden">
+                            <div className="grid grid-cols-2 xl:grid-cols-3 gap-4">
                               {editingItem.level === 'division' ? (
                                 locations
                                   .filter(child => child.level === 'district' && child.parentId === editingItem.id)
