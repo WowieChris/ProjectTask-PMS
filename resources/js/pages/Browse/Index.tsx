@@ -504,94 +504,93 @@ export default function App() {
                       exit={{ opacity: 0, x: -20 }}
                       className="flex gap-6 h-full"
                     >
-                      {/* Header Info */}
-                      <div className='flex flex-col overflow-hidden w-2/3'>
-                        <div className="flex items-end justify-between ">
-                          <div className="space-y-1 mx-4">
-                            <div className="flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-widest">
-                              <Edit3 size={14} />
-                              Viewing {editingItem.level}
-                            </div>
-                            <h2 className="text-3xl font-bold text-foreground">{editingItem.name}</h2>
-                            <p className="text-muted-foreground">View details and hierarchy for this location.</p>
+                {/* Header Info */}
+                <div className='flex flex-col overflow-hidden w-2/5'>
+                  <div className="flex items-end justify-between ">
+                    <div className="space-y-1 mx-4">
+                      <div className="flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-widest">
+                        <Edit3 size={14} />
+                        Viewing {editingItem.level}
+                      </div>
+                      <h2 className="text-3xl font-bold text-foreground">{editingItem.name}</h2>
+                      <p className="text-muted-foreground">View details and hierarchy for this location.</p>
+                    </div>
+                  </div>
+
+                      {/* Form Card */}
+                      <div className="bg-card rounded-3xl border border-border shadow-sm overflow-visible">
+                        <div className="px-8 py-2 grid grid-cols-2 gap-2">
+                          <div className="space-y-2">
+                            <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest capitalize">
+                              {editingItem.level}
+                            </label>
+                            <input
+                              type="text"
+                              readOnly
+                              value={editingItem.name}
+                              className="w-full rounded-xl border border-input bg-background px-4 py-2 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
+                            />
                           </div>
                         </div>
 
-                        {/* Form Card */}
-                        <div className="bg-card rounded-3xl border border-border shadow-sm overflow-visible">
-                          <div className="px-8 py-2 grid grid-cols-2 gap-2">
-                            <div className="space-y-2">
-                              <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest capitalize">
-                                {editingItem.level}
-                              </label>
-                              <input
-                                type="text"
+
+                          {/* Hierarchy Bases */}
+                          {(() => {
+                            const area = editingItem.level === 'branch' ? locations.find(i => i.id === editingItem.parentId) : null;
+                            const district = editingItem.level === 'area' ? locations.find(i => i.id === editingItem.parentId) :
+                              (editingItem.level === 'branch' && area ? locations.find(i => i.id === area.parentId) : null);
+                            const division = editingItem.level === 'district' ? locations.find(i => i.id === editingItem.parentId) :
+                              (district ? locations.find(i => i.id === district.parentId) : null);
+
+                            return (
+                              <div className="col-span-2 grid grid-flow-col auto-cols gap-4">
+                                {division && (
+                                  <div className="space-y-2">
+                                    <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Division Base</label>
+                                    <input
+                                      type="text"
+                                      readOnly
+                                      value={division.name}
+                                      className="w-full rounded-xl border border-input bg-background px-4 py-1 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
+                                    />
+                                  </div>
+                                )}
+                                {district && (
+                                  <div className="space-y-2">
+                                    <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">District Base</label>
+                                    <input
+                                      type="text"
+                                      readOnly
+                                      value={district.name}
+                                      className="w-full rounded-xl border border-input bg-background px-4 py-1 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
+                                    />
+                                  </div>
+                                )}
+                                {area && (
+                                  <div className="space-y-2">
+                                    <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Area Base</label>
+                                    <input
+                                      type="text"
+                                      readOnly
+                                      value={area.name}
+                                      className="w-full rounded-xl border border-input bg-background px-4 py-1 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })()}
+
+                          {/* {editingItem.level === 'branch' && (
+                            <div className="space-y-2 col-span-2">
+                              <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Address</label>
+                              <textarea
                                 readOnly
                                 value={editingItem.name}
                                 className="w-full rounded-xl border border-input bg-background px-4 py-2 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
                               />
                             </div>
-
-
-                            {/* Hierarchy Bases */}
-                            {(() => {
-                              const area = editingItem.level === 'branch' ? locations.find(i => i.id === editingItem.parentId) : null;
-                              const district = editingItem.level === 'area' ? locations.find(i => i.id === editingItem.parentId) :
-                                (editingItem.level === 'branch' && area ? locations.find(i => i.id === area.parentId) : null);
-                              const division = editingItem.level === 'district' ? locations.find(i => i.id === editingItem.parentId) :
-                                (district ? locations.find(i => i.id === district.parentId) : null);
-
-                              return (
-                                <div className="col-span-2 grid grid-flow-col auto-cols gap-4">
-                                  {division && (
-                                    <div className="space-y-2">
-                                      <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Division Base</label>
-                                      <input
-                                        type="text"
-                                        readOnly
-                                        value={division.name}
-                                        className="w-full rounded-xl border border-input bg-background px-4 py-1 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
-                                      />
-                                    </div>
-                                  )}
-                                  {district && (
-                                    <div className="space-y-2">
-                                      <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">District Base</label>
-                                      <input
-                                        type="text"
-                                        readOnly
-                                        value={district.name}
-                                        className="w-full rounded-xl border border-input bg-background px-4 py-1 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
-                                      />
-                                    </div>
-                                  )}
-                                  {area && (
-                                    <div className="space-y-2">
-                                      <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Area Base</label>
-                                      <input
-                                        type="text"
-                                        readOnly
-                                        value={area.name}
-                                        className="w-full rounded-xl border border-input bg-background px-4 py-1 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
-                                      />
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            })()}
-
-                            {editingItem.level === 'branch' && (
-                              <div className="space-y-2 col-span-2">
-                                <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Address</label>
-                                <textarea
-                                  readOnly
-                                  value={editingItem.address}
-                                  rows={2}
-                                  className="w-full resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
-                                />
-                              </div>
-                            )}
-                          </div>
+                          )} */}
                         </div>
                       </div>
                       {/* Hierarchy View */}
@@ -599,7 +598,7 @@ export default function App() {
                         editingItem.level === 'district' ||
                         editingItem.level === 'area' ||
                         editingItem.level === 'branch') && (
-                          <div className="space-y-6">
+                          <div className="space-y-6 w-3/5 overflow-y-auto">
                             <div className="flex items-center justify-between">
                               <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
                                 {editingItem.level === 'district' ? 'Assigned Areas' :
@@ -609,12 +608,12 @@ export default function App() {
                               </h3>
                             </div>
 
-                            <div className="grid grid-cols-1 gap-4">
+                            <div className="grid grid-cols-2 gap-4 overflow-hidden">
                               {editingItem.level === 'division' ? (
                                 locations
                                   .filter(child => child.level === 'district' && child.parentId === editingItem.id)
                                   .map(district => (
-                                    <div key={district.id} className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
+                                    <div key={district.id} className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm ">
                                       <div className="p-5 bg-muted/40 border-b border-border flex items-center justify-between">
                                         <div className="flex items-center gap-3">
                                           <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-100 text-amber-600">
