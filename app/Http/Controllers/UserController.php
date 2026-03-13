@@ -18,15 +18,15 @@ class UserController extends Controller
         return Inertia::render('users/index', [
             'users' => User::orderBy('name')->get(),
             'designations' => Designation::orderBy('name')->get(['id', 'name', 'role']), // ← add this
-    ]);
+        ]);
     }
 
     public function create()
     {
-    return Inertia::render('users/create', [
-        'designations' => Designation::orderBy('name')->get(['id', 'name', 'role']),
-    ]);
-}
+        return Inertia::render('users/create', [
+            'designations' => Designation::orderBy('name')->get(['id', 'name', 'role']),
+        ]);
+    }
 
     public function store(Request $request)
     {
@@ -87,7 +87,7 @@ class UserController extends Controller
             'last_name' => $request->last_name,
             'email' => $request->email,
             'role' => $request->role,
-            'designation_id' => $request->designation,
+            'designation' => $request->designation,
             'employee_id' => $request->employee_id,
             'location' => $request->location,
             'district' => $request->district,
