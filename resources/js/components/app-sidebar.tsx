@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { Database, LayoutGrid, Search, User } from 'lucide-react';
+import { Database, LayoutGrid, Search, TextSelect, User } from 'lucide-react';
 
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -34,18 +34,39 @@ export function AppSidebar() {
   // so admin menus are hidden when role is unavailable.
   const userRole = auth?.user?.role ?? 'user';
 
- const mainNavItems: NavItem[] = [
-  {
-    title: 'Dashboard',
-    href: dashboard().url,
-    icon: LayoutGrid,
-  },
-  {
-    title: 'Browse',
-    href: '/browse',
-    icon: Search,
-  },
-];
+  const mainNavItems: NavItem[] = [
+    {
+      title: 'Dashboard',
+      href: dashboard().url,
+      icon: LayoutGrid,
+    },
+    {
+      title: 'Browse',
+      href: '/browse',
+      icon: Search,
+    },
+    {
+      title: 'Service Order',
+      href: 'serviceOrder',
+      icon: TextSelect,
+    },
+    {
+      title: 'Asset Management',
+      href: 'assetManagement',
+      icon: TextSelect,
+    },
+    {
+      title: 'Journal Movement',
+      href: 'journalMovement',
+      icon: TextSelect,
+    },
+    {
+      title: 'Office Management',
+      href: 'officeManagement',
+      icon: TextSelect,
+    },
+
+  ];
 
   // ✅ Show admin menus
   if (userRole !== 'user') {
