@@ -141,5 +141,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('/service-order', [ServiceOrderController::class, 'store'])
             ->name('service-order.store');
+        Route::post('/service-order', [ServiceOrderController::class, 'destroy'])
+            ->name('service-order.destroy');
     });
 });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ServiceOrder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\User;
 
 class ServiceOrderController extends Controller
 {
@@ -13,7 +14,8 @@ class ServiceOrderController extends Controller
         $orders = ServiceOrder::latest()->get();
 
         return Inertia::render('Service-Order/Index', [
-            'orders' => $orders
+            'orders' => ServiceOrder::latest()->get(),
+            'technicians' => User::where('role', 'technician')->get(['id', 'name'])
         ]);
     }
 
