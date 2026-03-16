@@ -284,9 +284,9 @@ export default function App() {
       <Head title="Browse Locations" />
       <div className="h-full text-foreground font-sans flex flex-col overflow-hidden">
         {/* Header */}
-        <Card className='m-3 gap-0 py-0 flex flex-col flex-1 overflow-hidden'>
-          <CardHeader className="h-16 border-b border-border flex items-center justify-between px-6">
-            <div className="flex items-center gap-3">
+        <Card className='flex flex-col flex-1 overflow-hidden gap-0 py-0'>
+          <CardHeader className="h-16 border-b border-border flex items-start justify-between px-6">
+            <div className="flex items-center gap-3 mt-2">
               <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-sm">
                 <MapPin size={22} />
               </div>
@@ -302,13 +302,13 @@ export default function App() {
               </button>
             </div> */}
           </CardHeader>
-          <CardContent className="p-0 flex-1 flex overflow-hidden">
-            <main className="flex flex-col flex-1 overflow-hidden">
+          <CardContent className="p-0 flex flex-1 overflow-hidden">
+            <main className="flex flex-col w-full h-full overflow-hidden">
               {/* Left Panel: Filter & List (top) */}
-              <div className="flex flex-row h-[45%] border-b border-border overflow-hidden">
-                <div className="w-[320px] border-r border-border flex flex-col overflow-y-hidden p-3 space-y-3">
+              <div className="flex flex-row border-b border-border h-1/2 overflow-hidden">
                   {/* General Overview Toggle /left */}
-                  <div className="flex w-[320px] items-center justify-between rounded-2xl border border-border bg-muted p-4">
+                <div className="w-1/3 border-r border-border flex flex-col overflow-auto p-3 gap-3">
+                  <div className="flex w-full items-center justify-between rounded-2xl border border-border bg-muted p-4">
                     <div className="flex items-center gap-3">
                       <div className={`p-2 rounded-lg ${isGeneralOverview ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
                         <Layers size={18} />
@@ -317,7 +317,7 @@ export default function App() {
                         <p className="text-xs font-bold text-foreground">General Overview</p>
                         <p className="text-[10px] text-muted-foreground">Disable hierarchical filtering</p>
                       </div>
-                    </div>
+                    </div>  
                     <button
                       onClick={() => {
                         setIsGeneralOverview(!isGeneralOverview);
@@ -417,9 +417,9 @@ export default function App() {
 
 
                 {/* List Content / right */}
-                <div className="flex-1 flex flex-col overflow-hidden">
+                <div className="flex flex-col overflow-hidden w-2/3">
                   {/* List Header / Breadcrumbs */}
-                  <div className="px-3 py-2 bg-muted border-b border-border flex items-center gap-2">
+                  <div className="px-3 py-2 bg-muted border-b border-border flex items-center gap-2 shrink-0">
                     {breadcrumbs.length > 0 ? (
                       breadcrumbs.map((crumb, idx) => (
                         <React.Fragment key={crumb.id}>
@@ -432,7 +432,7 @@ export default function App() {
                     )}
                   </div>
                   {/* List Content / right */}
-                  <div className="flex-1 min-h-0 overflow-y-auto p-2 space-y-2">
+                  <div className="flex flex-col min-h-0 overflow-y-auto p-2 space-y-2">
                     <AnimatePresence mode="popLayout">
                       {!selectedUserGroup && !isGeneralOverview ? (
                         <div className="h-full flex flex-col items-center justify-center text-muted-foreground py-20">
@@ -494,7 +494,7 @@ export default function App() {
               </div>
 
               {/* Right Panel: Editor / Details (bottom) */}
-              <div className="flex-1 bg-muted/40 p-4 overflow-hidden">
+              <div className="flex bg-muted/40 p-4 flex-1 h-1/2 overflow-hidden ">
                 <AnimatePresence mode="wait">
                   {editingItem ? (
                     <motion.div
@@ -502,7 +502,7 @@ export default function App() {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -20 }}
-                      className="grid grid-cols-5 gap-6 h-full"
+                      className="flex flex-1 grid grid-cols-5 gap-6 h-full"
                     >
                       {/* Header Info */}
                       <div className="col-span-2 flex flex-col gap-4">
@@ -519,7 +519,7 @@ export default function App() {
 
                         {/* Form Card */}
                         <div className="bg-card rounded-2xl border border-border shadow-sm p-4">
-                          <div className="px-8 py-2 grid grid-cols-2 gap-2">
+                          <div className="py-2 grid grid-cols-2 gap-2">
                             <div className="space-y-2">
                               <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest capitalize">
                                 {editingItem.level}
@@ -543,7 +543,7 @@ export default function App() {
                               (district ? locations.find(i => i.id === district.parentId) : null);
 
                             return (
-                              <div className="col-span-2 grid grid-flow-col auto-cols gap-4">
+                             <div className="col-span-2 grid grid-flow-col auto-cols gap-4">
                                 {division && (
                                   <div className="space-y-2">
                                     <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Division Base</label>
@@ -593,12 +593,12 @@ export default function App() {
                           )} */}
                         </div>
                       </div>
-                      {/* Hierarchy View */}
+                      {/* Hierarchy View / right */}
                       {(editingItem.level === 'division' ||
                         editingItem.level === 'district' ||
                         editingItem.level === 'area' ||
                         editingItem.level === 'branch') && (
-                          <div className="col-span-3 flex flex-col gap-4 overflow-y-auto h-full pr-2">
+                          <div className="col-span-3 h-full gap-4 min-h-0 overflow-y-auto pr-2">
                             <div className="flex items-center justify-between">
                               <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
                                 {editingItem.level === 'district' ? 'Assigned Areas' :
@@ -615,7 +615,7 @@ export default function App() {
                                   .map(district => (
                                     <div key={district.id} className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm ">
                                       <div className="p-5 bg-muted/40 border-b border-border flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
+                                        <div className="flex h-1/2 items-center gap-3">
                                           <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-100 text-amber-600">
                                             <Network size={20} />
                                           </div>
@@ -626,7 +626,7 @@ export default function App() {
                                       </div>
 
                                       {/* Areas under district */}
-                                      <div className="p-5">
+                                      <div className="flex flex-col h-[135px] p-5 min-h-0 overflow-y-auto">
                                         {locations
                                           .filter(a => a.level === 'area' && a.parentId === district.id)
                                           .map(area => (
@@ -637,7 +637,7 @@ export default function App() {
                                               </div>
 
                                               {/* branches */}
-                                              <div className="grid grid-cols-2 gap-3">
+                                              <div className="space-y-1">
                                                 {locations
                                                   .filter(b => b.level === 'branch' && b.parentId === area.id)
                                                   .map(branch => (
@@ -645,7 +645,6 @@ export default function App() {
                                                       key={branch.id}
                                                       className="flex items-center gap-3 p-3 bg-muted rounded-xl border border-border"
                                                     >
-                                                      <Building2 size={14} />
                                                       <span className="text-xs font-semibold">{branch.name}</span>
                                                     </div>
                                                   ))}
@@ -668,32 +667,20 @@ export default function App() {
                                           <h4 className="font-bold text-foreground">{child.name}</h4>
                                         </div>
                                       </div>
-                                      <div className="flex items-center gap-2">
-                                        <span className={`text-[10px] font-bold px-2 py-1 rounded-md uppercase ${child.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 'bg-muted text-muted-foreground'
-                                          }`}>
-                                          {child.status}
-                                        </span>
-                                        <button className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg">
-                                          <MoreVertical size={16} />
-                                        </button>
-                                      </div>
                                     </div>
 
                                     {child.level === 'area' && (
-                                      <div className="p-5">
+                                      <div className="p-5 h-[135px] min-h-0 overflow-auto">
                                         <div className="flex items-center justify-between mb-4">
-                                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Branches Under Area</span>
+                                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Branches</span>
                                           <span className="text-[10px] font-bold text-muted-foreground">
                                             {locations.filter(b => b.level === 'branch' && b.parentId === child.id).length} Total
                                           </span>
                                         </div>
 
-                                        <div className="grid grid-cols-2 gap-3">
+                                        <div className="space-y-1">
                                           {locations.filter(b => b.level === 'branch' && b.parentId === child.id).map(branch => (
                                             <div key={branch.id} className="flex items-center gap-3 p-3 bg-muted rounded-xl border border-border group/branch hover:bg-card hover:border-primary/40 transition-all cursor-pointer">
-                                              <div className="w-8 h-8 bg-primary/10 text-primary rounded-lg flex items-center justify-center group-hover/branch:bg-primary group-hover/branch:text-primary-foreground transition-colors">
-                                                <Building2 size={14} />
-                                              </div>
                                               <div className="flex-1 min-w-0">
                                                 <p className="text-xs font-semibold text-foreground truncate">{branch.name}</p>
                                               </div>
@@ -710,7 +697,7 @@ export default function App() {
                         )}
                     </motion.div>
                   ) : (
-                    <div className="h-full flex flex-col items-center justify-center text-muted-foreground">
+                    <div className="h-full flex flex-col mx-auto items-center justify-center text-muted-foreground">
                       <div className="w-20 h-20 bg-card rounded-3xl shadow-sm border border-border flex items-center justify-center mb-6">
                         <Edit3 size={32} strokeWidth={1.5} className="opacity-20" />
                       </div>
