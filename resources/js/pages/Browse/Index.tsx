@@ -14,7 +14,7 @@ import {
   Edit3,
   Filter,
   ChevronDown,
-  MoreVertical,
+
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import React, { useState, useMemo } from 'react';
@@ -306,7 +306,7 @@ export default function App() {
             <main className="flex flex-col w-full h-full overflow-hidden">
               {/* Left Panel: Filter & List (top) */}
               <div className="flex flex-row border-b border-border h-1/2 overflow-hidden">
-                  {/* General Overview Toggle /left */}
+                {/* General Overview Toggle /left */}
                 <div className="w-1/3 border-r border-border flex flex-col overflow-auto p-3 gap-3">
                   <div className="flex w-full items-center justify-between rounded-2xl border border-border bg-muted p-4">
                     <div className="flex items-center gap-3">
@@ -317,7 +317,7 @@ export default function App() {
                         <p className="text-xs font-bold text-foreground">General Overview</p>
                         <p className="text-[10px] text-muted-foreground">Disable hierarchical filtering</p>
                       </div>
-                    </div>  
+                    </div>
                     <button
                       onClick={() => {
                         setIsGeneralOverview(!isGeneralOverview);
@@ -543,7 +543,7 @@ export default function App() {
                               (district ? locations.find(i => i.id === district.parentId) : null);
 
                             return (
-                             <div className="col-span-2 grid grid-flow-col auto-cols gap-4">
+                              <div className="col-span-2 grid grid-flow-col auto-cols gap-4">
                                 {division && (
                                   <div className="space-y-2">
                                     <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Division Base</label>
