@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { Columns2Icon, Database, LayoutGrid, ListOrderedIcon, NotepadTextDashedIcon, Search, User, Warehouse } from 'lucide-react';
+import { Columns2Icon, Database, LayoutGrid, ListOrderedIcon, MapPin, NotepadTextDashedIcon, Search, User, Warehouse } from 'lucide-react';
 
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -65,6 +65,11 @@ export function AppSidebar() {
       title: 'Office Management',
       href: 'officeManagement',
       icon: Warehouse,
+    },
+    {
+      title: 'My Location',
+      href: '/mylocation',
+      icon: MapPin,
     },
 
   ];
