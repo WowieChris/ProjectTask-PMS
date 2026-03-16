@@ -1,20 +1,16 @@
 import { Head, router, useForm } from "@inertiajs/react";
+import { Plus } from "lucide-react";
 import React, { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-
 import AppLayout from "@/layouts/app-layout";
+
+import ServiceOrderTable from "./Components/ServiceOrderTable";
+import CreateModal from "./CreateModal";
+import EditModal from "./EditModal";
 
 type ServiceOrder = {
     id: number;
@@ -28,14 +24,16 @@ type ServiceOrder = {
 };
 
 type Props = {
-    orders?: ServiceOrder[];
+    orders: ServiceOrder[];
 };
 
-export default function ServiceOrderIndex({ orders = [] }: Props) {
+export default function Index({ orders }: Props) {
 
     const [q, setQ] = useState("");
+    const [modalOpen, setModalOpen] = useState(false);
+    const [editingOrder, setEditingOrder] = useState<ServiceOrder | null>(null);
 
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, reset } = useForm({
         tse_assigned: "",
         requesting_party: "",
         department: "",
@@ -44,29 +42,31 @@ export default function ServiceOrderIndex({ orders = [] }: Props) {
     });
 
     const filtered = useMemo(() => {
-        const query = q.trim().toLowerCase();
+        const query = q.toLowerCase();
+
         if (!query) return orders;
 
-        return orders.filter((o) => {
-            const jo = o.tse_jo_no?.toLowerCase() ?? "";
-            const requester = o.requesting_party?.toLowerCase() ?? "";
-            const technician = o.tse_assigned?.toLowerCase() ?? "";
+        return orders.filter((o) =>
+            o.tse_jo_no.toLowerCase().includes(query) ||
+            o.tse_assigned.toLowerCase().includes(query) ||
+            o.requesting_party.toLowerCase().includes(query)
+        );
 
-            return (
-                jo.includes(query) ||
-                requester.includes(query) ||
-                technician.includes(query)
-            );
-        });
     }, [orders, q]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
         post("/service-order", {
-            onSuccess: () =>
-                reset("tse_assigned", "requesting_party", "department", "location", "issues_encountered"),
+            onSuccess: () => {
+                reset();
+                setModalOpen(false);
+            },
         });
+    };
+
+    const handleEdit = (order: ServiceOrder) => {
+        setEditingOrder(order);
     };
 
     const handleDelete = (id: number) => {
@@ -86,206 +86,58 @@ export default function ServiceOrderIndex({ orders = [] }: Props) {
 
             <div className="space-y-6">
 
-                {/* Service Order Entry */}
                 <Card>
-                    <CardHeader>
-                        <CardTitle>Service Order Entry</CardTitle>
-                    </CardHeader>
 
-                    <CardContent>
-                        <form
-                            onSubmit={handleSubmit}
-                            className="grid gap-4 md:grid-cols-4"
-                        >
+                    <CardHeader className="flex justify-between items-center">
 
-                            {/* Technician */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">
-                                    Technician Assigned
-                                </label>
+                        <CardTitle>Service Orders</CardTitle>
 
-                                <Input
-                                    value={data.tse_assigned}
-                                    onChange={(e) =>
-                                        setData("tse_assigned", e.target.value)
-                                    }
-                                    placeholder="Technician name"
-                                />
+                        <div className="flex gap-4">
 
-                                {errors.tse_assigned && (
-                                    <p className="text-sm text-red-500">
-                                        {errors.tse_assigned}
-                                    </p>
-                                )}
-                            </div>
-
-                            {/* Requesting Party */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">
-                                    Requesting Party
-                                </label>
-
-                                <Input
-                                    value={data.requesting_party}
-                                    onChange={(e) =>
-                                        setData("requesting_party", e.target.value)
-                                    }
-                                    placeholder="Requester name"
-                                />
-
-                                {errors.requesting_party && (
-                                    <p className="text-sm text-red-500">
-                                        {errors.requesting_party}
-                                    </p>
-                                )}
-                            </div>
-
-                            {/* Department */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">
-                                    Department
-                                </label>
-
-                                <Input
-                                    value={data.department}
-                                    onChange={(e) =>
-                                        setData("department", e.target.value)
-                                    }
-                                    placeholder="Department"
-                                />
-
-                                {errors.department && (
-                                    <p className="text-sm text-red-500">
-                                        {errors.department}
-                                    </p>
-                                )}
-                            </div>
-
-                            {/* Issue Incounter */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">
-                                    Issue Incounter
-                                </label>
-
-                                <Input
-                                    value={data.issues_encountered}
-                                    onChange={(e) =>
-                                        setData("issues_encountered", e.target.value)
-                                    }
-                                    placeholder="Issue Incounter"
-                                />
-
-                                {errors.issues_encountered && (
-                                    <p className="text-sm text-red-500">
-                                        {errors.issues_encountered}
-                                    </p>
-                                )}
-                            </div>
-
-                            {/* Location */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">
-                                    Location
-                                </label>
-
-                                <Input
-                                    value={data.location}
-                                    onChange={(e) =>
-                                        setData("location", e.target.value)
-                                    }
-                                    placeholder="Location"
-                                />
-
-                                {errors.location && (
-                                    <p className="text-sm text-red-500">
-                                        {errors.location}
-                                    </p>
-                                )}
-                            </div>
-
-                            {/* Submit Button */}
-                            <div className="md:col-span-4 flex justify-end">
-                                <Button type="submit" disabled={processing}>
-                                    {processing ? "Saving..." : "Create Service Order"}
-                                </Button>
-                            </div>
-                        </form>
-                    </CardContent>
-                </Card>
-
-                {/* Service Order List */}
-                <Card>
-                    <CardHeader className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                        <CardTitle>Service Order List</CardTitle>
-
-                        <div className="w-full md:w-80">
                             <Input
                                 value={q}
                                 onChange={(e) => setQ(e.target.value)}
-                                placeholder="Search JO, technician, requester..."
+                                placeholder="Search JO..."
+                                className="w-80"
                             />
+
+                            <Button onClick={() => setModalOpen(true)}>
+                                <Plus className="mr-2 h-4 w-4" />
+                                New Service Order
+                            </Button>
+
                         </div>
+
                     </CardHeader>
 
                     <CardContent>
-                        <Table>
 
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>JO No</TableHead>
-                                    <TableHead>Technician</TableHead>
-                                    <TableHead>Requesting Party</TableHead>
-                                    <TableHead>Department</TableHead>
-                                    <TableHead>Location</TableHead>
-                                    <TableHead>Date</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead className="text-right">
-                                        Actions
-                                    </TableHead>
-                                </TableRow>
-                            </TableHeader>
+                        <ServiceOrderTable
+                            orders={filtered}
+                            onEdit={handleEdit}
+                            onDelete={handleDelete}
+                        />
 
-                            <TableBody>
-                                {filtered.length === 0 ? (
-                                    <TableRow>
-                                        <TableCell
-                                            colSpan={8}
-                                            className="text-center text-muted-foreground"
-                                        >
-                                            No records found.
-                                        </TableCell>
-                                    </TableRow>
-                                ) : (
-                                    filtered.map((o) => (
-                                        <TableRow key={o.id}>
-                                            <TableCell>{o.tse_jo_no}</TableCell>
-                                            <TableCell>{o.tse_assigned}</TableCell>
-                                            <TableCell>{o.requesting_party}</TableCell>
-                                            <TableCell>{o.department}</TableCell>
-                                            <TableCell>{o.location}</TableCell>
-                                            <TableCell>{o.date_reported}</TableCell>
-                                            <TableCell>{o.status}</TableCell>
-
-                                            <TableCell className="text-right">
-                                                <Button
-                                                    variant="destructive"
-                                                    size="sm"
-                                                    onClick={() =>
-                                                        handleDelete(o.id)
-                                                    }
-                                                >
-                                                    Delete
-                                                </Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-
-                        </Table>
                     </CardContent>
+
                 </Card>
+
+                <CreateModal
+                    open={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    data={data}
+                    setData={setData}
+                    processing={processing}
+                    onSubmit={handleSubmit}
+                />
+
+                <EditModal
+                    order={editingOrder}
+                    onClose={() => setEditingOrder(null)}
+                />
+
             </div>
+
         </AppLayout>
     );
 }
