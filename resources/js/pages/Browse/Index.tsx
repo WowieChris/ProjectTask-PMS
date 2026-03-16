@@ -285,8 +285,8 @@ export default function App() {
       <div className="h-full text-foreground font-sans flex flex-col overflow-hidden">
         {/* Header */}
         <Card className='m-3 gap-0 py-0 flex flex-col flex-1 overflow-hidden'>
-          <CardHeader className="h-16 border-b border-border flex items-center justify-between px-6">
-            <div className="flex items-center gap-3">
+          <CardHeader className="h-16 border-b border-border flex items-start justify-between px-6">
+            <div className="flex items-center gap-3 mt-2">
               <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-sm">
                 <MapPin size={22} />
               </div>
@@ -305,10 +305,10 @@ export default function App() {
           <CardContent className="p-0 flex-1 flex overflow-hidden">
             <main className="flex flex-col flex-1 overflow-hidden">
               {/* Left Panel: Filter & List (top) */}
-              <div className="flex flex-row h-[45%] border-b border-border overflow-hidden">
-                <div className="w-[320px] border-r border-border flex flex-col overflow-y-hidden p-3 space-y-3">
+              <div className="flex flex-row flex-40% border-b border-border overflow-y-hidden">
                   {/* General Overview Toggle /left */}
-                  <div className="flex w-[320px] items-center justify-between rounded-2xl border border-border bg-muted p-4">
+                <div className="border-r border-border flex flex-col overflow-y-hidden p-3 space-y-3 w-1/3">
+                  <div className="flex w-full items-center justify-between rounded-2xl border border-border bg-muted p-4">
                     <div className="flex items-center gap-3">
                       <div className={`p-2 rounded-lg ${isGeneralOverview ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
                         <Layers size={18} />
@@ -317,7 +317,7 @@ export default function App() {
                         <p className="text-xs font-bold text-foreground">General Overview</p>
                         <p className="text-[10px] text-muted-foreground">Disable hierarchical filtering</p>
                       </div>
-                    </div>
+                    </div>  
                     <button
                       onClick={() => {
                         setIsGeneralOverview(!isGeneralOverview);
@@ -417,7 +417,7 @@ export default function App() {
 
 
                 {/* List Content / right */}
-                <div className="flex-1 flex flex-col overflow-hidden">
+                <div className="flex-1 flex flex-col overflow-y-hidden">
                   {/* List Header / Breadcrumbs */}
                   <div className="px-3 py-2 bg-muted border-b border-border flex items-center gap-2">
                     {breadcrumbs.length > 0 ? (
@@ -432,7 +432,7 @@ export default function App() {
                     )}
                   </div>
                   {/* List Content / right */}
-                  <div className="flex-1 min-h-0 overflow-y-auto p-2 space-y-2">
+                  <div className="flex-1 min-h-0 overflow-y-auto p-2 space-y-2 overflow-y-hidden">
                     <AnimatePresence mode="popLayout">
                       {!selectedUserGroup && !isGeneralOverview ? (
                         <div className="h-full flex flex-col items-center justify-center text-muted-foreground py-20">
@@ -448,7 +448,7 @@ export default function App() {
                             exit={{ opacity: 0, scale: 0.95 }}
                             key={item.id}
                             onClick={() => handleSelectItem(item)}
-                            className={`group p-2 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${editingItem?.id === item.id
+                            className={`group p-2 rounded-2xl border overflow-hidden transition-all cursor-pointer flex items-center justify-between ${editingItem?.id === item.id
                               ? 'bg-accent border-border shadow-sm'
                               : 'bg-card border-border hover:border-primary/40 hover:bg-muted/50'
                               }`}
@@ -494,7 +494,7 @@ export default function App() {
               </div>
 
               {/* Right Panel: Editor / Details (bottom) */}
-              <div className="flex-1 bg-muted/40 p-4 overflow-hidden">
+              <div className="flex flex-1 bg-muted/40 p-4 overflow-hidden">
                 <AnimatePresence mode="wait">
                   {editingItem ? (
                     <motion.div
@@ -519,7 +519,7 @@ export default function App() {
 
                         {/* Form Card */}
                         <div className="bg-card rounded-2xl border border-border shadow-sm p-4">
-                          <div className="px-8 py-2 grid grid-cols-2 gap-2">
+                          <div className="py-2 grid grid-cols-2 gap-2">
                             <div className="space-y-2">
                               <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest capitalize">
                                 {editingItem.level}
@@ -637,7 +637,7 @@ export default function App() {
                                               </div>
 
                                               {/* branches */}
-                                              <div className="grid grid-cols-2 gap-3">
+                                              <div className="space-y-1">
                                                 {locations
                                                   .filter(b => b.level === 'branch' && b.parentId === area.id)
                                                   .map(branch => (
@@ -645,7 +645,6 @@ export default function App() {
                                                       key={branch.id}
                                                       className="flex items-center gap-3 p-3 bg-muted rounded-xl border border-border"
                                                     >
-                                                      <Building2 size={14} />
                                                       <span className="text-xs font-semibold">{branch.name}</span>
                                                     </div>
                                                   ))}
@@ -688,12 +687,9 @@ export default function App() {
                                           </span>
                                         </div>
 
-                                        <div className="grid grid-cols-2 gap-3">
+                                        <div className="space-y-1">
                                           {locations.filter(b => b.level === 'branch' && b.parentId === child.id).map(branch => (
                                             <div key={branch.id} className="flex items-center gap-3 p-3 bg-muted rounded-xl border border-border group/branch hover:bg-card hover:border-primary/40 transition-all cursor-pointer">
-                                              <div className="w-8 h-8 bg-primary/10 text-primary rounded-lg flex items-center justify-center group-hover/branch:bg-primary group-hover/branch:text-primary-foreground transition-colors">
-                                                <Building2 size={14} />
-                                              </div>
                                               <div className="flex-1 min-w-0">
                                                 <p className="text-xs font-semibold text-foreground truncate">{branch.name}</p>
                                               </div>
