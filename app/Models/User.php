@@ -8,17 +8,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, MustVerifyEmailTrait, Notifiable, TwoFactorAuthenticatable;
+    use HasFactory, MustVerifyEmailTrait, Notifiable, TwoFactorAuthenticatable, HasRoles;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    protected $guard_name = 'web';
+
     protected $fillable = [
         'name',
         'last_name',
@@ -33,11 +30,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'must_change_password',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'two_factor_secret',
@@ -45,11 +37,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -60,36 +47,28 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+
+    public function designation()
+    {
+        return $this->belongsTo(\App\Models\Designation::class);
+    }
+
     public function photo()
     {
         return $this->hasOne(\App\Models\UserPhoto::class, 'user_id')
             ->where('is_current', true);
     }
 
-    public function getPhotoUrlAttribute()
-    {
-        if (! $this->photo) {
-            return null;
-        }
-
-        return asset('storage/' . $this->photo->path);
-    }
-
-    // Optional: Add a helper to get current photo
     public function currentPhoto()
     {
-
-        return $this->hasOne(\App\Models\UserPhoto::class)->where('is_current', true);
+        return $this->hasOne(\App\Models\UserPhoto::class)
+            ->where('is_current', true);
     }
-    /**
-     * Determine if the user has two-factor authentication enabled.
-     *
-     * @return bool
-     */
-    // public function hasTwoFactorEnabled()
-    // {
-    //     return !is_null($this->two_factor_secret);
-    // }
 
     public function userGroups()
     {
@@ -101,10 +80,30 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(\App\Models\Division::class, 'user_division');
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Accessors
+    |--------------------------------------------------------------------------
+    */
+
+    public function getPhotoUrlAttribute()
+    {
+        if (!$this->photo) {
+            return null;
+        }
+
+        return asset('storage/' . $this->photo->path);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Helper Methods
+    |--------------------------------------------------------------------------
+    */
+
     public function isAdminLike(): bool
     {
         $designation = $this->designation;
-
         $name = is_object($designation) ? ($designation->name ?? null) : $designation;
 
         return in_array($name, ['Admin', 'Administrator'], true);
@@ -113,7 +112,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isSfe(): bool
     {
         $designation = $this->designation;
-
         $name = is_object($designation) ? ($designation->name ?? null) : $designation;
 
         return $name === 'SFE';
@@ -122,7 +120,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isFe(): bool
     {
         $designation = $this->designation;
-
         $name = is_object($designation) ? ($designation->name ?? null) : $designation;
 
         return $name === 'FE';
