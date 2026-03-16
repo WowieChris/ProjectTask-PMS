@@ -18,6 +18,7 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DesignationsController;
 use App\Http\Controllers\locationController;
 use App\Http\Controllers\ServiceOrderController;
+use App\Http\Controllers\MyLocationController;
 
 Route::get('/', function () {
     return Inertia::render('auth/login', [
@@ -142,5 +143,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/service-order', [ServiceOrderController::class, 'store'])
             ->name('service-order.store');
         Route::delete('/service-order/{id}', [ServiceOrderController::class, 'destroy']);
+    });
+    //My Loctions
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/mylocation', [MyLocationController::class, 'index'])
+            ->middleware('auth')
+            ->name('mylocation');
     });
 });
