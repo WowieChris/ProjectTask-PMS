@@ -6,28 +6,30 @@ use App\Http\Controllers\Controller;
 use App\Notifications\LoginOtpNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class OtpController extends Controller
 {
     public function show(Request $request)
     {
         $user = $request->user();
-        $key = 'login_otp_'.$user->id;
+        $key = 'login_otp_' . $user->id;
 
         // Don't resend OTP on every refresh
         if (! Cache::has($key)) {
             $this->sendOtp($user, $key);
         }
-
+        $otp = Cache::get($key);
         return inertia('auth/otp', [
             'status' => 'OTP sent to your email.',
+            'otp_debug' => $otp,
         ]);
     }
 
     public function resend(Request $request)
     {
         $user = $request->user();
-        $key = 'login_otp_'.$user->id;
+        $key = 'login_otp_' . $user->id;
 
         // Force a new OTP
         Cache::forget($key);
@@ -43,7 +45,7 @@ class OtpController extends Controller
         ]);
 
         $user = $request->user();
-        $key = 'login_otp_'.$user->id;
+        $key = 'login_otp_' . $user->id;
 
         $expected = Cache::get($key);
 
@@ -68,7 +70,6 @@ class OtpController extends Controller
                 // mark DB OTP as used
                 $otpRecord->used = true;
                 $otpRecord->save();
-
             } catch (\Throwable $e) {
                 // On any error, return a generic invalid/expired message
                 return back()->withErrors([
@@ -106,6 +107,8 @@ class OtpController extends Controller
         $otp = (string) random_int(100000, 999999);
 
         Cache::put($key, $otp, now()->addMinutes(10));
+
+        Log::info('Generated OTP: ' . $otp);
 
         try {
             $user->notify(new LoginOtpNotification($otp));

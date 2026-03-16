@@ -17,6 +17,7 @@ use App\Http\Controllers\BrowseController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DesignationsController;
 use App\Http\Controllers\locationController;
+use App\Http\Controllers\ServiceOrderController;
 
 Route::get('/', function () {
     return Inertia::render('auth/login', [
@@ -127,5 +128,18 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::middleware(['auth'])->group(function () {
         Route::resource('designations', DesignationsController::class);
+    });
+
+    //Service Order/
+    Route::middleware(['auth'])->group(function () {
+
+        Route::get('/service-order', [ServiceOrderController::class, 'index'])
+            ->name('service-order.index');
+
+        Route::get('/service-order/create', [ServiceOrderController::class, 'create'])
+            ->name('service-order.create');
+
+        Route::post('/service-order', [ServiceOrderController::class, 'store'])
+            ->name('service-order.store');
     });
 });
