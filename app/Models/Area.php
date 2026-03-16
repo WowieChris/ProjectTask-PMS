@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Inertia\Inertia;
 
@@ -15,14 +14,16 @@ class Area extends Model
     {
         return $this->hasMany(Branch::class);
     }
-    public function index()
+
+    public function division()
     {
-        return Inertia::render('Areas/Index', [
-            'divisions' => [],
-            'selectedDivision' => null,
-            'districts' => [],
-        ]);
+        return $this->hasOneThrough(
+            Division::class,
+            District::class
+        );
     }
+
+
     public function district()
     {
         return $this->belongsTo(District::class);

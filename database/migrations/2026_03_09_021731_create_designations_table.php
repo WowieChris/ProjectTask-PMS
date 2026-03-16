@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('designations', function (Blueprint $table) {
             $table->id();
+            $table->enum('role', ['user', 'admin'])->default('user');
             $table->string('name')->unique();
-            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

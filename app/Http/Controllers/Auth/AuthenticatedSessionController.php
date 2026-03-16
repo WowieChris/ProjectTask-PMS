@@ -22,7 +22,7 @@ class AuthenticatedSessionController extends Controller
         $user = $request->user();
 
         if (is_null($user->otp_verified_at)) {
-            return redirect()->route('otp.show');
+            return redirect()->route('two-factor.login');
         }
 
         return redirect()->intended(route('dashboard'));

@@ -62,7 +62,6 @@
 //     }
 // }
 
-
 namespace App\Http\Controllers;
 
 use App\Models\District;
@@ -78,12 +77,12 @@ class UserGroupController extends Controller
         $user = $request->user();
 
         // FE RULE: only their assigned division + districts
-        if ($user && strtolower((string)$user->designation) === 'field engineer') {
+        if ($user && strtolower((string) $user->designation) === 'field engineer') {
 
             $divisionId = $user->division_id;
 
             // If FE has no assigned division, show empty
-            if (!$divisionId) {
+            if (! $divisionId) {
                 return Inertia::render('UserGroups/Index', [
                     'userGroups' => collect(),          // hide
                     'selectedUserGroup' => null,
@@ -97,7 +96,9 @@ class UserGroupController extends Controller
             $division = Division::with('userGroup')
                 ->find($divisionId, ['id', 'user_group_id', 'name']);
 
-            if (!$division) abort(403);
+            if (! $division) {
+                abort(403);
+            }
 
             $divisions = collect([$division]);
 
@@ -124,14 +125,16 @@ class UserGroupController extends Controller
         $selectedUserGroup = null;
         if ($ugId) {
             $selectedUserGroup = UserGroup::whereKey($ugId)->first(['id', 'name']);
-            if (!$selectedUserGroup) $ugId = null;
+            if (! $selectedUserGroup) {
+                $ugId = null;
+            }
         }
 
         $divisions = $ugId
             ? Division::where('user_group_id', $ugId)->orderBy('name')->get(['id', 'user_group_id', 'name'])
             : collect();
 
-        if ($divisionId && !$divisions->contains('id', $divisionId)) {
+        if ($divisionId && ! $divisions->contains('id', $divisionId)) {
             $divisionId = null;
         }
 
@@ -167,6 +170,7 @@ class UserGroupController extends Controller
     public function destroy(UserGroup $userGroup)
     {
         $userGroup->delete();
+
         return back()->with('success', 'User Group deleted.');
     }
 }

@@ -26,11 +26,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'role',
         'employee_id',
-        'designation',
+        'designation_id',
         'location',
         'district',
         'employment_status',
-        'date_employed',
         'must_change_password',
     ];
 
@@ -57,15 +56,23 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
-            'date_employed' => 'date',
             'must_change_password' => 'boolean',
         ];
     }
 
-
-    public function photos()
+    public function photo()
     {
-        return $this->hasMany(\App\Models\UserPhoto::class);
+        return $this->hasOne(\App\Models\UserPhoto::class, 'user_id')
+            ->where('is_current', true);
+    }
+
+    public function getPhotoUrlAttribute()
+    {
+        if (! $this->photo) {
+            return null;
+        }
+
+        return asset('storage/' . $this->photo->path);
     }
 
     // Optional: Add a helper to get current photo
@@ -96,17 +103,28 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isAdminLike(): bool
     {
-        $d = $this->designation?->name;
-        return in_array($d, ['Admin', 'Administrator'], true);
+        $designation = $this->designation;
+
+        $name = is_object($designation) ? ($designation->name ?? null) : $designation;
+
+        return in_array($name, ['Admin', 'Administrator'], true);
     }
 
     public function isSfe(): bool
     {
-        return $this->designation?->name === 'SFE';
+        $designation = $this->designation;
+
+        $name = is_object($designation) ? ($designation->name ?? null) : $designation;
+
+        return $name === 'SFE';
     }
 
     public function isFe(): bool
     {
-        return $this->designation?->name === 'FE';
+        $designation = $this->designation;
+
+        $name = is_object($designation) ? ($designation->name ?? null) : $designation;
+
+        return $name === 'FE';
     }
 }

@@ -3,22 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Division;
+use App\Models\UserGroup;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Area;
-use App\Models\District;
-use App\Models\UserGroup;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DivisionController extends Controller
 {
-
     public function index()
     {
+        $divisions = Division::with('userGroup')->get();
+
         return Inertia::render('Divisions/Index', [
             'userGroups' => UserGroup::all(),
-            'divisions' => Division::with('userGroup')->get(),
+            'divisions' => $divisions,
         ]);
     }
 
@@ -37,6 +34,7 @@ class DivisionController extends Controller
     public function destroy(Division $division)
     {
         $division->delete();
+
         return back()->with('success', 'Division deleted.');
     }
 }

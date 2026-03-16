@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Inertia\Inertia;
 use App\Models\Area;
 use App\Models\District;
-use App\Models\Branch;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class AreaController extends Controller
 {
-
     public function index()
     {
         return Inertia::render('Areas/Index', [
@@ -30,7 +28,6 @@ class AreaController extends Controller
             'district_id' => $request->district_id,
             'name' => $request->name,
         ]);
-
 
         return redirect()->back();
     }

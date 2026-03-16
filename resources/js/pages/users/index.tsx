@@ -1,316 +1,419 @@
-import { Head, Link, router } from '@inertiajs/react';
-import React, { useMemo, useState } from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
+import { Head, router } from '@inertiajs/react'
+import React, { useMemo, useState } from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import AppLayout from '@/layouts/app-layout';
-import { dashboard } from '@/routes';
-import type { BreadcrumbItem } from '@/types';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import UsersCreate from './create';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet"
-import EditUserCard from './edit';
+} from '@/components/ui/select'
+import { Sheet, SheetContent } from "@/components/ui/sheet"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import AppLayout from '@/layouts/app-layout'
+import { dashboard } from '@/routes'
+import type { BreadcrumbItem } from '@/types'
+import type { User } from "@/types/user"
+import UsersCreate from './create'
+import EditUserCard from './edit'
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: 'Dashboard', href: dashboard().url },
   { title: 'User Maintenance', href: '/users' },
-];
-
-interface User {
-  id: number;
-  employee_id:string;
-  name: string;
-  last_name?: string;
-  email: string;
-  role: string;
-  designation: string | null;
-  location: string;
-  district: string;
-  employment_status: string;
-}
+]
 
 interface Props {
-  users: User[];
+  users: User[]
 }
 
-type AnyFilter = 'all' | string;
+type AnyFilter = 'all' | string
 
 export default function UsersIndex({ users }: Props) {
-  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
 
-  // LIVE FILTER STATE
-  
-  const [filterText, setFilterText] = useState<string>('');
-  const [filterRole, setFilterRole] = useState<AnyFilter>('all');
-  const [filterDesignation, setFilterDesignation] = useState<AnyFilter>('all');
-  // const [filterDistrict, setFilterDistrict] = useState<AnyFilter>('all');
-  
+  const [selectedUsers, setSelectedUsers] = useState<number[]>([])
+  const [filterText, setFilterText] = useState('')
+  const [filterRole, setFilterRole] = useState<AnyFilter>('all')
+  const [filterDesignation, setFilterDesignation] = useState<AnyFilter>('all')
 
-  // Dynamic dropdown options
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const [openEdit, setOpenEdit] = useState(false)
+  const [openCreate, setOpenCreate] = useState(false)
+
+  /* ---------------- ROLE OPTIONS ---------------- */
+
   const roleOptions = useMemo(() => {
-    return Array.from(new Set(users.map((u) => u.role))).sort();
-  }, [users]);
-  
+    return Array.from(new Set(users.map(u => u.role))).sort()
+  }, [users])
 
   const designationOptions = useMemo(() => {
-    return Array.from(new Set(users.map((u) => u.designation).filter(Boolean) as string[])).sort();
-  }, [users]);
+    return Array.from(
+      new Set(
+        users
+          .map(u => u.designation)
+          .filter(Boolean)
+      )
+    ).sort() as string[]
+  }, [users])
 
-  // LIVE FILTERING
+  /* ---------------- FILTER USERS ---------------- */
+
   const filteredUsers = useMemo(() => {
-    const text = filterText.trim();
+
+
+    const text = filterText.toLowerCase().trim()
 
     return users.filter((u) => {
+
       const matchesText =
-        text === '' ||
-        String(u.id ??'').includes(text) ||
-        u.employee_id.includes(text) ||
-        u.name.includes(text) ||
-        (u.last_name ?? '').includes(text) ||
-        (u.email??'').toLowerCase().includes(text) ||
-        (u.designation ?? '').includes(text) ||
-        (u.location??'').toLowerCase().includes(text) ||
-        (u.district??'').toLowerCase().includes(text) ||
-        (u.employment_status??'').includes(text) ||
-        (u.role??'').toLowerCase().includes(text);
+        !text ||
+        u.employee_id.toLowerCase().includes(text) ||
+        u.name.toLowerCase().includes(text) ||
+        (u.last_name ?? '').toLowerCase().includes(text) ||
+        (u.email ?? '').toLowerCase().includes(text) ||
+        (u.designation ?? '').toLowerCase().includes(text) ||
+        (u.location ?? '').toLowerCase().includes(text) ||
+        (u.district ?? '').toLowerCase().includes(text) ||
+        (u.role ?? '').toLowerCase().includes(text)
 
       const matchesRole =
-          filterRole === 'all' || (u.role ?? '').toLowerCase() === filterRole.toLowerCase();
+        filterRole === 'all' ||
+        u.role.toLowerCase() === filterRole.toLowerCase()
 
       const matchesDesignation =
         filterDesignation === 'all' ||
-        (u.designation ?? '').toLowerCase() === filterDesignation.toLowerCase();
+        (u.designation ?? '').toLowerCase() === filterDesignation.toLowerCase()
 
-      return matchesText && matchesRole && matchesDesignation;
-    });
-  }, [users, filterText, filterRole, filterDesignation]);
+      return matchesText && matchesRole && matchesDesignation
 
-  // Selection logic that respects filtered rows
-  const filteredIds = useMemo(() => filteredUsers.map((u) => u.id), [filteredUsers]); 
+    })
+
+
+  }, [users, filterText, filterRole, filterDesignation])
+
+  /* ---------------- SELECT LOGIC ---------------- */
+
+  const filteredIds = useMemo(
+    () => filteredUsers.map(u => u.id),
+    [filteredUsers]
+  )
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedUsers((prev) => Array.from(new Set([...prev, ...filteredIds])));
+      setSelectedUsers(prev =>
+        Array.from(new Set([...prev, ...filteredIds]))
+      )
     } else {
-      setSelectedUsers((prev) => prev.filter((id) => !filteredIds.includes(id)));
+      setSelectedUsers(prev =>
+        prev.filter(id => !filteredIds.includes(id))
+      )
     }
-  };
+  }
 
   const handleSelectUser = (userId: number, checked: boolean) => {
-    if (checked) setSelectedUsers((prev) => Array.from(new Set([...prev, userId])));
-    else setSelectedUsers((prev) => prev.filter((id) => id !== userId));
-  };
+    if (checked) {
+      setSelectedUsers(prev => [...prev, userId])
+    } else {
+      setSelectedUsers(prev => prev.filter(id => id !== userId))
+    }
+  }
 
   const isAllSelected =
-    filteredUsers.length > 0 && filteredIds.every((id) => selectedUsers.includes(id));
+    filteredUsers.length > 0 &&
+    filteredIds.every(id => selectedUsers.includes(id))
 
   const isIndeterminate =
     filteredUsers.length > 0 &&
-    filteredIds.some((id) => selectedUsers.includes(id)) &&
-    !isAllSelected;
+    filteredIds.some(id => selectedUsers.includes(id)) &&
+    !isAllSelected
 
   const handleClear = () => {
-    setFilterText('');
-    setFilterRole('all');
-    setFilterDesignation('all');
-    setSelectedUsers([]); 
-  };
+    setFilterText('')
+    setFilterRole('all')
+    setFilterDesignation('all')
+    setSelectedUsers([])
+  }
+  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [page, setPage] = useState(1)
+  const totalPages = Math.ceil(filteredUsers.length / rowsPerPage)
+  const paginatedUsers = useMemo(() => {
+    const start = (page - 1) * rowsPerPage
+    const end = start + rowsPerPage
+    return filteredUsers.slice(start, end)
+  }, [filteredUsers, page, rowsPerPage])
 
-const [selectedUser, setSelectedUser] = useState<User | null>(null)
-const [openEdit, setOpenEdit] = useState(false)
+  return (<AppLayout breadcrumbs={breadcrumbs}> <Head title="Users" />
 
-  return (
-    <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title="Users" />
 
-      <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>User Maintenance</CardTitle>
+    <div className="flex flex-col gap-4 p-4">
 
-              <div className="flex gap-2 mr-10">
-                <Button
-                  variant="destructive"
-                  className="text-white hover:bg-red-600"
-                  hidden={selectedUsers.length === 0}
-                  onClick={() => {
-                    if (!confirm(`Delete ${selectedUsers.length} selected user(s)?`)) return;
+      <Card>
 
-                    router.delete('/users/bulk-delete', {
-                      data: { ids: selectedUsers },
-                      preserveScroll: true,
-                      onSuccess: () => setSelectedUsers([]),
-                    });
-                  }}
-                >
-                  Delete
-                </Button>
+        <CardHeader>
 
-                {/* <Button asChild>
-                  <Link href="/users/create">Add User</Link>
-                </Button> */}
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button>Add User</Button>
-                  </DialogTrigger>
+          <div className="flex items-center justify-between">
 
-                  <DialogContent className="max-w-2xl p-0">
-                    <UsersCreate />
-                  </DialogContent>
-                </Dialog>
-              </div>
-            </div>
-          </CardHeader>
+            <CardTitle>User Maintenance</CardTitle>
 
-          <CardContent>
-            {/* FILTER BAR (LIVE) */}
-            <div className="mb-3 flex items-center gap-2">
-              <Input
-                placeholder="Search ID, name, email, designation..."
-                value={filterText}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFilterText(e.target.value)}
-                className="h-9 w-[260px]"
-              />
+            <div className="flex gap-2">
 
-              {/* ROLE FILTER */}
-              <Select value={filterRole} onValueChange={(v) => setFilterRole(v)}>
-                <SelectTrigger className="w-[160px] h-9">
-                  <SelectValue placeholder="Filter role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Roles</SelectItem>
-                  {roleOptions.map((r) => (
-                    <SelectItem key={r} value={r}>
-                      {r}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Button
+                variant="destructive"
+                hidden={selectedUsers.length === 0}
+                onClick={() => {
 
-              {/* DESIGNATION FILTER (optional) */}
-              <Select value={filterDesignation} onValueChange={(v) => setFilterDesignation(v)}>
-                <SelectTrigger className="w-[190px] h-9">
-                  <SelectValue placeholder="Filter designation" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Designations</SelectItem>
-                  {designationOptions.map((d) => (
-                    <SelectItem key={d} value={d}>
-                      {d}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                  if (!confirm(`Delete ${selectedUsers.length} users?`)) return
 
-              <Button variant="ghost" onClick={handleClear}>
-                Clear
+                  router.delete('/users/bulk-delete', {
+                    data: { ids: selectedUsers },
+                    preserveScroll: true,
+                    onSuccess: () => setSelectedUsers([])
+                  })
+
+                }}
+              >
+                Delete
               </Button>
 
-              <div className="ml-auto text-sm text-muted-foreground">
-                Showing {filteredUsers.length} of {users.length}
-              </div>
+              <Dialog open={openCreate} onOpenChange={setOpenCreate}>
+
+                <DialogTrigger asChild>
+                  <Button>Add User</Button>
+                </DialogTrigger>
+
+                <DialogContent className="max-w-2xl p-0">
+                  <UsersCreate onSuccess={() => setOpenCreate(false)} />
+                </DialogContent>
+
+              </Dialog>
+
             </div>
 
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[50px] px-0">
-                    <div className="flex items-center justify-center">
-                      <Checkbox
-                        className="border-gray-500 dark:border-gray-400"
-                        checked={isAllSelected ? true : isIndeterminate ? 'indeterminate' : false}
-                        onCheckedChange={(checked) => handleSelectAll(checked === true)}
-                      />
-                    </div>
-                  </TableHead>
-                  <TableHead>Employee ID</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Designation</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Role</TableHead>
-                </TableRow>
-              </TableHeader>
+          </div>
 
-              <TableBody>
-                {filteredUsers.map((user) => (
-                  <TableRow
-                    key={user.id}
-                    className="cursor-pointer hover:bg-muted/30"
-                    onClick={() => {
-                      setSelectedUser(user)
-                      setOpenEdit(true)
-                    }}
-                  >
-                    <TableCell onClick={(e) => e.stopPropagation()} className="px-0">
-                      <div className="flex items-center justify-center">
-                        <Checkbox
-                          className="border-gray-500 dark:border-gray-400"
-                          checked={selectedUsers.includes(user.id)}
-                          onCheckedChange={(checked) => handleSelectUser(user.id, checked === true)}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      </div>
-                    </TableCell>
-                    <TableCell>{user.employee_id}</TableCell>
-                    <TableCell>{`${user.name}${user.last_name ? ` ${user.last_name}` : ''}`}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.designation}</TableCell>
-                    <TableCell>{user.location}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          user.employment_status.toLowerCase() === 'active'
-                            ? 'default'
-                            : user.employment_status.toLowerCase() === 'inactive'
-                            ? 'secondary'
-                            : 'destructive'
-                        }
-                      >
-                        {user.employment_status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{user.role}</TableCell>
-                  </TableRow>
+        </CardHeader>
+
+        <CardContent>
+
+          {/* FILTERS */}
+
+          <div className="flex gap-2 mb-3">
+
+            <Input
+              placeholder="Search users..."
+              value={filterText}
+              onChange={(e) => setFilterText(e.target.value)}
+              className="w-[260px]"
+            />
+
+            <Select value={filterRole} onValueChange={setFilterRole}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Role" />
+              </SelectTrigger>
+
+              <SelectContent>
+                <SelectItem value="all">All Roles</SelectItem>
+                {roleOptions.map(role => (
+                  <SelectItem key={role} value={role}>{role}</SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
 
-                {filteredUsers.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center text-muted-foreground">
-                      No users found.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-              <Sheet open={openEdit} onOpenChange={setOpenEdit}>
-                <SheetContent side="right" className="w-[500px] sm:w-[600px] gap-0">
+            <Select value={filterDesignation} onValueChange={setFilterDesignation}>
+              <SelectTrigger className="w-[190px]">
+                <SelectValue placeholder="Designation" />
+              </SelectTrigger>
 
-                  {selectedUser && (
-                    <EditUserCard user={selectedUser} />
-                  )}
-                </SheetContent>
-              </Sheet>
-          </CardContent>
-        </Card>
-      </div>
-    </AppLayout>
-  );
+              <SelectContent>
+                <SelectItem value="all">All Designations</SelectItem>
+                {designationOptions.map(d => (
+                  <SelectItem key={d} value={d}>{d}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Button variant="ghost" onClick={handleClear}>Clear</Button>
+
+            <div className="flex items-center gap-2">
+
+              <span className="text-sm">Rows per page:</span>
+
+              <Select
+                value={String(rowsPerPage)}
+                onValueChange={(value) => {
+                  setRowsPerPage(Number(value))
+                  setPage(1)
+                }}
+              >
+                <SelectTrigger className="w-[70px] h-8">
+                  <SelectValue />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="25">25</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                  <SelectItem value="100">100</SelectItem>
+                </SelectContent>
+
+              </Select>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-muted-foreground">
+                Showing {paginatedUsers.length} of {filteredUsers.length}
+              </div>
+            </div>
+          </div>
+          {/* TABLE */}
+
+
+
+          <Table>
+
+            <TableHeader>
+
+              <TableRow>
+
+                <TableHead className="w-[50px]">
+                  <Checkbox
+                    checked={isAllSelected ? true : isIndeterminate ? 'indeterminate' : false}
+                    onCheckedChange={(checked) => handleSelectAll(checked === true)}
+                  />
+                </TableHead>
+
+                <TableHead>Employee ID</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Designation</TableHead>
+                <TableHead>Location</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Role</TableHead>
+
+              </TableRow>
+
+            </TableHeader>
+
+            <TableBody>
+
+              {paginatedUsers.map(user => (
+
+                <TableRow
+                  key={user.id}
+                  className="cursor-pointer hover:bg-muted/30"
+                  onClick={() => {
+                    setSelectedUser(user)
+                    setOpenEdit(true)
+                  }}
+                >
+
+                  <TableCell onClick={(e) => e.stopPropagation()}>
+                    <Checkbox
+                      checked={selectedUsers.includes(user.id)}
+                      onCheckedChange={(checked) =>
+                        handleSelectUser(user.id, checked === true)
+                      }
+                    />
+                  </TableCell>
+
+                  <TableCell>{user.employee_id}</TableCell>
+
+                  <TableCell>
+
+                    <div className="flex items-center gap-2">
+
+                      {user.photo?.path ? (
+                        <img
+                          src={`/storage/${user.photo.path}`}
+                          className="w-8 h-8 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-semibold">
+                          {user.name[0]}
+                        </div>
+                      )}
+
+                      {user.name} {user.last_name}
+
+                    </div>
+
+                  </TableCell>
+
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.designation}</TableCell>
+                  <TableCell>{user.location}</TableCell>
+
+                  <TableCell>
+
+                    <Badge
+                      variant={
+                        user.employment_status === 'active'
+                          ? 'default'
+                          : 'secondary'
+                      }
+                    >
+                      {user.employment_status}
+                    </Badge>
+
+                  </TableCell>
+
+                  <TableCell>{user.role}</TableCell>
+
+                </TableRow>
+
+              ))}
+
+            </TableBody>
+
+          </Table>
+          <div className="flex justify-end items-center gap-2 mt-4">
+
+            <Button
+              variant="outline"
+              disabled={page === 1}
+              onClick={() => setPage(page - 1)}
+            >
+              Previous
+            </Button>
+
+            <span className="text-sm">
+              Page {page} of {totalPages}
+            </span>
+
+            <Button
+              variant="outline"
+              disabled={page === totalPages}
+              onClick={() => setPage(page + 1)}
+            >
+              Next
+            </Button>
+
+          </div>
+          {/* EDIT PANEL */}
+
+          <Sheet open={openEdit} onOpenChange={setOpenEdit}>
+
+            <SheetContent side="right" className="w-[600px]">
+
+              {selectedUser && (
+                <EditUserCard user={selectedUser} onSuccess={() => setOpenEdit(false)} />
+              )}
+
+            </SheetContent>
+
+          </Sheet>
+
+        </CardContent>
+
+      </Card>
+
+    </div>
+
+  </AppLayout>
+
+
+  )
 }

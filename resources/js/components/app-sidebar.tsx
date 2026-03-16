@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { Database, LayoutGrid, Search, User } from 'lucide-react';
+import { Columns2Icon, Database, LayoutGrid, ListOrderedIcon, NotepadTextDashedIcon, Search, User, Warehouse } from 'lucide-react';
 
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -29,20 +29,45 @@ type PageProps = {
 
 export function AppSidebar() {
   const { auth } = usePage<PageProps>().props;
-  const userRole = auth.user.role;
+  // Defensive: `auth` or `auth.user` may be null during some hydration paths
+  // (e.g. unauthenticated or server-client mismatch). Default to 'user'
+  // so admin menus are hidden when role is unavailable.
+  const userRole = auth?.user?.role ?? 'user';
 
- const mainNavItems: NavItem[] = [
-  {
-    title: 'Dashboard',
-    href: dashboard().url,
-    icon: LayoutGrid,
-  },
-  {
-    title: 'Browse',
-    href: '/browse',
-    icon: Search,
-  },
-];
+  const mainNavItems: NavItem[] = [
+    {
+      title: 'Dashboard',
+      href: dashboard().url,
+      icon: LayoutGrid,
+    },
+    {
+      title: 'Browse',
+      href: '/browse',
+      icon: Search,
+    },
+    {
+      title: 'Service Order',
+      href: '/service-order',
+      //href={route('/service-order.index')},
+      icon: ListOrderedIcon,
+    },
+    {
+      title: 'Asset Management',
+      href: 'assetManagement',
+      icon: Columns2Icon,
+    },
+    {
+      title: 'Journal Movement',
+      href: 'journalMovement',
+      icon: NotepadTextDashedIcon,
+    },
+    {
+      title: 'Office Management',
+      href: 'officeManagement',
+      icon: Warehouse,
+    },
+
+  ];
 
   // ✅ Show admin menus
   if (userRole !== 'user') {

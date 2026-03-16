@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\DivisionController::index
- * @see app/Http/Controllers/DivisionController.php:17
+ * @see app/Http/Controllers/DivisionController.php:12
  * @route '/divisions'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\DivisionController::index
- * @see app/Http/Controllers/DivisionController.php:17
+ * @see app/Http/Controllers/DivisionController.php:12
  * @route '/divisions'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DivisionController::index
- * @see app/Http/Controllers/DivisionController.php:17
+ * @see app/Http/Controllers/DivisionController.php:12
  * @route '/divisions'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\DivisionController::index
- * @see app/Http/Controllers/DivisionController.php:17
+ * @see app/Http/Controllers/DivisionController.php:12
  * @route '/divisions'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\DivisionController::index
- * @see app/Http/Controllers/DivisionController.php:17
+ * @see app/Http/Controllers/DivisionController.php:12
  * @route '/divisions'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\DivisionController::index
- * @see app/Http/Controllers/DivisionController.php:17
+ * @see app/Http/Controllers/DivisionController.php:12
  * @route '/divisions'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\DivisionController::index
- * @see app/Http/Controllers/DivisionController.php:17
+ * @see app/Http/Controllers/DivisionController.php:12
  * @route '/divisions'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -157,7 +157,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     create.form = createForm
 /**
 * @see \App\Http\Controllers\DivisionController::store
- * @see app/Http/Controllers/DivisionController.php:25
+ * @see app/Http/Controllers/DivisionController.php:22
  * @route '/divisions'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -172,7 +172,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\DivisionController::store
- * @see app/Http/Controllers/DivisionController.php:25
+ * @see app/Http/Controllers/DivisionController.php:22
  * @route '/divisions'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -181,7 +181,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DivisionController::store
- * @see app/Http/Controllers/DivisionController.php:25
+ * @see app/Http/Controllers/DivisionController.php:22
  * @route '/divisions'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -191,7 +191,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\DivisionController::store
- * @see app/Http/Controllers/DivisionController.php:25
+ * @see app/Http/Controllers/DivisionController.php:22
  * @route '/divisions'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -201,7 +201,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\DivisionController::store
- * @see app/Http/Controllers/DivisionController.php:25
+ * @see app/Http/Controllers/DivisionController.php:22
  * @route '/divisions'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -513,7 +513,7 @@ update.patch = (args: { division: string | number } | [division: string | number
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:37
+ * @see app/Http/Controllers/DivisionController.php:34
  * @route '/divisions/{division}'
  */
 export const destroy = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -528,7 +528,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:37
+ * @see app/Http/Controllers/DivisionController.php:34
  * @route '/divisions/{division}'
  */
 destroy.url = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -561,7 +561,7 @@ destroy.url = (args: { division: number | { id: number } } | [division: number |
 
 /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:37
+ * @see app/Http/Controllers/DivisionController.php:34
  * @route '/divisions/{division}'
  */
 destroy.delete = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -571,7 +571,7 @@ destroy.delete = (args: { division: number | { id: number } } | [division: numbe
 
     /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:37
+ * @see app/Http/Controllers/DivisionController.php:34
  * @route '/divisions/{division}'
  */
     const destroyForm = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -586,7 +586,7 @@ destroy.delete = (args: { division: number | { id: number } } | [division: numbe
 
             /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:37
+ * @see app/Http/Controllers/DivisionController.php:34
  * @route '/divisions/{division}'
  */
         destroyForm.delete = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

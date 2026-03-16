@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Area;
 use App\Models\District;
+use App\Models\Division;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use app\Models\Area;
-use Illuminate\Database\Eloquent\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\Division;
 
 class DistrictController extends Controller
 {
@@ -35,9 +33,9 @@ class DistrictController extends Controller
     public function destroy(District $district)
     {
         $district->delete();
+
         return back()->with('success', 'District deleted.');
     }
-
 
     public function index()
     {
@@ -45,9 +43,22 @@ class DistrictController extends Controller
         // return Inertia::render('Districts/Index', [
         //     'districts' => $districts,
         // ]);
+        $districts = District::with([
+            'division.userGroup'
+        ])->get();
+
         return Inertia::render('Districts/Index', [
-            'divisions' => Division::all(),
-            'districts' => District::with('division')->get(),
+            'districts' => $districts,
+            'divisions' => Division::with('userGroup')->get(),
+        ]);
+
+        $districts = District::with(['division.userGroup'])->get();
+
+        $divisions = Division::all();
+
+        return Inertia::render('Districts/Index', [
+            'districts' => $districts,
+            'divisions' => $divisions,
         ]);
     }
 }
