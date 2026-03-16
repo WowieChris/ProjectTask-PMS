@@ -47,7 +47,8 @@ export function AppSidebar() {
     },
     {
       title: 'Service Order',
-      href: 'serviceOrder',
+      href: '/service-order',
+      //href={route('/service-order.index')},
       icon: ListOrderedIcon,
     },
     {

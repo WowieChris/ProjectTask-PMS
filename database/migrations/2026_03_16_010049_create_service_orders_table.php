@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('department')->nullable();
             $table->string('location')->nullable();
             $table->date('date_reported');
-            $table->string('issues_encountered');
+            $table->string('issues_encountered')->nullable();
             $table->text('technical_issue_description')->nullable();
             $table->text('action_taken')->nullable();
             $table->string('frequency')->nullable();

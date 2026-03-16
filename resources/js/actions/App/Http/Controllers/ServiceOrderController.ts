@@ -157,7 +157,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     create.form = createForm
 /**
 * @see \App\Http\Controllers\ServiceOrderController::store
- * @see app/Http/Controllers/ServiceOrderController.php:0
+ * @see app/Http/Controllers/ServiceOrderController.php:20
  * @route '/service-order'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -172,7 +172,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\ServiceOrderController::store
- * @see app/Http/Controllers/ServiceOrderController.php:0
+ * @see app/Http/Controllers/ServiceOrderController.php:20
  * @route '/service-order'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -181,7 +181,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ServiceOrderController::store
- * @see app/Http/Controllers/ServiceOrderController.php:0
+ * @see app/Http/Controllers/ServiceOrderController.php:20
  * @route '/service-order'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -191,7 +191,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\ServiceOrderController::store
- * @see app/Http/Controllers/ServiceOrderController.php:0
+ * @see app/Http/Controllers/ServiceOrderController.php:20
  * @route '/service-order'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -201,7 +201,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\ServiceOrderController::store
- * @see app/Http/Controllers/ServiceOrderController.php:0
+ * @see app/Http/Controllers/ServiceOrderController.php:20
  * @route '/service-order'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

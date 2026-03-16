@@ -12,8 +12,30 @@ class ServiceOrderController extends Controller
     {
         $orders = ServiceOrder::latest()->get();
 
-        return Inertia::render('service-order/index', [
+        return Inertia::render('Service-Order/Index', [
             'orders' => $orders
         ]);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'tse_assigned' => 'required',
+            'requesting_party' => 'required',
+            'department' => 'required',
+            'location' => 'required',
+        ]);
+
+        ServiceOrder::create([
+            'tse_jo_no' => 'TSE-' . time(),
+            'tse_assigned' => $request->tse_assigned,
+            'requesting_party' => $request->requesting_party,
+            'department' => $request->department,
+            'location' => $request->location,
+            'date_reported' => now(),
+            'status' => 'Pending'
+        ]);
+
+        return redirect()->back();
     }
 }
