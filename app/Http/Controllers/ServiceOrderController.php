@@ -6,6 +6,7 @@ use App\Models\ServiceOrder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\User;
+use Carbon\Carbon;
 
 class ServiceOrderController extends Controller
 {
@@ -28,15 +29,46 @@ class ServiceOrderController extends Controller
             'location' => 'required',
         ]);
 
+        $year = Carbon::now()->year;
+        // get last JO this year
+        $last = ServiceOrder::whereYear('created_at', $year)
+            ->orderBy('id', 'desc')
+            ->first();
+        $nextNumber = $last ? intval(substr($last->tse_jo_no, -4)) + 1 : 1;
+
+        $joNumber = 'JO-' . $year . '-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+
         ServiceOrder::create([
-            'tse_jo_no' => 'TSE-' . time(),
+            'tse_jo_no' => $joNumber,
             'tse_assigned' => $request->tse_assigned,
             'requesting_party' => $request->requesting_party,
             'department' => $request->department,
             'location' => $request->location,
+            'issues_encountered' => $request->issues_encountered,
             'date_reported' => now(),
             'status' => 'Pending'
         ]);
+
+        return redirect()->back();
+    }
+    public function destroy($id)
+    {
+        $order = ServiceOrder::findOrFail($id);
+        $order->delete();
+
+        return redirect()->back();
+    }
+
+    public function update(Request $request, $id)
+    {
+        $order = ServiceOrder::findOrFail($id);
+
+        $order->update($request->only([
+            'tse_assigned',
+            'requesting_party',
+            'department',
+            'location'
+        ]));
 
         return redirect()->back();
     }
