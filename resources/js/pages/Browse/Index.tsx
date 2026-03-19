@@ -272,7 +272,7 @@ export default function App() {
           <Card className="p-8 text-center">
             <MapPin size={48} className="mx-auto mb-4 text-muted-foreground" />
             <h2 className="text-xl font-semibold mb-2">No Locations Found</h2>
-            <p className="text-muted-foreground">There are no locations available to display.</p>
+            <p className="text-foreground">There are no locations available to display.</p>
           </Card>
         </div>
       </AppLayout>
@@ -292,7 +292,7 @@ export default function App() {
               </div>
               <div>
                 <h1 className="text-lg font-semibold tracking-tight">Location Masterfile</h1>
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Module Prototype</p>
+                <p className="text-xs text-card-foreground font-medium uppercase tracking-wider">Module Prototype</p>
               </div>
             </div>
             {/* <div className="flex items-center gap-4">
@@ -337,7 +337,7 @@ export default function App() {
 
                   {/* Division Selector */}
                   <div className={`space-y-2 transition-opacity ${isGeneralOverview ? 'hidden' : 'opacity-100'}`}>
-                    <Label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Select UserGroup</Label>
+                    <Label className="text-[11px] font-bold uppercase tracking-widest text-card-foreground">Select UserGroup</Label>
                     <div className="relative">
                       <select
                         value={selectedUserGroup}
@@ -394,7 +394,7 @@ export default function App() {
                         }
                         className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all capitalize ${currentLevel === level
                           ? 'bg-background text-primary shadow-sm'
-                          : 'text-muted-foreground hover:text-foreground disabled:opacity-30'
+                          : 'text-foreground hover:text-card-foreground disabled:opacity-30'
                           }`}
                       >
                         {level}
@@ -435,7 +435,7 @@ export default function App() {
                   <div className="flex flex-col min-h-0 overflow-y-auto p-2 space-y-2">
                     <AnimatePresence mode="popLayout">
                       {!selectedUserGroup && !isGeneralOverview ? (
-                        <div className="h-full flex flex-col items-center justify-center text-muted-foreground py-20">
+                        <div className="h-full flex flex-col items-center justify-center text-card-foreground py-20">
                           <MapPin size={40} strokeWidth={1.5} className="mb-4 opacity-20" />
                           <p className="text-sm font-medium">Select a UserGroup to begin</p>
                         </div>
@@ -456,14 +456,14 @@ export default function App() {
                             <div className="flex items-center gap-4">
                               <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${item.level === 'district' ? 'bg-amber-100 text-amber-600' :
                                 item.level === 'area' ? 'bg-emerald-100 text-emerald-600' :
-                                  'bg-blue-100 text-blue-600'
+                                  'bg-background text-foreground'
                                 }`}>
                                 {item.level === 'district' ? <Network size={20} /> :
                                   item.level === 'area' ? <Layers size={20} /> :
                                     <Building2 size={16} />}
                               </div>
                               <div>
-                                <h3 className="text-sm font-semibold text-foreground">{item.name}</h3>
+                                <h3 className="text-sm font-semibold text-card-foreground">{item.name}</h3>
                               </div>
                               <div className="flex items-center gap-2">
                                 {item.level !== 'branch' && (
@@ -508,11 +508,11 @@ export default function App() {
                       <div className="col-span-2 flex flex-col gap-4">
                         <div className="flex items-end justify-between ">
                           <div className="space-y-1 mx-4">
-                            <div className="flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-widest">
+                            <div className="flex items-center gap-2 text-secondary-foreground text-xs font-bold uppercase tracking-widest">
                               <Edit3 size={14} />
                               Viewing {editingItem.level}
                             </div>
-                            <h2 className="text-3xl font-bold text-foreground">{editingItem.name}</h2>
+                            <h2 className="text-3xl font-bold text-muted-foreground">{editingItem.name}</h2>
                             <p className="text-muted-foreground">View details and hierarchy for this location.</p>
                           </div>
                         </div>
@@ -620,7 +620,7 @@ export default function App() {
                                             <Network size={20} />
                                           </div>
                                           <div>
-                                            <h4 className="font-bold text-foreground">{district.name}</h4>
+                                            <h4 className="font-bold text-muted-foreground">{district.name}</h4>
                                           </div>
                                         </div>
                                       </div>
@@ -664,7 +664,7 @@ export default function App() {
                                           {child.level === 'area' ? <Layers size={20} /> : <Building2 size={20} />}
                                         </div>
                                         <div>
-                                          <h4 className="font-bold text-foreground">{child.name}</h4>
+                                          <h4 className="font-bold text-muted-foreground">{child.name}</h4>
                                         </div>
                                       </div>
                                     </div>
@@ -682,7 +682,7 @@ export default function App() {
                                           {locations.filter(b => b.level === 'branch' && b.parentId === child.id).map(branch => (
                                             <div key={branch.id} className="flex items-center gap-3 p-3 bg-muted rounded-xl border border-border group/branch hover:bg-card hover:border-primary/40 transition-all cursor-pointer">
                                               <div className="flex-1 min-w-0">
-                                                <p className="text-xs font-semibold text-foreground truncate">{branch.name}</p>
+                                                <p className="text-xs font-semibold text-card-foreground truncate">{branch.name}</p>
                                               </div>
                                             </div>
                                           ))}
@@ -697,11 +697,11 @@ export default function App() {
                         )}
                     </motion.div>
                   ) : (
-                    <div className="h-full flex flex-col mx-auto items-center justify-center text-muted-foreground">
+                    <div className="h-full flex flex-col mx-auto items-center justify-center text-card-foreground">
                       <div className="w-20 h-20 bg-card rounded-3xl shadow-sm border border-border flex items-center justify-center mb-6">
                         <Edit3 size={32} strokeWidth={1.5} className="opacity-20" />
                       </div>
-                      <h2 className="text-xl font-semibold text-foreground mb-2">No Location Selected</h2>
+                      <h2 className="text-xl font-semibold text-muted-foreground mb-2">No Location Selected</h2>
                       <p className="text-sm max-w-xs text-center opacity-60">
                         Select a location from the list on the left to view and edit its details.
                       </p>
