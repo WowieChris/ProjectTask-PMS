@@ -48,8 +48,21 @@ export function AppSidebar() {
     {
       title: 'Service Order',
       href: '/service-order',
-      //href={route('/service-order.index')},
       icon: ListOrderedIcon,
+      children: [
+        {
+          title: 'Field Eng',
+          href: '/service-order/field-eng',
+        },
+        {
+          title: 'Technical Support Eng',
+          href: '/service-order/technical-support-eng',
+        },
+        {
+          title: 'Infrastructure Eng',
+          href: '/service-order/infrastructure-eng',
+        },
+      ],
     },
 
     {
