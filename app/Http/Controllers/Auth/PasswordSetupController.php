@@ -19,6 +19,7 @@ class PasswordSetupController extends Controller
         $user = $request->user();
         $user->password = Hash::make($request->password);
         $user->must_change_password = false;
+        $user->employment_status = 'active'; 
         if (is_null($user->email_verified_at)) {
             $user->email_verified_at = now();
         }

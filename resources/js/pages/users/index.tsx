@@ -102,17 +102,17 @@ export default function UsersIndex({ users }: Props) {
     [filteredUsers]
   )
 
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedUsers(prev =>
-        Array.from(new Set([...prev, ...filteredIds]))
-      )
-    } else {
-      setSelectedUsers(prev =>
-        prev.filter(id => !filteredIds.includes(id))
-      )
-    }
-  }
+  // const handleSelectAll = (checked: boolean) => {
+  //   if (checked) {
+  //     setSelectedUsers(prev =>
+  //       Array.from(new Set([...prev, ...filteredIds]))
+  //     )
+  //   } else {
+  //     setSelectedUsers(prev =>
+  //       prev.filter(id => !filteredIds.includes(id))
+  //     )
+  //   }
+  // }
 
   const handleSelectUser = (userId: number, checked: boolean) => {
     if (checked) {
@@ -122,14 +122,27 @@ export default function UsersIndex({ users }: Props) {
     }
   }
 
-  const isAllSelected =
-    filteredUsers.length > 0 &&
-    filteredIds.every(id => selectedUsers.includes(id))
+  const selectableIds = useMemo(
+  () => filteredUsers.filter(u => u.employment_status === 'inactive').map(u => u.id),
+  [filteredUsers]
+)
+const handleSelectAll = (checked: boolean) => {
+  if (checked) {
+    setSelectedUsers(prev => Array.from(new Set([...prev, ...selectableIds])))
+  } else {
+    setSelectedUsers(prev => prev.filter(id => !selectableIds.includes(id)))
+  }
+}
 
-  const isIndeterminate =
-    filteredUsers.length > 0 &&
-    filteredIds.some(id => selectedUsers.includes(id)) &&
-    !isAllSelected
+const isAllSelected =
+  selectableIds.length > 0 &&
+  selectableIds.every(id => selectedUsers.includes(id))
+
+const isIndeterminate =
+  selectableIds.length > 0 &&
+  selectableIds.some(id => selectedUsers.includes(id)) &&
+  !isAllSelected
+
 
   const handleClear = () => {
     setFilterText('')
@@ -313,6 +326,7 @@ export default function UsersIndex({ users }: Props) {
                   <TableCell onClick={(e) => e.stopPropagation()}>
                     <Checkbox
                       checked={selectedUsers.includes(user.id)}
+                      disabled={user.employment_status !== 'inactive'}
                       onCheckedChange={(checked) =>
                         handleSelectUser(user.id, checked === true)
                       }
@@ -352,7 +366,9 @@ export default function UsersIndex({ users }: Props) {
                       variant={
                         user.employment_status === 'active'
                           ? 'default'
-                          : 'secondary'
+                          : user.employment_status === 'terminated'
+                            ? 'destructive'
+                            : 'secondary'
                       }
                     >
                       {user.employment_status}
