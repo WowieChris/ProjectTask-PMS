@@ -47,7 +47,6 @@ export function AppSidebar() {
     },
     {
       title: 'Service Order',
-      href: '/service-order',
       icon: ListOrderedIcon,
       children: [
         {
