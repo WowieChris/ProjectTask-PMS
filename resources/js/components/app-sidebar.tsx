@@ -51,16 +51,19 @@ export function AppSidebar() {
       //href={route('/service-order.index')},
       icon: ListOrderedIcon,
     },
-    {
-      title: 'Asset Management',
-      href: 'assetManagement',
-      icon: Columns2Icon,
-    },
+
     {
       title: 'Journal Movement',
       href: 'journalMovement',
       icon: NotepadTextDashedIcon,
     },
+
+    {
+      title: 'Asset Management',
+      href: 'assetManagement',
+      icon: Columns2Icon,
+    },
+
     {
       title: 'Office Management',
       href: 'officeManagement',
@@ -69,6 +72,11 @@ export function AppSidebar() {
     {
       title: 'My Location',
       href: '/mylocation',
+      icon: MapPin,
+    },
+    {
+      title: 'TSE',
+      href: '/tse',
       icon: MapPin,
     },
 
