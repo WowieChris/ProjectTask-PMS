@@ -1,4 +1,5 @@
 import { Link, useForm } from '@inertiajs/react';
+import { usePage} from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -41,17 +42,25 @@ interface Props {
     user: User;
     onSuccess?: () => void;
 }
-
+interface Designation {
+    id: number
+    name: string
+    role: 'user' | 'admin'
+}
+interface PageProps extends Record<string, unknown> {
+    designations: Designation[]
+}
 export default function EditUserCard({ user, onSuccess }: Props) {
     const isInitiallyActive = user.employment_status !== 'terminated';
+    const { designations = [] } = usePage<PageProps>().props;
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
         last_name: user.last_name || '',
         email: user.email,
         role: user.role,
-        designation: user.designation || '',
+        designation_id: user.designation_id,
         employee_id: user.employee_id || '',
-        location: user.location || '',
+        location: user.location || '',  
         district: user.district || '',
         employment_status: user.employment_status || 'active',
         date_employed: user.date_employed || '',
@@ -61,7 +70,17 @@ export default function EditUserCard({ user, onSuccess }: Props) {
     //     e.preventDefault();
     //     put(`/users/${user.id}`);
     // };
+    const handleEmployeeId = (value: string) => {
+        const digits = value.replace(/\D/g, '')
 
+        let formatted = digits
+
+        if (digits.length > 4) {
+            formatted = digits.slice(0, 4) + '-' + digits.slice(4, 9)
+        }
+
+        setData('employee_id', formatted)
+    }
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -70,7 +89,7 @@ export default function EditUserCard({ user, onSuccess }: Props) {
             data.last_name !== (user.last_name || '') ||
             data.email !== user.email ||
             data.role !== user.role ||
-            data.designation !== (user.designation || '') ||
+            data.designation_id !== (user.designation_id ?? null) || 
             data.employee_id !== (user.employee_id || '') ||
             data.location !== (user.location || '') ||
             data.district !== (user.district || '') ||
@@ -154,7 +173,7 @@ export default function EditUserCard({ user, onSuccess }: Props) {
                                     className='w-full'
                                     pattern="\d{4}-\d{4,5}"
                                     value={data.employee_id}
-                                    onChange={(e) => setData('employee_id', e.target.value)}
+                                    onChange={(e) => handleEmployeeId(e.target.value)}
                                     disabled={!isInitiallyActive}
                                 />
                                 {errors.employee_id && <p className="text-red-500">{errors.employee_id}</p>}
@@ -186,19 +205,27 @@ export default function EditUserCard({ user, onSuccess }: Props) {
 
                         <div>
                             <Label htmlFor="role">Designation</Label>
-                            <Select value={data.designation} onValueChange={(value) => setData('designation', value)} disabled={!isInitiallyActive}>
-                                <SelectTrigger id="designation" aria-labelledby="designation-label" className="w-full">
-                                    <SelectValue placeholder="Select designation" />
+                            <Select
+                                value={data.name}
+                                onValueChange={(value) => {
+                                    setData('designation_id', value)
+                                    // auto-set role based on selected designation
+                                    const selected = designations.find(d => String(d.id) === value)
+                                    if (selected) setData('role', selected.role)
+                                }}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="mama mo" />
                                 </SelectTrigger>
-
                                 <SelectContent>
-                                    <SelectItem value="Technical Support Engineer">Technical Support Engineer</SelectItem>
-                                    <SelectItem value="Field Engineer">Field Engineer</SelectItem>
-                                    <SelectItem value="System Operator">System Operator</SelectItem>
-                                    <SelectItem value="Infrastructure Engineer">Infrastructure Engineer</SelectItem>
+                                    {designations.map((d) => (
+                                        <SelectItem key={d.id} value={String(d.id)}>
+                                            {d.name}
+                                        </SelectItem>
+                                    ))}
                                 </SelectContent>
                             </Select>
-                            {errors.designation && <p className="text-red-500">{errors.designation}</p>}
+                            {errors.designation_id && <p className="text-red-500">{errors.designation_id}</p>}
                         </div>
                         <div>
                             <Label htmlFor="employment_status">Employment Status</Label>

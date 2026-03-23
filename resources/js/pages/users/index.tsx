@@ -54,7 +54,7 @@ export default function UsersIndex({ users }: Props) {
     return Array.from(
       new Set(
         users
-          .map(u => u.designation)
+          .map(u => u.designation_id)
           .filter(Boolean)
       )
     ).sort() as string[]
@@ -75,7 +75,7 @@ export default function UsersIndex({ users }: Props) {
         u.name.toLowerCase().includes(text) ||
         (u.last_name ?? '').toLowerCase().includes(text) ||
         (u.email ?? '').toLowerCase().includes(text) ||
-        (u.designation ?? '').toLowerCase().includes(text) ||
+        (u.designation_id ?? '').toLowerCase().includes(text) ||
         (u.location ?? '').toLowerCase().includes(text) ||
         (u.district ?? '').toLowerCase().includes(text) ||
         (u.role ?? '').toLowerCase().includes(text)
@@ -86,7 +86,7 @@ export default function UsersIndex({ users }: Props) {
 
       const matchesDesignation =
         filterDesignation === 'all' ||
-        (u.designation ?? '').toLowerCase() === filterDesignation.toLowerCase()
+        (u.designation_id ?? '').toLowerCase() === filterDesignation.toLowerCase()
 
       return matchesText && matchesRole && matchesDesignation
 
@@ -357,7 +357,7 @@ const isIndeterminate =
                   </TableCell>
 
                   <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.designation}</TableCell>
+                  <TableCell>{user.designation_id}</TableCell>
                   <TableCell>{user.location}</TableCell>
 
                   <TableCell>
