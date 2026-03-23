@@ -43,7 +43,7 @@ interface Props {
 }
 
 export default function EditUserCard({ user, onSuccess }: Props) {
-    const isInitiallyActive = user.employment_status === 'active';
+    const isInitiallyActive = user.employment_status !== 'terminated';
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
         last_name: user.last_name || '',
