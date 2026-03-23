@@ -19,6 +19,7 @@ use App\Http\Controllers\DesignationsController;
 use App\Http\Controllers\locationController;
 use App\Http\Controllers\ServiceOrderController;
 use App\Http\Controllers\MyLocationController;
+use App\Http\Controllers\TSEController;
 
 Route::get('/', function () {
     return Inertia::render('auth/login', [
@@ -150,4 +151,8 @@ Route::middleware(['auth'])->group(function () {
             ->middleware('auth')
             ->name('mylocation');
     });
+    //TSE 
+    Route::get('/tse', [TSEController::class, 'index']);
+    Route::post('/tse', [TSEController::class, 'store']);
+    Route::delete('/tse/{id}', [TSEController::class, 'destroy']);
 });
