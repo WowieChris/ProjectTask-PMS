@@ -154,8 +154,8 @@
     --border: #404080;
     --input: #404080;
     --ring: #26236b;
-    --chart-1: #040622;
-    --chart-2: #151345;
+    --chart-1: #00d1f1;
+    --chart-2: #0700c5;
     --chart-3: #26236b;
     --chart-4: #333399;
     --chart-5: #4d4d99;
@@ -214,9 +214,9 @@
     --primary-foreground: #ffffff;
     --secondary: #4b0082;
     --secondary-foreground: #e6e6ff;
-    --muted: #9197dd;
-    --muted-foreground: #24245e;
-    --accent: #242164;
+    --muted: #8e97e4;
+    --muted-foreground: #F5F7FA;
+    --accent: #1c194d;
     --accent-foreground: #ffffff;
     --destructive: #ff2057;
     --destructive-foreground: #ffffff;

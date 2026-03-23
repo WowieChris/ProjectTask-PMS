@@ -23,7 +23,7 @@ export default function IICTDLogo() {
             </div>
             <div className="ml-1 grid flex-1 text-left text-sm items-center">
                 <span className="mt-2 leading-tight font-semibold items-center">
-                    Service Order Tracking System
+                    Department Automation Management System
                 </span>
             </div>
         </>
