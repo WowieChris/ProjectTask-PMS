@@ -74,11 +74,11 @@ export function AppSidebar() {
       href: '/mylocation',
       icon: MapPin,
     },
-    {
-      title: 'TSE',
-      href: '/tse',
-      icon: MapPin,
-    },
+    // {
+    //   title: 'TSE',
+    //   href: '/tse',
+    //   icon: MapPin,
+    // },
 
   ];
 
