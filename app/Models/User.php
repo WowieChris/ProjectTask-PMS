@@ -52,6 +52,10 @@ class User extends Authenticatable implements MustVerifyEmail
     | Relationships
     |--------------------------------------------------------------------------
     */
+    public function district()
+    {
+        return $this->belongsTo(District::class);
+    }
 
     public function designation()
     {

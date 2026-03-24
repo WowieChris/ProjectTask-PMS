@@ -17,9 +17,9 @@ use App\Http\Controllers\BrowseController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DesignationsController;
 use App\Http\Controllers\locationController;
-use App\Http\Controllers\ServiceOrderController;
 use App\Http\Controllers\MyLocationController;
-use App\Http\Controllers\TSEController;
+use App\Http\Controllers\EngineerAssignmentController;
+use App\Models\User;
 
 Route::get('/', function () {
     return Inertia::render('auth/login', [
@@ -147,8 +147,8 @@ Route::middleware(['auth'])->group(function () {
             ->middleware('auth')
             ->name('mylocation');
     });
-    //TSE 
-    Route::get('/tse', [TSEController::class, 'index']);
-    Route::post('/tse', [TSEController::class, 'store']);
-    Route::delete('/tse/{id}', [TSEController::class, 'destroy']);
+    //Config FIle
+
+    Route::get('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'Index']);
+    Route::post('/Config-Files/Field-Eng', [EngineerAssignmentController::class, 'store']);
 });

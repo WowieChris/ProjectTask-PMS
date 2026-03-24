@@ -86,13 +86,13 @@ export function AppSidebar() {
       href: '/mylocation',
       icon: MapPin,
     },
-    // {
-    //   title: 'TSE',
-    //   href: '/tse',
-    //   icon: MapPin,
-    // },
+
+
 
   ];
+
+
+
 
   // ✅ Show admin menus
   if (userRole !== 'user') {
@@ -101,6 +101,29 @@ export function AppSidebar() {
       title: 'User Maintenance',
       href: '/users',
       icon: User,
+    });
+
+    mainNavItems.push({
+      title: 'ConfigFile',
+      href: '/ConfigFiles',
+      icon: User,
+
+      children: [
+        {
+          title: "Senior Field Eng",
+          href: "/config-files/infrastructure-eng",
+        },
+        {
+          title: "Field Eng",
+          href: "/ConfigFiles/Field-Eng",
+        },
+        {
+          title: "RBAC",
+          href: "/config-files/technical-support-eng",
+        },
+
+      ],
+
     });
 
     // ✅ New Master Files dropdown
@@ -116,7 +139,10 @@ export function AppSidebar() {
         { title: 'Branches', href: '/branches' },
       ],
     });
+
+
   }
+
 
   return (
     <Sidebar collapsible="icon" variant="inset">
