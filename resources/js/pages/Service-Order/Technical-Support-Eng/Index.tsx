@@ -23,7 +23,7 @@ export default function TechnicalSupportEng() {
                 <div className="flex justify-between items-center">
                     <div>
                         <h1 className="text-2xl font-bold">
-                            Technical Support Engineering
+                            Technical Support Engineer
                         </h1>
                         <p className="text-gray-500">
                             Manage Technical Support tickets and requests.
