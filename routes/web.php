@@ -111,13 +111,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/user-groups', [UserGroupController::class, 'index'])->middleware('auth');
     });
     Route::middleware(['auth'])->group(function () {
-        // Area routes
-        // Route::post('/areas', [AreaController::class, 'store'])->name('areas.store');
-        // Route::delete('/areas/{area}', [AreaController::class, 'destroy'])->name('areas.destroy');
-        // Route::get('/areas', [AreaBrowseController::class, 'index'])->name('areas.browse.index');
-        // Route::get('/areas/{area}', [AreaBrowseController::class, 'showArea'])->name('areas.browse.area');
-        // Route::get('/areas/{area}/divisions/{division}', [AreaBrowseController::class, 'showDivision'])->name('areas.browse.division');
-        // Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
+
 
         Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
         Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
@@ -133,17 +127,19 @@ Route::middleware(['auth'])->group(function () {
     });
 
     //Service Order/
-    Route::middleware(['auth'])->group(function () {
+    Route::prefix('service-order')->group(function () {
 
-        Route::get('/service-order', [ServiceOrderController::class, 'index'])
-            ->name('service-order.index');
+        Route::get('/field-eng', function () {
+            return Inertia::render('Service-Order/Field-Eng/Index');
+        })->name('service-order.field');
 
-        Route::get('/service-order/create', [ServiceOrderController::class, 'create'])
-            ->name('service-order.create');
+        Route::get('/technical-support-eng', function () {
+            return Inertia::render('Service-Order/Technical-Support-Eng/Index');
+        })->name('service-order.tech');
 
-        Route::post('/service-order', [ServiceOrderController::class, 'store'])
-            ->name('service-order.store');
-        Route::delete('/service-order/{id}', [ServiceOrderController::class, 'destroy']);
+        Route::get('/infrastructure-eng', function () {
+            return Inertia::render('Service-Order/Infrastructure-Eng/Index');
+        })->name('service-order.infra');
     });
     //My Loctions
     Route::middleware(['auth'])->group(function () {
