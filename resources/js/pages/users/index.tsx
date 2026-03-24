@@ -27,13 +27,19 @@ const breadcrumbs: BreadcrumbItem[] = [
   { title: 'User Maintenance', href: '/users' },
 ]
 
+interface Designation {
+  id: number
+  name: string
+}
+
 interface Props {
   users: User[]
+  designations: Designation[]
 }
 
 type AnyFilter = 'all' | string
 
-export default function UsersIndex({ users }: Props) {
+export default function UsersIndex({ users, designations }: Props) {
 
   const [selectedUsers, setSelectedUsers] = useState<number[]>([])
   const [filterText, setFilterText] = useState('')
@@ -43,6 +49,10 @@ export default function UsersIndex({ users }: Props) {
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [openEdit, setOpenEdit] = useState(false)
   const [openCreate, setOpenCreate] = useState(false)
+// Add this lookup map near the top, after the state declarations
+  const designationMap = useMemo(() => {
+    return Object.fromEntries(designations.map(d => [String(d.id), d.name]))
+  }, [designations])
 
   /* ---------------- ROLE OPTIONS ---------------- */
 
@@ -133,6 +143,7 @@ const handleSelectAll = (checked: boolean) => {
     setSelectedUsers(prev => prev.filter(id => !selectableIds.includes(id)))
   }
 }
+
 
 const isAllSelected =
   selectableIds.length > 0 &&
@@ -357,7 +368,7 @@ const isIndeterminate =
                   </TableCell>
 
                   <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.designation_id}</TableCell>
+                  <TableCell>{designationMap[String(user.designation_id)] ?? user.designation_id}</TableCell>
                   <TableCell>{user.location}</TableCell>
 
                   <TableCell>
@@ -366,7 +377,7 @@ const isIndeterminate =
                       variant={
                         user.employment_status === 'active'
                           ? 'default'
-                          : user.employment_status === 'terminated'
+                          : user.employment_status === 'separated'
                             ? 'destructive'
                             : 'secondary'
                       }

@@ -13,10 +13,10 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::with('photo')->get();
+        // $users = User::with('photo')->get();
 
         return Inertia::render('users/index', [
-            'users' => User::orderBy('name')->get(),
+            'users' => User::with('photo')->orderBy('name')->get(),
             'designations' => Designation::orderBy('name')->get(['id', 'name', 'role']), // ← add this
         ]);
     }

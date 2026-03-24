@@ -51,7 +51,7 @@ interface PageProps extends Record<string, unknown> {
     designations: Designation[]
 }
 export default function EditUserCard({ user, onSuccess }: Props) {
-    const isInitiallyActive = user.employment_status !== 'terminated';
+    const isInitiallyActive = user.employment_status !== 'separated';
     const { designations = [] } = usePage<PageProps>().props;
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
@@ -206,10 +206,9 @@ export default function EditUserCard({ user, onSuccess }: Props) {
                         <div>
                             <Label htmlFor="role">Designation</Label>
                             <Select
-                                value={data.name}
+                                value={String(data.designation_id)}
                                 onValueChange={(value) => {
                                     setData('designation_id', value)
-                                    // auto-set role based on selected designation
                                     const selected = designations.find(d => String(d.id) === value)
                                     if (selected) setData('role', selected.role)
                                 }}
@@ -236,7 +235,7 @@ export default function EditUserCard({ user, onSuccess }: Props) {
                                 <SelectContent>
                                     <SelectItem value="active">Active</SelectItem>
                                     <SelectItem value="inactive">Inactive</SelectItem>
-                                    <SelectItem value="terminated">Terminated</SelectItem>
+                                    <SelectItem value="separated">Separated</SelectItem>
                                 </SelectContent>
                             </Select>
                             {errors.employment_status && <p className="text-red-500">{errors.employment_status}</p>}
@@ -282,7 +281,7 @@ export default function EditUserCard({ user, onSuccess }: Props) {
 
                         <div className="flex gap-2 mt-5">
                             {isInitiallyActive && (
-                                data.employment_status === 'terminated' ? (
+                                data.employment_status === 'separated' ? (
                                     <Button
                                         type="button"
                                         variant="destructive"
