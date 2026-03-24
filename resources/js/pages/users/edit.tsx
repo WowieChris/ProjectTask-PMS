@@ -1,5 +1,5 @@
 import { Link, useForm } from '@inertiajs/react';
-import { usePage} from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -60,7 +60,7 @@ export default function EditUserCard({ user, onSuccess }: Props) {
         role: user.role,
         designation_id: user.designation_id,
         employee_id: user.employee_id || '',
-        location: user.location || '',  
+        location: user.location || '',
         district: user.district || '',
         employment_status: user.employment_status || 'active',
         date_employed: user.date_employed || '',
@@ -89,7 +89,7 @@ export default function EditUserCard({ user, onSuccess }: Props) {
             data.last_name !== (user.last_name || '') ||
             data.email !== user.email ||
             data.role !== user.role ||
-            data.designation_id !== (user.designation_id ?? null) || 
+            data.designation_id !== (user.designation_id ?? null) ||
             data.employee_id !== (user.employee_id || '') ||
             data.location !== (user.location || '') ||
             data.district !== (user.district || '') ||
@@ -249,20 +249,20 @@ export default function EditUserCard({ user, onSuccess }: Props) {
                                     <SelectValue placeholder="Select location" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="central office">Central Office</SelectItem>
-                                    <SelectItem value="division 1">Division 1</SelectItem>
-                                    <SelectItem value="division 2">Division 2</SelectItem>
-                                    <SelectItem value="division 3">Division 3</SelectItem>
-                                    <SelectItem value="division 4">Division 4</SelectItem>
-                                    <SelectItem value="division 5">Division 5</SelectItem>
-                                    <SelectItem value="division 6">Division 6</SelectItem>
-                                    <SelectItem value="division 7">Division 7</SelectItem>
-                                    <SelectItem value="division 8">Division 8</SelectItem>
+                                    <SelectItem value="Central office">Central Office</SelectItem>
+                                    <SelectItem value="Division 1">Division 1</SelectItem>
+                                    <SelectItem value="Division 2">Division 2</SelectItem>
+                                    <SelectItem value="Division 3">Division 3</SelectItem>
+                                    <SelectItem value="Division 4">Division 4</SelectItem>
+                                    <SelectItem value="Division 5">Division 5</SelectItem>
+                                    <SelectItem value="Division 6">Division 6</SelectItem>
+                                    <SelectItem value="Division 7">Division 7</SelectItem>
+                                    <SelectItem value="Division 8">Division 8</SelectItem>
                                 </SelectContent>
                             </Select>
                             {errors.location && <p className="text-red-500">{errors.location}</p>}
                         </div>
-                        {data.location && data.location !== 'central office' && (
+                        {data.location && data.location !== 'Central office' && (
                             <div>
                                 <Label htmlFor="district">District</Label>
                                 <Input
