@@ -11,6 +11,7 @@ import BrowseController from './BrowseController'
 import DesignationsController from './DesignationsController'
 import ServiceOrderController from './ServiceOrderController'
 import MyLocationController from './MyLocationController'
+import TSEController from './TSEController'
 const Controllers = {
     Auth: Object.assign(Auth, Auth),
 UserController: Object.assign(UserController, UserController),
@@ -25,6 +26,7 @@ BrowseController: Object.assign(BrowseController, BrowseController),
 DesignationsController: Object.assign(DesignationsController, DesignationsController),
 ServiceOrderController: Object.assign(ServiceOrderController, ServiceOrderController),
 MyLocationController: Object.assign(MyLocationController, MyLocationController),
+TSEController: Object.assign(TSEController, TSEController),
 }
 
 export default Controllers
