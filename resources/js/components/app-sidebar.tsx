@@ -1,5 +1,15 @@
 import { Link, usePage } from '@inertiajs/react';
-import { Columns2Icon, Database, LayoutGrid, ListOrderedIcon, MapPin, NotepadTextDashedIcon, Search, User, Warehouse } from 'lucide-react';
+import {
+  Columns2Icon,
+  Database,
+  LayoutGrid,
+  ListOrderedIcon,
+  MapPin,
+  NotepadTextDashedIcon,
+  Search,
+  User,
+  Warehouse,
+} from 'lucide-react';
 
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -29,120 +39,96 @@ type PageProps = {
 
 export function AppSidebar() {
   const { auth } = usePage<PageProps>().props;
-  // Defensive: `auth` or `auth.user` may be null during some hydration paths
-  // (e.g. unauthenticated or server-client mismatch). Default to 'user'
-  // so admin menus are hidden when role is unavailable.
   const userRole = auth?.user?.role ?? 'user';
 
   const mainNavItems: NavItem[] = [
+    // 🔹 MAIN
     {
+      section: 'Main',
       title: 'Dashboard',
       href: dashboard().url,
       icon: LayoutGrid,
     },
     {
+      section: 'Management',
       title: 'Browse',
       href: '/browse',
       icon: Search,
     },
+
+    // 🔹 OPERATIONS
     {
+      section: 'Operations',
       title: 'Service Order',
       icon: ListOrderedIcon,
       children: [
-        {
-          title: 'Field Eng',
-          href: '/service-order/field-eng',
-        },
-        {
-          title: 'Technical Support Eng',
-          href: '/service-order/technical-support-eng',
-        },
-        {
-          title: 'Infrastructure Eng',
-          href: '/service-order/infrastructure-eng',
-        },
+        { title: 'Field Eng', href: '/service-order/field-eng' },
+        { title: 'Technical Support Eng', href: '/service-order/technical-support-eng' },
+        { title: 'Infrastructure Eng', href: '/service-order/infrastructure-eng' },
       ],
     },
-
     {
+      section: 'Operations',
       title: 'Journal Movement',
-      href: 'journalMovement',
+      href: '/journalMovement', // ✅ fixed slash
       icon: NotepadTextDashedIcon,
     },
 
+    // 🔹 MANAGEMENT
     {
+      section: 'Management',
       title: 'Asset Management',
-      href: 'assetManagement',
+      href: '/assetManagement', // ✅ fixed slash
       icon: Columns2Icon,
     },
-
     {
+      section: 'Management',
       title: 'Office Management',
-      href: 'officeManagement',
+      href: '/officeManagement', // ✅ fixed slash
       icon: Warehouse,
     },
     {
+      section: 'Management',
       title: 'My Location',
       href: '/mylocation',
       icon: MapPin,
     },
-
-
-
   ];
 
-
-
-
-  // ✅ Show admin menus
+  // 🔹 ADMIN SECTION
   if (userRole !== 'user') {
-    // ✅ Bring back User Maintenance
-    mainNavItems.push({
-      title: 'User Maintenance',
-      href: '/users',
-      icon: User,
-    });
-
-    mainNavItems.push({
-      title: 'ConfigFile',
-      href: '/ConfigFiles',
-      icon: User,
-
-      children: [
-        {
-          title: "Senior Field Eng",
-          href: "/config-files/infrastructure-eng",
-        },
-        {
-          title: "Field Eng",
-          href: "/ConfigFiles/Field-Eng",
-        },
-        {
-          title: "RBAC",
-          href: "/config-files/technical-support-eng",
-        },
-
-      ],
-
-    });
-
-    // ✅ New Master Files dropdown
-    mainNavItems.push({
-      title: 'Master Files',
-      icon: Database,
-      children: [
-        { title: 'User Groups', href: '/user-groups' },
-        { title: 'Designations', href: '/designations' },
-        { title: 'Divisions', href: '/divisions' },
-        { title: 'Districts', href: '/districts' },
-        { title: 'Areas', href: '/areas' },
-        { title: 'Branches', href: '/branches' },
-      ],
-    });
-
-
+    mainNavItems.push(
+      {
+        section: 'Admin',
+        title: 'User Maintenance',
+        href: '/users',
+        icon: User,
+      },
+      {
+        section: 'Admin',
+        title: 'ConfigFile',
+        icon: User,
+        children: [
+          { title: 'Senior Field Eng', href: '/config-files/infrastructure-eng' },
+          { title: 'Field Eng', href: '/config-files/field-eng' }, // ✅ fixed case + consistency
+          { title: 'RBAC', href: '/config-files/technical-support-eng' },
+        ],
+      },
+      {
+        section: 'Admin',
+        title: 'Master Files',
+        icon: Database,
+        children: [
+          { title: 'User Groups', href: '/user-groups' },
+          { title: 'Designations', href: '/designations' },
+          { title: 'Divisions', href: '/divisions' },
+          { title: 'Districts', href: '/districts' },
+          { title: 'Areas', href: '/areas' },
+          { title: 'Branches', href: '/branches' },
+        ],
+      }
+    );
   }
-
 
   return (
     <Sidebar collapsible="icon" variant="inset">
@@ -150,7 +136,6 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              {/* ✅ fix: dashboard().url */}
               <Link href={dashboard().url} prefetch>
                 <AppLogo />
               </Link>
@@ -160,6 +145,7 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
+        {/* ✅ Now properly grouped */}
         <NavMain items={mainNavItems} />
       </SidebarContent>
 
