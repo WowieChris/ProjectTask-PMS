@@ -35,9 +35,11 @@ interface PageProps extends Record<string, unknown> {
 
 /* ================= TREE NODE ================= */
 function TreeNode({ node, selected, onSelect, level = 0 }: any) {
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(level === 0);
     const [visible, setVisible] = useState(true);
     const hasChildren = node.children?.length > 0;
+    const isActive =
+        node.type === "area" && selected?.id === node.data?.id;
 
     return (
         <div className="relative">
@@ -50,18 +52,24 @@ function TreeNode({ node, selected, onSelect, level = 0 }: any) {
             <div
                 onClick={() => {
                     if (hasChildren) setOpen(!open);
-                    if (node.type === "area") onSelect(node.data);
+                    if (node.type === "area") {
+                        onSelect(node.data);
+                    }
+
+                    if (node.type === "district") {
+                        onSelect(null);
+                    }
                 }}
                 className={`
-                    flex items-center justify-between
-                    px-3 py-2 rounded-lg cursor-pointer
-                    text-sm transition-all
-                    border mb-1
-                    ${selected?.id === node.data?.id
+    flex items-center justify-between
+    px-3 py-2 rounded-lg cursor-pointer
+    text-sm transition-all
+    border mb-1
+    ${isActive
                         ? "bg-slate-700 border-slate-500"
                         : "bg-slate-800 border-slate-700 hover:bg-slate-700"
                     }
-                `}
+`}
                 style={{ marginLeft: level * 14 }}
             >
                 <div className="flex items-center gap-2">
@@ -95,20 +103,22 @@ function TreeNode({ node, selected, onSelect, level = 0 }: any) {
                 </div>
             </div>
 
-            {open && hasChildren && (
-                <div className="ml-2">
-                    {node.children.map((child: any) => (
-                        <TreeNode
-                            key={child.id}
-                            node={child}
-                            selected={selected}
-                            onSelect={onSelect}
-                            level={level + 1}
-                        />
-                    ))}
-                </div>
-            )}
-        </div>
+            {
+                open && hasChildren && (
+                    <div className="ml-2">
+                        {node.children.map((child: any) => (
+                            <TreeNode
+                                key={child.id}
+                                node={child}
+                                selected={selected}
+                                onSelect={onSelect}
+                                level={level + 1}
+                            />
+                        ))}
+                    </div>
+                )
+            }
+        </div >
     );
 }
 
