@@ -9,9 +9,8 @@ import BranchController from './BranchController'
 import UserGroupController from './UserGroupController'
 import BrowseController from './BrowseController'
 import DesignationsController from './DesignationsController'
-import ServiceOrderController from './ServiceOrderController'
 import MyLocationController from './MyLocationController'
-import TSEController from './TSEController'
+import EngineerAssignmentController from './EngineerAssignmentController'
 const Controllers = {
     Auth: Object.assign(Auth, Auth),
 UserController: Object.assign(UserController, UserController),
@@ -24,9 +23,8 @@ BranchController: Object.assign(BranchController, BranchController),
 UserGroupController: Object.assign(UserGroupController, UserGroupController),
 BrowseController: Object.assign(BrowseController, BrowseController),
 DesignationsController: Object.assign(DesignationsController, DesignationsController),
-ServiceOrderController: Object.assign(ServiceOrderController, ServiceOrderController),
 MyLocationController: Object.assign(MyLocationController, MyLocationController),
-TSEController: Object.assign(TSEController, TSEController),
+EngineerAssignmentController: Object.assign(EngineerAssignmentController, EngineerAssignmentController),
 }
 
 export default Controllers

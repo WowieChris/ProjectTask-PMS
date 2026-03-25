@@ -15,27 +15,29 @@ export default function EngineerAssignment({ districts, engineers, areaAssignmen
         <AppLayout>
             <Head title="Engineer Assignment" />
 
-            <div className="flex flex-col h-full">
-                <Card className="flex flex-col flex-1 overflow-hidden">
+            <div className="flex flex-col h-[calc(100vh-5rem)]">
+                <Card className="flex flex-col flex-1 overflow-hidden pt-2 gap-0">
 
                     {/* HEADER */}
-                    <CardHeader className="border-b flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center">
+                    <CardHeader className="border-b flex">
+                    <div className="flex justify-center gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-xl bg-muted text-foreground flex items-center justify-center">
                             <User size={20} />
                         </div>
 
-                        <div>
+                        <div className="flex flex-col">
                             <h1 className="text-lg font-semibold">Engineer Assignment</h1>
                             <p className="text-xs text-muted-foreground uppercase">
                                 District → Base → Area Override
                             </p>
                         </div>
+                    </div>
                     </CardHeader>
 
                     <CardContent className="flex flex-1 overflow-hidden p-0">
 
                         {/* LEFT PANEL = DISTRICTS */}
-                        <div className="w-1/3 border-r p-4 space-y-4 overflow-auto">
+                        <div className="w-1/3 border-r min-h-0 p-4 space-y-4 overflow-y-auto">
 
                             <p className="text-xs uppercase text-muted-foreground font-bold">
                                 Districts
@@ -74,7 +76,7 @@ export default function EngineerAssignment({ districts, engineers, areaAssignmen
                         </div>
 
                         {/* RIGHT PANEL */}
-                        <div className="flex-1 p-6 overflow-auto">
+                        <div className="flex-1 py-3 px-6 overflow-auto">
 
                             {!selectedDistrict ? (
                                 <div className="h-full flex flex-col items-center justify-center text-muted-foreground">
@@ -114,8 +116,10 @@ export default function EngineerAssignment({ districts, engineers, areaAssignmen
 
                                     {/* AREAS */}
                                     <div className="space-y-3">
+                                        <div className="flex items-center justify-between">
                                         <p className="text-sm font-semibold">
                                             Area Overrides
+                                            </p>
                                             <button
                                                 onClick={() => {
                                                     router.post('/Config-Files/Field-Eng', {
@@ -124,17 +128,18 @@ export default function EngineerAssignment({ districts, engineers, areaAssignmen
                                                         overrides: areaOverrides,
                                                     });
                                                 }}
-                                                className="bg-primary text-white px-4 py-2 rounded-lg"
+                                                className="bg-primary text-primary-foreground px-4 py-2 rounded-lg"
                                             >
                                                 Save Assignment
                                             </button>
-                                        </p>
+                                        
+                                        </div>
 
                                         {selectedDistrict.areas.map((area: any) => (
 
                                             <div
                                                 key={area.id}
-                                                className="flex items-center justify-between border p-3 rounded-xl"
+                                                className="flex items-center justify-between border py-2 px-3 rounded-xl"
                                             >
                                                 <span>
                                                     {area.name}
