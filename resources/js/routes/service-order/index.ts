@@ -1,73 +1,66 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 /**
-* @see \App\Http\Controllers\ServiceOrderController::index
- * @see app/Http/Controllers/ServiceOrderController.php:13
- * @route '/service-order'
+ * @see routes/web.php:132
+ * @route '/service-order/field-eng'
  */
-export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: index.url(options),
+export const field = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: field.url(options),
     method: 'get',
 })
 
-index.definition = {
+field.definition = {
     methods: ["get","head"],
-    url: '/service-order',
+    url: '/service-order/field-eng',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Http\Controllers\ServiceOrderController::index
- * @see app/Http/Controllers/ServiceOrderController.php:13
- * @route '/service-order'
+ * @see routes/web.php:132
+ * @route '/service-order/field-eng'
  */
-index.url = (options?: RouteQueryOptions) => {
-    return index.definition.url + queryParams(options)
+field.url = (options?: RouteQueryOptions) => {
+    return field.definition.url + queryParams(options)
 }
 
 /**
-* @see \App\Http\Controllers\ServiceOrderController::index
- * @see app/Http/Controllers/ServiceOrderController.php:13
- * @route '/service-order'
+ * @see routes/web.php:132
+ * @route '/service-order/field-eng'
  */
-index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: index.url(options),
+field.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: field.url(options),
     method: 'get',
 })
 /**
-* @see \App\Http\Controllers\ServiceOrderController::index
- * @see app/Http/Controllers/ServiceOrderController.php:13
- * @route '/service-order'
+ * @see routes/web.php:132
+ * @route '/service-order/field-eng'
  */
-index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: index.url(options),
+field.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: field.url(options),
     method: 'head',
 })
 
     /**
-* @see \App\Http\Controllers\ServiceOrderController::index
- * @see app/Http/Controllers/ServiceOrderController.php:13
- * @route '/service-order'
+ * @see routes/web.php:132
+ * @route '/service-order/field-eng'
  */
-    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: index.url(options),
+    const fieldForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: field.url(options),
         method: 'get',
     })
 
             /**
-* @see \App\Http\Controllers\ServiceOrderController::index
- * @see app/Http/Controllers/ServiceOrderController.php:13
- * @route '/service-order'
+ * @see routes/web.php:132
+ * @route '/service-order/field-eng'
  */
-        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url(options),
+        fieldForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: field.url(options),
             method: 'get',
         })
             /**
-* @see \App\Http\Controllers\ServiceOrderController::index
- * @see app/Http/Controllers/ServiceOrderController.php:13
- * @route '/service-order'
+ * @see routes/web.php:132
+ * @route '/service-order/field-eng'
  */
-        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url({
+        fieldForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: field.url({
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'HEAD',
                             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -76,76 +69,69 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
     
-    index.form = indexForm
+    field.form = fieldForm
 /**
-* @see \App\Http\Controllers\ServiceOrderController::create
- * @see app/Http/Controllers/ServiceOrderController.php:0
- * @route '/service-order/create'
+ * @see routes/web.php:136
+ * @route '/service-order/technical-support-eng'
  */
-export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: create.url(options),
+export const tech = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: tech.url(options),
     method: 'get',
 })
 
-create.definition = {
+tech.definition = {
     methods: ["get","head"],
-    url: '/service-order/create',
+    url: '/service-order/technical-support-eng',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Http\Controllers\ServiceOrderController::create
- * @see app/Http/Controllers/ServiceOrderController.php:0
- * @route '/service-order/create'
+ * @see routes/web.php:136
+ * @route '/service-order/technical-support-eng'
  */
-create.url = (options?: RouteQueryOptions) => {
-    return create.definition.url + queryParams(options)
+tech.url = (options?: RouteQueryOptions) => {
+    return tech.definition.url + queryParams(options)
 }
 
 /**
-* @see \App\Http\Controllers\ServiceOrderController::create
- * @see app/Http/Controllers/ServiceOrderController.php:0
- * @route '/service-order/create'
+ * @see routes/web.php:136
+ * @route '/service-order/technical-support-eng'
  */
-create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: create.url(options),
+tech.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: tech.url(options),
     method: 'get',
 })
 /**
-* @see \App\Http\Controllers\ServiceOrderController::create
- * @see app/Http/Controllers/ServiceOrderController.php:0
- * @route '/service-order/create'
+ * @see routes/web.php:136
+ * @route '/service-order/technical-support-eng'
  */
-create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: create.url(options),
+tech.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: tech.url(options),
     method: 'head',
 })
 
     /**
-* @see \App\Http\Controllers\ServiceOrderController::create
- * @see app/Http/Controllers/ServiceOrderController.php:0
- * @route '/service-order/create'
+ * @see routes/web.php:136
+ * @route '/service-order/technical-support-eng'
  */
-    const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: create.url(options),
+    const techForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: tech.url(options),
         method: 'get',
     })
 
             /**
-* @see \App\Http\Controllers\ServiceOrderController::create
- * @see app/Http/Controllers/ServiceOrderController.php:0
- * @route '/service-order/create'
+ * @see routes/web.php:136
+ * @route '/service-order/technical-support-eng'
  */
-        createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: create.url(options),
+        techForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: tech.url(options),
             method: 'get',
         })
             /**
-* @see \App\Http\Controllers\ServiceOrderController::create
- * @see app/Http/Controllers/ServiceOrderController.php:0
- * @route '/service-order/create'
+ * @see routes/web.php:136
+ * @route '/service-order/technical-support-eng'
  */
-        createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: create.url({
+        techForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: tech.url({
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'HEAD',
                             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -154,66 +140,82 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
     
-    create.form = createForm
+    tech.form = techForm
 /**
-* @see \App\Http\Controllers\ServiceOrderController::store
- * @see app/Http/Controllers/ServiceOrderController.php:23
- * @route '/service-order'
+ * @see routes/web.php:140
+ * @route '/service-order/infrastructure-eng'
  */
-export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: store.url(options),
-    method: 'post',
+export const infra = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: infra.url(options),
+    method: 'get',
 })
 
-store.definition = {
-    methods: ["post"],
-    url: '/service-order',
-} satisfies RouteDefinition<["post"]>
+infra.definition = {
+    methods: ["get","head"],
+    url: '/service-order/infrastructure-eng',
+} satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Http\Controllers\ServiceOrderController::store
- * @see app/Http/Controllers/ServiceOrderController.php:23
- * @route '/service-order'
+ * @see routes/web.php:140
+ * @route '/service-order/infrastructure-eng'
  */
-store.url = (options?: RouteQueryOptions) => {
-    return store.definition.url + queryParams(options)
+infra.url = (options?: RouteQueryOptions) => {
+    return infra.definition.url + queryParams(options)
 }
 
 /**
-* @see \App\Http\Controllers\ServiceOrderController::store
- * @see app/Http/Controllers/ServiceOrderController.php:23
- * @route '/service-order'
+ * @see routes/web.php:140
+ * @route '/service-order/infrastructure-eng'
  */
-store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: store.url(options),
-    method: 'post',
+infra.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: infra.url(options),
+    method: 'get',
+})
+/**
+ * @see routes/web.php:140
+ * @route '/service-order/infrastructure-eng'
+ */
+infra.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: infra.url(options),
+    method: 'head',
 })
 
     /**
-* @see \App\Http\Controllers\ServiceOrderController::store
- * @see app/Http/Controllers/ServiceOrderController.php:23
- * @route '/service-order'
+ * @see routes/web.php:140
+ * @route '/service-order/infrastructure-eng'
  */
-    const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: store.url(options),
-        method: 'post',
+    const infraForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: infra.url(options),
+        method: 'get',
     })
 
             /**
-* @see \App\Http\Controllers\ServiceOrderController::store
- * @see app/Http/Controllers/ServiceOrderController.php:23
- * @route '/service-order'
+ * @see routes/web.php:140
+ * @route '/service-order/infrastructure-eng'
  */
-        storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: store.url(options),
-            method: 'post',
+        infraForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: infra.url(options),
+            method: 'get',
+        })
+            /**
+ * @see routes/web.php:140
+ * @route '/service-order/infrastructure-eng'
+ */
+        infraForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: infra.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
         })
     
-    store.form = storeForm
+    infra.form = infraForm
 const serviceOrder = {
-    index: Object.assign(index, index),
-create: Object.assign(create, create),
-store: Object.assign(store, store),
+    field: Object.assign(field, field),
+tech: Object.assign(tech, tech),
+infra: Object.assign(infra, infra),
 }
 
 export default serviceOrder
