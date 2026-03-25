@@ -11,4 +11,5 @@ export type NavItem = {
   href?: string;
   icon?: LucideIcon;
   children?: NavItem[];
+  section?: string;
 };
