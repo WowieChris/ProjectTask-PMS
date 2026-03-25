@@ -21,6 +21,8 @@ import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
+import { TreeNode } from '@/components/treenode'
+
 
 // --- Types ---
 
@@ -44,20 +46,20 @@ interface Branch {
 interface Area {
   id: number;
   name: string;
-  branches?: Branch[];
+  branches: Branch[];
 }
 
 interface District {
   id: number;
   name: string;
-  areas?: Area[];
+  areas: Area[];
 }
 
 interface Division {
   id: number;
   name: string;
   user_group_id: number; // ✅ add this
-  districts?: District[];
+  districts: District[];
 }
 interface UserGroup {
   id: number;
@@ -122,7 +124,6 @@ export default function App() {
               parentId: areaId,
               level: 'branch',
               status: 'active',
-              address: branch.address,
             });
           });
         });
@@ -282,9 +283,9 @@ export default function App() {
   return (
     <AppLayout>
       <Head title="Browse Locations" />
-      <div className="h-full text-foreground font-sans flex flex-col overflow-hidden">
+      <div className="h-[calc(100vh-5rem)] text-foreground font-sans flex flex-col">
         {/* Header */}
-        <Card className='flex flex-col flex-1 overflow-hidden gap-0 py-0'>
+        <Card className='flex flex-col flex-1 gap-0 py-0 overflow-hidden'>
           <CardHeader className="h-16 border-b border-border flex items-start justify-between px-6">
             <div className="flex items-center gap-3 mt-2">
               <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground shadow-sm">
@@ -303,11 +304,11 @@ export default function App() {
             </div> */}
           </CardHeader>
           <CardContent className="p-0 flex flex-1 overflow-hidden">
-            <main className="flex flex-col w-full h-full overflow-hidden">
+            <main className="flex flex-col w-full min-h-0 overflow-hidden">
               {/* Left Panel: Filter & List (top) */}
-              <div className="flex flex-row border-b border-border h-1/2 overflow-hidden">
+              <div className="flex flex-row border-b border-border overflow-hidden">
                 {/* General Overview Toggle /left */}
-                <div className="w-1/3 border-r border-border flex flex-col overflow-auto p-3 gap-3">
+                <div className="w-1/3 border-r border-border flex flex-col p-3 gap-3">
                   <div className="flex w-full items-center justify-between rounded-2xl border border-border bg-muted p-4">
                     <div className="flex items-center gap-3">
                       <div className={`p-2 rounded-lg ${isGeneralOverview ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
@@ -358,356 +359,42 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Level Navigation */}
-                  <div className="flex items-center rounded-xl bg-muted p-1">
-                    {(['division', 'district', 'area', 'branch'] as Level[]).map((level) => (
-                      <button
-                        key={level}
-                        onClick={() => {
-                          if (isGeneralOverview) {
-                            setCurrentLevel(level);
-                            setEditingItem(null);
-                            return;
-                          }
-
-                          if (level === 'division') handleLevelChange('division');
-                          else if (level === 'district') {
-                            handleLevelChange('district', editingItem?.id || selectedParentId);
-                          } else if (level === 'area') {
-                            if (currentLevel === 'branch') {
-                              const parentArea = locations.find(a => a.id === selectedParentId);
-                              handleLevelChange('area', parentArea?.parentId || null);
-                            } else {
-                              handleLevelChange('area', editingItem?.id || selectedParentId);
-                            }
-                          } else if (level === 'branch') {
-                            handleLevelChange('branch', editingItem?.id || selectedParentId);
-                          }
-                        }}
-                        disabled={
-                          !isGeneralOverview && (
-                            (level === 'division' && !editingItem && !selectedParentId) ||
-                            (level === 'district' && !editingItem && !selectedParentId) ||
-                            (level === 'area' && !editingItem && !selectedParentId) ||
-                            (level === 'branch' && (currentLevel !== 'area' || !editingItem) && currentLevel !== 'branch')
-                          )
-                        }
-                        className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all capitalize ${currentLevel === level
-                          ? 'bg-background text-primary shadow-sm'
-                          : 'text-foreground hover:text-card-foreground disabled:opacity-30'
-                          }`}
-                      >
-                        {level}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Search */}
-                  <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
-                    <input
-                      type="text"
-                      placeholder={`Search ${currentLevel}s...`}
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full rounded-xl border border-input bg-background py-3 pr-4 pl-11 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
-                    />
-                  </div>
+                  
                 </div>
 
 
                 {/* List Content / right */}
                 <div className="flex flex-col overflow-hidden w-2/3">
-                  {/* List Header / Breadcrumbs */}
-                  <div className="px-3 py-2 bg-muted border-b border-border flex items-center gap-2 shrink-0">
-                    {breadcrumbs.length > 0 ? (
-                      breadcrumbs.map((crumb, idx) => (
-                        <React.Fragment key={crumb.id}>
-                          <span className="text-[10px] font-bold text-muted-foreground uppercase whitespace-nowrap">{crumb.label}</span>
-                          {idx < breadcrumbs.length - 1 && <ChevronRight size={12} className="text-muted-foreground/70 shrink-0" />}
-                        </React.Fragment>
-                      ))
-                    ) : (
-                      <span className="text-[10px] font-bold text-muted-foreground uppercase">Select a UserGroup</span>
-                    )}
-                  </div>
-                  {/* List Content / right */}
-                  <div className="flex flex-col min-h-0 overflow-y-auto p-2 space-y-2">
-                    <AnimatePresence mode="popLayout">
-                      {!selectedUserGroup && !isGeneralOverview ? (
-                        <div className="h-full flex flex-col items-center justify-center text-card-foreground py-20">
-                          <MapPin size={40} strokeWidth={1.5} className="mb-4 opacity-20" />
-                          <p className="text-sm font-medium">Select a UserGroup to begin</p>
-                        </div>
-                      ) : filteredList.length > 0 ? (
-                        filteredList.map((item) => (
-                          <motion.div
-                            layout
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            key={item.id}
-                            onClick={() => handleSelectItem(item)}
-                            className={`group p-2 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${editingItem?.id === item.id
-                              ? 'bg-accent border-border shadow-sm'
-                              : 'bg-card border-border hover:border-primary/40 hover:bg-muted/50'
-                              }`}
-                          >
-                            <div className="flex items-center gap-4">
-                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${item.level === 'district' ? 'bg-amber-100 text-amber-600' :
-                                item.level === 'area' ? 'bg-emerald-100 text-emerald-600' :
-                                  'bg-background text-foreground'
-                                }`}>
-                                {item.level === 'district' ? <Network size={20} /> :
-                                  item.level === 'area' ? <Layers size={20} /> :
-                                    <Building2 size={16} />}
-                              </div>
-                              <div>
-                                <h3 className="text-sm font-semibold text-card-foreground">{item.name}</h3>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                {item.level !== 'branch' && (
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleDrillDown(item);
-                                    }}
-                                    className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
-                                  >
-                                    <ChevronRight size={18} />
-                                  </button>
-                                )}
-                              </div>
-                            </div>
-                          </motion.div>
-                        ))
-                      ) : (
-                        <div className="h-full flex flex-col items-center justify-center text-muted-foreground py-20">
-                          <Filter size={40} strokeWidth={1.5} className="mb-4 opacity-20" />
-                          <p className="text-sm font-medium">No {currentLevel}s found</p>
-                          <p className="text-xs opacity-60">Try adjusting your filters</p>
-                        </div>
-                      )}
-                    </AnimatePresence>
+                  <div className="p-4 overflow-y-auto h-full">
+                    {divisions
+                    .filter(division =>
+                      isGeneralOverview || !selectedUserGroup
+                        ? true
+                        : division.user_group_id === Number(selectedUserGroup)
+                    )
+                    .map(division => (
+                      <TreeNode key={division.id} label={division.name} defaultOpen>
+
+                        {(division.districts ?? []).map(district => (
+                          <TreeNode key={district.id} label={district.name}>
+
+                            {(district.areas ?? []).map(area => (
+                              <TreeNode key={area.id} label={area.name}>
+
+                                {(area.branches ?? []).map(branch => (
+                                  <TreeNode key={branch.id} label={branch.name} />
+                                ))}
+
+                              </TreeNode>
+                            ))}
+
+                          </TreeNode>
+                        ))}
+
+                      </TreeNode>
+                    ))}
                   </div>
                 </div>
-              </div>
-
-              {/* Right Panel: Editor / Details (bottom) */}
-              <div className="flex bg-muted/40 p-4 flex-1 h-1/2 overflow-hidden ">
-                <AnimatePresence mode="wait">
-                  {editingItem ? (
-                    <motion.div
-                      key={editingItem.id}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      className="flex flex-1 grid grid-cols-5 gap-6 h-full"
-                    >
-                      {/* Header Info */}
-                      <div className="col-span-2 flex flex-col gap-4">
-                        <div className="flex items-end justify-between ">
-                          <div className="space-y-1 mx-4">
-                            <div className="flex items-center gap-2 text-secondary-foreground text-xs font-bold uppercase tracking-widest">
-                              <Edit3 size={14} />
-                              Viewing {editingItem.level}
-                            </div>
-                            <h2 className="text-3xl font-bold text-muted-foreground">{editingItem.name}</h2>
-                            <p className="text-muted-foreground">View details and hierarchy for this location.</p>
-                          </div>
-                        </div>
-
-                        {/* Form Card */}
-                        <div className="bg-card rounded-2xl border border-border shadow-sm p-4">
-                          <div className="py-2 grid grid-cols-2 gap-2">
-                            <div className="space-y-2">
-                              <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest capitalize">
-                                {editingItem.level}
-                              </label>
-                              <input
-                                type="text"
-                                readOnly
-                                value={editingItem.name}
-                                className="w-full rounded-xl border border-input bg-background px-4 py-2 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
-                              />
-                            </div>
-                          </div>
-
-
-                          {/* Hierarchy Bases */}
-                          {(() => {
-                            const area = editingItem.level === 'branch' ? locations.find(i => i.id === editingItem.parentId) : null;
-                            const district = editingItem.level === 'area' ? locations.find(i => i.id === editingItem.parentId) :
-                              (editingItem.level === 'branch' && area ? locations.find(i => i.id === area.parentId) : null);
-                            const division = editingItem.level === 'district' ? locations.find(i => i.id === editingItem.parentId) :
-                              (district ? locations.find(i => i.id === district.parentId) : null);
-
-                            return (
-                              <div className="col-span-2 grid grid-flow-col auto-cols gap-4">
-                                {division && (
-                                  <div className="space-y-2">
-                                    <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Division Base</label>
-                                    <input
-                                      type="text"
-                                      readOnly
-                                      value={division.name}
-                                      className="w-full rounded-xl border border-input bg-background px-4 py-1 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
-                                    />
-                                  </div>
-                                )}
-                                {district && (
-                                  <div className="space-y-2">
-                                    <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">District Base</label>
-                                    <input
-                                      type="text"
-                                      readOnly
-                                      value={district.name}
-                                      className="w-full rounded-xl border border-input bg-background px-4 py-1 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
-                                    />
-                                  </div>
-                                )}
-                                {area && (
-                                  <div className="space-y-2">
-                                    <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Area Base</label>
-                                    <input
-                                      type="text"
-                                      readOnly
-                                      value={area.name}
-                                      className="w-full rounded-xl border border-input bg-background px-4 py-1 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })()}
-
-                          {/* {editingItem.level === 'branch' && (
-                            <div className="space-y-2 col-span-2">
-                              <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Address</label>
-                              <textarea
-                                readOnly
-                                value={editingItem.name}
-                                className="w-full rounded-xl border border-input bg-background px-4 py-2 text-sm text-foreground transition-all focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
-                              />
-                            </div>
-                          )} */}
-                        </div>
-                      </div>
-                      {/* Hierarchy View / right */}
-                      {(editingItem.level === 'division' ||
-                        editingItem.level === 'district' ||
-                        editingItem.level === 'area' ||
-                        editingItem.level === 'branch') && (
-                          <div className="col-span-3 h-full gap-4 min-h-0 overflow-y-auto pr-2">
-                            <div className="flex items-center justify-between">
-                              <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
-                                {editingItem.level === 'district' ? 'Assigned Areas' :
-                                  editingItem.level === 'area' ? 'Assigned Branches' :
-                                    'Branch Details'}
-                                {editingItem.level !== 'branch' && ` (${locations.filter(a => a.parentId === editingItem.id).length})`}
-                              </h3>
-                            </div>
-
-                            <div className="grid grid-cols-2 xl:grid-cols-3 gap-4">
-                              {editingItem.level === 'division' ? (
-                                locations
-                                  .filter(child => child.level === 'district' && child.parentId === editingItem.id)
-                                  .map(district => (
-                                    <div key={district.id} className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm ">
-                                      <div className="p-5 bg-muted/40 border-b border-border flex items-center justify-between">
-                                        <div className="flex h-1/2 items-center gap-3">
-                                          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-100 text-amber-600">
-                                            <Network size={20} />
-                                          </div>
-                                          <div>
-                                            <h4 className="font-bold text-muted-foreground">{district.name}</h4>
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      {/* Areas under district */}
-                                      <div className="flex flex-col h-[135px] p-5 min-h-0 overflow-y-auto">
-                                        {locations
-                                          .filter(a => a.level === 'area' && a.parentId === district.id)
-                                          .map(area => (
-                                            <div key={area.id} className="mb-4">
-                                              <div className="flex items-center gap-3 mb-3">
-                                                <Layers size={16} />
-                                                <span className="font-semibold">{area.name}</span>
-                                              </div>
-
-                                              {/* branches */}
-                                              <div className="space-y-1">
-                                                {locations
-                                                  .filter(b => b.level === 'branch' && b.parentId === area.id)
-                                                  .map(branch => (
-                                                    <div
-                                                      key={branch.id}
-                                                      className="flex items-center gap-3 p-3 bg-muted rounded-xl border border-border"
-                                                    >
-                                                      <span className="text-xs font-semibold">{branch.name}</span>
-                                                    </div>
-                                                  ))}
-                                              </div>
-                                            </div>
-                                          ))}
-                                      </div>
-                                    </div>
-                                  ))
-                              ) : (
-                                locations.filter(child => child.parentId === editingItem.id).map(child => (
-                                  <div key={child.id} className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm hover:border-primary/40 transition-all">
-                                    <div className="p-5 bg-muted/40 border-b border-border flex items-center justify-between">
-                                      <div className="flex items-center gap-3">
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${child.level === 'area' ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'
-                                          }`}>
-                                          {child.level === 'area' ? <Layers size={20} /> : <Building2 size={20} />}
-                                        </div>
-                                        <div>
-                                          <h4 className="font-bold text-muted-foreground">{child.name}</h4>
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    {child.level === 'area' && (
-                                      <div className="p-5 h-[135px] min-h-0 overflow-auto">
-                                        <div className="flex items-center justify-between mb-4">
-                                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Branches</span>
-                                          <span className="text-[10px] font-bold text-muted-foreground">
-                                            {locations.filter(b => b.level === 'branch' && b.parentId === child.id).length} Total
-                                          </span>
-                                        </div>
-
-                                        <div className="space-y-1">
-                                          {locations.filter(b => b.level === 'branch' && b.parentId === child.id).map(branch => (
-                                            <div key={branch.id} className="flex items-center gap-3 p-3 bg-muted rounded-xl border border-border group/branch hover:bg-card hover:border-primary/40 transition-all cursor-pointer">
-                                              <div className="flex-1 min-w-0">
-                                                <p className="text-xs font-semibold text-card-foreground truncate">{branch.name}</p>
-                                              </div>
-                                            </div>
-                                          ))}
-                                        </div>
-                                      </div>
-                                    )}
-                                  </div>
-                                ))
-                              )}
-                            </div>
-                          </div>
-                        )}
-                    </motion.div>
-                  ) : (
-                    <div className="h-full flex flex-col mx-auto items-center justify-center text-card-foreground">
-                      <div className="w-20 h-20 bg-card rounded-3xl shadow-sm border border-border flex items-center justify-center mb-6">
-                        <Edit3 size={32} strokeWidth={1.5} className="opacity-20" />
-                      </div>
-                      <h2 className="text-xl font-semibold text-muted-foreground mb-2">No Location Selected</h2>
-                      <p className="text-sm max-w-xs text-center opacity-60">
-                        Select a location from the list on the left to view and edit its details.
-                      </p>
-                    </div>
-                  )}
-                </AnimatePresence>
               </div>
             </main>
           </CardContent>
