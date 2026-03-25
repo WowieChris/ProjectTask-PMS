@@ -1,10 +1,12 @@
 import { Link, usePage } from '@inertiajs/react';
 import {
+  Cog,
   Columns2Icon,
   Database,
   LayoutGrid,
   ListOrderedIcon,
   MapPin,
+  MapPinned,
   NotepadTextDashedIcon,
   Search,
   User,
@@ -49,12 +51,7 @@ export function AppSidebar() {
       href: dashboard().url,
       icon: LayoutGrid,
     },
-    {
-      section: 'Management',
-      title: 'Browse',
-      href: '/browse',
-      icon: Search,
-    },
+
 
     // 🔹 OPERATIONS
     {
@@ -107,8 +104,14 @@ export function AppSidebar() {
       {
         section: 'Admin',
         title: 'ConfigFile',
-        icon: User,
+        icon: Cog,
         children: [
+          {
+
+            title: 'Navigation',
+            href: '/browse',
+            icon: MapPinned,
+          },
           { title: 'Senior Field Eng', href: '/config-files/infrastructure-eng' },
           { title: 'Field Eng', href: '/config-files/field-eng' }, // ✅ fixed case + consistency
           { title: 'RBAC', href: '/config-files/technical-support-eng' },

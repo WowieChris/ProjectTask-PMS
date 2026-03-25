@@ -359,7 +359,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  
+
                 </div>
 
 
@@ -367,32 +367,32 @@ export default function App() {
                 <div className="flex flex-col overflow-hidden w-2/3">
                   <div className="p-4 overflow-y-auto h-full">
                     {divisions
-                    .filter(division =>
-                      isGeneralOverview || !selectedUserGroup
-                        ? true
-                        : division.user_group_id === Number(selectedUserGroup)
-                    )
-                    .map(division => (
-                      <TreeNode key={division.id} label={division.name} defaultOpen>
+                      .filter(division =>
+                        isGeneralOverview || !selectedUserGroup
+                          ? true
+                          : division.user_group_id === Number(selectedUserGroup)
+                      )
+                      .map(division => (
+                        <TreeNode key={division.id} label={division.name} defaultOpen>
 
-                        {(division.districts ?? []).map(district => (
-                          <TreeNode key={district.id} label={district.name}>
+                          {(division.districts ?? []).map(district => (
+                            <TreeNode key={district.id} label={district.name}>
 
-                            {(district.areas ?? []).map(area => (
-                              <TreeNode key={area.id} label={area.name}>
+                              {(district.areas ?? []).map(area => (
+                                <TreeNode key={area.id} label={area.name}>
 
-                                {(area.branches ?? []).map(branch => (
-                                  <TreeNode key={branch.id} label={branch.name} />
-                                ))}
+                                  {(area.branches ?? []).map(branch => (
+                                    <TreeNode key={branch.id} label={branch.name} />
+                                  ))}
 
-                              </TreeNode>
-                            ))}
+                                </TreeNode>
+                              ))}
 
-                          </TreeNode>
-                        ))}
+                            </TreeNode>
+                          ))}
 
-                      </TreeNode>
-                    ))}
+                        </TreeNode>
+                      ))}
                   </div>
                 </div>
               </div>
