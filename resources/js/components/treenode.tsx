@@ -33,7 +33,7 @@ export function TreeNode({
   onDragOver,
   onDragLeave,
   onDrop,
-} : TreeNodeProps) {
+}: TreeNodeProps) {
   const [open, setOpen] = useState(defaultOpen)
   const hasChildren = Boolean(children)
   const isMovable = nodeData?.type !== 'division'
@@ -45,7 +45,9 @@ export function TreeNode({
         onDragStart={(e) => isMovable && nodeData && onDragStart?.(e, nodeData)}
         onDragOver={(e) => {
           e.preventDefault()
-          nodeData && onDragOver?.(e, nodeData)
+          if (nodeData) {
+            onDragOver?.(e, nodeData);
+          }
         }}
         onDragLeave={onDragLeave}
         onDrop={(e) => nodeData && onDrop?.(e, nodeData)}
