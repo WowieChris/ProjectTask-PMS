@@ -8,10 +8,18 @@ import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import AuthLayout from '@/layouts/auth-layout';
 import { verify, resend } from '@/routes/otp';
+import { useEffect } from 'react';
+import { usePage } from '@inertiajs/react';
 
 type Props = { status?: string };
 
 export default function Otp({ status }: Props) {
+  const { props } = usePage();
+  useEffect(() => {
+    if (props.otp_debug) {
+      console.log('OTP:', props.otp_debug);
+    }
+  }, [props.otp_debug]);
   return (
     <AuthLayout
       title="Verify OTP"
