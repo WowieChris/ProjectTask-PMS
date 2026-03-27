@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { TreeNode, TreeNodeData } from '@/components/treenode'
+import type { TreeNodeData } from '@/components/treenode'
 import { ChevronRight } from 'lucide-react'
+import { TreeNode } from '@/components/treenode'
 
 interface Division {
   id: number; name: string
