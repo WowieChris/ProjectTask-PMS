@@ -148,7 +148,7 @@ Route::middleware(['auth'])->group(function () {
             ->name('mylocation');
     });
     //Config FIle
-
+    Route::patch('/browse/move', [BrowseController::class, 'move']);
     Route::get('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'Index']);
     Route::post('/Config-Files/Field-Eng', [EngineerAssignmentController::class, 'store']);
 });
