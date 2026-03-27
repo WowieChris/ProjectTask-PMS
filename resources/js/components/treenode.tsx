@@ -1,60 +1,85 @@
-import { ChevronRight, ChevronDown } from "lucide-react";
+import { ChevronRight, ChevronDown, Move } from 'lucide-react'
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+
+export interface TreeNodeData {
+  id: number
+  name: string
+  type: 'division' | 'district' | 'area' | 'branch'
+}
+interface TreeNodeProps {
+  label: string
+  children?: React.ReactNode
+  defaultOpen?: boolean
+  nodeData?: TreeNodeData
+  isSelected?: boolean
+  onSelect?: (node: TreeNodeData) => void
+  isDragOver?: boolean
+  onDragStart?: (e: React.DragEvent, node: TreeNodeData) => void
+  onDragOver?: (e: React.DragEvent, node: TreeNodeData) => void
+  onDragLeave?: () => void
+  onDrop?: (e: React.DragEvent, node: TreeNodeData) => void
+}
 
 export function TreeNode({
   label,
   children,
   defaultOpen = false,
-}: {
-  label: string;
-  children?: React.ReactNode;
-  defaultOpen?: boolean;
-}) {
-  const [open, setOpen] = useState(defaultOpen);
-  const hasChildren = !!children;
+  nodeData,
+  isSelected,
+  onSelect,
+  isDragOver,
+  onDragStart,
+  onDragOver,
+  onDragLeave,
+  onDrop,
+} : TreeNodeProps) {
+  const [open, setOpen] = useState(defaultOpen)
+  const hasChildren = Boolean(children)
+  const isMovable = nodeData?.type !== 'division'
 
   return (
     <div className="select-none">
-      {/* NODE BOX */}
       <div
-        onClick={() => hasChildren && setOpen(!open)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg 
-                   bg-[#2a2d34] hover:bg-[#343741] 
-                   text-sm cursor-pointer transition-all"
+        draggable={isMovable}
+        onDragStart={(e) => isMovable && nodeData && onDragStart?.(e, nodeData)}
+        onDragOver={(e) => {
+          e.preventDefault()
+          nodeData && onDragOver?.(e, nodeData)
+        }}
+        onDragLeave={onDragLeave}
+        onDrop={(e) => nodeData && onDrop?.(e, nodeData)}
+        onClick={() => {
+          if (hasChildren) setOpen(o => !o)
+          if (nodeData && isMovable) onSelect?.(nodeData)
+        }}
+        className={`
+          group flex items-center gap-1 py-1.5 px-2 rounded-md cursor-pointer text-sm transition-colors
+          ${isSelected ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-muted'}
+          ${isDragOver ? 'bg-green-100 border border-dashed border-green-400' : ''}
+          ${isMovable ? 'cursor-grab active:cursor-grabbing' : ''}
+        `}
       >
-        {/* Arrow */}
-        {hasChildren ? (
-          <motion.div
-            animate={{ rotate: open ? 90 : 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <ChevronRight size={14} />
-          </motion.div>
-        ) : (
-          <span className="w-[14px]" />
-        )}
+        <span className="w-4 text-muted-foreground shrink-0">
+          {hasChildren
+            ? open
+              ? <ChevronDown size={14} />
+              : <ChevronRight size={14} />
+            : null}
+        </span>
 
-        {/* Label */}
-        <span className="flex-1">{label}</span>
+        <span className="flex-1 truncate">{label}</span>
+
+        {isMovable && isSelected && (
+          <Move size={13} className="text-primary shrink-0 opacity-70" />
+        )}
       </div>
 
-      {/* CHILDREN WITH ANIMATION */}
-      <AnimatePresence initial={false}>
-        {open && children && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="ml-4 mt-1 pl-3 border-l border-[#3a3d45] overflow-hidden"
-          >
-            <div className="flex flex-col gap-1 py-1">
-              {children}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {open && children && (
+        <div className="ml-4 border-l pl-2 border-border">
+          {children}
+        </div>
+      )}
     </div>
   );
 }
