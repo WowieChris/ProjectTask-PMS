@@ -1,8 +1,8 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
-* @see \App\Http\Controllers\BrowseController::index
- * @see app/Http/Controllers/BrowseController.php:15
- * @route '/browse'
+* @see \App\Http\Controllers\NavigationController::index
+ * @see app/Http/Controllers/NavigationController.php:15
+ * @route '/ConfigFiles/Navigation'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -11,31 +11,31 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: '/browse',
+    url: '/ConfigFiles/Navigation',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Http\Controllers\BrowseController::index
- * @see app/Http/Controllers/BrowseController.php:15
- * @route '/browse'
+* @see \App\Http\Controllers\NavigationController::index
+ * @see app/Http/Controllers/NavigationController.php:15
+ * @route '/ConfigFiles/Navigation'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
 }
 
 /**
-* @see \App\Http\Controllers\BrowseController::index
- * @see app/Http/Controllers/BrowseController.php:15
- * @route '/browse'
+* @see \App\Http\Controllers\NavigationController::index
+ * @see app/Http/Controllers/NavigationController.php:15
+ * @route '/ConfigFiles/Navigation'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
     method: 'get',
 })
 /**
-* @see \App\Http\Controllers\BrowseController::index
- * @see app/Http/Controllers/BrowseController.php:15
- * @route '/browse'
+* @see \App\Http\Controllers\NavigationController::index
+ * @see app/Http/Controllers/NavigationController.php:15
+ * @route '/ConfigFiles/Navigation'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -43,9 +43,9 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
-* @see \App\Http\Controllers\BrowseController::index
- * @see app/Http/Controllers/BrowseController.php:15
- * @route '/browse'
+* @see \App\Http\Controllers\NavigationController::index
+ * @see app/Http/Controllers/NavigationController.php:15
+ * @route '/ConfigFiles/Navigation'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -53,18 +53,18 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
-* @see \App\Http\Controllers\BrowseController::index
- * @see app/Http/Controllers/BrowseController.php:15
- * @route '/browse'
+* @see \App\Http\Controllers\NavigationController::index
+ * @see app/Http/Controllers/NavigationController.php:15
+ * @route '/ConfigFiles/Navigation'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
             method: 'get',
         })
             /**
-* @see \App\Http\Controllers\BrowseController::index
- * @see app/Http/Controllers/BrowseController.php:15
- * @route '/browse'
+* @see \App\Http\Controllers\NavigationController::index
+ * @see app/Http/Controllers/NavigationController.php:15
+ * @route '/ConfigFiles/Navigation'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({
@@ -78,9 +78,9 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     index.form = indexForm
 /**
-* @see \App\Http\Controllers\BrowseController::move
- * @see app/Http/Controllers/BrowseController.php:25
- * @route '/browse/move'
+* @see \App\Http\Controllers\NavigationController::move
+ * @see app/Http/Controllers/NavigationController.php:25
+ * @route '/navigation/move'
  */
 export const move = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: move.url(options),
@@ -89,22 +89,22 @@ export const move = (options?: RouteQueryOptions): RouteDefinition<'patch'> => (
 
 move.definition = {
     methods: ["patch"],
-    url: '/browse/move',
+    url: '/navigation/move',
 } satisfies RouteDefinition<["patch"]>
 
 /**
-* @see \App\Http\Controllers\BrowseController::move
- * @see app/Http/Controllers/BrowseController.php:25
- * @route '/browse/move'
+* @see \App\Http\Controllers\NavigationController::move
+ * @see app/Http/Controllers/NavigationController.php:25
+ * @route '/navigation/move'
  */
 move.url = (options?: RouteQueryOptions) => {
     return move.definition.url + queryParams(options)
 }
 
 /**
-* @see \App\Http\Controllers\BrowseController::move
- * @see app/Http/Controllers/BrowseController.php:25
- * @route '/browse/move'
+* @see \App\Http\Controllers\NavigationController::move
+ * @see app/Http/Controllers/NavigationController.php:25
+ * @route '/navigation/move'
  */
 move.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: move.url(options),
@@ -112,9 +112,9 @@ move.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
 })
 
     /**
-* @see \App\Http\Controllers\BrowseController::move
- * @see app/Http/Controllers/BrowseController.php:25
- * @route '/browse/move'
+* @see \App\Http\Controllers\NavigationController::move
+ * @see app/Http/Controllers/NavigationController.php:25
+ * @route '/navigation/move'
  */
     const moveForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: move.url({
@@ -127,9 +127,9 @@ move.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     })
 
             /**
-* @see \App\Http\Controllers\BrowseController::move
- * @see app/Http/Controllers/BrowseController.php:25
- * @route '/browse/move'
+* @see \App\Http\Controllers\NavigationController::move
+ * @see app/Http/Controllers/NavigationController.php:25
+ * @route '/navigation/move'
  */
         moveForm.patch = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: move.url({
@@ -142,6 +142,6 @@ move.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
         })
     
     move.form = moveForm
-const BrowseController = { index, move }
+const NavigationController = { index, move }
 
-export default BrowseController
+export default NavigationController

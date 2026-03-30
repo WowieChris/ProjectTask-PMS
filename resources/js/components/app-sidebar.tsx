@@ -109,7 +109,7 @@ export function AppSidebar() {
           {
 
             title: 'Navigation',
-            href: '/browse',
+            href: '/ConfigFiles/Navigation',
             icon: MapPinned,
           },
           { title: 'Senior Field Eng', href: '/ConfigFiles/SFE' },
