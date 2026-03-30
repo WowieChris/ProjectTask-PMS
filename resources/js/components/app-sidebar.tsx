@@ -90,6 +90,12 @@ export function AppSidebar() {
       href: '/mylocation',
       icon: MapPin,
     },
+    {
+      section: 'Management',
+      title: 'EA Monitoring',
+      href: '/EAMonitoring',
+      icon: MapPin,
+    },
   ];
 
   // 🔹 ADMIN SECTION

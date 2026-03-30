@@ -160,4 +160,10 @@ Route::middleware(['auth'])->group(function () {
     //SENIOR FIELD ENG CONTROLLER
     Route::get('/ConfigFiles/SFE', [SeniorFieldAssignmentController::class, 'index']);
     Route::post('/ConfigFiles/SFE', [SeniorFieldAssignmentController::class, 'store']);
+
+
+    //EA Monitoring
+    Route::get('/EAMonitoring', function () {
+        return Inertia::render('EAMonitoring/Index');
+    })->name('EAMonitoring');
 });
