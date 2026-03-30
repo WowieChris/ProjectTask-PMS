@@ -102,7 +102,7 @@ export default function SeniorEngineerAssignment({ divisions, engineers, distric
                                                     setDistrictOverridesState({}); // CLEAR overrides
                                                 }
                                             }}
-                                            className="w-full border rounded-lg p-2 bg-background"
+                                            className="w-full border rounded-lg p-2 test-foreground bg-background"
                                         >
                                             <option value="">Select Senior Engineer</option>
 
@@ -156,7 +156,7 @@ export default function SeniorEngineerAssignment({ divisions, engineers, distric
                                                             [district.id]: e.target.value || null,
                                                         })
                                                     }
-                                                    className="border rounded-lg p-1"
+                                                    className="border rounded-lg p-1 text-sm text-foreground bg-background"
                                                 >
                                                     <option value="">
                                                         Use Base Engineer

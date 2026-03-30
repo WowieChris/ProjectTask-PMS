@@ -102,7 +102,7 @@ export default function EngineerAssignment({ districts, engineers, areaAssignmen
                                                     setAreaOverrides({}); // 🔥 CLEAR overrides
                                                 }
                                             }}
-                                            className="w-full border rounded-lg p-2 bg-background"
+                                            className="w-full border rounded-lg p-2 text-foreground bg-background"
                                         >
                                             <option value="">Select Engineer</option>
 
@@ -158,7 +158,7 @@ export default function EngineerAssignment({ districts, engineers, areaAssignmen
                                                             [area.id]: e.target.value || null,
                                                         })
                                                     }
-                                                    className="border rounded-lg p-1"
+                                                    className="border rounded-lg p-1 text-sm text-foreground bg-background"
                                                 >
                                                     {/* ALWAYS show base option */}
                                                     <option value="">
