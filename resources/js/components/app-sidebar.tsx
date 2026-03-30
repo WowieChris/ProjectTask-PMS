@@ -7,6 +7,7 @@ import {
   ListOrderedIcon,
   MapPin,
   MapPinned,
+  Monitor,
   NotepadTextDashedIcon,
   Search,
   User,
@@ -94,7 +95,7 @@ export function AppSidebar() {
       section: 'Management',
       title: 'EA Monitoring',
       href: '/EAMonitoring',
-      icon: MapPin,
+      icon: Monitor,
     },
   ];
 
