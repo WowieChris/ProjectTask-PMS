@@ -57,7 +57,7 @@ export function TreeNode({
         }}
         className={`
           group flex items-center gap-1 py-1.5 px-2 rounded-md cursor-pointer text-sm transition-colors
-          ${isSelected ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-muted'}
+          ${isSelected ? 'bg-primary text-primary font-medium' : 'hover:bg-muted'}
           ${isDragOver ? 'bg-green-100 border border-dashed border-green-400' : ''}
           ${isMovable ? 'cursor-grab active:cursor-grabbing' : ''}
         `}
@@ -78,7 +78,7 @@ export function TreeNode({
       </div>
 
       {open && children && (
-        <div className="ml-4 border-l pl-2 border-border">
+        <div className="ml-4 border-l pl-0 border-border border rounded-lg">
           {children}
         </div>
       )}
