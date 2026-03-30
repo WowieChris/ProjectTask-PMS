@@ -112,8 +112,8 @@ export function AppSidebar() {
             href: '/browse',
             icon: MapPinned,
           },
-          { title: 'Senior Field Eng', href: '/config-files/infrastructure-eng' },
-          { title: 'Field Eng', href: '/config-files/field-eng' }, // ✅ fixed case + consistency
+          { title: 'Senior Field Eng', href: '/ConfigFiles/SFE' },
+          { title: 'Field Eng', href: '/ConfigFiles/Field-Eng' }, // ✅ fixed case + consistency
           { title: 'RBAC', href: '/config-files/technical-support-eng' },
         ],
       },
