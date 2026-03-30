@@ -8,21 +8,17 @@ use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
-use App\Http\Controllers\AreaBrowseController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\UserGroupController;
-use App\Http\Controllers\BrowseController;
+use App\Http\Controllers\NavigationController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DesignationsController;
 use App\Http\Controllers\locationController;
 use App\Http\Controllers\MyLocationController;
 use App\Http\Controllers\EngineerAssignmentController;
-use App\Models\User;
-use App\Models\Division;
-use App\Models\DistrictEngineer;
-use App\Models\DivisionEngineer;
+
 use App\Http\Controllers\SeniorFieldAssignmentController;
 
 Route::get('/', function () {
@@ -114,18 +110,22 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
         Route::get('/user-groups', [UserGroupController::class, 'index'])->middleware('auth');
     });
+    //UserGroup
     Route::middleware(['auth'])->group(function () {
 
 
         Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
         Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
     });
+
+    //NAVIGATION INDEX
     Route::middleware(['auth'])->group(function () {
-        //browse index
-        Route::get('/browse', [BrowseController::class, 'index'])
-            ->name('browse.index')
+        //NAVIGATION index
+        Route::get('/ConfigFiles/Navigation', [NavigationController::class, 'index'])
+            // ->name('navigation.index')
             ->middleware('auth');
     });
+
     Route::middleware(['auth'])->group(function () {
         Route::resource('designations', DesignationsController::class);
     });
@@ -152,10 +152,12 @@ Route::middleware(['auth'])->group(function () {
             ->name('mylocation');
     });
     //Config FIle
-    Route::patch('/browse/move', [BrowseController::class, 'move']);
+    //NAVIGATION CONTROLLER
+    Route::patch('/navigation/move', [NavigationController::class, 'move']);
+    //FIELD ENG CONTROLLER
     Route::get('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'Index']);
     Route::post('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'store']);
+    //SENIOR FIELD ENG CONTROLLER
     Route::get('/ConfigFiles/SFE', [SeniorFieldAssignmentController::class, 'index']);
     Route::post('/ConfigFiles/SFE', [SeniorFieldAssignmentController::class, 'store']);
-    
 });
