@@ -20,6 +20,10 @@ use App\Http\Controllers\locationController;
 use App\Http\Controllers\MyLocationController;
 use App\Http\Controllers\EngineerAssignmentController;
 use App\Models\User;
+use App\Models\Division;
+use App\Models\DistrictEngineer;
+use App\Models\DivisionEngineer;
+use App\Http\Controllers\SeniorFieldAssignmentController;
 
 Route::get('/', function () {
     return Inertia::render('auth/login', [
@@ -151,5 +155,7 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/browse/move', [BrowseController::class, 'move']);
     Route::get('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'Index']);
     Route::post('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'store']);
-
+    Route::get('/ConfigFiles/SFE', [SeniorFieldAssignmentController::class, 'index']);
+    Route::post('/ConfigFiles/SFE', [SeniorFieldAssignmentController::class, 'store']);
+    
 });

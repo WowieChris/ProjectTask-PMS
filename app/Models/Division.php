@@ -3,10 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\DivisionEngineer;
 
 class Division extends Model
 {
     protected $fillable = ['user_group_id', 'name', 'area_id'];
+
+    public function engineer()
+    {
+        return $this->hasOne(DivisionEngineer::class);
+    }
 
     public function userGroup()
     {
