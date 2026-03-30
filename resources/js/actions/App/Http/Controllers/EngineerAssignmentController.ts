@@ -80,7 +80,7 @@ Index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \App\Http\Controllers\EngineerAssignmentController::store
  * @see app/Http/Controllers/EngineerAssignmentController.php:34
- * @route '/Config-Files/Field-Eng'
+ * @route '/ConfigFiles/Field-Eng'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -89,13 +89,13 @@ export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => (
 
 store.definition = {
     methods: ["post"],
-    url: '/Config-Files/Field-Eng',
+    url: '/ConfigFiles/Field-Eng',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\EngineerAssignmentController::store
  * @see app/Http/Controllers/EngineerAssignmentController.php:34
- * @route '/Config-Files/Field-Eng'
+ * @route '/ConfigFiles/Field-Eng'
  */
 store.url = (options?: RouteQueryOptions) => {
     return store.definition.url + queryParams(options)
@@ -104,7 +104,7 @@ store.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\EngineerAssignmentController::store
  * @see app/Http/Controllers/EngineerAssignmentController.php:34
- * @route '/Config-Files/Field-Eng'
+ * @route '/ConfigFiles/Field-Eng'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -114,7 +114,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     /**
 * @see \App\Http\Controllers\EngineerAssignmentController::store
  * @see app/Http/Controllers/EngineerAssignmentController.php:34
- * @route '/Config-Files/Field-Eng'
+ * @route '/ConfigFiles/Field-Eng'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: store.url(options),
@@ -124,7 +124,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             /**
 * @see \App\Http\Controllers\EngineerAssignmentController::store
  * @see app/Http/Controllers/EngineerAssignmentController.php:34
- * @route '/Config-Files/Field-Eng'
+ * @route '/ConfigFiles/Field-Eng'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: store.url(options),

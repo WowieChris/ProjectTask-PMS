@@ -150,5 +150,6 @@ Route::middleware(['auth'])->group(function () {
     //Config FIle
     Route::patch('/browse/move', [BrowseController::class, 'move']);
     Route::get('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'Index']);
-    Route::post('/Config-Files/Field-Eng', [EngineerAssignmentController::class, 'store']);
+    Route::post('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'store']);
+
 });
