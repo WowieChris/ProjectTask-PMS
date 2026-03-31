@@ -10,11 +10,9 @@ use App\Models\District;
 use App\Models\Area;
 use App\Models\Branch;
 use App\Models\AreaEngineer;
-use App\Models\DistrictEngineer;
-use App\Models\Engineer;
 use App\Models\User;
+use App\Models\DistrictEngineer;
 use Illuminate\Support\Facades\DB;
-
 
 class NavigationController extends Controller
 {
@@ -45,29 +43,24 @@ class NavigationController extends Controller
         $areaAssignments = AreaEngineer::all();
 
         // ✅ FILTER SENIOR FIELD (SFE)
-        $userGroupId = request('user_group_id');
 
-        $seniorFields = User::when($userGroupId, function ($query) use ($userGroupId) {
-            $query->where('user_group_id', $userGroupId);
-        })->get();
+        $seniorFields = User::whereHas('designation', function ($q) {
+            $q->where('name', 'Senior Field Engineer');
+        })
+            ->when($userGroupId, function ($query) use ($userGroupId) {
+                $query->where('user_group_id', $userGroupId);
+            })
+            ->get();
 
 
         return Inertia::render('ConfigFiles/Navigation/Index', [
             'userGroups'   => UserGroup::all(),
             'seniorFields' => $seniorFields, // ✅ THIS IS WHAT YOU WILL DISPLAY
-            'districts' => $districts,
-            'engineers' => $engineers,
+            'districts'       => District::with(['areas', 'engineer'])->get(),
+            'engineers'       => User::whereHas('designation', fn($q) => $q->where('name', 'Field Engineer'))->get(),
             'areaAssignments' => $areaAssignments,
             'divisions' => Division::with('districts.areas.branches')->get(),
         ]);
-
-        return Inertia::render('Navigation/Index', [
-    
-    // 👇 add these
-    'districts'       => District::with(['areas', 'engineer'])->get(),
-    'engineers'       => User::whereHas('designation', fn($q) => $q->where('name', 'Field Engineer'))->get(),
-    'areaAssignments' => AreaAssignment::all(),
-]);
     }
 
     public function move(Request $request)
@@ -89,5 +82,35 @@ class NavigationController extends Controller
 
         return back()->with('success', 'Location moved successfully.');
     }
-    
+    // Store
+    public function store(Request $request)
+    {
+        DB::transaction(function () use ($request) {
+
+            // 🔥 SAVE BASE ENGINEER
+            if ($request->base_engineer) {
+                DistrictEngineer::updateOrCreate(
+                    ['district_id' => $request->district_id],
+                    ['user_id' => $request->base_engineer]
+                );
+            } else {
+                DistrictEngineer::where('district_id', $request->district_id)->delete();
+            }
+
+            // 🔥 SAVE AREA OVERRIDES
+            foreach ($request->overrides as $area_id => $user_id) {
+
+                if ($user_id) {
+                    AreaEngineer::updateOrCreate(
+                        ['area_id' => $area_id],
+                        ['user_id' => $user_id]
+                    );
+                } else {
+                    AreaEngineer::where('area_id', $area_id)->delete();
+                }
+            }
+        });
+
+        return back()->with('success', 'Assignment saved!');
+    }
 }
