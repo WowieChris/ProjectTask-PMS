@@ -28,6 +28,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'district',
         'employment_status',
         'must_change_password',
+        'user_group_id',
     ];
 
     protected $hidden = [

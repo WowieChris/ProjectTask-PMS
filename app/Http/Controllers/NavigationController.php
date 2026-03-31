@@ -39,6 +39,14 @@ class NavigationController extends Controller
             'areaAssignments' => $areaAssignments,
             'divisions' => Division::with('districts.areas.branches')->get(),
         ]);
+
+        return Inertia::render('Navigation/Index', [
+    
+    // 👇 add these
+    'districts'       => District::with(['areas', 'engineer'])->get(),
+    'engineers'       => User::whereHas('designation', fn($q) => $q->where('name', 'Field Engineer'))->get(),
+    'areaAssignments' => AreaAssignment::all(),
+]);
     }
 
     public function move(Request $request)
@@ -60,4 +68,5 @@ class NavigationController extends Controller
 
         return back()->with('success', 'Location moved successfully.');
     }
+    
 }

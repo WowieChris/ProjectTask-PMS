@@ -4,13 +4,31 @@ import { MapPin, User } from "lucide-react";
 import { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import AppLayout from "@/layouts/app-layout";
+import { useEffect } from "react";
 
-export default function EngineerAssignment({ districts, engineers, areaAssignments }: any) {
+export default function EngineerAssignment({ districts = [], engineers = [], areaAssignments = [], editingDistrict }: any) {
 
-    const [selectedDistrict, setSelectedDistrict] = useState<any>(null);
+    const [selectedDistrict, setSelectedDistrict] = useState<any>(editingDistrict ?? null);;
     const [areaOverrides, setAreaOverrides] = useState<any>({});
     const [baseEngineer, setBaseEngineer] = useState<any>("");
+ // Sync when editingDistrict changes from parent
+useEffect(() => {
+    if (editingDistrict) {
+        // Find the full district object with engineer relationship
+    const fullDistrict = districts.find((d: any) => d.id === editingDistrict.id);
+    if (!fullDistrict) return;
+      setSelectedDistrict(editingDistrict);
+      setBaseEngineer(editingDistrict.engineer?.user_id || "");
 
+      const overrides: any = {};
+      areaAssignments.forEach((a: any) => {
+        if (editingDistrict.areas.some((area: any) => area.id === a.area_id)) {
+          overrides[a.area_id] = a.user_id;
+        }
+      });
+      setAreaOverrides(overrides);
+    }
+  }, [editingDistrict]);
     return (
             <div className="flex">
                         {/* LEFT PANEL = DISTRICTS */}

@@ -88,7 +88,7 @@ export default function App() {
   const [dragOverNode, setDragOverNode] = useState<TreeNodeData | null>(null)
   const [moveModalOpen, setMoveModalOpen] = useState(false)
   const { districts, engineers, areaAssignments } = usePage().props as any;
-
+  const [editingDistrict, setEditingDistrict] = useState<any>(null);
   const handleMove = (targetId: number) => {
     if (!selectedNode && !draggedNode) return
     const moving = selectedNode ?? draggedNode!
@@ -373,6 +373,17 @@ export default function App() {
                                   setMoveModalOpen(true)
                                 }
                               }}
+                              actions={
+                                <Button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setEditingDistrict(district);
+                                  }}
+                                  className="text-xs text-foreground px-2"
+                                >
+                                  Edit
+                                </Button>
+                                }
                             >
                               {(district.areas ?? []).map(area => (
                                 <TreeNode
@@ -429,6 +440,7 @@ export default function App() {
                   districts={districts}
                   engineers={engineers}
                   areaAssignments={areaAssignments}
+                  editingDistrict={editingDistrict}  // 👈 add this
                 />
                 </div>
               </div>
