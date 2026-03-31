@@ -9,16 +9,38 @@ use Illuminate\Http\Request;
 use App\Models\District;
 use App\Models\Area;
 use App\Models\Branch;
+use App\Models\User;
 
 class NavigationController extends Controller
 {
-    public function index()
+
+    // public function index()
+    // {
+    //     $divisions = Division::with('districts.areas.branches')->get();
+
+    //     return Inertia::render('ConfigFiles/Navigation/Index', [
+    //         'userGroups' => UserGroup::all(),
+    //         'divisions' => Division::with('districts.areas.branches')->get(),
+    //     ]);
+    // }
+    public function index(Request $request)
     {
+        $userGroupId = $request->input('user_group_id');
+
         $divisions = Division::with('districts.areas.branches')->get();
 
+        // ✅ FILTER SENIOR FIELD (SFE)
+        $userGroupId = request('user_group_id');
+
+        $seniorFields = User::when($userGroupId, function ($query) use ($userGroupId) {
+            $query->where('user_group_id', $userGroupId);
+        })->get();
+
+
         return Inertia::render('ConfigFiles/Navigation/Index', [
-            'userGroups' => UserGroup::all(),
-            'divisions' => Division::with('districts.areas.branches')->get(),
+            'userGroups'   => UserGroup::all(),
+            'divisions'    => $divisions,
+            'seniorFields' => $seniorFields, // ✅ THIS IS WHAT YOU WILL DISPLAY
         ]);
     }
 
