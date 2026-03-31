@@ -10,4 +10,8 @@ class Designation extends Model
         'name',
         'role',
     ];
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }

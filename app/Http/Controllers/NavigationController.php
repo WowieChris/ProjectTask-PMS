@@ -18,8 +18,20 @@ use Illuminate\Support\Facades\DB;
 
 class NavigationController extends Controller
 {
-    public function index()
+
+    // public function index()
+    // {
+    //     $divisions = Division::with('districts.areas.branches')->get();
+
+    //     return Inertia::render('ConfigFiles/Navigation/Index', [
+    //         'userGroups' => UserGroup::all(),
+    //         'divisions' => Division::with('districts.areas.branches')->get(),
+    //     ]);
+    // }
+    public function index(Request $request)
     {
+        $userGroupId = $request->input('user_group_id');
+
         $divisions = Division::with('districts.areas.branches')->get();
         $districts = District::with([
             'areas',
@@ -32,8 +44,17 @@ class NavigationController extends Controller
 
         $areaAssignments = AreaEngineer::all();
 
+        // ✅ FILTER SENIOR FIELD (SFE)
+        $userGroupId = request('user_group_id');
+
+        $seniorFields = User::when($userGroupId, function ($query) use ($userGroupId) {
+            $query->where('user_group_id', $userGroupId);
+        })->get();
+
+
         return Inertia::render('ConfigFiles/Navigation/Index', [
-            'userGroups' => UserGroup::all(),
+            'userGroups'   => UserGroup::all(),
+            'seniorFields' => $seniorFields, // ✅ THIS IS WHAT YOU WILL DISPLAY
             'districts' => $districts,
             'engineers' => $engineers,
             'areaAssignments' => $areaAssignments,

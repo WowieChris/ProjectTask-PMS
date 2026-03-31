@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Http\Controllers;
+
 use App\Http\Controllers\Auth\OtpController;
 use App\Http\Controllers\Auth\PasswordSetupController;
 use App\Http\Controllers\UserController;
@@ -12,14 +14,14 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\UserGroupController;
-use App\Http\Controllers\NavigationController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DesignationsController;
 use App\Http\Controllers\locationController;
 use App\Http\Controllers\MyLocationController;
 use App\Http\Controllers\EngineerAssignmentController;
-
 use App\Http\Controllers\SeniorFieldAssignmentController;
+use App\Http\Controllers\NavigationController;
+
 
 Route::get('/', function () {
     return Inertia::render('auth/login', [
@@ -118,13 +120,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
     });
 
-    //NAVIGATION INDEX
-    Route::middleware(['auth'])->group(function () {
-        //NAVIGATION index
-        Route::get('/ConfigFiles/Navigation', [NavigationController::class, 'index'])
-            // ->name('navigation.index')
-            ->middleware('auth');
-    });
+
 
     Route::middleware(['auth'])->group(function () {
         Route::resource('designations', DesignationsController::class);
@@ -153,7 +149,7 @@ Route::middleware(['auth'])->group(function () {
     });
     //Config FIle
     //NAVIGATION CONTROLLER
-    Route::patch('/navigation/move', [NavigationController::class, 'move']);
+    // Route::patch('/navigation/move', [NavigationController::class, 'move']);
     //FIELD ENG CONTROLLER
     Route::get('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'Index']);
     Route::post('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'store']);
@@ -161,7 +157,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/ConfigFiles/SFE', [SeniorFieldAssignmentController::class, 'index']);
     Route::post('/ConfigFiles/SFE', [SeniorFieldAssignmentController::class, 'store']);
 
-
+    //NAVIGATION INDEX
+    Route::middleware(['auth'])->group(function () {
+        //NAVIGATION index
+        Route::get('/ConfigFiles/Navigation', [NavigationController::class, 'index']);
+    });
     //EA Monitoring
     Route::get('/EAMonitoring', function () {
         return Inertia::render('EAMonitoring/Index');

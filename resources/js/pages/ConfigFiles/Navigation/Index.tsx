@@ -69,15 +69,26 @@ interface UserGroup {
   id: number;
   name: string;
 }
+interface SeniorField {
+  id: number;
+  name: string;
+  last_name: string;
+}
 interface PageProps extends Record<string, unknown> {
   userGroups: UserGroup[];
   divisions: Division[];
+  seniorFields: SeniorField[];
+  filters: {
+    user_group_id?: string;
+  };
 }
 
 export default function App() {
-  const { divisions, userGroups } = usePage<PageProps>().props;
+  const { divisions, userGroups, seniorFields, filters } = usePage<PageProps>().props;
 
-  const [selectedUserGroup, setSelectedUserGroup] = useState<string>('');
+  const [selectedUserGroup, setSelectedUserGroup] = useState<string>(
+    filters?.user_group_id ?? ''
+  );
   const [currentLevel, setCurrentLevel] = useState<Level>('division');
   const [selectedParentId, setSelectedParentId] = useState<string | null>(null);
   const [editingItem, setEditingItem] = useState<LocationItem | null>(null);
@@ -291,11 +302,19 @@ export default function App() {
                       <select
                         value={selectedUserGroup}
                         onChange={(e) => {
-                          setSelectedUserGroup(e.target.value);
-                          handleLevelChange('division');
+                          const value = e.target.value;
+                          setSelectedUserGroup(value);
+
+                          router.get('/ConfigFiles/Navigation', {
+                            user_group_id: value
+                          }, {
+                            preserveState: true,
+                            replace: true
+                          });
                         }}
                         className="w-full appearance-none rounded-xl border border-input bg-background px-4 py-3 text-sm font-medium text-foreground transition-all cursor-pointer focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
                       >
+
                         <option value="">All Field Groups</option>
                         {(userGroups || []).map(group => (
                           <option key={group.id} value={group.id}>
@@ -307,7 +326,29 @@ export default function App() {
                     </div>
                   </div>
 
+                  {/* ✅ Senior Field Users (NAME ONLY) */}
+                  <div className="p-4 border-t border-border">
+                    <h3 className="text-sm font-semibold mb-2">
+                      Senior Field Users
+                    </h3>
 
+                    {seniorFields?.length === 0 && (
+                      <p className="text-xs text-muted-foreground">
+                        No Senior Field users found
+                      </p>
+                    )}
+
+                    <div className="space-y-1">
+                      {seniorFields?.map((user) => (
+                        <div
+                          key={user.id}
+                          className="text-sm px-2 py-1 rounded hover:bg-muted cursor-pointer"
+                        >
+                          {user.name} {user.last_name}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
 
 
@@ -383,7 +424,7 @@ export default function App() {
                                 >
                                   Edit
                                 </Button>
-                                }
+                              }
                             >
                               {(district.areas ?? []).map(area => (
                                 <TreeNode
@@ -422,6 +463,7 @@ export default function App() {
                       ))}
                   </div>
 
+
                   {/* Move Modal */}
                   <MoveLocationModal
                     open={moveModalOpen}
@@ -436,16 +478,16 @@ export default function App() {
                 </div>
                 {/* Detail Panel / right */}
                 <div className="w-1/3 p-4 overflow-y-auto h-full">
-                <EngineerAssignment 
-                  districts={districts}
-                  engineers={engineers}
-                  areaAssignments={areaAssignments}
-                  editingDistrict={editingDistrict}  // 👈 add this
-                />
+                  <EngineerAssignment
+                    districts={districts}
+                    engineers={engineers}
+                    areaAssignments={areaAssignments}
+                    editingDistrict={editingDistrict}  // 👈 add this
+                  />
                 </div>
               </div>
 
-              
+
             </main>
           </CardContent>
         </Card>
