@@ -26,6 +26,8 @@ import { MoveLocationModal } from '@/components/move-location-modal'
 import type { TreeNodeData } from '@/components/treenode'
 import { router } from '@inertiajs/react'
 import { Button } from '@/components/ui/button';
+import EngineerAssignment from '../Field-Eng/Index';
+
 // --- Types ---
 
 type Level = 'division' | 'district' | 'area' | 'branch';
@@ -96,6 +98,7 @@ export default function App() {
   const [draggedNode, setDraggedNode] = useState<TreeNodeData | null>(null)
   const [dragOverNode, setDragOverNode] = useState<TreeNodeData | null>(null)
   const [moveModalOpen, setMoveModalOpen] = useState(false)
+  const { districts, engineers, areaAssignments } = usePage().props as any;
 
   const handleMove = (targetId: number) => {
     if (!selectedNode && !draggedNode) return
@@ -349,8 +352,8 @@ export default function App() {
                 </div>
 
 
-                {/* List Content / right */}
-                <div className="flex flex-col overflow-hidden w-2/3">
+                {/* List Content / center */}
+                <div className="flex flex-col overflow-hidden w-1/3 border-r">
                   <div className="p-4 overflow-y-auto h-full space-y-2">
 
                     {/* Move button — appears when a node is selected */}
@@ -462,7 +465,17 @@ export default function App() {
                     onConfirm={handleMove}
                   />
                 </div>
+                {/* Detail Panel / right */}
+                <div className="w-1/3 p-4 overflow-y-auto h-full">
+                  <EngineerAssignment
+                    districts={districts}
+                    engineers={engineers}
+                    areaAssignments={areaAssignments}
+                  />
+                </div>
               </div>
+
+
             </main>
           </CardContent>
         </Card>

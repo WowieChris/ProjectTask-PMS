@@ -9,7 +9,12 @@ use Illuminate\Http\Request;
 use App\Models\District;
 use App\Models\Area;
 use App\Models\Branch;
+use App\Models\AreaEngineer;
+use App\Models\DistrictEngineer;
+use App\Models\Engineer;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+
 
 class NavigationController extends Controller
 {
@@ -28,6 +33,16 @@ class NavigationController extends Controller
         $userGroupId = $request->input('user_group_id');
 
         $divisions = Division::with('districts.areas.branches')->get();
+        $districts = District::with([
+            'areas',
+            'engineer' // base engineer
+        ])->get();
+
+        $engineers = User::whereHas('designation', function ($q) {
+            $q->where('name', 'Field Engineer');
+        })->get();
+
+        $areaAssignments = AreaEngineer::all();
 
         // ✅ FILTER SENIOR FIELD (SFE)
         $userGroupId = request('user_group_id');
@@ -39,8 +54,11 @@ class NavigationController extends Controller
 
         return Inertia::render('ConfigFiles/Navigation/Index', [
             'userGroups'   => UserGroup::all(),
-            'divisions'    => $divisions,
             'seniorFields' => $seniorFields, // ✅ THIS IS WHAT YOU WILL DISPLAY
+            'districts' => $districts,
+            'engineers' => $engineers,
+            'areaAssignments' => $areaAssignments,
+            'divisions' => Division::with('districts.areas.branches')->get(),
         ]);
     }
 
