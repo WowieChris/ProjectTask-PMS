@@ -19,6 +19,7 @@ interface TreeNodeProps {
   onDragOver?: (e: React.DragEvent, node: TreeNodeData) => void
   onDragLeave?: () => void
   onDrop?: (e: React.DragEvent, node: TreeNodeData) => void
+  actions?: React.ReactNode
 }
 
 export function TreeNode({
@@ -33,6 +34,7 @@ export function TreeNode({
   onDragOver,
   onDragLeave,
   onDrop,
+  actions,
 }: TreeNodeProps) {
   const [open, setOpen] = useState(defaultOpen)
   const hasChildren = Boolean(children)
@@ -71,6 +73,11 @@ export function TreeNode({
         </span>
 
         <span className="flex-1 truncate">{label}</span>
+          {actions && (
+            <div onClick={e => e.stopPropagation()}>
+              {actions}
+            </div>
+          )}
 
         {isMovable && isSelected && (
           <Move size={13} className="text-primary shrink-0 opacity-70" />
