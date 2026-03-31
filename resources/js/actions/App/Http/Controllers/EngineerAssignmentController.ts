@@ -79,7 +79,7 @@ Index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     Index.form = IndexForm
 /**
 * @see \App\Http\Controllers\EngineerAssignmentController::store
- * @see app/Http/Controllers/EngineerAssignmentController.php:34
+ * @see app/Http/Controllers/EngineerAssignmentController.php:31
  * @route '/ConfigFiles/Field-Eng'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -94,7 +94,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\EngineerAssignmentController::store
- * @see app/Http/Controllers/EngineerAssignmentController.php:34
+ * @see app/Http/Controllers/EngineerAssignmentController.php:31
  * @route '/ConfigFiles/Field-Eng'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\EngineerAssignmentController::store
- * @see app/Http/Controllers/EngineerAssignmentController.php:34
+ * @see app/Http/Controllers/EngineerAssignmentController.php:31
  * @route '/ConfigFiles/Field-Eng'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -113,7 +113,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\EngineerAssignmentController::store
- * @see app/Http/Controllers/EngineerAssignmentController.php:34
+ * @see app/Http/Controllers/EngineerAssignmentController.php:31
  * @route '/ConfigFiles/Field-Eng'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -123,7 +123,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\EngineerAssignmentController::store
- * @see app/Http/Controllers/EngineerAssignmentController.php:34
+ * @see app/Http/Controllers/EngineerAssignmentController.php:31
  * @route '/ConfigFiles/Field-Eng'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
