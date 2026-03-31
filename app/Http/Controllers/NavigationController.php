@@ -9,15 +9,34 @@ use Illuminate\Http\Request;
 use App\Models\District;
 use App\Models\Area;
 use App\Models\Branch;
+use App\Models\AreaEngineer;
+use App\Models\DistrictEngineer;
+use App\Models\Engineer;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+
 
 class NavigationController extends Controller
 {
     public function index()
     {
         $divisions = Division::with('districts.areas.branches')->get();
+        $districts = District::with([
+            'areas',
+            'engineer' // base engineer
+        ])->get();
+
+        $engineers = User::whereHas('designation', function ($q) {
+            $q->where('name', 'Field Engineer');
+        })->get();
+
+        $areaAssignments = AreaEngineer::all();
 
         return Inertia::render('ConfigFiles/Navigation/Index', [
             'userGroups' => UserGroup::all(),
+            'districts' => $districts,
+            'engineers' => $engineers,
+            'areaAssignments' => $areaAssignments,
             'divisions' => Division::with('districts.areas.branches')->get(),
         ]);
     }
