@@ -57,7 +57,7 @@ export function TreeNode({
         }}
         className={`
           group flex items-center gap-1 py-1.5 px-2 rounded-md cursor-pointer text-sm transition-colors
-          ${isSelected ? 'bg-primary text-primary font-medium' : 'hover:bg-muted'}
+          ${isSelected ? 'bg-primary text-muted-primary font-medium' : 'hover:bg-muted'}
           ${isDragOver ? 'bg-green-100 border border-dashed border-green-400' : ''}
           ${isMovable ? 'cursor-grab active:cursor-grabbing' : ''}
         `}

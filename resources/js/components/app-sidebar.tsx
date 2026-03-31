@@ -115,7 +115,7 @@ export function AppSidebar() {
         children: [
           {
 
-            title: 'Navigation',
+            title: 'Location Master FIle',
             href: '/ConfigFiles/Navigation',
             icon: MapPinned,
           },

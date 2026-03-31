@@ -264,8 +264,8 @@ export default function App() {
                 <MapPin size={22} />
               </div>
               <div>
-                <h1 className="text-lg font-semibold tracking-tight">Location Masterfile</h1>
-                <p className="text-xs text-card-foreground font-medium uppercase tracking-wider">Module Prototype</p>
+                <h1 className="text-lg font-semibold tracking-tight">Field Group Operation Set up</h1>
+                {/* <p className="text-xs text-card-foreground font-medium uppercase tracking-wider">Module Prototype</p> */}
               </div>
             </div>
             {/* <div className="flex items-center gap-4">
@@ -281,32 +281,6 @@ export default function App() {
               <div className="flex flex-row border-b border-border overflow-hidden">
                 {/* General Overview Toggle /left */}
                 <div className="w-1/3 border-r border-border flex flex-col p-3 gap-3">
-                  <div className="flex w-full items-center justify-between rounded-2xl border border-border bg-muted p-4">
-                    <div className="flex items-center gap-3">
-                      <div className={`p-2 rounded-lg ${isGeneralOverview ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
-                        <Layers size={18} />
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-foreground">General Overview</p>
-                        <p className="text-[10px] text-muted-foreground">Disable hierarchical filtering</p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => {
-                        setIsGeneralOverview(!isGeneralOverview);
-                        setEditingItem(null);
-                        if (!isGeneralOverview) {
-                          setSelectedParentId(null);
-                        } else {
-                          setCurrentLevel('division');
-                          setSelectedParentId(null);
-                        }
-                      }}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${isGeneralOverview ? 'bg-primary' : 'bg-secondary'}`}
-                    >
-                      <span className={`inline-block h-4 w-4 transform rounded-full bg-primary-foreground transition-transform ${isGeneralOverview ? 'translate-x-6' : 'translate-x-1'}`} />
-                    </button>
-                  </div>
 
                   {/* Division Selector */}
                   <div className={`space-y-2 transition-opacity ${isGeneralOverview ? 'hidden' : 'opacity-100'}`}>
@@ -320,7 +294,7 @@ export default function App() {
                         }}
                         className="w-full appearance-none rounded-xl border border-input bg-background px-4 py-3 text-sm font-medium text-foreground transition-all cursor-pointer focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/50"
                       >
-                        <option value="">Select User Group</option>
+                        <option value="">All Field Groups</option>
                         {(userGroups || []).map(group => (
                           <option key={group.id} value={group.id}>
                             {group.name}
