@@ -8,16 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('designations', function (Blueprint $table) {
+        Schema::create('divisions', function (Blueprint $table) {
             $table->id();
-            $table->enum('role', ['user', 'admin'])->default('user');
-            $table->string('name')->unique();
+            $table->string('name');
+
+            $table->foreignId('area_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('user_group_id')->nullable()->constrained()->nullOnDelete();
+
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('designations');
+        Schema::dropIfExists('divisions');
     }
 };
