@@ -8,18 +8,21 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('division_engineers', function (Blueprint $table) {
+        Schema::create('divisions', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('division_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('area_id')->nullable();
+
+            $table->string('name');
 
             $table->timestamps();
+
+            $table->unique(['area_id', 'name']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('division_engineers');
+        Schema::dropIfExists('divisions');
     }
 };

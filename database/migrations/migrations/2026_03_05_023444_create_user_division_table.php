@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 
 return new class extends Migration
 {
@@ -11,13 +10,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_division', function (Blueprint $table) {
+        Schema::create('user_division', function (\Illuminate\Database\Schema\Blueprint $table) {
             $table->id();
-
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('division_id')->constrained()->cascadeOnDelete();
-
+            $table->foreignId('division_id')->constrained('divisions')->cascadeOnDelete();
             $table->unique(['user_id', 'division_id']);
+            $table->timestamps();
         });
     }
 
