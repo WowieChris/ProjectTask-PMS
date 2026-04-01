@@ -168,4 +168,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/EAMonitoring', function () {
         return Inertia::render('EAMonitoring/Index');
     })->name('EAMonitoring');
+
+    Route::post('/assign-senior-field-usergroup', [UserController::class, 'assignUserGroup']);
 });

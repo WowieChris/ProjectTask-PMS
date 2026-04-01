@@ -15,7 +15,7 @@ class EngineerAssignmentController extends Controller
 {
     public function index()
     {
-        $districts = District::with('areas')->get();
+        $districts = District::with('areas', 'engineer')->get();
 
         $engineers = User::whereHas('designation', function ($q) {
             $q->where('name', 'Field Engineer');
@@ -31,31 +31,34 @@ class EngineerAssignmentController extends Controller
     }
     public function store(Request $request)
     {
-        try{
-        DB::transaction(function () use ($request) {
+        try {
+            DB::transaction(function () use ($request) {
 
-            // ✅ UPDATE USERS TABLE
-            if ($request->base_engineer) {
-                User::where('id', $request->base_engineer)
-                    ->update(['district_id' => $request->district_id]);
-            }
-
-            // ✅ AREA OVERRIDES (keep this)
-            foreach ($request->overrides as $area_id => $user_id) {
-
-                if ($user_id) {
-                    AreaEngineer::updateOrCreate(
-                        ['area_id' => $area_id],
-                        ['user_id' => $user_id]
+                // ✅ SAVE BASE ENGINEER (correct way)
+                if ($request->base_engineer) {
+                    DistrictEngineer::updateOrCreate(
+                        ['district_id' => $request->district_id],
+                        ['user_id' => $request->base_engineer]
                     );
-                } else {
-                    AreaEngineer::where('area_id', $area_id)->delete();
                 }
-            }
-        });
 
-        return back()->with('success', 'Assignment saved!');
-    } catch (Exception $e) {
-        return back()->with('error', $e->getMessage()); // 👈 shows exact error
-    }}
+                // ✅ AREA OVERRIDES
+                foreach ($request->overrides as $area_id => $user_id) {
+
+                    if ($user_id) {
+                        AreaEngineer::updateOrCreate(
+                            ['area_id' => $area_id],
+                            ['user_id' => $user_id]
+                        );
+                    } else {
+                        AreaEngineer::where('area_id', $area_id)->delete();
+                    }
+                }
+            });
+
+            return back()->with('success', 'Assignment saved!');
+        } catch (Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
 }
