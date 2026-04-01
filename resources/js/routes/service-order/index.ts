@@ -1,6 +1,6 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 /**
- * @see routes/web.php:136
+ * @see routes/web.php:132
  * @route '/service-order/field-eng'
  */
 export const field = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -14,7 +14,7 @@ field.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
- * @see routes/web.php:136
+ * @see routes/web.php:132
  * @route '/service-order/field-eng'
  */
 field.url = (options?: RouteQueryOptions) => {
@@ -22,7 +22,7 @@ field.url = (options?: RouteQueryOptions) => {
 }
 
 /**
- * @see routes/web.php:136
+ * @see routes/web.php:132
  * @route '/service-order/field-eng'
  */
 field.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -30,7 +30,7 @@ field.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     method: 'get',
 })
 /**
- * @see routes/web.php:136
+ * @see routes/web.php:132
  * @route '/service-order/field-eng'
  */
 field.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -39,7 +39,7 @@ field.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
- * @see routes/web.php:136
+ * @see routes/web.php:132
  * @route '/service-order/field-eng'
  */
     const fieldForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -48,7 +48,7 @@ field.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
- * @see routes/web.php:136
+ * @see routes/web.php:132
  * @route '/service-order/field-eng'
  */
         fieldForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -56,7 +56,7 @@ field.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
             /**
- * @see routes/web.php:136
+ * @see routes/web.php:132
  * @route '/service-order/field-eng'
  */
         fieldForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -71,7 +71,7 @@ field.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     field.form = fieldForm
 /**
- * @see routes/web.php:140
+ * @see routes/web.php:136
  * @route '/service-order/technical-support-eng'
  */
 export const tech = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -85,7 +85,7 @@ tech.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
- * @see routes/web.php:140
+ * @see routes/web.php:136
  * @route '/service-order/technical-support-eng'
  */
 tech.url = (options?: RouteQueryOptions) => {
@@ -93,7 +93,7 @@ tech.url = (options?: RouteQueryOptions) => {
 }
 
 /**
- * @see routes/web.php:140
+ * @see routes/web.php:136
  * @route '/service-order/technical-support-eng'
  */
 tech.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -101,7 +101,7 @@ tech.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     method: 'get',
 })
 /**
- * @see routes/web.php:140
+ * @see routes/web.php:136
  * @route '/service-order/technical-support-eng'
  */
 tech.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -110,7 +110,7 @@ tech.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
- * @see routes/web.php:140
+ * @see routes/web.php:136
  * @route '/service-order/technical-support-eng'
  */
     const techForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -119,7 +119,7 @@ tech.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
- * @see routes/web.php:140
+ * @see routes/web.php:136
  * @route '/service-order/technical-support-eng'
  */
         techForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -127,7 +127,7 @@ tech.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
             /**
- * @see routes/web.php:140
+ * @see routes/web.php:136
  * @route '/service-order/technical-support-eng'
  */
         techForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -142,7 +142,7 @@ tech.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     tech.form = techForm
 /**
- * @see routes/web.php:144
+ * @see routes/web.php:140
  * @route '/service-order/infrastructure-eng'
  */
 export const infra = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -156,7 +156,7 @@ infra.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
- * @see routes/web.php:144
+ * @see routes/web.php:140
  * @route '/service-order/infrastructure-eng'
  */
 infra.url = (options?: RouteQueryOptions) => {
@@ -164,7 +164,7 @@ infra.url = (options?: RouteQueryOptions) => {
 }
 
 /**
- * @see routes/web.php:144
+ * @see routes/web.php:140
  * @route '/service-order/infrastructure-eng'
  */
 infra.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -172,7 +172,7 @@ infra.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     method: 'get',
 })
 /**
- * @see routes/web.php:144
+ * @see routes/web.php:140
  * @route '/service-order/infrastructure-eng'
  */
 infra.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -181,7 +181,7 @@ infra.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
- * @see routes/web.php:144
+ * @see routes/web.php:140
  * @route '/service-order/infrastructure-eng'
  */
     const infraForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -190,7 +190,7 @@ infra.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
- * @see routes/web.php:144
+ * @see routes/web.php:140
  * @route '/service-order/infrastructure-eng'
  */
         infraForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -198,7 +198,7 @@ infra.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
             /**
- * @see routes/web.php:144
+ * @see routes/web.php:140
  * @route '/service-order/infrastructure-eng'
  */
         infraForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

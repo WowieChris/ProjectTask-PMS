@@ -15,10 +15,7 @@ class EngineerAssignmentController extends Controller
 {
     public function index()
     {
-        $districts = District::with([
-            'areas',
-            'engineer' // base engineer
-        ])->get();
+        $districts = District::with('areas')->get();
 
         $engineers = User::whereHas('designation', function ($q) {
             $q->where('name', 'Field Engineer');
@@ -37,17 +34,13 @@ class EngineerAssignmentController extends Controller
         try{
         DB::transaction(function () use ($request) {
 
-            // 🔥 SAVE BASE ENGINEER
+            // ✅ UPDATE USERS TABLE
             if ($request->base_engineer) {
-                DistrictEngineer::updateOrCreate(
-                    ['district_id' => $request->district_id],
-                    ['user_id' => $request->base_engineer]
-                );
-            } else {
-                DistrictEngineer::where('district_id', $request->district_id)->delete();
+                User::where('id', $request->base_engineer)
+                    ->update(['district_id' => $request->district_id]);
             }
 
-            // 🔥 SAVE AREA OVERRIDES
+            // ✅ AREA OVERRIDES (keep this)
             foreach ($request->overrides as $area_id => $user_id) {
 
                 if ($user_id) {

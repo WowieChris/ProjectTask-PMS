@@ -153,6 +153,7 @@ Route::middleware(['auth'])->group(function () {
     //FIELD ENG CONTROLLER
     Route::get('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'Index']);
     Route::post('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'store']);
+
     //SENIOR FIELD ENG CONTROLLER
     Route::get('/ConfigFiles/SFE', [SeniorFieldAssignmentController::class, 'index']);
     Route::post('/ConfigFiles/SFE', [SeniorFieldAssignmentController::class, 'store']);
@@ -161,6 +162,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['auth'])->group(function () {
         //NAVIGATION index
         Route::get('/ConfigFiles/Navigation', [NavigationController::class, 'index']);
+        Route::post('/ConfigFiles/Navigation', [NavigationController::class, 'store']);
     });
     //EA Monitoring
     Route::get('/EAMonitoring', function () {
