@@ -10,14 +10,11 @@ return new class extends Migration
     {
         Schema::create('areas', function (Blueprint $table) {
             $table->id();
-
-            $table->unsignedBigInteger('district_id')->nullable();
-
             $table->string('name');
 
-            $table->timestamps();
+            $table->foreignId('district_id')->constrained()->cascadeOnDelete();
 
-            $table->unique(['district_id', 'name']);
+            $table->timestamps();
         });
     }
 

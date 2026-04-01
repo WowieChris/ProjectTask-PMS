@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('district_engineers', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('district_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete(); // Engineer
+
             $table->timestamps();
         });
     }

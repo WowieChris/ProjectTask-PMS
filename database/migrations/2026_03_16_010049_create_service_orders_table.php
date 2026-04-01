@@ -13,18 +13,15 @@ return new class extends Migration
     {
         Schema::create('service_orders', function (Blueprint $table) {
             $table->id();
-            $table->string('tse_jo_no')->unique();
-            $table->string('tse_assigned')->nullable();
-            $table->string('requesting_party');
-            $table->string('department')->nullable();
-            $table->string('location')->nullable();
-            $table->date('date_reported');
-            $table->string('issues_encountered')->nullable();
-            $table->text('technical_issue_description')->nullable();
-            $table->text('action_taken')->nullable();
-            $table->string('frequency')->nullable();
-            $table->integer('turnaround_time_mins')->nullable();
-            $table->string('status')->default('Pending');
+
+            $table->string('title');
+            $table->text('description')->nullable();
+
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('division_id')->nullable()->constrained()->nullOnDelete();
+
+            $table->string('status')->default('pending');
+
             $table->timestamps();
         });
     }

@@ -10,8 +10,10 @@ return new class extends Migration
     {
         Schema::create('division_engineers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('division_id')->constrained()->cascadeOnDelete();
+
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('division_id')->constrained()->cascadeOnDelete();
+
             $table->timestamps();
         });
     }

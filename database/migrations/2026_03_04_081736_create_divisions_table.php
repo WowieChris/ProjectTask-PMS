@@ -10,14 +10,12 @@ return new class extends Migration
     {
         Schema::create('divisions', function (Blueprint $table) {
             $table->id();
-
-            $table->unsignedBigInteger('area_id')->nullable();
-
             $table->string('name');
 
-            $table->timestamps();
+            $table->foreignId('area_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('user_group_id')->nullable()->constrained()->nullOnDelete();
 
-            $table->unique(['area_id', 'name']);
+            $table->timestamps();
         });
     }
 

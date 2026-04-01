@@ -10,14 +10,8 @@ return new class extends Migration
     {
         Schema::create('districts', function (Blueprint $table) {
             $table->id();
-
-            $table->unsignedBigInteger('division_id')->nullable();
-
             $table->string('name');
-
             $table->timestamps();
-
-            $table->unique(['division_id', 'name']);
         });
     }
 
