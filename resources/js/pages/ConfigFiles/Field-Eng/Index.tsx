@@ -88,7 +88,7 @@ export default function EngineerAssignment({
                             <select
                                 value={baseEngineer}
                                 onChange={(e) => handleBaseEngineerChange(e.target.value)}
-                                className="w-full border rounded-lg p-2"
+                                className="bg-muted w-full border rounded-lg p-2"
                             >
                                 <option value="">Select Engineer</option>
                                 {engineers.map((eng: any) => (
@@ -107,7 +107,7 @@ export default function EngineerAssignment({
                                 </p>
                                 <Button
                                     onClick={handleSave}
-                                    className="bg-primary text-white px-4 py-2 rounded-lg"
+                                    className="bg-primary text-primary-foreground px-4 py-2 rounded-lg"
                                 >
                                     Save Assignment
                                 </Button>
@@ -130,7 +130,7 @@ export default function EngineerAssignment({
                                     <select
                                         value={areaOverrides[area.id] ?? ""}
                                         onChange={(e) => handleAreaOverrideChange(area.id, e.target.value)}
-                                        className="border rounded-lg p-1 text-sm"
+                                        className="bg-muted border rounded-lg p-1 text-sm"
                                     >
                                         <option value="">
                                             Use Base Engineer
