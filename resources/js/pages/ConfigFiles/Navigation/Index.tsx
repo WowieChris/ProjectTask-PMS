@@ -420,7 +420,7 @@ export default function App() {
                                     e.stopPropagation();
                                     setEditingDistrict(district);
                                   }}
-                                  className="text-xs text-foreground px-2"
+                                  className="text-xs text-primary-foreground px-2"
                                 >
                                   Edit
                                 </Button>

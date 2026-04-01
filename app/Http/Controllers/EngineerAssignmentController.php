@@ -9,6 +9,7 @@ use App\Models\DistrictEngineer;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use Exception;
 
 class EngineerAssignmentController extends Controller
 {
@@ -30,6 +31,7 @@ class EngineerAssignmentController extends Controller
     }
     public function store(Request $request)
     {
+        try{
         DB::transaction(function () use ($request) {
 
             // ✅ UPDATE USERS TABLE
@@ -53,5 +55,7 @@ class EngineerAssignmentController extends Controller
         });
 
         return back()->with('success', 'Assignment saved!');
-    }
+    } catch (Exception $e) {
+        return back()->with('error', $e->getMessage()); // 👈 shows exact error
+    }}
 }
