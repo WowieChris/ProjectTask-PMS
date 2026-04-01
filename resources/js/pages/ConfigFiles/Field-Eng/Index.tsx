@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import AppLayout from "@/layouts/app-layout";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function EngineerAssignment({ districts = [], engineers = [], areaAssignments = [], editingDistrict }: any) {
 
@@ -18,7 +19,7 @@ useEffect(() => {
     const fullDistrict = districts.find((d: any) => d.id === editingDistrict.id);
     if (!fullDistrict) return;
       setSelectedDistrict(editingDistrict);
-      setBaseEngineer(editingDistrict.engineer?.user_id || "");
+      setBaseEngineer(fullDistrict.engineer?.user_id || "");
 
       const overrides: any = {};
       areaAssignments.forEach((a: any) => {
@@ -115,9 +116,9 @@ useEffect(() => {
                                         <p className="text-sm font-semibold">
                                             Area Overrides
                                             </p>
-                                            <button
+                                            <Button
                                                 onClick={() => {
-                                                    router.post('/Config-Files/Field-Eng', {
+                                                    router.post('/ConfigFiles/Field-Eng', {
                                                         district_id: selectedDistrict.id,
                                                         base_engineer: baseEngineer,
                                                         overrides: areaOverrides,
@@ -126,7 +127,7 @@ useEffect(() => {
                                                 className="bg-primary text-primary-foreground px-4 py-2 rounded-lg"
                                             >
                                                 Save Assignment
-                                            </button>
+                                            </Button>
                                         
                                         </div>
 

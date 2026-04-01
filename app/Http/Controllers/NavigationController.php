@@ -55,20 +55,20 @@ class NavigationController extends Controller
         return Inertia::render('ConfigFiles/Navigation/Index', [
             'userGroups'   => UserGroup::all(),
             'seniorFields' => $seniorFields, // ✅ THIS IS WHAT YOU WILL DISPLAY
-            'districts' => $districts,
-            'engineers' => $engineers,
+            'districts'       => District::with(['areas', 'engineer'])->get(),
+            'engineers'       => User::whereHas('designation', fn($q) => $q->where('name', 'Field Engineer'))->get(),
             'areaAssignments' => $areaAssignments,
             'divisions' => Division::with('districts.areas.branches')->get(),
         ]);
 
-        return Inertia::render('Navigation/Index', [
+//         return Inertia::render('Navigation/Index', [
     
-    // 👇 add these
-    'districts'       => District::with(['areas', 'engineer'])->get(),
-    'engineers'       => User::whereHas('designation', fn($q) => $q->where('name', 'Field Engineer'))->get(),
-    'areaAssignments' => AreaAssignment::all(),
-]);
-    }
+//     // 👇 add these
+//     'districts'       => District::with(['areas', 'engineer'])->get(),
+//     'engineers'       => User::whereHas('designation', fn($q) => $q->where('name', 'Field Engineer'))->get(),
+//     'areaAssignments' => AreaAssignment::all(),
+// ]);
+     }
 
     public function move(Request $request)
     {
