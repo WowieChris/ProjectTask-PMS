@@ -8,15 +8,21 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('districts', function (Blueprint $table) {
+        Schema::create('areas', function (Blueprint $table) {
             $table->id();
+
+            $table->unsignedBigInteger('district_id')->nullable();
+
             $table->string('name');
+
             $table->timestamps();
+
+            $table->unique(['district_id', 'name']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('districts');
+        Schema::dropIfExists('areas');
     }
 };
