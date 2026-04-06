@@ -217,10 +217,10 @@ export default function App() {
                       label={division.name}
                       nodeData={{ id: division.id, name: division.name, type: 'division' }}
                       isSelected={selectedNode?.id === division.id && selectedNode?.type === 'division'}
-                      // isDragOver={dragOverNode?.id === division.id && dragOverNode?.type === 'division'}
-                      // onDragOver={(_, node) => setDragOverNode(node)}
-                      // onDragLeave={() => setDragOverNode(null)}
-                      // onDrop={() => { if (draggedNode) { setSelectedNode(draggedNode); setDragOverNode(null); setMoveModalOpen(true); } }}
+                      isDragOver={dragOverNode?.id === division.id && dragOverNode?.type === 'division'}
+                      onDragOver={(_, node) => setDragOverNode(node)}
+                      onDragLeave={() => setDragOverNode(null)}
+                      onDrop={() => { if (draggedNode) { setSelectedNode(draggedNode); setDragOverNode(null); setMoveModalOpen(true); } }}
                     >
                       {(division.districts ?? []).map(district => (
                         <TreeNode
@@ -228,12 +228,12 @@ export default function App() {
                           label={district.name}
                           nodeData={{ id: district.id, name: district.name, type: 'district' }}
                           isSelected={selectedNode?.id === district.id && selectedNode?.type === 'district'}
-                          // isDragOver={dragOverNode?.id === district.id && dragOverNode?.type === 'district'}
-                          // onSelect={setSelectedNode}
-                          // onDragStart={(_, node) => setDraggedNode(node)}
-                          // onDragOver={(_, node) => setDragOverNode(node)}
-                          // onDragLeave={() => setDragOverNode(null)}
-                          // onDrop={() => { if (draggedNode) { setSelectedNode(draggedNode); setDragOverNode(null); setMoveModalOpen(true); } }}
+                          isDragOver={dragOverNode?.id === district.id && dragOverNode?.type === 'district'}
+                          onSelect={setSelectedNode}
+                          onDragStart={(_, node) => setDraggedNode(node)}
+                          onDragOver={(_, node) => setDragOverNode(node)}
+                          onDragLeave={() => setDragOverNode(null)}
+                          onDrop={() => { if (draggedNode) { setSelectedNode(draggedNode); setDragOverNode(null); setMoveModalOpen(true); } }}
                           actions={
                             <Button
                               size="sm"
@@ -251,12 +251,12 @@ export default function App() {
                               label={area.name}
                               nodeData={{ id: area.id, name: area.name, type: 'area' }}
                               isSelected={selectedNode?.id === area.id && selectedNode?.type === 'area'}
-                              // isDragOver={dragOverNode?.id === area.id && dragOverNode?.type === 'area'}
-                              // onSelect={setSelectedNode}
-                              // onDragStart={(_, node) => setDraggedNode(node)}
-                              // onDragOver={(_, node) => setDragOverNode(node)}
-                              // onDragLeave={() => setDragOverNode(null)}
-                              // onDrop={() => { if (draggedNode) { setSelectedNode(draggedNode); setDragOverNode(null); setMoveModalOpen(true); } }}
+                              isDragOver={dragOverNode?.id === area.id && dragOverNode?.type === 'area'}
+                              onSelect={setSelectedNode}
+                              onDragStart={(_, node) => setDraggedNode(node)}
+                              onDragOver={(_, node) => setDragOverNode(node)}
+                              onDragLeave={() => setDragOverNode(null)}
+                              onDrop={() => { if (draggedNode) { setSelectedNode(draggedNode); setDragOverNode(null); setMoveModalOpen(true); } }}
                             >
                               {(area.branches ?? []).map(branch => (
                                 <TreeNode
@@ -265,7 +265,7 @@ export default function App() {
                                   nodeData={{ id: branch.id, name: branch.name, type: 'branch' }}
                                   isSelected={selectedNode?.id === branch.id && selectedNode?.type === 'branch'}
                                   onSelect={setSelectedNode}
-                                  // onDragStart={(_, node) => setDraggedNode(node)}
+                                  onDragStart={(_, node) => setDraggedNode(node)}
                                 />
                               ))}
                             </TreeNode>
