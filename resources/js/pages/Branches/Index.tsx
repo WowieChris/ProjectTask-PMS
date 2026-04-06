@@ -52,19 +52,15 @@ export default function BranchIndex({
     });
 
     const filtered = useMemo(() => {
-        const query = q.trim().toLowerCase();
-        if (!query) return branches;
-
-        return branches.filter((b) => {
-            const area = b.area?.name?.toLowerCase() ?? "";
-            const branch = b.name?.toLowerCase() ?? "";
-            return branch.includes(query) || area.includes(query);
-        });
+        const query = q.toLowerCase();
+        return branches.filter((b) =>
+            b.name.toLowerCase().includes(query) ||
+            b.area?.name?.toLowerCase().includes(query)
+        );
     }, [branches, q]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
         post("/branches", {
             onSuccess: () => reset("area_id", "name"),
         });
@@ -72,12 +68,10 @@ export default function BranchIndex({
 
     const handleDelete = (id: number) => {
         if (!confirm("Delete this branch?")) return;
-
         router.delete(`/branches/${id}`);
     };
-    console.log(areas);
-    return (
 
+    return (
         <AppLayout
             breadcrumbs={[
                 { title: "Dashboard", href: "/dashboard" },
@@ -86,18 +80,46 @@ export default function BranchIndex({
         >
             <Head title="Branches" />
 
-            <div className="space-y-6">
+            <div className="p-6 space-y-6">
 
-                {/* Branch Entry */}
-                <Card>
+                {/* 🔥 STATS */}
+                <div className="grid grid-cols-3 gap-4">
+                    <Card className="hover:shadow-lg transition">
+                        <CardContent className="p-4">
+                            <p className="text-sm text-muted-foreground">Total Branches</p>
+                            <p className="text-2xl font-bold">{branches.length}</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="hover:shadow-lg transition">
+                        <CardContent className="p-4">
+                            <p className="text-sm text-muted-foreground">Total Area's</p>
+                            <p className="text-2xl font-bold">
+                                {new Set(branches.filter(d => d.area).map(d => d.area_id)).size}
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="hover:shadow-lg transition">
+                        <CardContent className="p-4">
+                            <p className="text-sm text-muted-foreground">Unassigned</p>
+                            <p className="text-2xl font-bold">
+                                {branches.filter(b => !b.area).length}
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* 🔥 FORM */}
+                <Card className="shadow-lg">
                     <CardHeader>
-                        <CardTitle>Branch Entry</CardTitle>
+                        <CardTitle>Add Branch</CardTitle>
                     </CardHeader>
 
                     <CardContent>
-                        <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-3">
+                        <form onSubmit={handleSubmit} className="grid md:grid-cols-3 gap-4">
 
-                            {/* Area Select */}
+                            {/* AREA */}
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Area</label>
 
@@ -117,13 +139,9 @@ export default function BranchIndex({
                                         ))}
                                     </SelectContent>
                                 </Select>
-
-                                {errors.area_id && (
-                                    <p className="text-sm text-red-500">{errors.area_id}</p>
-                                )}
                             </div>
 
-                            {/* Branch Name */}
+                            {/* NAME */}
                             <div className="space-y-2">
                                 <label className="text-sm font-medium">Branch Name</label>
 
@@ -132,16 +150,12 @@ export default function BranchIndex({
                                     onChange={(e) => setData("name", e.target.value)}
                                     placeholder="e.g. Branch 1"
                                 />
-
-                                {errors.name && (
-                                    <p className="text-sm text-red-500">{errors.name}</p>
-                                )}
                             </div>
 
-                            {/* Save Button */}
+                            {/* BUTTON */}
                             <div className="flex items-end">
-                                <Button type="submit" disabled={processing} className="w-full">
-                                    {processing ? "Saving..." : "Save Branch"}
+                                <Button className="w-full">
+                                    {processing ? "Saving..." : "Save"}
                                 </Button>
                             </div>
 
@@ -149,63 +163,68 @@ export default function BranchIndex({
                     </CardContent>
                 </Card>
 
-                {/* Branch List */}
-                <Card>
-                    <CardHeader className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                {/* 🔥 TABLE */}
+                <Card className="shadow-lg">
+                    <CardHeader className="flex justify-between items-center">
                         <CardTitle>Branch List</CardTitle>
 
-                        <div className="w-full md:w-80">
-                            <Input
-                                value={q}
-                                onChange={(e) => setQ(e.target.value)}
-                                placeholder="Search branch or area..."
-                            />
-                        </div>
+                        <Input
+                            placeholder="Search branch..."
+                            value={q}
+                            onChange={(e) => setQ(e.target.value)}
+                            className="w-80"
+                        />
                     </CardHeader>
 
-                    <CardContent>
+                    <CardContent className="p-0">
                         <Table>
 
-                            <TableHeader>
+                            <TableHeader className="bg-muted/30">
                                 <TableRow>
-                                    <TableHead className="w-[90px]">ID</TableHead>
-                                    <TableHead>Branch</TableHead>
+                                    <TableHead className="pl-6">Branch</TableHead>
                                     <TableHead>Area</TableHead>
-                                    <TableHead className="w-[140px] text-right">
-                                        Actions
-                                    </TableHead>
+                                    <TableHead className="text-right pr-6">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
 
                             <TableBody>
                                 {filtered.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={4} className="text-center text-muted-foreground">
-                                            No records found.
+                                        <TableCell colSpan={3} className="text-center py-12">
+                                            No branches found.
                                         </TableCell>
                                     </TableRow>
                                 ) : (
                                     filtered.map((b) => (
-                                        <TableRow key={b.id}>
-                                            <TableCell>{b.id}</TableCell>
-
-                                            <TableCell className="font-medium">
+                                        <TableRow
+                                            key={b.id}
+                                            className="hover:bg-muted/40 transition"
+                                        >
+                                            <TableCell className="pl-6 font-medium">
                                                 {b.name}
                                             </TableCell>
 
                                             <TableCell>
-                                                {b.area?.name ?? `Area #${b.area_id}`}
+                                                <span className="px-3 py-1 text-xs rounded-full bg-muted">
+                                                    {b.area?.name ?? "No Area"}
+                                                </span>
                                             </TableCell>
 
-                                            <TableCell className="text-right">
-                                                <Button
-                                                    variant="destructive"
-                                                    size="sm"
-                                                    onClick={() => handleDelete(b.id)}
-                                                >
-                                                    Delete
-                                                </Button>
+                                            <TableCell className="text-right pr-6">
+                                                <div className="flex justify-end gap-2">
+                                                    <Button size="sm" variant="secondary">
+                                                        Edit
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="destructive"
+                                                        onClick={() => handleDelete(b.id)}
+                                                    >
+                                                        Delete
+                                                    </Button>
+                                                </div>
                                             </TableCell>
+
                                         </TableRow>
                                     ))
                                 )}

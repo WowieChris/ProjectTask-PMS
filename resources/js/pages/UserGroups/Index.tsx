@@ -22,6 +22,7 @@ type UserGroup = {
   id: number;
   name: string;
   base_office?: string | null;
+  divisions?: { id: number; name: string }[];
 };
 
 type PageProps = {
@@ -95,7 +96,7 @@ export default function UserGroupsIndex(props: PageProps) {
 
           <Card>
             <CardContent className="p-4">
-              <div className="text-sm text-muted-foreground">With Office</div>
+              <div className="text-sm text-muted-foreground">With Covered Group</div>
               <div className="text-2xl font-bold">
                 {userGroups.filter(g => g.base_office).length}
               </div>
@@ -104,7 +105,7 @@ export default function UserGroupsIndex(props: PageProps) {
 
           <Card>
             <CardContent className="p-4">
-              <div className="text-sm text-muted-foreground">No Office</div>
+              <div className="text-sm text-muted-foreground">No Covered Group</div>
               <div className="text-2xl font-bold">
                 {userGroups.filter(g => !g.base_office).length}
               </div>
@@ -160,7 +161,7 @@ export default function UserGroupsIndex(props: PageProps) {
 
               <TableHeader className="bg-muted/30">
                 <TableRow>
-                  <TableHead className="pl-6">Name</TableHead>
+                  <TableHead className="pl-6">Group</TableHead>
                   <TableHead>Division Covered</TableHead>
                   <TableHead className="text-right pr-6">Actions</TableHead>
                 </TableRow>
