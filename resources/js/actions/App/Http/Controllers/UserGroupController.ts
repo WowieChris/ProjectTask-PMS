@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\UserGroupController::index
- * @see app/Http/Controllers/UserGroupController.php:75
+ * @see app/Http/Controllers/UserGroupController.php:76
  * @route '/user-groups'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\UserGroupController::index
- * @see app/Http/Controllers/UserGroupController.php:75
+ * @see app/Http/Controllers/UserGroupController.php:76
  * @route '/user-groups'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\UserGroupController::index
- * @see app/Http/Controllers/UserGroupController.php:75
+ * @see app/Http/Controllers/UserGroupController.php:76
  * @route '/user-groups'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\UserGroupController::index
- * @see app/Http/Controllers/UserGroupController.php:75
+ * @see app/Http/Controllers/UserGroupController.php:76
  * @route '/user-groups'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\UserGroupController::index
- * @see app/Http/Controllers/UserGroupController.php:75
+ * @see app/Http/Controllers/UserGroupController.php:76
  * @route '/user-groups'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\UserGroupController::index
- * @see app/Http/Controllers/UserGroupController.php:75
+ * @see app/Http/Controllers/UserGroupController.php:76
  * @route '/user-groups'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\UserGroupController::index
- * @see app/Http/Controllers/UserGroupController.php:75
+ * @see app/Http/Controllers/UserGroupController.php:76
  * @route '/user-groups'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -176,7 +176,7 @@ show.head = (args: { userGroup: string | number } | [userGroup: string | number 
     show.form = showForm
 /**
 * @see \App\Http\Controllers\UserGroupController::store
- * @see app/Http/Controllers/UserGroupController.php:159
+ * @see app/Http/Controllers/UserGroupController.php:160
  * @route '/user-groups'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -191,7 +191,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\UserGroupController::store
- * @see app/Http/Controllers/UserGroupController.php:159
+ * @see app/Http/Controllers/UserGroupController.php:160
  * @route '/user-groups'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -200,7 +200,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\UserGroupController::store
- * @see app/Http/Controllers/UserGroupController.php:159
+ * @see app/Http/Controllers/UserGroupController.php:160
  * @route '/user-groups'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -210,7 +210,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\UserGroupController::store
- * @see app/Http/Controllers/UserGroupController.php:159
+ * @see app/Http/Controllers/UserGroupController.php:160
  * @route '/user-groups'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -220,7 +220,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\UserGroupController::store
- * @see app/Http/Controllers/UserGroupController.php:159
+ * @see app/Http/Controllers/UserGroupController.php:160
  * @route '/user-groups'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -231,7 +231,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\UserGroupController::destroy
- * @see app/Http/Controllers/UserGroupController.php:170
+ * @see app/Http/Controllers/UserGroupController.php:171
  * @route '/user-groups/{userGroup}'
  */
 export const destroy = (args: { userGroup: number | { id: number } } | [userGroup: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -246,7 +246,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\UserGroupController::destroy
- * @see app/Http/Controllers/UserGroupController.php:170
+ * @see app/Http/Controllers/UserGroupController.php:171
  * @route '/user-groups/{userGroup}'
  */
 destroy.url = (args: { userGroup: number | { id: number } } | [userGroup: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -279,7 +279,7 @@ destroy.url = (args: { userGroup: number | { id: number } } | [userGroup: number
 
 /**
 * @see \App\Http\Controllers\UserGroupController::destroy
- * @see app/Http/Controllers/UserGroupController.php:170
+ * @see app/Http/Controllers/UserGroupController.php:171
  * @route '/user-groups/{userGroup}'
  */
 destroy.delete = (args: { userGroup: number | { id: number } } | [userGroup: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -289,7 +289,7 @@ destroy.delete = (args: { userGroup: number | { id: number } } | [userGroup: num
 
     /**
 * @see \App\Http\Controllers\UserGroupController::destroy
- * @see app/Http/Controllers/UserGroupController.php:170
+ * @see app/Http/Controllers/UserGroupController.php:171
  * @route '/user-groups/{userGroup}'
  */
     const destroyForm = (args: { userGroup: number | { id: number } } | [userGroup: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -304,7 +304,7 @@ destroy.delete = (args: { userGroup: number | { id: number } } | [userGroup: num
 
             /**
 * @see \App\Http\Controllers\UserGroupController::destroy
- * @see app/Http/Controllers/UserGroupController.php:170
+ * @see app/Http/Controllers/UserGroupController.php:171
  * @route '/user-groups/{userGroup}'
  */
         destroyForm.delete = (args: { userGroup: number | { id: number } } | [userGroup: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
