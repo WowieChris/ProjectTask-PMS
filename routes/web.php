@@ -149,7 +149,8 @@ Route::middleware(['auth'])->group(function () {
     });
     //Config FIle
     //NAVIGATION CONTROLLER
-    // Route::patch('/navigation/move', [NavigationController::class, 'move']);
+    //TreeNodeMove
+    Route::patch('/navigation/move', [NavigationController::class, 'move']);
     //FIELD ENG CONTROLLER
     Route::get('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'Index']);
     Route::post('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'store']);
