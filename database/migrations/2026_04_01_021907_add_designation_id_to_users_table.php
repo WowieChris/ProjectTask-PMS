@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('designation_id')->nullable();
+            if (!Schema::hasColumn('users', 'designation_id')) {
+                $table->unsignedBigInteger('designation_id')->nullable();
+            }
         });
     }
 
@@ -22,7 +24,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            if (Schema::hasColumn('users', 'designation_id')) {
+                $table->dropColumn('designation_id');
+            }
         });
     }
 };
