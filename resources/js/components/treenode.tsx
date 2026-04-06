@@ -54,7 +54,11 @@ export function TreeNode({
       <div
         draggable={isMovable}
         onDragStart={(e) => isMovable && nodeData && onDragStart?.(e, nodeData)}
-        onDragOver={(e) => { e.preventDefault(); nodeData && onDragOver?.(e, nodeData); }}
+        // onDragOver={(e) => { e.preventDefault(); nodeData && onDragOver?.(e, nodeData); }}
+        onDragOver={(e) => {
+          e.preventDefault();
+          if (nodeData) onDragOver?.(e, nodeData);
+        }}
         onDragLeave={onDragLeave}
         onDrop={(e) => nodeData && onDrop?.(e, nodeData)}
         onClick={() => {

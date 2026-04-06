@@ -1,0 +1,6 @@
+npm install
+php artisan migrate
+php artisan seed:migrate
+php artisan key:generate
+npx shadcn@latest add dialog
+npx shadcn@latest add sonner
