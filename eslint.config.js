@@ -48,12 +48,12 @@ export default [
 
     // 👇 ADD THIS
     '@typescript-eslint/no-unused-vars': [
-        'off',
-        {
-            argsIgnorePattern: '^_',
-            varsIgnorePattern: '^_',
-            caughtErrorsIgnorePattern: '^_',
-        },
+        'warn',
+    {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+    },
     ],
 },
     },
