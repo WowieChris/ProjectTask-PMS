@@ -28,6 +28,7 @@ import {
 
 import AppLayout from "@/layouts/app-layout";
 
+
 type UserGroup = {
   id: number;
   name: string;
@@ -50,8 +51,12 @@ interface DivisionForm {
   name: string;
 }
 
+
+
 export default function DivisionIndex({ userGroups, divisions }: PageProps) {
   const [q, setQ] = useState("");
+  const [addOpen, setAddOpen] = useState(false);
+
   const [editTarget, setEditTarget] = useState<Division | null>(null);
 
   // ── CREATE form ──
@@ -72,7 +77,12 @@ export default function DivisionIndex({ userGroups, divisions }: PageProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    post("/divisions", { onSuccess: () => reset("user_group_id", "name") });
+    post("/divisions", {
+      onSuccess: () => {
+        reset("user_group_id", "name");
+        setAddOpen(false); // ← add this
+      },
+    });
   };
 
   const handleDelete = (id: number) => {
@@ -142,15 +152,18 @@ export default function DivisionIndex({ userGroups, divisions }: PageProps) {
         </div>
 
         {/* ADD FORM */}
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle>Add Division</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form
-              onSubmit={handleSubmit}
-              className="grid md:grid-cols-3 gap-4"
-            >
+        {/* ADD BUTTON */}
+        <div className="flex justify-end">
+          <Button onClick={() => setAddOpen(true)}>Add Division</Button>
+        </div>
+
+        {/* ADD MODAL */}
+        <Dialog open={addOpen} onOpenChange={setAddOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add Division</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">User Group</label>
                 <Select
@@ -185,14 +198,21 @@ export default function DivisionIndex({ userGroups, divisions }: PageProps) {
                 )}
               </div>
 
-              <div className="flex items-end">
-                <Button className="w-full" disabled={processing}>
+              <div className="flex gap-2 justify-end">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => { setAddOpen(false); reset(); }}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={processing}>
                   {processing ? "Saving..." : "Save"}
                 </Button>
               </div>
             </form>
-          </CardContent>
-        </Card>
+          </DialogContent>
+        </Dialog>
 
         {/* TABLE */}
         <Card className="shadow-lg">

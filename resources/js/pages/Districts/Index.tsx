@@ -9,9 +9,14 @@ import {
   SelectTrigger,
   SelectValue,
   SelectItem,
-  SelectContent
+  SelectContent,
 } from "@/components/ui/select";
-
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -48,25 +53,38 @@ type PageProps = {
 
 export default function DistrictIndex({ divisions = [], districts = [] }: PageProps) {
   const [q, setQ] = useState("");
+  const [addOpen, setAddOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<District | null>(null);
 
+  // ── CREATE form ──
   const { data, setData, post, processing, errors, reset } = useForm({
+    division_id: "",
+    name: "",
+  });
+
+  // ── EDIT form ──
+  const editForm = useForm({
     division_id: "",
     name: "",
   });
 
   const filtered = useMemo(() => {
     const query = q.toLowerCase();
-    return districts.filter((d) =>
-      d.name.toLowerCase().includes(query) ||
-      d.division?.name?.toLowerCase().includes(query) ||
-      d.division?.user_group?.name?.toLowerCase().includes(query)
+    return districts.filter(
+      (d) =>
+        d.name.toLowerCase().includes(query) ||
+        d.division?.name?.toLowerCase().includes(query) ||
+        d.division?.user_group?.name?.toLowerCase().includes(query)
     );
   }, [districts, q]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     post("/districts", {
-      onSuccess: () => reset("division_id", "name"),
+      onSuccess: () => {
+        reset("division_id", "name");
+        setAddOpen(false);
+      },
     });
   };
 
@@ -75,7 +93,22 @@ export default function DistrictIndex({ divisions = [], districts = [] }: PagePr
     router.delete(`/districts/${id}`);
   };
 
-  // 🎨 Badge color (same system)
+  const openEdit = (d: District) => {
+    setEditTarget(d);
+    editForm.setData({
+      division_id: String(d.division_id),
+      name: d.name,
+    });
+  };
+
+  const handleEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editTarget) return;
+    editForm.put(`/districts/${editTarget.id}`, {
+      onSuccess: () => setEditTarget(null),
+    });
+  };
+
   const badgeColor = (name?: string) => {
     if (!name) return "bg-muted text-muted-foreground";
     if (name.includes("Luzon")) return "bg-blue-500/10 text-blue-400";
@@ -95,7 +128,7 @@ export default function DistrictIndex({ divisions = [], districts = [] }: PagePr
 
       <div className="p-6 space-y-6">
 
-        {/* 🔥 STATS */}
+        {/* STATS */}
         <div className="grid grid-cols-3 gap-4">
           <Card className="hover:shadow-lg transition">
             <CardContent className="p-4">
@@ -106,10 +139,8 @@ export default function DistrictIndex({ divisions = [], districts = [] }: PagePr
 
           <Card className="hover:shadow-lg transition">
             <CardContent className="p-4">
-              <p className="text-sm text-muted-foreground">Total Division</p>
-              <p className="text-2xl font-bold">
-                {new Set(divisions.filter(d => d.id).map(d => d.id)).size}
-              </p>
+              <p className="text-sm text-muted-foreground">Total Divisions</p>
+              <p className="text-2xl font-bold">{divisions.length}</p>
             </CardContent>
           </Card>
 
@@ -117,68 +148,21 @@ export default function DistrictIndex({ divisions = [], districts = [] }: PagePr
             <CardContent className="p-4">
               <p className="text-sm text-muted-foreground">No Division</p>
               <p className="text-2xl font-bold">
-                {districts.filter(d => !d.division).length}
+                {districts.filter((d) => !d.division).length}
               </p>
             </CardContent>
           </Card>
         </div>
 
-        {/* 🔥 FORM */}
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle>Add District</CardTitle>
-          </CardHeader>
+        {/* ADD BUTTON */}
+        <div className="flex justify-end">
+          <Button onClick={() => setAddOpen(true)}>Add District</Button>
+        </div>
 
-          <CardContent>
-            <form onSubmit={handleSubmit} className="grid md:grid-cols-3 gap-4">
-
-              {/* DIVISION */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Division</label>
-                <Select
-                  value={data.division_id}
-                  onValueChange={(v) => setData("division_id", v)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select division..." />
-                  </SelectTrigger>
-
-                  <SelectContent>
-                    {divisions.map((d) => (
-                      <SelectItem key={d.id} value={String(d.id)}>
-                        {d.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* NAME */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium">District Name</label>
-                <Input
-                  value={data.name}
-                  onChange={(e) => setData("name", e.target.value)}
-                  placeholder="e.g. District 1"
-                />
-              </div>
-
-              {/* BUTTON */}
-              <div className="flex items-end">
-                <Button className="w-full">
-                  {processing ? "Saving..." : "Save"}
-                </Button>
-              </div>
-
-            </form>
-          </CardContent>
-        </Card>
-
-        {/* 🔥 TABLE */}
+        {/* TABLE */}
         <Card className="shadow-lg">
           <CardHeader className="flex justify-between items-center">
             <CardTitle>District List</CardTitle>
-
             <Input
               placeholder="Search district..."
               value={q}
@@ -189,7 +173,6 @@ export default function DistrictIndex({ divisions = [], districts = [] }: PagePr
 
           <CardContent className="p-0">
             <Table>
-
               <TableHeader className="bg-muted/30">
                 <TableRow>
                   <TableHead className="pl-6">District</TableHead>
@@ -208,13 +191,8 @@ export default function DistrictIndex({ divisions = [], districts = [] }: PagePr
                   </TableRow>
                 ) : (
                   filtered.map((d) => (
-                    <TableRow
-                      key={d.id}
-                      className="hover:bg-muted/40 transition"
-                    >
-                      <TableCell className="pl-6 font-medium">
-                        {d.name}
-                      </TableCell>
+                    <TableRow key={d.id} className="hover:bg-muted/40 transition">
+                      <TableCell className="pl-6 font-medium">{d.name}</TableCell>
 
                       <TableCell>
                         <span className="px-3 py-1 text-xs rounded-full bg-muted">
@@ -230,7 +208,11 @@ export default function DistrictIndex({ divisions = [], districts = [] }: PagePr
 
                       <TableCell className="text-right pr-6">
                         <div className="flex justify-end gap-2">
-                          <Button size="sm" variant="secondary">
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => openEdit(d)}
+                          >
                             Edit
                           </Button>
                           <Button
@@ -242,17 +224,129 @@ export default function DistrictIndex({ divisions = [], districts = [] }: PagePr
                           </Button>
                         </div>
                       </TableCell>
-
                     </TableRow>
                   ))
                 )}
               </TableBody>
-
             </Table>
           </CardContent>
         </Card>
-
       </div>
+
+      {/* ADD MODAL */}
+      <Dialog open={addOpen} onOpenChange={setAddOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add District</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Division</label>
+              <Select
+                value={data.division_id}
+                onValueChange={(v) => setData("division_id", v)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select division..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {divisions.map((d) => (
+                    <SelectItem key={d.id} value={String(d.id)}>
+                      {d.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.division_id && (
+                <p className="text-sm text-red-500">{errors.division_id}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">District Name</label>
+              <Input
+                value={data.name}
+                onChange={(e) => setData("name", e.target.value)}
+                placeholder="e.g. District 1"
+              />
+              {errors.name && (
+                <p className="text-sm text-red-500">{errors.name}</p>
+              )}
+            </div>
+
+            <div className="flex gap-2 justify-end">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => { setAddOpen(false); reset(); }}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={processing}>
+                {processing ? "Saving..." : "Save"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* EDIT MODAL */}
+      <Dialog open={!!editTarget} onOpenChange={(o) => !o && setEditTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit District</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleEdit} className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Division</label>
+              <Select
+                value={editForm.data.division_id}
+                onValueChange={(v) => editForm.setData("division_id", v)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select division..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {divisions.map((d) => (
+                    <SelectItem key={d.id} value={String(d.id)}>
+                      {d.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {editForm.errors.division_id && (
+                <p className="text-sm text-red-500">{editForm.errors.division_id}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">District Name</label>
+              <Input
+                value={editForm.data.name}
+                onChange={(e) => editForm.setData("name", e.target.value)}
+                placeholder="e.g. District 1"
+              />
+              {editForm.errors.name && (
+                <p className="text-sm text-red-500">{editForm.errors.name}</p>
+              )}
+            </div>
+
+            <div className="flex gap-2 justify-end">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setEditTarget(null)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={editForm.processing}>
+                {editForm.processing ? "Saving..." : "Update"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
     </AppLayout>
   );
 }

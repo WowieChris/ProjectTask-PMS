@@ -11,7 +11,12 @@ import {
     SelectContent,
     SelectItem,
 } from "@/components/ui/select";
-
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
 import {
     Table,
     TableBody,
@@ -40,13 +45,19 @@ type PageProps = {
     branches?: Branch[];
 };
 
-export default function BranchIndex({
-    areas = [],
-    branches = [],
-}: PageProps) {
+export default function BranchIndex({ areas = [], branches = [] }: PageProps) {
     const [q, setQ] = useState("");
+    const [addOpen, setAddOpen] = useState(false);
+    const [editTarget, setEditTarget] = useState<Branch | null>(null);
 
+    // ── CREATE form ──
     const { data, setData, post, processing, errors, reset } = useForm({
+        area_id: "",
+        name: "",
+    });
+
+    // ── EDIT form ──
+    const editForm = useForm({
         area_id: "",
         name: "",
     });
@@ -62,13 +73,32 @@ export default function BranchIndex({
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         post("/branches", {
-            onSuccess: () => reset("area_id", "name"),
+            onSuccess: () => {
+                reset("area_id", "name");
+                setAddOpen(false);
+            },
         });
     };
 
     const handleDelete = (id: number) => {
         if (!confirm("Delete this branch?")) return;
         router.delete(`/branches/${id}`);
+    };
+
+    const openEdit = (b: Branch) => {
+        setEditTarget(b);
+        editForm.setData({
+            area_id: String(b.area_id),
+            name: b.name,
+        });
+    };
+
+    const handleEdit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!editTarget) return;
+        editForm.put(`/branches/${editTarget.id}`, {
+            onSuccess: () => setEditTarget(null),
+        });
     };
 
     return (
@@ -82,7 +112,7 @@ export default function BranchIndex({
 
             <div className="p-6 space-y-6">
 
-                {/* 🔥 STATS */}
+                {/* STATS */}
                 <div className="grid grid-cols-3 gap-4">
                     <Card className="hover:shadow-lg transition">
                         <CardContent className="p-4">
@@ -93,10 +123,8 @@ export default function BranchIndex({
 
                     <Card className="hover:shadow-lg transition">
                         <CardContent className="p-4">
-                            <p className="text-sm text-muted-foreground">Total Area's</p>
-                            <p className="text-2xl font-bold">
-                                {new Set(branches.filter(d => d.area).map(d => d.area_id)).size}
-                            </p>
+                            <p className="text-sm text-muted-foreground">Total Areas</p>
+                            <p className="text-2xl font-bold">{areas.length}</p>
                         </CardContent>
                     </Card>
 
@@ -104,70 +132,21 @@ export default function BranchIndex({
                         <CardContent className="p-4">
                             <p className="text-sm text-muted-foreground">Unassigned</p>
                             <p className="text-2xl font-bold">
-                                {branches.filter(b => !b.area).length}
+                                {branches.filter((b) => !b.area).length}
                             </p>
                         </CardContent>
                     </Card>
                 </div>
 
-                {/* 🔥 FORM */}
-                <Card className="shadow-lg">
-                    <CardHeader>
-                        <CardTitle>Add Branch</CardTitle>
-                    </CardHeader>
+                {/* ADD BUTTON */}
+                <div className="flex justify-end">
+                    <Button onClick={() => setAddOpen(true)}>Add Branch</Button>
+                </div>
 
-                    <CardContent>
-                        <form onSubmit={handleSubmit} className="grid md:grid-cols-3 gap-4">
-
-                            {/* AREA */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Area</label>
-
-                                <Select
-                                    value={data.area_id}
-                                    onValueChange={(v) => setData("area_id", v)}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select area..." />
-                                    </SelectTrigger>
-
-                                    <SelectContent>
-                                        {areas.map((a) => (
-                                            <SelectItem key={a.id} value={String(a.id)}>
-                                                {a.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            {/* NAME */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Branch Name</label>
-
-                                <Input
-                                    value={data.name}
-                                    onChange={(e) => setData("name", e.target.value)}
-                                    placeholder="e.g. Branch 1"
-                                />
-                            </div>
-
-                            {/* BUTTON */}
-                            <div className="flex items-end">
-                                <Button className="w-full">
-                                    {processing ? "Saving..." : "Save"}
-                                </Button>
-                            </div>
-
-                        </form>
-                    </CardContent>
-                </Card>
-
-                {/* 🔥 TABLE */}
+                {/* TABLE */}
                 <Card className="shadow-lg">
                     <CardHeader className="flex justify-between items-center">
                         <CardTitle>Branch List</CardTitle>
-
                         <Input
                             placeholder="Search branch..."
                             value={q}
@@ -178,7 +157,6 @@ export default function BranchIndex({
 
                     <CardContent className="p-0">
                         <Table>
-
                             <TableHeader className="bg-muted/30">
                                 <TableRow>
                                     <TableHead className="pl-6">Branch</TableHead>
@@ -196,13 +174,8 @@ export default function BranchIndex({
                                     </TableRow>
                                 ) : (
                                     filtered.map((b) => (
-                                        <TableRow
-                                            key={b.id}
-                                            className="hover:bg-muted/40 transition"
-                                        >
-                                            <TableCell className="pl-6 font-medium">
-                                                {b.name}
-                                            </TableCell>
+                                        <TableRow key={b.id} className="hover:bg-muted/40 transition">
+                                            <TableCell className="pl-6 font-medium">{b.name}</TableCell>
 
                                             <TableCell>
                                                 <span className="px-3 py-1 text-xs rounded-full bg-muted">
@@ -212,7 +185,11 @@ export default function BranchIndex({
 
                                             <TableCell className="text-right pr-6">
                                                 <div className="flex justify-end gap-2">
-                                                    <Button size="sm" variant="secondary">
+                                                    <Button
+                                                        size="sm"
+                                                        variant="secondary"
+                                                        onClick={() => openEdit(b)}
+                                                    >
                                                         Edit
                                                     </Button>
                                                     <Button
@@ -224,17 +201,129 @@ export default function BranchIndex({
                                                     </Button>
                                                 </div>
                                             </TableCell>
-
                                         </TableRow>
                                     ))
                                 )}
                             </TableBody>
-
                         </Table>
                     </CardContent>
                 </Card>
-
             </div>
+
+            {/* ADD MODAL */}
+            <Dialog open={addOpen} onOpenChange={setAddOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Add Branch</DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Area</label>
+                            <Select
+                                value={data.area_id}
+                                onValueChange={(v) => setData("area_id", v)}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select area..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {areas.map((a) => (
+                                        <SelectItem key={a.id} value={String(a.id)}>
+                                            {a.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {errors.area_id && (
+                                <p className="text-sm text-red-500">{errors.area_id}</p>
+                            )}
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Branch Name</label>
+                            <Input
+                                value={data.name}
+                                onChange={(e) => setData("name", e.target.value)}
+                                placeholder="e.g. Branch 1"
+                            />
+                            {errors.name && (
+                                <p className="text-sm text-red-500">{errors.name}</p>
+                            )}
+                        </div>
+
+                        <div className="flex gap-2 justify-end">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={() => { setAddOpen(false); reset(); }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button type="submit" disabled={processing}>
+                                {processing ? "Saving..." : "Save"}
+                            </Button>
+                        </div>
+                    </form>
+                </DialogContent>
+            </Dialog>
+
+            {/* EDIT MODAL */}
+            <Dialog open={!!editTarget} onOpenChange={(o) => !o && setEditTarget(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Edit Branch</DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={handleEdit} className="space-y-4">
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Area</label>
+                            <Select
+                                value={editForm.data.area_id}
+                                onValueChange={(v) => editForm.setData("area_id", v)}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select area..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {areas.map((a) => (
+                                        <SelectItem key={a.id} value={String(a.id)}>
+                                            {a.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {editForm.errors.area_id && (
+                                <p className="text-sm text-red-500">{editForm.errors.area_id}</p>
+                            )}
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Branch Name</label>
+                            <Input
+                                value={editForm.data.name}
+                                onChange={(e) => editForm.setData("name", e.target.value)}
+                                placeholder="e.g. Branch 1"
+                            />
+                            {editForm.errors.name && (
+                                <p className="text-sm text-red-500">{editForm.errors.name}</p>
+                            )}
+                        </div>
+
+                        <div className="flex gap-2 justify-end">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={() => setEditTarget(null)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button type="submit" disabled={editForm.processing}>
+                                {editForm.processing ? "Saving..." : "Update"}
+                            </Button>
+                        </div>
+                    </form>
+                </DialogContent>
+            </Dialog>
+
         </AppLayout>
     );
 }
