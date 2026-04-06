@@ -104,9 +104,8 @@ export function TreeNode({
         {/* Type badge */}
         {badge && (
           <span className={`
-            shrink-0 text-[9px] font-bold tracking-wider px-1.5 py-0.5 rounded border mondstadt:bg-card/80 
-            ${isSelected ? 'bg-white/10 text-primary-foreground border-white/20 light:bg-white/20 light:text-primary-foreground' : badge.class}
-            
+            shrink-0 text-[9px] font-bold tracking-wider px-1.5 py-0.5 rounded border
+            ${isSelected ? 'bg-white/10 text-primary-foreground border-white/20' : badge.class}
           `}>
             {badge.label}
           </span>
