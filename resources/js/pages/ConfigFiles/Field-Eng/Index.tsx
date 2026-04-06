@@ -1,6 +1,6 @@
 import { router } from "@inertiajs/react";
 import { MapPin, User, ChevronDown, Save, RefreshCw } from "lucide-react";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -12,31 +12,27 @@ export default function EngineerAssignment({
 }: any) {
 
     const selectedDistrict = useMemo(() => {
-        return editingDistrict
-            ? districts.find((d: any) => d.id === editingDistrict.id)
-            : null;
-    }, [editingDistrict, districts]);
+    return editingDistrict
+        ? districts.find((d: any) => d.id === editingDistrict.id)
+        : null;
+}, [editingDistrict, districts]);
 
-    const [baseEngineer, setBaseEngineer] = useState<any>("");
-    const [areaOverrides, setAreaOverrides] = useState<any>({});
-    const [saving, setSaving] = useState(false);
+const initialBaseEngineer = selectedDistrict?.engineer?.user_id ?? "";
 
-    // ✅ option 1 — suppress (acceptable when you know what you're doing)
-    useEffect(() => {
-        if (!selectedDistrict) return;
+const initialOverrides = useMemo(() => {
+    if (!selectedDistrict) return {};
+    const overrides: any = {};
+    areaAssignments.forEach((a: any) => {
+        if (selectedDistrict.areas?.some((area: any) => area.id === a.area_id)) {
+            overrides[a.area_id] = a.user_id;
+        }
+    });
+    return overrides;
+}, [selectedDistrict, areaAssignments]);
 
-        const newBaseEngineer = selectedDistrict.engineer?.user_id || "";
-        const newOverrides: any = {};
-        areaAssignments.forEach((a: any) => {
-            if (selectedDistrict.areas?.some((area: any) => area.id === a.area_id)) {
-                newOverrides[a.area_id] = a.user_id;
-            }
-        });
-
-
-        setBaseEngineer(newBaseEngineer);
-        setAreaOverrides(newOverrides);
-    }, [selectedDistrict, areaAssignments]);
+const [baseEngineer, setBaseEngineer] = useState<any>(initialBaseEngineer);
+const [areaOverrides, setAreaOverrides] = useState<any>(initialOverrides);
+const [saving, setSaving] = useState(false);
 
     const handleBaseEngineerChange = (value: string) => {
         setBaseEngineer(value);
