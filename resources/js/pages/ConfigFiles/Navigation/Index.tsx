@@ -118,10 +118,10 @@ export default function App() {
         </div>
 
         {/* ── Main 3-col layout ── */}
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex flex-1 grid grid-cols-5 gap-0 overflow-hidden">
 
           {/* ── LEFT: Senior Field Users ── */}
-          <div className="w-56 shrink-0 border-r border-border flex flex-col bg-card/50">
+          <div className="col-span-1 shrink-0 border-r border-border flex flex-col bg-card/50">
             <div className="px-4 py-3 border-b border-border">
               <div className="flex items-center gap-2">
                 <Users size={13} className="text-muted-foreground" />
@@ -162,7 +162,7 @@ export default function App() {
           </div>
 
           {/* ── CENTER: Tree ── */}
-          <div className="flex-1 flex flex-col border-r border-border overflow-hidden">
+          <div className="flex-1 flex flex-col col-span-2 border-r border-border overflow-hidden">
             <div className="px-4 py-3 border-b border-border bg-card/30 shrink-0">
               <span className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
                 Location Hierarchy
@@ -217,10 +217,10 @@ export default function App() {
                       label={division.name}
                       nodeData={{ id: division.id, name: division.name, type: 'division' }}
                       isSelected={selectedNode?.id === division.id && selectedNode?.type === 'division'}
-                      // isDragOver={dragOverNode?.id === division.id && dragOverNode?.type === 'division'}
-                      // onDragOver={(_, node) => setDragOverNode(node)}
-                      // onDragLeave={() => setDragOverNode(null)}
-                      // onDrop={() => { if (draggedNode) { setSelectedNode(draggedNode); setDragOverNode(null); setMoveModalOpen(true); } }}
+                      isDragOver={dragOverNode?.id === division.id && dragOverNode?.type === 'division'}
+                      onDragOver={(_, node) => setDragOverNode(node)}
+                      onDragLeave={() => setDragOverNode(null)}
+                      onDrop={() => { if (draggedNode) { setSelectedNode(draggedNode); setDragOverNode(null); setMoveModalOpen(true); } }}
                     >
                       {(division.districts ?? []).map(district => (
                         <TreeNode
@@ -228,12 +228,12 @@ export default function App() {
                           label={district.name}
                           nodeData={{ id: district.id, name: district.name, type: 'district' }}
                           isSelected={selectedNode?.id === district.id && selectedNode?.type === 'district'}
-                          // isDragOver={dragOverNode?.id === district.id && dragOverNode?.type === 'district'}
-                          // onSelect={setSelectedNode}
-                          // onDragStart={(_, node) => setDraggedNode(node)}
-                          // onDragOver={(_, node) => setDragOverNode(node)}
-                          // onDragLeave={() => setDragOverNode(null)}
-                          // onDrop={() => { if (draggedNode) { setSelectedNode(draggedNode); setDragOverNode(null); setMoveModalOpen(true); } }}
+                          isDragOver={dragOverNode?.id === district.id && dragOverNode?.type === 'district'}
+                          onSelect={setSelectedNode}
+                          onDragStart={(_, node) => setDraggedNode(node)}
+                          onDragOver={(_, node) => setDragOverNode(node)}
+                          onDragLeave={() => setDragOverNode(null)}
+                          onDrop={() => { if (draggedNode) { setSelectedNode(draggedNode); setDragOverNode(null); setMoveModalOpen(true); } }}
                           actions={
                             <Button
                               size="sm"
@@ -251,12 +251,12 @@ export default function App() {
                               label={area.name}
                               nodeData={{ id: area.id, name: area.name, type: 'area' }}
                               isSelected={selectedNode?.id === area.id && selectedNode?.type === 'area'}
-                              // isDragOver={dragOverNode?.id === area.id && dragOverNode?.type === 'area'}
-                              // onSelect={setSelectedNode}
-                              // onDragStart={(_, node) => setDraggedNode(node)}
-                              // onDragOver={(_, node) => setDragOverNode(node)}
-                              // onDragLeave={() => setDragOverNode(null)}
-                              // onDrop={() => { if (draggedNode) { setSelectedNode(draggedNode); setDragOverNode(null); setMoveModalOpen(true); } }}
+                              isDragOver={dragOverNode?.id === area.id && dragOverNode?.type === 'area'}
+                              onSelect={setSelectedNode}
+                              onDragStart={(_, node) => setDraggedNode(node)}
+                              onDragOver={(_, node) => setDragOverNode(node)}
+                              onDragLeave={() => setDragOverNode(null)}
+                              onDrop={() => { if (draggedNode) { setSelectedNode(draggedNode); setDragOverNode(null); setMoveModalOpen(true); } }}
                             >
                               {(area.branches ?? []).map(branch => (
                                 <TreeNode
@@ -265,7 +265,7 @@ export default function App() {
                                   nodeData={{ id: branch.id, name: branch.name, type: 'branch' }}
                                   isSelected={selectedNode?.id === branch.id && selectedNode?.type === 'branch'}
                                   onSelect={setSelectedNode}
-                                  // onDragStart={(_, node) => setDraggedNode(node)}
+                                  onDragStart={(_, node) => setDraggedNode(node)}
                                 />
                               ))}
                             </TreeNode>
@@ -288,7 +288,7 @@ export default function App() {
           </div>
 
           {/* ── RIGHT: Engineer Assignment ── */}
-          <div className="w-80 shrink-0 flex flex-col overflow-hidden">
+          <div className="shrink-0 col-span-2 flex flex-col overflow-hidden">
             <div className="px-4 py-3 border-b border-border bg-card/30 shrink-0">
               <span className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
                 Engineer Assignment
