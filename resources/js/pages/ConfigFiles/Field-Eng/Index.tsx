@@ -159,58 +159,123 @@ export default function EngineerAssignment({
                     </div>
 
                     {/* Area Overrides */}
-                    <div className="space-y-2">
-                        <div className="flex items-center gap-1.5">
-                            <RefreshCw size={12} className="text-muted-foreground" />
-                            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-                                Area Overrides
-                            </p>
+                    {/* Area Overrides */}
+                    {/* Area Overrides */}
+                    <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1.5">
+                                <RefreshCw size={12} className="text-muted-foreground" />
+                                <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+                                    Area Overrides
+                                </p>
+                            </div>
+                            <span className="text-[10px] text-muted-foreground">
+                                {selectedDistrict.areas?.length ?? 0} areas
+                            </span>
                         </div>
 
-                        <div className="space-y-1.5">
+                        <div className="space-y-2">
                             {selectedDistrict.areas?.map((area: any, i: number) => {
                                 const hasOverride = !!areaOverrides[area.id];
+                                const assignedEngineerId = hasOverride ? areaOverrides[area.id] : baseEngineer;
+                                const assignedName = getEngineerName(assignedEngineerId);
+                                const initials = assignedName
+                                    ? assignedName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
+                                    : '?';
+
                                 return (
                                     <motion.div
                                         key={area.id}
-                                        initial={{ opacity: 0, x: -4 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: i * 0.04 }}
-                                        className={`rounded-lg border transition-colors ${hasOverride
-                                            ? 'border-amber-500/20 bg-amber-500/5'
-                                            : 'border-border bg-muted/20'
+                                        initial={{ opacity: 0, y: 6 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: i * 0.05 }}
+                                        className={`group relative rounded-xl border overflow-hidden transition-all duration-200 ${hasOverride
+                                            ? 'border-amber-500/30 shadow-amber-500/5 shadow-md'
+                                            : 'border-border hover:border-border/80'
                                             }`}
                                     >
-                                        <div className="flex items-center justify-between px-3 py-2 gap-3">
-                                            <div className="min-w-0">
-                                                <p className="text-xs font-medium truncate">{area.name}</p>
-                                                {!hasOverride && baseEngineer && (
-                                                    <p className="text-[10px] text-emerald-500 mt-0.5">
-                                                        ↳ {getEngineerName(baseEngineer)}
-                                                    </p>
-                                                )}
-                                                {hasOverride && (
-                                                    <p className="text-[10px] text-amber-500 mt-0.5">
-                                                        Override active
-                                                    </p>
+                                        {/* Colored top accent bar */}
+                                        <div className={`h-0.5 w-full ${hasOverride
+                                            ? 'bg-gradient-to-r from-amber-500/80 to-amber-300/40'
+                                            : 'bg-gradient-to-r from-emerald-500/40 to-transparent'
+                                            }`} />
+
+                                        <div className={`p-3 ${hasOverride ? 'bg-amber-500/5' : 'bg-card'
+                                            }`}>
+                                            {/* Top row: area name + badge */}
+                                            <div className="flex items-start justify-between gap-2 mb-3">
+                                                <div className="flex items-center gap-2 min-w-0">
+                                                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${hasOverride
+                                                        ? 'bg-amber-500/15 border border-amber-500/20'
+                                                        : 'bg-muted border border-border'
+                                                        }`}>
+                                                        <MapPin size={12} className={hasOverride ? 'text-amber-400' : 'text-muted-foreground'} />
+                                                    </div>
+                                                    <div className="min-w-0">
+                                                        <p className="text-xs font-semibold text-foreground truncate">{area.name}</p>
+                                                        <p className="text-[10px] text-muted-foreground">
+                                                            {hasOverride ? 'Custom assignment' : 'Using base engineer'}
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                {hasOverride ? (
+                                                    <span className="shrink-0 text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/25 uppercase tracking-wider">
+                                                        Override
+                                                    </span>
+                                                ) : (
+                                                    <span className="shrink-0 text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 uppercase tracking-wider">
+                                                        Base
+                                                    </span>
                                                 )}
                                             </div>
 
-                                            <div className="relative shrink-0">
+                                            {/* Assigned engineer preview */}
+                                            {assignedEngineerId ? (
+                                                <div className={`flex items-center gap-2 px-2.5 py-2 rounded-lg mb-3 ${hasOverride
+                                                    ? 'bg-amber-500/10 border border-amber-500/15'
+                                                    : 'bg-muted/50 border border-border/50'
+                                                    }`}>
+                                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-[10px] font-bold ${hasOverride
+                                                        ? 'bg-amber-500/20 text-amber-400'
+                                                        : 'bg-primary/10 text-primary'
+                                                        }`}>
+                                                        {initials}
+                                                    </div>
+                                                    <div className="min-w-0">
+                                                        <p className="text-[11px] font-medium text-foreground truncate">{assignedName}</p>
+                                                        <p className={`text-[9px] ${hasOverride ? 'text-amber-500/70' : 'text-emerald-500/80'}`}>
+                                                            {hasOverride ? '↳ Area override' : '↳ Inherited from base'}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="flex items-center gap-2 px-2.5 py-2 rounded-lg mb-3 bg-muted/30 border border-dashed border-border/50">
+                                                    <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center shrink-0">
+                                                        <span className="text-[10px] text-muted-foreground">?</span>
+                                                    </div>
+                                                    <p className="text-[11px] text-muted-foreground">No engineer assigned</p>
+                                                </div>
+                                            )}
+
+                                            {/* Select dropdown */}
+                                            <div className="relative">
                                                 <select
                                                     value={areaOverrides[area.id] ?? ""}
                                                     onChange={(e) => handleAreaOverrideChange(area.id, e.target.value)}
-                                                    className={`appearance-none rounded-md border px-2 py-1.5 pr-6 text-xs font-medium cursor-pointer focus:outline-none focus:ring-1 focus:ring-ring/50 ${hasOverride
-                                                        ? 'border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400'
-                                                        : 'border-input bg-background text-foreground'
+                                                    className={`w-full appearance-none rounded-lg border px-3 py-2 pr-8 text-xs font-medium cursor-pointer focus:outline-none focus:ring-2 transition-all ${hasOverride
+                                                        ? 'border-amber-500/30 bg-amber-500/10 text-amber-500 focus:ring-amber-500/20'
+                                                        : 'border-input bg-background text-foreground focus:ring-ring/30'
                                                         }`}
                                                 >
-                                                    <option value="">Use Base</option>
+                                                    <option value="">
+                                                        Use Base{baseEngineer ? ` — ${getEngineerName(baseEngineer)}` : ''}
+                                                    </option>
                                                     {engineers.map((eng: any) => (
                                                         <option key={eng.id} value={eng.id}>{eng.name}</option>
                                                     ))}
                                                 </select>
-                                                <ChevronDown size={11} className="absolute right-1.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+                                                <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
                                             </div>
                                         </div>
                                     </motion.div>
