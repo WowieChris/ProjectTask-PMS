@@ -958,6 +958,61 @@ setCurrentPhoto.post = (args: { photo: string | number } | [photo: string | numb
         })
     
     setCurrentPhoto.form = setCurrentPhotoForm
-const UserController = { bulkDelete, updateInline, index, create, store, edit, update, destroy, uploadPhoto, getPhotos, deletePhoto, setCurrentPhoto }
+/**
+* @see \App\Http\Controllers\UserController::assignUserGroup
+ * @see app/Http/Controllers/UserController.php:140
+ * @route '/assign-senior-field-usergroup'
+ */
+export const assignUserGroup = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: assignUserGroup.url(options),
+    method: 'post',
+})
+
+assignUserGroup.definition = {
+    methods: ["post"],
+    url: '/assign-senior-field-usergroup',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\UserController::assignUserGroup
+ * @see app/Http/Controllers/UserController.php:140
+ * @route '/assign-senior-field-usergroup'
+ */
+assignUserGroup.url = (options?: RouteQueryOptions) => {
+    return assignUserGroup.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\UserController::assignUserGroup
+ * @see app/Http/Controllers/UserController.php:140
+ * @route '/assign-senior-field-usergroup'
+ */
+assignUserGroup.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: assignUserGroup.url(options),
+    method: 'post',
+})
+
+    /**
+* @see \App\Http\Controllers\UserController::assignUserGroup
+ * @see app/Http/Controllers/UserController.php:140
+ * @route '/assign-senior-field-usergroup'
+ */
+    const assignUserGroupForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: assignUserGroup.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\UserController::assignUserGroup
+ * @see app/Http/Controllers/UserController.php:140
+ * @route '/assign-senior-field-usergroup'
+ */
+        assignUserGroupForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: assignUserGroup.url(options),
+            method: 'post',
+        })
+    
+    assignUserGroup.form = assignUserGroupForm
+const UserController = { bulkDelete, updateInline, index, create, store, edit, update, destroy, uploadPhoto, getPhotos, deletePhoto, setCurrentPhoto, assignUserGroup }
 
 export default UserController

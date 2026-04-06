@@ -121,7 +121,7 @@ class UserGroupController extends Controller
         $ugId = $request->integer('ug');
         $divisionId = $request->integer('division');
 
-        $userGroups = UserGroup::orderBy('name')->get(['id', 'name']);
+        $userGroups = UserGroup::orderBy('name')->get(['id', 'name', 'base_office']);
 
         $selectedUserGroup = null;
         if ($ugId) {
