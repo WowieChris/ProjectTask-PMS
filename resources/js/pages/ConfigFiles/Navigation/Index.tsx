@@ -296,6 +296,7 @@ export default function App() {
             </div>
             <div className="flex-1 overflow-y-auto">
               <EngineerAssignment
+                key={editingDistrict?.id}
                 districts={districts}
                 engineers={engineers}
                 areaAssignments={areaAssignments}
