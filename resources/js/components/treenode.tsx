@@ -15,11 +15,11 @@ interface TreeNodeProps {
   nodeData?: TreeNodeData
   isSelected?: boolean
   onSelect?: (node: TreeNodeData) => void
-  isDragOver?: boolean
-  onDragStart?: (e: React.DragEvent, node: TreeNodeData) => void
-  onDragOver?: (e: React.DragEvent, node: TreeNodeData) => void
-  onDragLeave?: () => void
-  onDrop?: (e: React.DragEvent, node: TreeNodeData) => void
+  // isDragOver?: boolean
+  // onDragStart?: (e: React.DragEvent, node: TreeNodeData) => void
+  // onDragOver?: (e: React.DragEvent, node: TreeNodeData) => void
+  // onDragLeave?: () => void
+  // onDrop?: (e: React.DragEvent, node: TreeNodeData) => void
   actions?: React.ReactNode
 }
 
@@ -37,11 +37,11 @@ export function TreeNode({
   nodeData,
   isSelected,
   onSelect,
-  isDragOver,
-  onDragStart,
-  onDragOver,
-  onDragLeave,
-  onDrop,
+  // isDragOver,
+  // onDragStart,
+  // onDragOver,
+  // onDragLeave,
+  // onDrop,
   actions,
 }: TreeNodeProps) {
   const [open, setOpen] = useState(defaultOpen)
@@ -52,15 +52,15 @@ export function TreeNode({
   return (
     <div className="select-none">
       <div
-        draggable={isMovable}
-        onDragStart={(e) => isMovable && nodeData && onDragStart?.(e, nodeData)}
-        // onDragOver={(e) => { e.preventDefault(); nodeData && onDragOver?.(e, nodeData); }}
-        onDragOver={(e) => {
-          e.preventDefault();
-          if (nodeData) onDragOver?.(e, nodeData);
-        }}
-        onDragLeave={onDragLeave}
-        onDrop={(e) => nodeData && onDrop?.(e, nodeData)}
+        // draggable={isMovable}
+        // onDragStart={(e) => isMovable && nodeData && onDragStart?.(e, nodeData)}
+        // // onDragOver={(e) => { e.preventDefault(); nodeData && onDragOver?.(e, nodeData); }}
+        // onDragOver={(e) => {
+        //   e.preventDefault();
+        //   if (nodeData) onDragOver?.(e, nodeData);
+        // }}
+        // onDragLeave={onDragLeave}
+        // onDrop={(e) => nodeData && onDrop?.(e, nodeData)}
         onClick={() => {
           if (hasChildren) setOpen(o => !o);
           if (nodeData && isMovable) onSelect?.(nodeData);
@@ -70,15 +70,15 @@ export function TreeNode({
           transition-all duration-150 cursor-pointer
           ${isSelected
             ? 'bg-primary text-primary-foreground shadow-sm'
-            : isDragOver
-              ? 'bg-emerald-500/10 border border-dashed border-emerald-500/50'
+            // : isDragOver
+            //   ? 'bg-emerald-500/10 border border-dashed border-emerald-500/50'
               : 'hover:bg-muted/70'
           }
-          ${isMovable ? 'cursor-grab active:cursor-grabbing' : ''}
-        `}
+            `//${isMovable ? 'cursor-grab active:cursor-grabbing' : ''} 
+        }
       >
         {/* Drag handle — only visible on hover for movable nodes */}
-        {isMovable && (
+        {/* {isMovable && (
           <GripVertical
             size={13}
             className={`shrink-0 transition-opacity duration-150
@@ -88,7 +88,7 @@ export function TreeNode({
               }`
             }
           />
-        )}
+        )} */}
 
         {/* Chevron */}
         <span className="w-4 shrink-0 flex items-center justify-center">
