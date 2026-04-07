@@ -163,7 +163,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/ConfigFiles/Navigation', [NavigationController::class, 'index']);
     });
     //EA Monitoring
-    Route::get('/EAMonitoring', function () {
-        return Inertia::render('EAMonitoring/Index');
-    })->name('EAMonitoring');
+    Route::prefix('EAMonitoring')->group(function () {  
+
+        Route::get('/Request', function () {
+            return Inertia::render('EAMonitoring/Request/Index');
+    })->name('EAMonitoring.request');
+    });
 });
