@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use App\Models\UserPhoto;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -48,6 +51,12 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'otp_verified_at' => 'datetime',
+    ];
+
+    // Force Fortify to treat users as two-factor authenticatable so the email OTP
     /*
     |--------------------------------------------------------------------------
     | Relationships

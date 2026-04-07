@@ -45,16 +45,21 @@ export default function UsersIndex({ users, designations }: Props) {
   const [filterText, setFilterText] = useState('')
   const [filterRole, setFilterRole] = useState<AnyFilter>('all')
   const [filterDesignation, setFilterDesignation] = useState<AnyFilter>('all')
-
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [openEdit, setOpenEdit] = useState(false)
   const [openCreate, setOpenCreate] = useState(false)
-// Add this lookup map near the top, after the state declarations
+
   const designationMap = useMemo(() => {
     return Object.fromEntries(designations.map(d => [String(d.id), d.name]))
   }, [designations])
 
-  /* ---------------- ROLE OPTIONS ---------------- */
+  // ── Stats ──
+  const stats = useMemo(() => ({
+    total: users.length,
+    active: users.filter(u => u.employment_status === 'active').length,
+    inactive: users.filter(u => u.employment_status === 'inactive').length,
+    separated: users.filter(u => u.employment_status === 'separated').length,
+  }), [users])
 
   const roleOptions = useMemo(() => {
     return Array.from(new Set(users.map(u => u.role))).sort()
@@ -62,23 +67,13 @@ export default function UsersIndex({ users, designations }: Props) {
 
   const designationOptions = useMemo(() => {
     return Array.from(
-      new Set(
-        users
-          .map(u => u.designation_id)
-          .filter(Boolean)
-      )
+      new Set(users.map(u => u.designation_id).filter(Boolean))
     ).sort() as string[]
   }, [users])
 
-  /* ---------------- FILTER USERS ---------------- */
-
   const filteredUsers = useMemo(() => {
-
-
     const text = filterText.toLowerCase().trim()
-
     return users.filter((u) => {
-
       const matchesText =
         !text ||
         u.employee_id.toLowerCase().includes(text) ||
@@ -89,40 +84,16 @@ export default function UsersIndex({ users, designations }: Props) {
         (u.location ?? '').toLowerCase().includes(text) ||
         (u.district ?? '').toLowerCase().includes(text) ||
         (u.role ?? '').toLowerCase().includes(text)
-
       const matchesRole =
-        filterRole === 'all' ||
-        u.role.toLowerCase() === filterRole.toLowerCase()
-
+        filterRole === 'all' || u.role.toLowerCase() === filterRole.toLowerCase()
       const matchesDesignation =
         filterDesignation === 'all' ||
         (u.designation_id ?? '').toLowerCase() === filterDesignation.toLowerCase()
-
       return matchesText && matchesRole && matchesDesignation
-
     })
-
-
   }, [users, filterText, filterRole, filterDesignation])
 
-  /* ---------------- SELECT LOGIC ---------------- */
-
-  const filteredIds = useMemo(
-    () => filteredUsers.map(u => u.id),
-    [filteredUsers]
-  )
-
-  // const handleSelectAll = (checked: boolean) => {
-  //   if (checked) {
-  //     setSelectedUsers(prev =>
-  //       Array.from(new Set([...prev, ...filteredIds]))
-  //     )
-  //   } else {
-  //     setSelectedUsers(prev =>
-  //       prev.filter(id => !filteredIds.includes(id))
-  //     )
-  //   }
-  // }
+  const filteredIds = useMemo(() => filteredUsers.map(u => u.id), [filteredUsers])
 
   const handleSelectUser = (userId: number, checked: boolean) => {
     if (checked) {
@@ -133,27 +104,25 @@ export default function UsersIndex({ users, designations }: Props) {
   }
 
   const selectableIds = useMemo(
-  () => filteredUsers.filter(u => u.employment_status === 'inactive').map(u => u.id),
-  [filteredUsers]
-)
-const handleSelectAll = (checked: boolean) => {
-  if (checked) {
-    setSelectedUsers(prev => Array.from(new Set([...prev, ...selectableIds])))
-  } else {
-    setSelectedUsers(prev => prev.filter(id => !selectableIds.includes(id)))
+    () => filteredUsers.filter(u => u.employment_status === 'inactive').map(u => u.id),
+    [filteredUsers]
+  )
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedUsers(prev => Array.from(new Set([...prev, ...selectableIds])))
+    } else {
+      setSelectedUsers(prev => prev.filter(id => !selectableIds.includes(id)))
+    }
   }
-}
 
+  const isAllSelected =
+    selectableIds.length > 0 && selectableIds.every(id => selectedUsers.includes(id))
 
-const isAllSelected =
-  selectableIds.length > 0 &&
-  selectableIds.every(id => selectedUsers.includes(id))
-
-const isIndeterminate =
-  selectableIds.length > 0 &&
-  selectableIds.some(id => selectedUsers.includes(id)) &&
-  !isAllSelected
-
+  const isIndeterminate =
+    selectableIds.length > 0 &&
+    selectableIds.some(id => selectedUsers.includes(id)) &&
+    !isAllSelected
 
   const handleClear = () => {
     setFilterText('')
@@ -161,286 +130,262 @@ const isIndeterminate =
     setFilterDesignation('all')
     setSelectedUsers([])
   }
+
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [page, setPage] = useState(1)
   const totalPages = Math.ceil(filteredUsers.length / rowsPerPage)
+
   const paginatedUsers = useMemo(() => {
     const start = (page - 1) * rowsPerPage
-    const end = start + rowsPerPage
-    return filteredUsers.slice(start, end)
+    return filteredUsers.slice(start, start + rowsPerPage)
   }, [filteredUsers, page, rowsPerPage])
 
-  return (<AppLayout breadcrumbs={breadcrumbs}> <Head title="Users" />
+  return (
+    <AppLayout breadcrumbs={breadcrumbs}>
+      <Head title="Users" />
 
+      <div className="flex flex-col gap-4 p-4">
 
-    <div className="flex flex-col gap-4 p-4">
+        {/* ── STATS ── */}
+        <div className="grid grid-cols-4 gap-4">
+          <Card className="hover:shadow-lg transition">
+            <CardContent className="p-4">
+              <p className="text-sm text-muted-foreground">Total Users</p>
+              <p className="text-2xl font-bold">{stats.total}</p>
+            </CardContent>
+          </Card>
 
-      <Card>
+          <Card className="hover:shadow-lg transition">
+            <CardContent className="p-4">
+              <p className="text-sm text-muted-foreground">Active</p>
+              <p className="text-2xl font-bold text-emerald-500">{stats.active}</p>
+            </CardContent>
+          </Card>
 
-        <CardHeader>
+          <Card className="hover:shadow-lg transition">
+            <CardContent className="p-4">
+              <p className="text-sm text-muted-foreground">Inactive</p>
+              <p className="text-2xl font-bold text-muted-foreground">{stats.inactive}</p>
+            </CardContent>
+          </Card>
 
-          <div className="flex items-center justify-between">
+          <Card className="hover:shadow-lg transition">
+            <CardContent className="p-4">
+              <p className="text-sm text-muted-foreground">Separated</p>
+              <p className="text-2xl font-bold text-destructive">{stats.separated}</p>
+            </CardContent>
+          </Card>
+        </div>
 
-            <CardTitle>User Maintenance</CardTitle>
-
-            <div className="flex gap-2">
-
-              <Button
-                variant="destructive"
-                hidden={selectedUsers.length === 0}
-                onClick={() => {
-
-                  if (!confirm(`Delete ${selectedUsers.length} users?`)) return
-
-                  router.delete('/users/bulk-delete', {
-                    data: { ids: selectedUsers },
-                    preserveScroll: true,
-                    onSuccess: () => setSelectedUsers([])
-                  })
-
-                }}
-              >
-                Delete
-              </Button>
-
-              <Dialog open={openCreate} onOpenChange={setOpenCreate}>
-
-                <DialogTrigger asChild>
-                  <Button>Add User</Button>
-                </DialogTrigger>
-
-                <DialogContent className="max-w-2xl p-0">
-                  <UsersCreate onSuccess={() => setOpenCreate(false)} />
-                </DialogContent>
-
-              </Dialog>
-
-            </div>
-
-          </div>
-
-        </CardHeader>
-
-        <CardContent>
-
-          {/* FILTERS */}
-
-          <div className="flex gap-2 mb-3">
-
-            <Input
-              placeholder="Search users..."
-              value={filterText}
-              onChange={(e) => setFilterText(e.target.value)}
-              className="w-[260px]"
-            />
-
-            <Select value={filterRole} onValueChange={setFilterRole}>
-              <SelectTrigger className="w-[160px]">
-                <SelectValue placeholder="Role" />
-              </SelectTrigger>
-
-              <SelectContent>
-                <SelectItem value="all">All Roles</SelectItem>
-                {roleOptions.map(role => (
-                  <SelectItem key={role} value={role}>{role}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={filterDesignation} onValueChange={setFilterDesignation}>
-              <SelectTrigger className="w-[190px]">
-                <SelectValue placeholder="Designation" />
-              </SelectTrigger>
-
-              <SelectContent>
-                <SelectItem value="all">All Designations</SelectItem>
-                {designationOptions.map(d => (
-                  <SelectItem key={d} value={d}>{d}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Button variant="ghost" onClick={handleClear}>Clear</Button>
-
-            <div className="flex items-center gap-2">
-
-              <span className="text-sm">Rows per page:</span>
-
-              <Select
-                value={String(rowsPerPage)}
-                onValueChange={(value) => {
-                  setRowsPerPage(Number(value))
-                  setPage(1)
-                }}
-              >
-                <SelectTrigger className="w-[70px] h-8">
-                  <SelectValue />
-                </SelectTrigger>
-
-                <SelectContent>
-                  <SelectItem value="10">10</SelectItem>
-                  <SelectItem value="25">25</SelectItem>
-                  <SelectItem value="50">50</SelectItem>
-                  <SelectItem value="100">100</SelectItem>
-                </SelectContent>
-
-              </Select>
-            </div>
+        {/* ── MAIN TABLE CARD ── */}
+        <Card>
+          <CardHeader>
             <div className="flex items-center justify-between">
-              <div className="text-sm text-muted-foreground">
-                Showing {paginatedUsers.length} of {filteredUsers.length}
-              </div>
-            </div>
-          </div>
-          {/* TABLE */}
-
-
-
-          <Table>
-
-            <TableHeader>
-
-              <TableRow>
-
-                <TableHead className="w-[50px]">
-                  <Checkbox
-                    checked={isAllSelected ? true : isIndeterminate ? 'indeterminate' : false}
-                    onCheckedChange={(checked) => handleSelectAll(checked === true)}
-                  />
-                </TableHead>
-
-                <TableHead>Employee ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Designation</TableHead>
-                <TableHead>Location</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Role</TableHead>
-
-              </TableRow>
-
-            </TableHeader>
-
-            <TableBody>
-
-              {paginatedUsers.map(user => (
-
-                <TableRow
-                  key={user.id}
-                  className="cursor-pointer hover:bg-muted/30"
+              <CardTitle>User Maintenance</CardTitle>
+              <div className="flex gap-2">
+                <Button
+                  variant="destructive"
+                  hidden={selectedUsers.length === 0}
                   onClick={() => {
-                    setSelectedUser(user)
-                    setOpenEdit(true)
+                    if (!confirm(`Delete ${selectedUsers.length} users?`)) return
+                    router.delete('/users/bulk-delete', {
+                      data: { ids: selectedUsers },
+                      preserveScroll: true,
+                      onSuccess: () => setSelectedUsers([])
+                    })
                   }}
                 >
+                  Delete
+                </Button>
 
-                  <TableCell onClick={(e) => e.stopPropagation()}>
+                <Dialog open={openCreate} onOpenChange={setOpenCreate}>
+                  <DialogTrigger asChild>
+                    <Button>Add User</Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl p-0">
+                    <UsersCreate onSuccess={() => setOpenCreate(false)} />
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </div>
+          </CardHeader>
+
+          <CardContent>
+            {/* FILTERS */}
+            <div className="flex gap-2 mb-3 flex-wrap">
+              <Input
+                placeholder="Search users..."
+                value={filterText}
+                onChange={(e) => setFilterText(e.target.value)}
+                className="w-[260px]"
+              />
+
+              <Select value={filterRole} onValueChange={setFilterRole}>
+                <SelectTrigger className="w-[160px]">
+                  <SelectValue placeholder="Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Roles</SelectItem>
+                  {roleOptions.map(role => (
+                    <SelectItem key={role} value={role}>{role}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={filterDesignation} onValueChange={setFilterDesignation}>
+                <SelectTrigger className="w-[190px]">
+                  <SelectValue placeholder="Designation" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Designations</SelectItem>
+                  {designationOptions.map(d => (
+                    <SelectItem key={d} value={d}>{d}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Button variant="ghost" onClick={handleClear}>Clear</Button>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm">Rows per page:</span>
+                <Select
+                  value={String(rowsPerPage)}
+                  onValueChange={(value) => {
+                    setRowsPerPage(Number(value))
+                    setPage(1)
+                  }}
+                >
+                  <SelectTrigger className="w-[70px] h-8">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="25">25</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                    <SelectItem value="100">100</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center">
+                <span className="text-sm text-muted-foreground">
+                  Showing {paginatedUsers.length} of {filteredUsers.length}
+                </span>
+              </div>
+            </div>
+
+            {/* TABLE */}
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[50px]">
                     <Checkbox
-                      checked={selectedUsers.includes(user.id)}
-                      disabled={user.employment_status !== 'inactive'}
-                      onCheckedChange={(checked) =>
-                        handleSelectUser(user.id, checked === true)
-                      }
+                      checked={isAllSelected ? true : isIndeterminate ? 'indeterminate' : false}
+                      onCheckedChange={(checked) => handleSelectAll(checked === true)}
                     />
-                  </TableCell>
-
-                  <TableCell>{user.employee_id}</TableCell>
-
-                  <TableCell>
-
-                    <div className="flex items-center gap-2">
-
-                      {user.photo?.path ? (
-                        <img
-                          src={`/storage/${user.photo.path}`}
-                          className="w-8 h-8 rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-semibold">
-                          {user.name[0]}
-                        </div>
-                      )}
-
-                      {user.name} {user.last_name}
-
-                    </div>
-
-                  </TableCell>
-
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{designationMap[String(user.designation_id)] ?? user.designation_id}</TableCell>
-                  <TableCell>{user.location}</TableCell>
-
-                  <TableCell>
-
-                    <Badge
-                      variant={
-                        user.employment_status === 'active'
-                          ? 'default'
-                          : user.employment_status === 'separated'
-                            ? 'destructive'
-                            : 'secondary'
-                      }
-                    >
-                      {user.employment_status}
-                    </Badge>
-
-                  </TableCell>
-
-                  <TableCell>{user.role}</TableCell>
-
+                  </TableHead>
+                  <TableHead>Employee ID</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Designation</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Role</TableHead>
                 </TableRow>
+              </TableHeader>
 
-              ))}
+              <TableBody>
+                {paginatedUsers.map(user => (
+                  <TableRow
+                    key={user.id}
+                    className="cursor-pointer hover:bg-muted/30"
+                    onClick={() => {
+                      setSelectedUser(user)
+                      setOpenEdit(true)
+                    }}
+                  >
+                    <TableCell onClick={(e) => e.stopPropagation()}>
+                      <Checkbox
+                        checked={selectedUsers.includes(user.id)}
+                        disabled={user.employment_status !== 'inactive'}
+                        onCheckedChange={(checked) =>
+                          handleSelectUser(user.id, checked === true)
+                        }
+                      />
+                    </TableCell>
 
-            </TableBody>
+                    <TableCell>{user.employee_id}</TableCell>
 
-          </Table>
-          <div className="flex justify-end items-center gap-2 mt-4">
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        {user.photo?.path ? (
+                          <img
+                            src={`/storage/${user.photo.path}`}
+                            className="w-8 h-8 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-semibold">
+                            {user.name[0]}
+                          </div>
+                        )}
+                        {user.name} {user.last_name}
+                      </div>
+                    </TableCell>
 
-            <Button
-              variant="outline"
-              disabled={page === 1}
-              onClick={() => setPage(page - 1)}
-            >
-              Previous
-            </Button>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{designationMap[String(user.designation_id)] ?? user.designation_id}</TableCell>
+                    <TableCell>{user.location}</TableCell>
 
-            <span className="text-sm">
-              Page {page} of {totalPages}
-            </span>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          user.employment_status === 'active'
+                            ? 'default'
+                            : user.employment_status === 'separated'
+                              ? 'destructive'
+                              : 'secondary'
+                        }
+                      >
+                        {user.employment_status}
+                      </Badge>
+                    </TableCell>
 
-            <Button
-              variant="outline"
-              disabled={page === totalPages}
-              onClick={() => setPage(page + 1)}
-            >
-              Next
-            </Button>
+                    <TableCell>{user.role}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
 
-          </div>
-          {/* EDIT PANEL */}
+            {/* PAGINATION */}
+            <div className="flex justify-end items-center gap-2 mt-4">
+              <Button
+                variant="outline"
+                disabled={page === 1}
+                onClick={() => setPage(page - 1)}
+              >
+                Previous
+              </Button>
+              <span className="text-sm">Page {page} of {totalPages}</span>
+              <Button
+                variant="outline"
+                disabled={page === totalPages}
+                onClick={() => setPage(page + 1)}
+              >
+                Next
+              </Button>
+            </div>
 
-          <Sheet open={openEdit} onOpenChange={setOpenEdit}>
-
-            <SheetContent side="right" className="w-[600px]">
-
-              {selectedUser && (
-                <EditUserCard user={selectedUser} onSuccess={() => setOpenEdit(false)} />
-              )}
-
-            </SheetContent>
-
-          </Sheet>
-
-        </CardContent>
-
-      </Card>
-
-    </div>
-
-  </AppLayout>
-
-
+            {/* EDIT PANEL */}
+            <Sheet open={openEdit} onOpenChange={setOpenEdit}>
+              <SheetContent side="right" className="w-[600px]">
+                {selectedUser && (
+                  <EditUserCard user={selectedUser} onSuccess={() => setOpenEdit(false)} />
+                )}
+              </SheetContent>
+            </Sheet>
+          </CardContent>
+        </Card>
+      </div>
+    </AppLayout>
   )
 }

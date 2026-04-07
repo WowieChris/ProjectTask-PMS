@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 export interface TreeNodeData {
   id: number
   name: string
+  address?: string
   type: 'division' | 'district' | 'area' | 'branch'
 }
 

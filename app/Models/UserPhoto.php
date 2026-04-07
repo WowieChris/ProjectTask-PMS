@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Filesystem\Filesystem; // 👈 add this
 
 class UserPhoto extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'user_id',
         'disk',
@@ -19,8 +19,22 @@ class UserPhoto extends Model
         'is_current',
     ];
 
-    public function user()
+    protected $casts = [
+        'is_current' => 'boolean',
+    ];
+
+    protected $appends = ['url'];
+
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getUrlAttribute(): string
+    {
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk($this->disk);
+
+        return $disk->url($this->path);
     }
 }

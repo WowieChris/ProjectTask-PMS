@@ -26,6 +26,8 @@ type ProfileForm = {
   name: string;
   email: string;
   photo: File | null;
+
+  // ✅ for file uploads with "post" while still doing PATCH on backend
   _method?: 'patch';
 };
 
@@ -43,6 +45,9 @@ export default function Profile() {
     auth.user.photo_url ?? null
   );
 
+  // Track blob URL so we only revoke blobs we created
+  const blobUrlRef = React.useRef<string | null>(null);
+
   const form = useForm<ProfileForm>({
     name: auth.user.name ?? '',
     email: auth.user.email ?? '',
@@ -55,25 +60,35 @@ export default function Profile() {
 
     form.setData('photo', file);
 
+    // Revoke old blob if it exists
+    if (blobUrlRef.current) {
+      URL.revokeObjectURL(blobUrlRef.current);
+      blobUrlRef.current = null;
+    }
+
     if (!file) {
       setPhotoPreview(auth.user.photo_url ?? null);
       return;
     }
 
     const url = URL.createObjectURL(file);
+    blobUrlRef.current = url;
     setPhotoPreview(url);
   };
 
   React.useEffect(() => {
     return () => {
-      if (photoPreview?.startsWith('blob:')) URL.revokeObjectURL(photoPreview);
+      if (blobUrlRef.current) {
+        URL.revokeObjectURL(blobUrlRef.current);
+      }
     };
-  }, [photoPreview]);
+  }, []);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('photo in form:', form.data.photo); // should be a File
-    form.post(update().url, {
+
+    // ✅ safest for files: POST + _method=patch + forceFormData
+    form.post(route('profile.update'), {
       preserveScroll: true,
       forceFormData: true,
     });
@@ -96,7 +111,14 @@ export default function Profile() {
             title="Profile information"
             description="Update your name, email address, and profile photo"
           />
-              <div className="flex flex-col w-full max-w-xl gap-8"> 
+
+          <form
+            onSubmit={submit}
+            className="space-y-6"
+            encType="multipart/form-data"
+          >
+            <div className="grid gap-8 md:grid-cols-[1fr_220px] items-start">
+              <div className="space-y-6">
                 <div className="grid gap-2">
                   <Label htmlFor="name">Name</Label>
 
@@ -131,8 +153,35 @@ export default function Profile() {
 
                   <InputError className="mt-2" message={form.errors.email} />
                 </div>
+              </div>
 
-            {/* ✅ KEEP THIS: save button + saved transition */}
+              <div className="flex flex-col items-center gap-3">
+                <div className="h-40 w-40 overflow-hidden rounded-full border bg-muted shadow">
+                  {photoPreview ? (
+                    <img
+                      src={photoPreview}
+                      alt="Profile preview"
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">
+                      No photo
+                    </div>
+                  )}
+                </div>
+
+                <Input
+                  id="photo"
+                  type="file"
+                  accept="image/*"
+                  onChange={onPhotoChange}
+                  className="max-w-[180px]"
+                />
+
+                <InputError className="mt-2 text-center" message={form.errors.photo} />
+              </div>
+            </div>
+
             <div className="flex items-center gap-4">
               <Button disabled={form.processing} data-test="update-profile-button">
                 Save

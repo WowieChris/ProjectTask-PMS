@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+
+use Tighten\Ziggy\Ziggy;
 use App\Models\UserPhoto;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -27,11 +29,12 @@ class HandleInertiaRequests extends Middleware
                 ->latest('id')
                 ->first();
 
-            $photoUrl = $currentPhoto ? asset('storage/'.$currentPhoto->path) : null;
+            $photoUrl = $currentPhoto ? asset('storage/' . $currentPhoto->path) : null;
         }
 
         return [
             ...parent::share($request),
+
             'name' => config('app.name'),
 
             'auth' => [
@@ -51,6 +54,11 @@ class HandleInertiaRequests extends Middleware
 
             'sidebarOpen' => ! $request->hasCookie('sidebar_state')
                 || $request->cookie('sidebar_state') === 'true',
+
+            'ziggy' => fn() => array_merge(
+                (new Ziggy)->toArray(),
+                ['location' => $request->url()]
+            ),
         ];
     }
 }
