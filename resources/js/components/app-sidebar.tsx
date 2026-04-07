@@ -113,7 +113,7 @@ export function AppSidebar() {
       },
       {
         section: 'Admin',
-        title: 'ConfigFile',
+        title: 'Configuration File',
         icon: Cog,
         children: [
           {
@@ -122,8 +122,8 @@ export function AppSidebar() {
             href: '/ConfigFiles/Navigation',
             icon: MapPinned,
           },
-          { title: 'Senior Field Eng', href: '/ConfigFiles/SFE' },
-          { title: 'Field Eng', href: '/ConfigFiles/Field-Eng' }, // ✅ fixed case + consistency
+          // { title: 'Senior Field Eng', href: '/ConfigFiles/SFE' },
+          // { title: 'Field Eng', href: '/ConfigFiles/Field-Eng' }, // ✅ fixed case + consistency
           { title: 'RBAC', href: '/config-files/technical-support-eng' },
         ],
       },
