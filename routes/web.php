@@ -166,9 +166,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/ConfigFiles/Navigation', [NavigationController::class, 'store']);
     });
     //EA Monitoring
-    Route::get('/EAMonitoring', function () {
-        return Inertia::render('EAMonitoring/Index');
-    })->name('EAMonitoring');
+    Route::get('/EAMonitoring/Request', function () {
+        return Inertia::render('EAMonitoring/Request/Index');
+    })->name('EAMonitoring.request');
 
     Route::post('/assign-senior-field-usergroup', [UserController::class, 'assignUserGroup']);
 });
