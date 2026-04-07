@@ -96,6 +96,9 @@ export function AppSidebar() {
       title: 'EA Monitoring',
       href: '/EAMonitoring',
       icon: Monitor,
+      children: [
+        { title: 'Request', href: '/EAMonitoring/Request' },
+      ],
     },
   ];
 
