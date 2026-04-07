@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\NavigationController::index
- * @see app/Http/Controllers/NavigationController.php:15
+ * @see app/Http/Controllers/NavigationController.php:29
  * @route '/ConfigFiles/Navigation'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\NavigationController::index
- * @see app/Http/Controllers/NavigationController.php:15
+ * @see app/Http/Controllers/NavigationController.php:29
  * @route '/ConfigFiles/Navigation'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\NavigationController::index
- * @see app/Http/Controllers/NavigationController.php:15
+ * @see app/Http/Controllers/NavigationController.php:29
  * @route '/ConfigFiles/Navigation'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\NavigationController::index
- * @see app/Http/Controllers/NavigationController.php:15
+ * @see app/Http/Controllers/NavigationController.php:29
  * @route '/ConfigFiles/Navigation'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\NavigationController::index
- * @see app/Http/Controllers/NavigationController.php:15
+ * @see app/Http/Controllers/NavigationController.php:29
  * @route '/ConfigFiles/Navigation'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\NavigationController::index
- * @see app/Http/Controllers/NavigationController.php:15
+ * @see app/Http/Controllers/NavigationController.php:29
  * @route '/ConfigFiles/Navigation'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\NavigationController::index
- * @see app/Http/Controllers/NavigationController.php:15
+ * @see app/Http/Controllers/NavigationController.php:29
  * @route '/ConfigFiles/Navigation'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -78,70 +78,60 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     index.form = indexForm
 /**
-* @see \App\Http\Controllers\NavigationController::move
- * @see app/Http/Controllers/NavigationController.php:25
- * @route '/navigation/move'
+* @see \App\Http\Controllers\NavigationController::store
+ * @see app/Http/Controllers/NavigationController.php:94
+ * @route '/ConfigFiles/Navigation'
  */
-export const move = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
-    url: move.url(options),
-    method: 'patch',
+export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: store.url(options),
+    method: 'post',
 })
 
-move.definition = {
-    methods: ["patch"],
-    url: '/navigation/move',
-} satisfies RouteDefinition<["patch"]>
+store.definition = {
+    methods: ["post"],
+    url: '/ConfigFiles/Navigation',
+} satisfies RouteDefinition<["post"]>
 
 /**
-* @see \App\Http\Controllers\NavigationController::move
- * @see app/Http/Controllers/NavigationController.php:25
- * @route '/navigation/move'
+* @see \App\Http\Controllers\NavigationController::store
+ * @see app/Http/Controllers/NavigationController.php:94
+ * @route '/ConfigFiles/Navigation'
  */
-move.url = (options?: RouteQueryOptions) => {
-    return move.definition.url + queryParams(options)
+store.url = (options?: RouteQueryOptions) => {
+    return store.definition.url + queryParams(options)
 }
 
 /**
-* @see \App\Http\Controllers\NavigationController::move
- * @see app/Http/Controllers/NavigationController.php:25
- * @route '/navigation/move'
+* @see \App\Http\Controllers\NavigationController::store
+ * @see app/Http/Controllers/NavigationController.php:94
+ * @route '/ConfigFiles/Navigation'
  */
-move.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
-    url: move.url(options),
-    method: 'patch',
+store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: store.url(options),
+    method: 'post',
 })
 
     /**
-* @see \App\Http\Controllers\NavigationController::move
- * @see app/Http/Controllers/NavigationController.php:25
- * @route '/navigation/move'
+* @see \App\Http\Controllers\NavigationController::store
+ * @see app/Http/Controllers/NavigationController.php:94
+ * @route '/ConfigFiles/Navigation'
  */
-    const moveForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: move.url({
-                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                        _method: 'PATCH',
-                        ...(options?.query ?? options?.mergeQuery ?? {}),
-                    }
-                }),
+    const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: store.url(options),
         method: 'post',
     })
 
             /**
-* @see \App\Http\Controllers\NavigationController::move
- * @see app/Http/Controllers/NavigationController.php:25
- * @route '/navigation/move'
+* @see \App\Http\Controllers\NavigationController::store
+ * @see app/Http/Controllers/NavigationController.php:94
+ * @route '/ConfigFiles/Navigation'
  */
-        moveForm.patch = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: move.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'PATCH',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
+        storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: store.url(options),
             method: 'post',
         })
     
-    move.form = moveForm
-const NavigationController = { index, move }
+    store.form = storeForm
+const NavigationController = { index, store }
 
 export default NavigationController

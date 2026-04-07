@@ -149,10 +149,12 @@ Route::middleware(['auth'])->group(function () {
     });
     //Config FIle
     //NAVIGATION CONTROLLER
-    // Route::patch('/navigation/move', [NavigationController::class, 'move']);
+    //TreeNodeMove
+    Route::patch('/navigation/move', [NavigationController::class, 'move']);
     //FIELD ENG CONTROLLER
     Route::get('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'Index']);
     Route::post('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'store']);
+
     //SENIOR FIELD ENG CONTROLLER
     Route::get('/ConfigFiles/SFE', [SeniorFieldAssignmentController::class, 'index']);
     Route::post('/ConfigFiles/SFE', [SeniorFieldAssignmentController::class, 'store']);
@@ -161,12 +163,12 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['auth'])->group(function () {
         //NAVIGATION index
         Route::get('/ConfigFiles/Navigation', [NavigationController::class, 'index']);
+        Route::post('/ConfigFiles/Navigation', [NavigationController::class, 'store']);
     });
     //EA Monitoring
-    Route::prefix('EAMonitoring')->group(function () {  
+    Route::get('/EAMonitoring', function () {
+        return Inertia::render('EAMonitoring/Index');
+    })->name('EAMonitoring');
 
-        Route::get('/Request', function () {
-            return Inertia::render('EAMonitoring/Request/Index');
-    })->name('EAMonitoring.request');
-    });
+    Route::post('/assign-senior-field-usergroup', [UserController::class, 'assignUserGroup']);
 });

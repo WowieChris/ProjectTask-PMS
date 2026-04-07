@@ -9,9 +9,14 @@ import {
   SelectTrigger,
   SelectValue,
   SelectItem,
-  SelectContent
+  SelectContent,
 } from "@/components/ui/select";
-
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -22,6 +27,11 @@ import {
 } from "@/components/ui/table";
 
 import AppLayout from "@/layouts/app-layout";
+
+type UserGroup = {
+  id: number;
+  name: string;
+};
 
 type Division = {
   id: number;
@@ -34,175 +44,185 @@ type District = {
   name: string;
   division_id: number;
   division?: Division;
-  user_group_id?: number;
-  user_group?: UserGroup;
-};
-type UserGroup = {
-  id: number;
-  name: string;
 };
 
 type PageProps = {
   divisions: Division[];
-  districts: District[]; // keep simple (array). You can change to paginator later.
-  userGroups: UserGroup[];
+  districts: District[];
 };
 
-export default function DistrictIndex({
-  divisions = [],
-  districts = [],
-}: PageProps) {
-  const [q, setQ] = useState('');
+export default function DistrictIndex({ divisions = [], districts = [] }: PageProps) {
+  const [q, setQ] = useState("");
+  const [addOpen, setAddOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<District | null>(null);
 
+  // ── CREATE form ──
   const { data, setData, post, processing, errors, reset } = useForm({
-    division_id: '',
-    name: '',
+    division_id: "",
+    name: "",
+  });
+
+  // ── EDIT form ──
+  const editForm = useForm({
+    division_id: "",
+    name: "",
   });
 
   const filtered = useMemo(() => {
-    const query = q.trim().toLowerCase();
-    if (!query) return districts;
-
-    return districts.filter((d) => {
-      const div = d.division?.name?.toLowerCase() ?? '';
-      const dist = d.name?.toLowerCase() ?? '';
-      const group = d.user_group?.name?.toLowerCase() ?? '';
-
-      return (
-        dist.includes(query) ||
-        div.includes(query) ||
-        group.includes(query)
-      );
-    });
+    const query = q.toLowerCase();
+    return districts.filter(
+      (d) =>
+        d.name.toLowerCase().includes(query) ||
+        d.division?.name?.toLowerCase().includes(query) ||
+        d.division?.user_group?.name?.toLowerCase().includes(query)
+    );
   }, [districts, q]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    post('/districts', {
-      onSuccess: () => reset('division_id', 'name'),
+    post("/districts", {
+      onSuccess: () => {
+        reset("division_id", "name");
+        setAddOpen(false);
+      },
     });
   };
 
   const handleDelete = (id: number) => {
-    if (!confirm('Delete this district?')) return;
+    if (!confirm("Delete this district?")) return;
     router.delete(`/districts/${id}`);
+  };
+
+  const openEdit = (d: District) => {
+    setEditTarget(d);
+    editForm.setData({
+      division_id: String(d.division_id),
+      name: d.name,
+    });
+  };
+
+  const handleEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editTarget) return;
+    editForm.put(`/districts/${editTarget.id}`, {
+      onSuccess: () => setEditTarget(null),
+    });
+  };
+
+  const badgeColor = (name?: string) => {
+    if (!name) return "bg-muted text-muted-foreground";
+    if (name.includes("Luzon")) return "bg-blue-500/10 text-blue-400";
+    if (name.includes("Visayas")) return "bg-green-500/10 text-green-400";
+    if (name.includes("Mindanao")) return "bg-purple-500/10 text-purple-400";
+    return "bg-muted text-muted-foreground";
   };
 
   return (
     <AppLayout
       breadcrumbs={[
-        { title: 'Dashboard', href: '/dashboard' },
-        { title: 'Districts', href: '/districts' },
+        { title: "Dashboard", href: "/dashboard" },
+        { title: "Districts", href: "/districts" },
       ]}
     >
       <Head title="Districts" />
 
-      <div className="space-y-6">
-        {/* Create Form */}
-        <Card>
-          <CardHeader>
-            <CardTitle>District Entry</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-3">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Division</label>
-                <Select
-                  value={data.division_id}
-                  onValueChange={(v) => setData('division_id', v)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select division..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {divisions.map((d) => (
-                      <SelectItem key={d.id} value={String(d.id)}>
-                        {d.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.division_id && (
-                  <p className="text-sm text-red-500">{errors.division_id}</p>
-                )}
-              </div>
+      <div className="p-6 space-y-6">
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium">District Name</label>
-                <Input
-                  value={data.name}
-                  onChange={(e) => setData('name', e.target.value)}
-                  placeholder="e.g. District 1"
-                />
-                {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
-              </div>
+        {/* STATS */}
+        <div className="grid grid-cols-3 gap-4">
+          <Card className="hover:shadow-lg transition">
+            <CardContent className="p-4">
+              <p className="text-sm text-muted-foreground">Total Districts</p>
+              <p className="text-2xl font-bold">{districts.length}</p>
+            </CardContent>
+          </Card>
 
-              <div className="flex items-end">
-                <Button type="submit" disabled={processing} className="w-full">
-                  {processing ? 'Saving...' : 'Save District'}
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+          <Card className="hover:shadow-lg transition">
+            <CardContent className="p-4">
+              <p className="text-sm text-muted-foreground">Total Divisions</p>
+              <p className="text-2xl font-bold">{divisions.length}</p>
+            </CardContent>
+          </Card>
 
-        {/* List */}
-        <Card>
-          <CardHeader className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <Card className="hover:shadow-lg transition">
+            <CardContent className="p-4">
+              <p className="text-sm text-muted-foreground">No Division</p>
+              <p className="text-2xl font-bold">
+                {districts.filter((d) => !d.division).length}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* ADD BUTTON */}
+        <div className="flex justify-end">
+          <Button onClick={() => setAddOpen(true)}>Add District</Button>
+        </div>
+
+        {/* TABLE */}
+        <Card className="shadow-lg">
+          <CardHeader className="flex justify-between items-center">
             <CardTitle>District List</CardTitle>
-            <div className="w-full md:w-80">
-              <Input
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="Search district or division..."
-              />
-            </div>
+            <Input
+              placeholder="Search district..."
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              className="w-80"
+            />
           </CardHeader>
 
-          <CardContent>
+          <CardContent className="p-0">
             <Table>
-              <TableHeader>
+              <TableHeader className="bg-muted/30">
                 <TableRow>
-                  <TableHead className="w-[90px]">ID</TableHead>
-                  <TableHead>District</TableHead>
+                  <TableHead className="pl-6">District</TableHead>
                   <TableHead>Division</TableHead>
                   <TableHead>User Group</TableHead>
-                  <TableHead className="w-[140px] text-right">Actions</TableHead>
+                  <TableHead className="text-right pr-6">Actions</TableHead>
                 </TableRow>
               </TableHeader>
 
               <TableBody>
                 {filtered.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground">
-                      No records found.
+                    <TableCell colSpan={4} className="text-center py-12">
+                      No districts found.
                     </TableCell>
                   </TableRow>
                 ) : (
                   filtered.map((d) => (
-                    <TableRow key={d.id}>
-                      <TableCell>{d.id}</TableCell>
+                    <TableRow key={d.id} className="hover:bg-muted/40 transition">
+                      <TableCell className="pl-6 font-medium">{d.name}</TableCell>
 
-                      <TableCell className="font-medium">
-                        {d.name}
+                      <TableCell>
+                        <span className="px-3 py-1 text-xs rounded-full bg-muted">
+                          {d.division?.name ?? "No Division"}
+                        </span>
                       </TableCell>
 
                       <TableCell>
-                        {d.division?.name ?? `Division #${d.division_id}`}
+                        <span className={`px-3 py-1 text-xs rounded-full ${badgeColor(d.division?.user_group?.name)}`}>
+                          {d.division?.user_group?.name ?? "No Group"}
+                        </span>
                       </TableCell>
 
-                      <TableCell>
-                        {d.division?.user_group?.name ?? "—"}
-                      </TableCell>
-
-                      <TableCell className="text-right">
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => handleDelete(d.id)}
-                        >
-                          Delete
-                        </Button>
+                      <TableCell className="text-right pr-6">
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => openEdit(d)}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleDelete(d.id)}
+                          >
+                            Delete
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))
@@ -212,6 +232,121 @@ export default function DistrictIndex({
           </CardContent>
         </Card>
       </div>
+
+      {/* ADD MODAL */}
+      <Dialog open={addOpen} onOpenChange={setAddOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add District</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Division</label>
+              <Select
+                value={data.division_id}
+                onValueChange={(v) => setData("division_id", v)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select division..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {divisions.map((d) => (
+                    <SelectItem key={d.id} value={String(d.id)}>
+                      {d.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.division_id && (
+                <p className="text-sm text-red-500">{errors.division_id}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">District Name</label>
+              <Input
+                value={data.name}
+                onChange={(e) => setData("name", e.target.value)}
+                placeholder="e.g. District 1"
+              />
+              {errors.name && (
+                <p className="text-sm text-red-500">{errors.name}</p>
+              )}
+            </div>
+
+            <div className="flex gap-2 justify-end">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => { setAddOpen(false); reset(); }}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={processing}>
+                {processing ? "Saving..." : "Save"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* EDIT MODAL */}
+      <Dialog open={!!editTarget} onOpenChange={(o) => !o && setEditTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit District</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleEdit} className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Division</label>
+              <Select
+                value={editForm.data.division_id}
+                onValueChange={(v) => editForm.setData("division_id", v)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select division..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {divisions.map((d) => (
+                    <SelectItem key={d.id} value={String(d.id)}>
+                      {d.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {editForm.errors.division_id && (
+                <p className="text-sm text-red-500">{editForm.errors.division_id}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">District Name</label>
+              <Input
+                value={editForm.data.name}
+                onChange={(e) => editForm.setData("name", e.target.value)}
+                placeholder="e.g. District 1"
+              />
+              {editForm.errors.name && (
+                <p className="text-sm text-red-500">{editForm.errors.name}</p>
+              )}
+            </div>
+
+            <div className="flex gap-2 justify-end">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setEditTarget(null)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={editForm.processing}>
+                {editForm.processing ? "Saving..." : "Update"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
     </AppLayout>
   );
 }
