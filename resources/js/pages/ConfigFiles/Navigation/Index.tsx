@@ -24,7 +24,7 @@ interface LocationItem {
 }
 interface Branch { id: number; name: string; address?: string; }
 interface Area { id: number; name: string; branches: Branch[]; }
-interface District { id: number; name: string; areas: Area[]; }
+interface District { id: number; name: string; areas: Area[]; address?: string; }
 interface Division { id: number; name: string; user_group_id: number; address?: string; districts: District[]; }
 interface UserGroup { id: number; name: string; }
 interface SeniorField { id: number; name: string; last_name: string; }
@@ -216,7 +216,7 @@ export default function App() {
                     transition={{ delay: i * 0.05 }}
                   >
                     <TreeNode
-                      label={`${division.name} - ${division.address ?? 'No address'}`}
+                      label={`${division.name} - ${division.address ?? 'No Base'}`}
                       nodeData={{
                         id: division.id,
                         name: division.name,
@@ -231,7 +231,7 @@ export default function App() {
                       {(division.districts ?? []).map(district => (
                         <TreeNode
                           key={district.id}
-                          label={district.name}
+                          label={`${district.name} - ${district.address ?? 'No Base'}`}
                           nodeData={{ id: district.id, name: district.name, type: 'district' }}
                           isSelected={selectedNode?.id === district.id && selectedNode?.type === 'district'}
                           isDragOver={dragOverNode?.id === district.id && dragOverNode?.type === 'district'}
