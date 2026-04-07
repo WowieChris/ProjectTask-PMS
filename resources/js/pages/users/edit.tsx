@@ -1,4 +1,5 @@
 import { Link, useForm } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -39,16 +40,25 @@ const BreadcrumbItem: BreadcrumbItem[] = [
 
 interface Props {
     user: User;
+    onSuccess?: () => void;
 }
-
-export default function EditUserCard({ user }: Props) {
-    const isInitiallyActive = user.employment_status === 'active';
+interface Designation {
+    id: number
+    name: string
+    role: 'user' | 'admin'
+}
+interface PageProps extends Record<string, unknown> {
+    designations: Designation[]
+}
+export default function EditUserCard({ user, onSuccess }: Props) {
+    const isInitiallyActive = user.employment_status !== 'separated';
+    const { designations = [] } = usePage<PageProps>().props;
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
         last_name: user.last_name || '',
         email: user.email,
         role: user.role,
-        designation: user.designation || '',
+        designation_id: user.designation_id,
         employee_id: user.employee_id || '',
         location: user.location || '',
         district: user.district || '',
@@ -60,7 +70,17 @@ export default function EditUserCard({ user }: Props) {
     //     e.preventDefault();
     //     put(`/users/${user.id}`);
     // };
+    const handleEmployeeId = (value: string) => {
+        const digits = value.replace(/\D/g, '')
 
+        let formatted = digits
+
+        if (digits.length > 4) {
+            formatted = digits.slice(0, 4) + '-' + digits.slice(4, 9)
+        }
+
+        setData('employee_id', formatted)
+    }
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -69,7 +89,7 @@ export default function EditUserCard({ user }: Props) {
             data.last_name !== (user.last_name || '') ||
             data.email !== user.email ||
             data.role !== user.role ||
-            data.designation !== (user.designation || '') ||
+            data.designation_id !== (user.designation_id ?? null) ||
             data.employee_id !== (user.employee_id || '') ||
             data.location !== (user.location || '') ||
             data.district !== (user.district || '') ||
@@ -80,7 +100,11 @@ export default function EditUserCard({ user }: Props) {
             return;
         }
 
-        put(`/users/${user.id}`);
+        put(`/users/${user.id}`, {
+            onSuccess: () => {
+                onSuccess?.()
+            }
+        })
     };
 
     // const handleEmployeeId = (value: string) => {
@@ -149,7 +173,7 @@ export default function EditUserCard({ user }: Props) {
                                     className='w-full'
                                     pattern="\d{4}-\d{4,5}"
                                     value={data.employee_id}
-                                    onChange={(e) => setData('employee_id', e.target.value)}
+                                    onChange={(e) => handleEmployeeId(e.target.value)}
                                     disabled={!isInitiallyActive}
                                 />
                                 {errors.employee_id && <p className="text-red-500">{errors.employee_id}</p>}
@@ -181,19 +205,26 @@ export default function EditUserCard({ user }: Props) {
 
                         <div>
                             <Label htmlFor="role">Designation</Label>
-                            <Select value={data.designation} onValueChange={(value) => setData('designation', value)} disabled={!isInitiallyActive}>
-                                <SelectTrigger id="designation" aria-labelledby="designation-label" className="w-full">
-                                    <SelectValue placeholder="Select designation" />
+                            <Select
+                                value={String(data.designation_id)}
+                                onValueChange={(value) => {
+                                    setData('designation_id', value)
+                                    const selected = designations.find(d => String(d.id) === value)
+                                    if (selected) setData('role', selected.role)
+                                }}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="mama mo" />
                                 </SelectTrigger>
-
                                 <SelectContent>
-                                    <SelectItem value="Technical Support Engineer">Technical Support Engineer</SelectItem>
-                                    <SelectItem value="Field Engineer">Field Engineer</SelectItem>
-                                    <SelectItem value="System Operator">System Operator</SelectItem>
-                                    <SelectItem value="Infrastructure Engineer">Infrastructure Engineer</SelectItem>
+                                    {designations.map((d) => (
+                                        <SelectItem key={d.id} value={String(d.id)}>
+                                            {d.name}
+                                        </SelectItem>
+                                    ))}
                                 </SelectContent>
                             </Select>
-                            {errors.designation && <p className="text-red-500">{errors.designation}</p>}
+                            {errors.designation_id && <p className="text-red-500">{errors.designation_id}</p>}
                         </div>
                         <div>
                             <Label htmlFor="employment_status">Employment Status</Label>
@@ -204,7 +235,7 @@ export default function EditUserCard({ user }: Props) {
                                 <SelectContent>
                                     <SelectItem value="active">Active</SelectItem>
                                     <SelectItem value="inactive">Inactive</SelectItem>
-                                    <SelectItem value="terminated">Terminated</SelectItem>
+                                    <SelectItem value="separated">Separated</SelectItem>
                                 </SelectContent>
                             </Select>
                             {errors.employment_status && <p className="text-red-500">{errors.employment_status}</p>}
@@ -218,20 +249,20 @@ export default function EditUserCard({ user }: Props) {
                                     <SelectValue placeholder="Select location" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="central office">Central Office</SelectItem>
-                                    <SelectItem value="division 1">Division 1</SelectItem>
-                                    <SelectItem value="division 2">Division 2</SelectItem>
-                                    <SelectItem value="division 3">Division 3</SelectItem>
-                                    <SelectItem value="division 4">Division 4</SelectItem>
-                                    <SelectItem value="division 5">Division 5</SelectItem>
-                                    <SelectItem value="division 6">Division 6</SelectItem>
-                                    <SelectItem value="division 7">Division 7</SelectItem>
-                                    <SelectItem value="division 8">Division 8</SelectItem>
+                                    <SelectItem value="Central office">Central Office</SelectItem>
+                                    <SelectItem value="Division 1">Division 1</SelectItem>
+                                    <SelectItem value="Division 2">Division 2</SelectItem>
+                                    <SelectItem value="Division 3">Division 3</SelectItem>
+                                    <SelectItem value="Division 4">Division 4</SelectItem>
+                                    <SelectItem value="Division 5">Division 5</SelectItem>
+                                    <SelectItem value="Division 6">Division 6</SelectItem>
+                                    <SelectItem value="Division 7">Division 7</SelectItem>
+                                    <SelectItem value="Division 8">Division 8</SelectItem>
                                 </SelectContent>
                             </Select>
                             {errors.location && <p className="text-red-500">{errors.location}</p>}
                         </div>
-                        {data.location && data.location !== 'central office' && (
+                        {data.location && data.location !== 'Central office' && (
                             <div>
                                 <Label htmlFor="district">District</Label>
                                 <Input
@@ -250,7 +281,7 @@ export default function EditUserCard({ user }: Props) {
 
                         <div className="flex gap-2 mt-5">
                             {isInitiallyActive && (
-                                data.employment_status === 'terminated' ? (
+                                data.employment_status === 'separated' ? (
                                     <Button
                                         type="button"
                                         variant="destructive"

@@ -1,5 +1,18 @@
 import { Link, usePage } from '@inertiajs/react';
-import { Database, LayoutGrid, Search, User } from 'lucide-react';
+import {
+  Cog,
+  Columns2Icon,
+  Database,
+  LayoutGrid,
+  ListOrderedIcon,
+  MapPin,
+  MapPinned,
+  Monitor,
+  NotepadTextDashedIcon,
+  Search,
+  User,
+  Warehouse,
+} from 'lucide-react';
 
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -29,46 +42,105 @@ type PageProps = {
 
 export function AppSidebar() {
   const { auth } = usePage<PageProps>().props;
-  // Defensive: `auth` or `auth.user` may be null during some hydration paths
-  // (e.g. unauthenticated or server-client mismatch). Default to 'user'
-  // so admin menus are hidden when role is unavailable.
   const userRole = auth?.user?.role ?? 'user';
 
- const mainNavItems: NavItem[] = [
-  {
-    title: 'Dashboard',
-    href: dashboard().url,
-    icon: LayoutGrid,
-  },
-  {
-    title: 'Browse',
-    href: '/browse',
-    icon: Search,
-  },
-];
+  const mainNavItems: NavItem[] = [
+    // 🔹 MAIN
+    {
+      section: 'Main',
+      title: 'Dashboard',
+      href: dashboard().url,
+      icon: LayoutGrid,
+    },
 
-  // ✅ Show admin menus
-  if (userRole !== 'user') {
-    // ✅ Bring back User Maintenance
-    mainNavItems.push({
-      title: 'User Maintenance',
-      href: '/users',
-      icon: User,
-    });
 
-    // ✅ New Master Files dropdown
-    mainNavItems.push({
-      title: 'Master Files',
-      icon: Database,
+    // 🔹 OPERATIONS
+    {
+      section: 'Operations',
+      title: 'Service Order',
+      icon: ListOrderedIcon,
       children: [
-        { title: 'User Groups', href: '/user-groups' },
-        { title: 'Designations', href: '/designations' },
-        { title: 'Divisions', href: '/divisions' },
-        { title: 'Districts', href: '/districts' },
-        { title: 'Areas', href: '/areas' },
-        { title: 'Branches', href: '/branches' },
+        { title: 'Field Eng', href: '/service-order/field-eng' },
+        { title: 'Technical Support Eng', href: '/service-order/technical-support-eng' },
+        { title: 'Infrastructure Eng', href: '/service-order/infrastructure-eng' },
       ],
-    });
+    },
+    {
+      section: 'Operations',
+      title: 'Journal Movement',
+      href: '/journalMovement', // ✅ fixed slash
+      icon: NotepadTextDashedIcon,
+    },
+
+    // 🔹 MANAGEMENT
+    {
+      section: 'Management',
+      title: 'Asset Management',
+      href: '/assetManagement', // ✅ fixed slash
+      icon: Columns2Icon,
+    },
+    {
+      section: 'Management',
+      title: 'Office Management',
+      href: '/officeManagement', // ✅ fixed slash
+      icon: Warehouse,
+    },
+    {
+      section: 'Management',
+      title: 'My Location',
+      href: '/mylocation',
+      icon: MapPin,
+    },
+    {
+      section: 'Management',
+      title: 'EA Monitoring',
+      href: '/EAMonitoring',
+      icon: Monitor,
+      children: [
+        { title: 'Request', href: '/EAMonitoring/Request' },
+      ],
+    },
+  ];
+
+  // 🔹 ADMIN SECTION
+  if (userRole !== 'user') {
+    mainNavItems.push(
+      {
+        section: 'Admin',
+        title: 'User Maintenance',
+        href: '/users',
+        icon: User,
+      },
+      {
+        section: 'Admin',
+        title: 'ConfigFile',
+        icon: Cog,
+        children: [
+          {
+
+            title: 'Location Master FIle',
+            href: '/ConfigFiles/Navigation',
+            icon: MapPinned,
+          },
+          { title: 'Senior Field Eng', href: '/ConfigFiles/SFE' },
+          { title: 'Field Eng', href: '/ConfigFiles/Field-Eng' }, // ✅ fixed case + consistency
+          { title: 'RBAC', href: '/config-files/technical-support-eng' },
+        ],
+      },
+      {
+        section: 'Admin',
+        title: 'Master Files',
+        icon: Database,
+        children: [
+          { title: 'User Groups', href: '/user-groups' },
+          { title: 'Designations', href: '/designations' },
+          { title: 'Divisions', href: '/divisions' },
+          { title: 'Districts', href: '/districts' },
+          { title: 'Areas', href: '/areas' },
+          { title: 'Branches', href: '/branches' },
+        ],
+      }
+    );
   }
 
   return (
@@ -77,7 +149,6 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              {/* ✅ fix: dashboard().url */}
               <Link href={dashboard().url} prefetch>
                 <AppLogo />
               </Link>
@@ -87,6 +158,7 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
+        {/* ✅ Now properly grouped */}
         <NavMain items={mainNavItems} />
       </SidebarContent>
 

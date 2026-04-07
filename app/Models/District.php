@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\DistrictEngineer;
+use App\Models\UserGroup;
 
 class District extends Model
 {
@@ -19,5 +21,9 @@ class District extends Model
     public function userGroup()
     {
         return $this->belongsTo(UserGroup::class);
+    }
+    public function engineer()
+    {
+        return $this->hasOne(DistrictEngineer::class, 'district_id');
     }
 }

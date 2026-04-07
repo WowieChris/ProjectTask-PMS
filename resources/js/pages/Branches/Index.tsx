@@ -11,7 +11,12 @@ import {
     SelectContent,
     SelectItem,
 } from "@/components/ui/select";
-
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
 import {
     Table,
     TableBody,
@@ -40,44 +45,63 @@ type PageProps = {
     branches?: Branch[];
 };
 
-export default function BranchIndex({
-    areas = [],
-    branches = [],
-}: PageProps) {
+export default function BranchIndex({ areas = [], branches = [] }: PageProps) {
     const [q, setQ] = useState("");
+    const [addOpen, setAddOpen] = useState(false);
+    const [editTarget, setEditTarget] = useState<Branch | null>(null);
 
+    // ── CREATE form ──
     const { data, setData, post, processing, errors, reset } = useForm({
         area_id: "",
         name: "",
     });
 
-    const filtered = useMemo(() => {
-        const query = q.trim().toLowerCase();
-        if (!query) return branches;
+    // ── EDIT form ──
+    const editForm = useForm({
+        area_id: "",
+        name: "",
+    });
 
-        return branches.filter((b) => {
-            const area = b.area?.name?.toLowerCase() ?? "";
-            const branch = b.name?.toLowerCase() ?? "";
-            return branch.includes(query) || area.includes(query);
-        });
+    const filtered = useMemo(() => {
+        const query = q.toLowerCase();
+        return branches.filter((b) =>
+            b.name.toLowerCase().includes(query) ||
+            b.area?.name?.toLowerCase().includes(query)
+        );
     }, [branches, q]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
         post("/branches", {
-            onSuccess: () => reset("area_id", "name"),
+            onSuccess: () => {
+                reset("area_id", "name");
+                setAddOpen(false);
+            },
         });
     };
 
     const handleDelete = (id: number) => {
         if (!confirm("Delete this branch?")) return;
-
         router.delete(`/branches/${id}`);
     };
-    console.log(areas);
-    return (
 
+    const openEdit = (b: Branch) => {
+        setEditTarget(b);
+        editForm.setData({
+            area_id: String(b.area_id),
+            name: b.name,
+        });
+    };
+
+    const handleEdit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!editTarget) return;
+        editForm.put(`/branches/${editTarget.id}`, {
+            onSuccess: () => setEditTarget(null),
+        });
+    };
+
+    return (
         <AppLayout
             breadcrumbs={[
                 { title: "Dashboard", href: "/dashboard" },
@@ -86,136 +110,220 @@ export default function BranchIndex({
         >
             <Head title="Branches" />
 
-            <div className="space-y-6">
+            <div className="p-6 space-y-6">
 
-                {/* Branch Entry */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Branch Entry</CardTitle>
-                    </CardHeader>
+                {/* STATS */}
+                <div className="grid grid-cols-3 gap-4">
+                    <Card className="hover:shadow-lg transition">
+                        <CardContent className="p-4">
+                            <p className="text-sm text-muted-foreground">Total Branches</p>
+                            <p className="text-2xl font-bold">{branches.length}</p>
+                        </CardContent>
+                    </Card>
 
-                    <CardContent>
-                        <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-3">
+                    <Card className="hover:shadow-lg transition">
+                        <CardContent className="p-4">
+                            <p className="text-sm text-muted-foreground">Total Areas</p>
+                            <p className="text-2xl font-bold">{areas.length}</p>
+                        </CardContent>
+                    </Card>
 
-                            {/* Area Select */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Area</label>
+                    <Card className="hover:shadow-lg transition">
+                        <CardContent className="p-4">
+                            <p className="text-sm text-muted-foreground">Unassigned</p>
+                            <p className="text-2xl font-bold">
+                                {branches.filter((b) => !b.area).length}
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
 
-                                <Select
-                                    value={data.area_id}
-                                    onValueChange={(v) => setData("area_id", v)}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select area..." />
-                                    </SelectTrigger>
+                {/* ADD BUTTON */}
+                <div className="flex justify-end">
+                    <Button onClick={() => setAddOpen(true)}>Add Branch</Button>
+                </div>
 
-                                    <SelectContent>
-                                        {areas.map((a) => (
-                                            <SelectItem key={a.id} value={String(a.id)}>
-                                                {a.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-
-                                {errors.area_id && (
-                                    <p className="text-sm text-red-500">{errors.area_id}</p>
-                                )}
-                            </div>
-
-                            {/* Branch Name */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Branch Name</label>
-
-                                <Input
-                                    value={data.name}
-                                    onChange={(e) => setData("name", e.target.value)}
-                                    placeholder="e.g. Branch 1"
-                                />
-
-                                {errors.name && (
-                                    <p className="text-sm text-red-500">{errors.name}</p>
-                                )}
-                            </div>
-
-                            {/* Save Button */}
-                            <div className="flex items-end">
-                                <Button type="submit" disabled={processing} className="w-full">
-                                    {processing ? "Saving..." : "Save Branch"}
-                                </Button>
-                            </div>
-
-                        </form>
-                    </CardContent>
-                </Card>
-
-                {/* Branch List */}
-                <Card>
-                    <CardHeader className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                {/* TABLE */}
+                <Card className="shadow-lg">
+                    <CardHeader className="flex justify-between items-center">
                         <CardTitle>Branch List</CardTitle>
-
-                        <div className="w-full md:w-80">
-                            <Input
-                                value={q}
-                                onChange={(e) => setQ(e.target.value)}
-                                placeholder="Search branch or area..."
-                            />
-                        </div>
+                        <Input
+                            placeholder="Search branch..."
+                            value={q}
+                            onChange={(e) => setQ(e.target.value)}
+                            className="w-80"
+                        />
                     </CardHeader>
 
-                    <CardContent>
+                    <CardContent className="p-0">
                         <Table>
-
-                            <TableHeader>
+                            <TableHeader className="bg-muted/30">
                                 <TableRow>
-                                    <TableHead className="w-[90px]">ID</TableHead>
-                                    <TableHead>Branch</TableHead>
+                                    <TableHead className="pl-6">Branch</TableHead>
                                     <TableHead>Area</TableHead>
-                                    <TableHead className="w-[140px] text-right">
-                                        Actions
-                                    </TableHead>
+                                    <TableHead className="text-right pr-6">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
 
                             <TableBody>
                                 {filtered.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={4} className="text-center text-muted-foreground">
-                                            No records found.
+                                        <TableCell colSpan={3} className="text-center py-12">
+                                            No branches found.
                                         </TableCell>
                                     </TableRow>
                                 ) : (
                                     filtered.map((b) => (
-                                        <TableRow key={b.id}>
-                                            <TableCell>{b.id}</TableCell>
-
-                                            <TableCell className="font-medium">
-                                                {b.name}
-                                            </TableCell>
+                                        <TableRow key={b.id} className="hover:bg-muted/40 transition">
+                                            <TableCell className="pl-6 font-medium">{b.name}</TableCell>
 
                                             <TableCell>
-                                                {b.area?.name ?? `Area #${b.area_id}`}
+                                                <span className="px-3 py-1 text-xs rounded-full bg-muted">
+                                                    {b.area?.name ?? "No Area"}
+                                                </span>
                                             </TableCell>
 
-                                            <TableCell className="text-right">
-                                                <Button
-                                                    variant="destructive"
-                                                    size="sm"
-                                                    onClick={() => handleDelete(b.id)}
-                                                >
-                                                    Delete
-                                                </Button>
+                                            <TableCell className="text-right pr-6">
+                                                <div className="flex justify-end gap-2">
+                                                    <Button
+                                                        size="sm"
+                                                        variant="secondary"
+                                                        onClick={() => openEdit(b)}
+                                                    >
+                                                        Edit
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="destructive"
+                                                        onClick={() => handleDelete(b.id)}
+                                                    >
+                                                        Delete
+                                                    </Button>
+                                                </div>
                                             </TableCell>
                                         </TableRow>
                                     ))
                                 )}
                             </TableBody>
-
                         </Table>
                     </CardContent>
                 </Card>
-
             </div>
+
+            {/* ADD MODAL */}
+            <Dialog open={addOpen} onOpenChange={setAddOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Add Branch</DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Area</label>
+                            <Select
+                                value={data.area_id}
+                                onValueChange={(v) => setData("area_id", v)}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select area..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {areas.map((a) => (
+                                        <SelectItem key={a.id} value={String(a.id)}>
+                                            {a.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {errors.area_id && (
+                                <p className="text-sm text-red-500">{errors.area_id}</p>
+                            )}
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Branch Name</label>
+                            <Input
+                                value={data.name}
+                                onChange={(e) => setData("name", e.target.value)}
+                                placeholder="e.g. Branch 1"
+                            />
+                            {errors.name && (
+                                <p className="text-sm text-red-500">{errors.name}</p>
+                            )}
+                        </div>
+
+                        <div className="flex gap-2 justify-end">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={() => { setAddOpen(false); reset(); }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button type="submit" disabled={processing}>
+                                {processing ? "Saving..." : "Save"}
+                            </Button>
+                        </div>
+                    </form>
+                </DialogContent>
+            </Dialog>
+
+            {/* EDIT MODAL */}
+            <Dialog open={!!editTarget} onOpenChange={(o) => !o && setEditTarget(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Edit Branch</DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={handleEdit} className="space-y-4">
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Area</label>
+                            <Select
+                                value={editForm.data.area_id}
+                                onValueChange={(v) => editForm.setData("area_id", v)}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select area..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {areas.map((a) => (
+                                        <SelectItem key={a.id} value={String(a.id)}>
+                                            {a.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {editForm.errors.area_id && (
+                                <p className="text-sm text-red-500">{editForm.errors.area_id}</p>
+                            )}
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Branch Name</label>
+                            <Input
+                                value={editForm.data.name}
+                                onChange={(e) => editForm.setData("name", e.target.value)}
+                                placeholder="e.g. Branch 1"
+                            />
+                            {editForm.errors.name && (
+                                <p className="text-sm text-red-500">{editForm.errors.name}</p>
+                            )}
+                        </div>
+
+                        <div className="flex gap-2 justify-end">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={() => setEditTarget(null)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button type="submit" disabled={editForm.processing}>
+                                {editForm.processing ? "Saving..." : "Update"}
+                            </Button>
+                        </div>
+                    </form>
+                </DialogContent>
+            </Dialog>
+
         </AppLayout>
     );
 }

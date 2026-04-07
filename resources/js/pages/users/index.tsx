@@ -18,22 +18,28 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import AppLayout from '@/layouts/app-layout'
 import { dashboard } from '@/routes'
 import type { BreadcrumbItem } from '@/types'
+import type { User } from "@/types/user"
 import UsersCreate from './create'
 import EditUserCard from './edit'
-import type { User } from "@/types/user"
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: 'Dashboard', href: dashboard().url },
   { title: 'User Maintenance', href: '/users' },
 ]
 
+interface Designation {
+  id: number
+  name: string
+}
+
 interface Props {
   users: User[]
+  designations: Designation[]
 }
 
 type AnyFilter = 'all' | string
 
-export default function UsersIndex({ users }: Props) {
+export default function UsersIndex({ users, designations }: Props) {
 
   const [selectedUsers, setSelectedUsers] = useState<number[]>([])
   const [filterText, setFilterText] = useState('')
@@ -43,6 +49,10 @@ export default function UsersIndex({ users }: Props) {
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [openEdit, setOpenEdit] = useState(false)
   const [openCreate, setOpenCreate] = useState(false)
+// Add this lookup map near the top, after the state declarations
+  const designationMap = useMemo(() => {
+    return Object.fromEntries(designations.map(d => [String(d.id), d.name]))
+  }, [designations])
 
   /* ---------------- ROLE OPTIONS ---------------- */
 
@@ -54,7 +64,7 @@ export default function UsersIndex({ users }: Props) {
     return Array.from(
       new Set(
         users
-          .map(u => u.designation)
+          .map(u => u.designation_id)
           .filter(Boolean)
       )
     ).sort() as string[]
@@ -75,7 +85,7 @@ export default function UsersIndex({ users }: Props) {
         u.name.toLowerCase().includes(text) ||
         (u.last_name ?? '').toLowerCase().includes(text) ||
         (u.email ?? '').toLowerCase().includes(text) ||
-        (u.designation ?? '').toLowerCase().includes(text) ||
+        (u.designation_id ?? '').toLowerCase().includes(text) ||
         (u.location ?? '').toLowerCase().includes(text) ||
         (u.district ?? '').toLowerCase().includes(text) ||
         (u.role ?? '').toLowerCase().includes(text)
@@ -86,7 +96,7 @@ export default function UsersIndex({ users }: Props) {
 
       const matchesDesignation =
         filterDesignation === 'all' ||
-        (u.designation ?? '').toLowerCase() === filterDesignation.toLowerCase()
+        (u.designation_id ?? '').toLowerCase() === filterDesignation.toLowerCase()
 
       return matchesText && matchesRole && matchesDesignation
 
@@ -102,17 +112,17 @@ export default function UsersIndex({ users }: Props) {
     [filteredUsers]
   )
 
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedUsers(prev =>
-        Array.from(new Set([...prev, ...filteredIds]))
-      )
-    } else {
-      setSelectedUsers(prev =>
-        prev.filter(id => !filteredIds.includes(id))
-      )
-    }
-  }
+  // const handleSelectAll = (checked: boolean) => {
+  //   if (checked) {
+  //     setSelectedUsers(prev =>
+  //       Array.from(new Set([...prev, ...filteredIds]))
+  //     )
+  //   } else {
+  //     setSelectedUsers(prev =>
+  //       prev.filter(id => !filteredIds.includes(id))
+  //     )
+  //   }
+  // }
 
   const handleSelectUser = (userId: number, checked: boolean) => {
     if (checked) {
@@ -122,14 +132,28 @@ export default function UsersIndex({ users }: Props) {
     }
   }
 
-  const isAllSelected =
-    filteredUsers.length > 0 &&
-    filteredIds.every(id => selectedUsers.includes(id))
+  const selectableIds = useMemo(
+  () => filteredUsers.filter(u => u.employment_status === 'inactive').map(u => u.id),
+  [filteredUsers]
+)
+const handleSelectAll = (checked: boolean) => {
+  if (checked) {
+    setSelectedUsers(prev => Array.from(new Set([...prev, ...selectableIds])))
+  } else {
+    setSelectedUsers(prev => prev.filter(id => !selectableIds.includes(id)))
+  }
+}
 
-  const isIndeterminate =
-    filteredUsers.length > 0 &&
-    filteredIds.some(id => selectedUsers.includes(id)) &&
-    !isAllSelected
+
+const isAllSelected =
+  selectableIds.length > 0 &&
+  selectableIds.every(id => selectedUsers.includes(id))
+
+const isIndeterminate =
+  selectableIds.length > 0 &&
+  selectableIds.some(id => selectedUsers.includes(id)) &&
+  !isAllSelected
+
 
   const handleClear = () => {
     setFilterText('')
@@ -137,14 +161,14 @@ export default function UsersIndex({ users }: Props) {
     setFilterDesignation('all')
     setSelectedUsers([])
   }
-const [rowsPerPage, setRowsPerPage] = useState(10)
-const [page, setPage] = useState(1)
-const totalPages = Math.ceil(filteredUsers.length / rowsPerPage)
-const paginatedUsers = useMemo(() => {
-  const start = (page - 1) * rowsPerPage
-  const end = start + rowsPerPage
-  return filteredUsers.slice(start, end)
-}, [filteredUsers, page, rowsPerPage])
+  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [page, setPage] = useState(1)
+  const totalPages = Math.ceil(filteredUsers.length / rowsPerPage)
+  const paginatedUsers = useMemo(() => {
+    const start = (page - 1) * rowsPerPage
+    const end = start + rowsPerPage
+    return filteredUsers.slice(start, end)
+  }, [filteredUsers, page, rowsPerPage])
 
   return (<AppLayout breadcrumbs={breadcrumbs}> <Head title="Users" />
 
@@ -267,11 +291,11 @@ const paginatedUsers = useMemo(() => {
                 Showing {paginatedUsers.length} of {filteredUsers.length}
               </div>
             </div>
-        </div>
+          </div>
           {/* TABLE */}
-            
 
-          
+
+
           <Table>
 
             <TableHeader>
@@ -313,6 +337,7 @@ const paginatedUsers = useMemo(() => {
                   <TableCell onClick={(e) => e.stopPropagation()}>
                     <Checkbox
                       checked={selectedUsers.includes(user.id)}
+                      disabled={user.employment_status !== 'inactive'}
                       onCheckedChange={(checked) =>
                         handleSelectUser(user.id, checked === true)
                       }
@@ -343,7 +368,7 @@ const paginatedUsers = useMemo(() => {
                   </TableCell>
 
                   <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.designation}</TableCell>
+                  <TableCell>{designationMap[String(user.designation_id)] ?? user.designation_id}</TableCell>
                   <TableCell>{user.location}</TableCell>
 
                   <TableCell>
@@ -352,7 +377,9 @@ const paginatedUsers = useMemo(() => {
                       variant={
                         user.employment_status === 'active'
                           ? 'default'
-                          : 'secondary'
+                          : user.employment_status === 'separated'
+                            ? 'destructive'
+                            : 'secondary'
                       }
                     >
                       {user.employment_status}
@@ -371,27 +398,27 @@ const paginatedUsers = useMemo(() => {
           </Table>
           <div className="flex justify-end items-center gap-2 mt-4">
 
-  <Button
-    variant="outline"
-    disabled={page === 1}
-    onClick={() => setPage(page - 1)}
-  >
-    Previous
-  </Button>
+            <Button
+              variant="outline"
+              disabled={page === 1}
+              onClick={() => setPage(page - 1)}
+            >
+              Previous
+            </Button>
 
-  <span className="text-sm">
-    Page {page} of {totalPages}
-  </span>
+            <span className="text-sm">
+              Page {page} of {totalPages}
+            </span>
 
-  <Button
-    variant="outline"
-    disabled={page === totalPages}
-    onClick={() => setPage(page + 1)}
-  >
-    Next
-  </Button>
+            <Button
+              variant="outline"
+              disabled={page === totalPages}
+              onClick={() => setPage(page + 1)}
+            >
+              Next
+            </Button>
 
-</div>
+          </div>
           {/* EDIT PANEL */}
 
           <Sheet open={openEdit} onOpenChange={setOpenEdit}>
@@ -399,7 +426,7 @@ const paginatedUsers = useMemo(() => {
             <SheetContent side="right" className="w-[600px]">
 
               {selectedUser && (
-                <EditUserCard user={selectedUser} />
+                <EditUserCard user={selectedUser} onSuccess={() => setOpenEdit(false)} />
               )}
 
             </SheetContent>

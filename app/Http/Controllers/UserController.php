@@ -13,20 +13,20 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::with('photo')->get();
+        // $users = User::with('photo')->get();
 
         return Inertia::render('users/index', [
-            'users' => User::orderBy('name')->get(),
+            'users' => User::with('photo')->orderBy('name')->get(),
             'designations' => Designation::orderBy('name')->get(['id', 'name', 'role']), // ← add this
-    ]);
+        ]);
     }
 
     public function create()
     {
-    return Inertia::render('users/create', [
-        'designations' => Designation::orderBy('name')->get(['id', 'name', 'role']),
-    ]);
-}
+        return Inertia::render('users/create', [
+            'designations' => Designation::orderBy('name')->get(['id', 'name', 'role']),
+        ]);
+    }
 
     public function store(Request $request)
     {
@@ -75,7 +75,7 @@ class UserController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'role' => 'required|string|in:user,admin',
-            'designation_id' => 'nullable|exists:designations,id',
+            'designation_id' => 'required|exists:designations,id',
             'employee_id' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'district' => 'nullable|string|max:255',
@@ -87,7 +87,7 @@ class UserController extends Controller
             'last_name' => $request->last_name,
             'email' => $request->email,
             'role' => $request->role,
-            'designation_id' => $request->designation,
+            'designation_id' => $request->designation_id,
             'employee_id' => $request->employee_id,
             'location' => $request->location,
             'district' => $request->district,
@@ -135,5 +135,19 @@ class UserController extends Controller
         User::whereIn('id', $ids)->delete();
 
         return back()->with('success', 'Selected users deleted.');
+    }
+
+    public function assignUserGroup(Request $request)
+    {
+        $request->validate([
+            'senior_field_id' => 'required|exists:users,id',
+            'user_group_id' => 'required|exists:user_groups,id',
+        ]);
+
+        $user = User::find($request->senior_field_id);
+        $user->user_group_id = $request->user_group_id;
+        $user->save();
+
+        return back()->with('success', 'Assigned successfully');
     }
 }

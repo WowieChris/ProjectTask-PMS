@@ -11,17 +11,14 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use App\Models\UserPhoto;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, MustVerifyEmailTrait, Notifiable, TwoFactorAuthenticatable;
+    use HasFactory, MustVerifyEmailTrait, Notifiable, TwoFactorAuthenticatable, HasRoles;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    protected $guard_name = 'web';
+
     protected $fillable = [
         'name',
         'last_name',
@@ -34,13 +31,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'district',
         'employment_status',
         'must_change_password',
+        'user_group_id',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'two_factor_secret',
@@ -48,11 +41,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -69,4 +57,85 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     // Force Fortify to treat users as two-factor authenticatable so the email OTP
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+    public function district()
+    {
+        return $this->belongsTo(District::class);
+    }
+
+    public function designation()
+    {
+        return $this->belongsTo(\App\Models\Designation::class);
+    }
+
+    public function photo()
+    {
+        return $this->hasOne(\App\Models\UserPhoto::class, 'user_id')
+            ->where('is_current', true);
+    }
+
+    public function currentPhoto()
+    {
+        return $this->hasOne(\App\Models\UserPhoto::class)
+            ->where('is_current', true);
+    }
+
+    public function userGroups()
+    {
+        return $this->belongsToMany(\App\Models\UserGroup::class, 'user_user_group');
+    }
+
+    public function divisions()
+    {
+        return $this->belongsToMany(\App\Models\Division::class, 'user_division');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Accessors
+    |--------------------------------------------------------------------------
+    */
+
+    public function getPhotoUrlAttribute()
+    {
+        if (!$this->photo) {
+            return null;
+        }
+
+        return asset('storage/' . $this->photo->path);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Helper Methods
+    |--------------------------------------------------------------------------
+    */
+
+    public function isAdminLike(): bool
+    {
+        $designation = $this->designation;
+        $name = is_object($designation) ? ($designation->name ?? null) : $designation;
+
+        return in_array($name, ['Admin', 'Administrator'], true);
+    }
+
+    public function isSfe(): bool
+    {
+        $designation = $this->designation;
+        $name = is_object($designation) ? ($designation->name ?? null) : $designation;
+
+        return $name === 'SFE';
+    }
+
+    public function isFe(): bool
+    {
+        $designation = $this->designation;
+        $name = is_object($designation) ? ($designation->name ?? null) : $designation;
+
+        return $name === 'FE';
+    }
 }

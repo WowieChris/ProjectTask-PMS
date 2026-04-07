@@ -11,7 +11,8 @@ export interface User {
   last_name?: string
   email: string
   role: string
-  designation?: string | null
+  designation_id?: string
+  designation: string
   location: string
   district: string
   employment_status: string

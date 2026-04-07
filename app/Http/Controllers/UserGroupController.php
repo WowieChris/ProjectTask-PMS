@@ -66,6 +66,7 @@ namespace App\Http\Controllers;
 
 use App\Models\District;
 use App\Models\Division;
+use App\Models\User;
 use App\Models\UserGroup;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -120,7 +121,7 @@ class UserGroupController extends Controller
         $ugId = $request->integer('ug');
         $divisionId = $request->integer('division');
 
-        $userGroups = UserGroup::orderBy('name')->get(['id', 'name']);
+        $userGroups = UserGroup::orderBy('name')->get(['id', 'name', 'base_office']);
 
         $selectedUserGroup = null;
         if ($ugId) {
@@ -172,5 +173,19 @@ class UserGroupController extends Controller
         $userGroup->delete();
 
         return back()->with('success', 'User Group deleted.');
+    }
+
+    public function assignUserGroup(Request $request)
+    {
+        $request->validate([
+            'senior_field_id' => 'required|exists:users,id',
+            'user_group_id' => 'required|exists:user_groups,id',
+        ]);
+
+        $user = User::find($request->senior_field_id);
+        $user->user_group_id = $request->user_group_id;
+        $user->save();
+
+        return back()->with('success', 'Assigned successfully');
     }
 }
