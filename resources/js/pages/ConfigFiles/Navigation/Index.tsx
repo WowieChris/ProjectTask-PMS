@@ -25,7 +25,7 @@ interface LocationItem {
 interface Branch { id: number; name: string; address?: string; }
 interface Area { id: number; name: string; branches: Branch[]; }
 interface District { id: number; name: string; areas: Area[]; }
-interface Division { id: number; name: string; user_group_id: number; districts: District[]; }
+interface Division { id: number; name: string; user_group_id: number; address?: string; districts: District[]; }
 interface UserGroup { id: number; name: string; }
 interface SeniorField { id: number; name: string; last_name: string; }
 interface PageProps extends Record<string, unknown> {
@@ -36,6 +36,8 @@ interface PageProps extends Record<string, unknown> {
 }
 
 export default function App() {
+
+
   const { divisions, userGroups, seniorFields, filters } = usePage<PageProps>().props;
   const { districts, engineers, areaAssignments } = usePage().props as any;
 
@@ -214,8 +216,12 @@ export default function App() {
                     transition={{ delay: i * 0.05 }}
                   >
                     <TreeNode
-                      label={division.name}
-                      nodeData={{ id: division.id, name: division.name, type: 'division' }}
+                      label={`${division.name} - ${division.address ?? 'No address'}`}
+                      nodeData={{
+                        id: division.id,
+                        name: division.name,
+                        type: 'division'   // 👈 REQUIRED
+                      }}
                       isSelected={selectedNode?.id === division.id && selectedNode?.type === 'division'}
                       isDragOver={dragOverNode?.id === division.id && dragOverNode?.type === 'division'}
                       onDragOver={(_, node) => setDragOverNode(node)}

@@ -7,7 +7,12 @@ use App\Models\DivisionEngineer;
 
 class Division extends Model
 {
-    protected $fillable = ['user_group_id', 'name', 'area_id'];
+    protected $fillable = [
+        'user_group_id',
+        'name',
+        'area_id',
+        'address'
+    ];
 
     public function engineer()
     {
