@@ -353,7 +353,7 @@ mylocation.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     mylocation.form = mylocationForm
 /**
- * @see routes/web.php:168
+ * @see routes/web.php:169
  * @route '/EAMonitoring'
  */
 export const EAMonitoring = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -367,7 +367,7 @@ EAMonitoring.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
- * @see routes/web.php:168
+ * @see routes/web.php:169
  * @route '/EAMonitoring'
  */
 EAMonitoring.url = (options?: RouteQueryOptions) => {
@@ -375,7 +375,7 @@ EAMonitoring.url = (options?: RouteQueryOptions) => {
 }
 
 /**
- * @see routes/web.php:168
+ * @see routes/web.php:169
  * @route '/EAMonitoring'
  */
 EAMonitoring.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -383,7 +383,7 @@ EAMonitoring.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     method: 'get',
 })
 /**
- * @see routes/web.php:168
+ * @see routes/web.php:169
  * @route '/EAMonitoring'
  */
 EAMonitoring.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -392,7 +392,7 @@ EAMonitoring.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
- * @see routes/web.php:168
+ * @see routes/web.php:169
  * @route '/EAMonitoring'
  */
     const EAMonitoringForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -401,7 +401,7 @@ EAMonitoring.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
- * @see routes/web.php:168
+ * @see routes/web.php:169
  * @route '/EAMonitoring'
  */
         EAMonitoringForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -409,7 +409,7 @@ EAMonitoring.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
             /**
- * @see routes/web.php:168
+ * @see routes/web.php:169
  * @route '/EAMonitoring'
  */
         EAMonitoringForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

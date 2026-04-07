@@ -9,9 +9,9 @@ import BranchController from './BranchController'
 import UserGroupController from './UserGroupController'
 import DesignationsController from './DesignationsController'
 import MyLocationController from './MyLocationController'
+import NavigationController from './NavigationController'
 import EngineerAssignmentController from './EngineerAssignmentController'
 import SeniorFieldAssignmentController from './SeniorFieldAssignmentController'
-import NavigationController from './NavigationController'
 const Controllers = {
     Auth: Object.assign(Auth, Auth),
 UserController: Object.assign(UserController, UserController),
@@ -24,9 +24,9 @@ BranchController: Object.assign(BranchController, BranchController),
 UserGroupController: Object.assign(UserGroupController, UserGroupController),
 DesignationsController: Object.assign(DesignationsController, DesignationsController),
 MyLocationController: Object.assign(MyLocationController, MyLocationController),
+NavigationController: Object.assign(NavigationController, NavigationController),
 EngineerAssignmentController: Object.assign(EngineerAssignmentController, EngineerAssignmentController),
 SeniorFieldAssignmentController: Object.assign(SeniorFieldAssignmentController, SeniorFieldAssignmentController),
-NavigationController: Object.assign(NavigationController, NavigationController),
 }
 
 export default Controllers

@@ -1,5 +1,70 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
+* @see \App\Http\Controllers\NavigationController::move
+ * @see app/Http/Controllers/NavigationController.php:74
+ * @route '/navigation/move'
+ */
+export const move = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: move.url(options),
+    method: 'patch',
+})
+
+move.definition = {
+    methods: ["patch"],
+    url: '/navigation/move',
+} satisfies RouteDefinition<["patch"]>
+
+/**
+* @see \App\Http\Controllers\NavigationController::move
+ * @see app/Http/Controllers/NavigationController.php:74
+ * @route '/navigation/move'
+ */
+move.url = (options?: RouteQueryOptions) => {
+    return move.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\NavigationController::move
+ * @see app/Http/Controllers/NavigationController.php:74
+ * @route '/navigation/move'
+ */
+move.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: move.url(options),
+    method: 'patch',
+})
+
+    /**
+* @see \App\Http\Controllers\NavigationController::move
+ * @see app/Http/Controllers/NavigationController.php:74
+ * @route '/navigation/move'
+ */
+    const moveForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: move.url({
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PATCH',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\NavigationController::move
+ * @see app/Http/Controllers/NavigationController.php:74
+ * @route '/navigation/move'
+ */
+        moveForm.patch = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: move.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PATCH',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    move.form = moveForm
+/**
 * @see \App\Http\Controllers\NavigationController::index
  * @see app/Http/Controllers/NavigationController.php:29
  * @route '/ConfigFiles/Navigation'
@@ -132,6 +197,6 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
         })
     
     store.form = storeForm
-const NavigationController = { index, store }
+const NavigationController = { move, index, store }
 
 export default NavigationController
