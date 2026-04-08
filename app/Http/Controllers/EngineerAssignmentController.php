@@ -34,24 +34,29 @@ class EngineerAssignmentController extends Controller
         try {
             DB::transaction(function () use ($request) {
 
-                // ✅ SAVE BASE ENGINEER (correct way)
+                // 1. Save or clear base engineer
                 if ($request->base_engineer) {
                     DistrictEngineer::updateOrCreate(
                         ['district_id' => $request->district_id],
                         ['user_id' => $request->base_engineer]
                     );
+                } else {
+                    DistrictEngineer::where('district_id', $request->district_id)->delete();
                 }
 
-                // ✅ AREA OVERRIDES
-                foreach ($request->overrides as $area_id => $user_id) {
+                // 2. ALWAYS delete old overrides first
+                $areaIds = \App\Models\Area::where('district_id', $request->district_id)
+                    ->pluck('id');
+                AreaEngineer::whereIn('area_id', $areaIds)->delete();
 
+                // 3. Re-insert only if overrides exist
+                $overrides = $request->overrides ?? []; // ← handle null/empty
+                foreach ($overrides as $area_id => $user_id) {
                     if ($user_id) {
-                        AreaEngineer::updateOrCreate(
-                            ['area_id' => $area_id],
-                            ['user_id' => $user_id]
-                        );
-                    } else {
-                        AreaEngineer::where('area_id', $area_id)->delete();
+                        AreaEngineer::create([
+                            'area_id' => $area_id,
+                            'user_id' => $user_id,
+                        ]);
                     }
                 }
             });
