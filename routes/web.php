@@ -149,14 +149,15 @@ Route::middleware(['auth'])->group(function () {
     });
     //Config FIle
     //NAVIGATION CONTROLLER
-    
-     //Transfer Logs 
+
+    //Transfer Logs 
     Route::get('/navigation/logs', [NavigationController::class, 'logs']);
     //TreeNodeMove  
     Route::patch('/navigation/move', [NavigationController::class, 'move']);
     //FIELD ENG CONTROLLER
     Route::get('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'Index']);
     Route::post('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'store']);
+
 
     //SENIOR FIELD ENG CONTROLLER
     Route::get('/ConfigFiles/SFE', [SeniorFieldAssignmentController::class, 'index']);
@@ -174,6 +175,4 @@ Route::middleware(['auth'])->group(function () {
     })->name('EAMonitoring.request');
 
     Route::post('/assign-senior-field-usergroup', [UserController::class, 'assignUserGroup']);
-
-       
-    });
+});
