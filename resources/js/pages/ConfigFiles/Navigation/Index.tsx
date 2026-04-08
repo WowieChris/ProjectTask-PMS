@@ -37,7 +37,7 @@ interface PageProps extends Record<string, unknown> {
 
 export default function App() {
 
-
+  const [selectedDate, setSelectedDate] = useState<string>('');
   const { divisions, userGroups, seniorFields, filters } = usePage<PageProps>().props;
   const { districts, engineers, areaAssignments } = usePage().props as any;
 
@@ -52,7 +52,7 @@ export default function App() {
     if (!selectedNode && !draggedNode) return;
     const moving = selectedNode ?? draggedNode!;
     router.patch('/navigation/move', {
-      type: moving.type, id: moving.id, parent_id: targetId,
+      type: moving.type, id: moving.id, parent_id: targetId, effectivity_date: selectedDate,
     }, {
       preserveScroll: true,
       onSuccess: () => {
@@ -93,9 +93,12 @@ export default function App() {
             <div>
               <h1 className="text-sm font-semibold leading-tight">Field Group Operation Setup</h1>
               <p className="text-[11px] text-muted-foreground">
+
                 {selectedGroup ? selectedGroup.name : 'All Groups'} · {filteredDivisions.length} division{filteredDivisions.length !== 1 ? 's' : ''}
               </p>
+
             </div>
+
           </div>
 
           {/* Group selector in top bar */}
@@ -124,7 +127,7 @@ export default function App() {
 
           {/* ── LEFT: Senior Field Users ── */}
           <div className="col-span-1 shrink-0 border-r border-border flex flex-col bg-card/50">
-            <div className="px-4 py-3 border-b border-border">
+            <div className="px-4 py-4 border-b border-border">
               <div className="flex items-center gap-2">
                 <Users size={13} className="text-muted-foreground" />
                 <span className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
@@ -165,10 +168,18 @@ export default function App() {
 
           {/* ── CENTER: Tree ── */}
           <div className="flex-1 flex flex-col col-span-2 border-r border-border overflow-hidden">
-            <div className="px-4 py-3 border-b border-border bg-card/30 shrink-0">
+            <div className="justify-between px-4 py-2 border-b border-border bg-card/30 shrink-0">
               <span className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
                 Location Hierarchy
               </span>
+
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => router.get('/navigation/logs')}
+              >
+                View Tranfer Logs
+              </Button>
             </div>
 
             {/* Move banner */}

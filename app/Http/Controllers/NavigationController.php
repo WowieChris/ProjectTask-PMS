@@ -13,6 +13,8 @@ use App\Models\AreaEngineer;
 use App\Models\User;
 use App\Models\DistrictEngineer;
 use Illuminate\Support\Facades\DB;
+use App\Models\LocationTransferLog;
+use Illuminate\Support\Facades\Auth;
 
 class NavigationController extends Controller
 {
@@ -62,34 +64,149 @@ class NavigationController extends Controller
             'divisions' => Division::with('districts.areas.branches')->get(),
         ]);
 
-//         return Inertia::render('Navigation/Index', [
-    
-//     // 👇 add these
-//     'districts'       => District::with(['areas', 'engineer'])->get(),
-//     'engineers'       => User::whereHas('designation', fn($q) => $q->where('name', 'Field Engineer'))->get(),
-//     'areaAssignments' => AreaAssignment::all(),
-// ]);
-     }
+        //         return Inertia::render('Navigation/Index', [
 
+        //     // 👇 add these
+        //     'districts'       => District::with(['areas', 'engineer'])->get(),
+        //     'engineers'       => User::whereHas('designation', fn($q) => $q->where('name', 'Field Engineer'))->get(),
+        //     'areaAssignments' => AreaAssignment::all(),
+        // ]);
+    }
+
+    private function getParentName(string $type, ?int $parentId): ?string
+    {
+        if (!$parentId) return null;
+
+        return match ($type) {
+            'district' => Division::where('id', $parentId)->value('name'),
+            'area'     => District::where('id', $parentId)->value('name'),
+            'branch'   => Area::where('id', $parentId)->value('name'),
+            default    => null,
+        };
+    }
+
+    // Working MOve 
+    // public function move(Request $request)
+    // {
+    //     $request->validate([
+    //         'type'      => 'required|in:district,area,branch',
+    //         'id'        => 'required|integer',
+    //         'parent_id' => 'required|integer',
+    //     ]);
+
+    //     match ($request->type) {
+    //         'district' => District::findOrFail($request->id)
+    //             ->update(['division_id' => $request->parent_id]),
+    //         'area'     => Area::findOrFail($request->id)
+    //             ->update(['district_id' => $request->parent_id]),
+    //         'branch'   => Branch::findOrFail($request->id)
+    //             ->update(['area_id' => $request->parent_id]),
+    //     };
+
+    //     return back()->with('success', 'Location moved successfully.');
+    // }
+
+    // MOVE 
     public function move(Request $request)
     {
-        $request->validate([
-            'type'      => 'required|in:district,area,branch',
-            'id'        => 'required|integer',
-            'parent_id' => 'required|integer',
-        ]);
+        DB::transaction(function () use ($request) {
 
-        match ($request->type) {
-            'district' => District::findOrFail($request->id)
-                ->update(['division_id' => $request->parent_id]),
-            'area'     => Area::findOrFail($request->id)
-                ->update(['district_id' => $request->parent_id]),
-            'branch'   => Branch::findOrFail($request->id)
-                ->update(['area_id' => $request->parent_id]),
-        };
+            $type = $request->type;
+            $id = $request->id;
+            $newParentId = $request->parent_id;
 
-        return back()->with('success', 'Location moved successfully.');
+            $model = null;
+            $oldParentId = null;
+            $fromName = null;
+            $toName = null;
+
+            switch ($type) {
+
+                case 'district':
+                    $model = District::findOrFail($id);
+                    $oldParentId = $model->division_id;
+
+                    // resolve BEFORE update
+                    $fromName = Division::where('id', $oldParentId)->value('name');
+                    $toName   = Division::where('id', $newParentId)->value('name');
+
+                    $model->division_id = $newParentId;
+                    break;
+
+                case 'area':
+                    $model = Area::findOrFail($id);
+                    $oldParentId = $model->district_id;
+
+                    $fromName = District::where('id', $oldParentId)->value('name');
+                    $toName   = District::where('id', $newParentId)->value('name');
+
+                    $model->district_id = $newParentId;
+                    break;
+
+                case 'branch':
+                    $model = Branch::findOrFail($id);
+                    $oldParentId = $model->area_id;
+
+                    $fromName = Area::where('id', $oldParentId)->value('name');
+                    $toName   = Area::where('id', $newParentId)->value('name');
+
+                    $model->area_id = $newParentId;
+                    break;
+
+                default:
+                    throw new \Exception("Invalid type");
+            }
+
+            $model->save();
+
+            // ✅ FINAL SAFETY FALLBACK (THIS FIXES YOUR ISSUE)
+            $fromName = $fromName ?? "Unknown";
+            $toName   = $toName ?? "Unknown";
+
+            LocationTransferLog::create([
+                'type' => $type,
+                'location_id' => $id,
+                'location_name' => $model->name ?? "Unknown",
+
+                'from_parent_id' => $oldParentId,
+                'from_parent_name' => $fromName,
+
+                'to_parent_id' => $newParentId,
+                'to_parent_name' => $toName,
+
+                'effectivity_date' => $request->effectivity_date ?? now(),
+                'moved_by' => Auth::id(),
+            ]);
+        });
+
+        return back()->with('success', 'Location moved successfully');
     }
+    // Full Paths
+    private function getFullPath($type, $id)
+    {
+        if ($type === 'branch') {
+            $branch = Branch::with('area.district.division')->find($id);
+
+            return $branch
+                ? "{$branch->area->district->division->name} > {$branch->area->district->name} > {$branch->area->name}"
+                : null;
+        }
+
+        return null;
+    }
+
+    private function resolveModel(string $type)
+    {
+        return match ($type) {
+            'division' => \App\Models\Division::class,
+            'district' => \App\Models\District::class,
+            'area' => \App\Models\Area::class,
+            'branch' => \App\Models\Branch::class,
+            default => throw new \Exception("Invalid type"),
+        };
+    }
+
+
     // Store
     public function store(Request $request)
     {
@@ -120,5 +237,18 @@ class NavigationController extends Controller
         });
 
         return back()->with('success', 'Assignment saved!');
+    }
+
+    //logs
+    public function logs(Request $request)
+    {
+        $logs = LocationTransferLog::with('user')
+            ->latest()
+            ->limit(100)
+            ->get();
+
+        return Inertia::render('ConfigFiles/Navigation/Logs', [
+            'logs' => $logs
+        ]);
     }
 }
