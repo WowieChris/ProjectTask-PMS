@@ -203,7 +203,7 @@ export default function App() {
             </div>
 
             {selectedSeniorField && (
-              <div className="border-t border-border bg-card/75 px-4 py-4">
+              <div className="border-t border-border bg-card/75 px-3 py-4">
                 <div className="mb-3 text-xs uppercase tracking-widest text-muted-foreground">
                   Assign Senior Field Engineer
                 </div>
@@ -220,7 +220,7 @@ export default function App() {
                   <select
                     value={selectedSeniorFieldGroupId}
                     onChange={(e) => setSelectedSeniorFieldGroupId(e.target.value)}
-                    className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground"
+                    className="w-full rounded-xl border border-input bg-background px-2 py-1 text-xs text-foreground"
                   >
                     <option value="">Select a field group</option>
                     {userGroups.map((group) => (
@@ -229,10 +229,33 @@ export default function App() {
                   </select>
 
                   <div className="flex items-center gap-2">
-                    <Button size="sm" onClick={assignSeniorFieldGroup} disabled={!selectedSeniorFieldGroupId}>Save</Button>
-                    <Button size="sm" variant="outline" onClick={() => setSelectedSeniorField(null)}>
-                      Cancel
-                    </Button>
+                      {selectedSeniorField.user_group_id && !selectedSeniorFieldGroupId ? (
+                          <Button 
+                              size="sm" 
+                              variant="destructive"
+                              onClick={() => {
+                                  router.post('/seniorfieldassignment', {
+                                      senior_field_id: selectedSeniorField.id,
+                                      user_group_id: null,
+                                  }, {
+                                      preserveScroll: true,
+                                      onSuccess: () => {
+                                          setSelectedSeniorField(null);
+                                          router.reload({ only: ['seniorFields'] });
+                                      },
+                                  });
+                              }}
+                          >
+                              Unassign
+                          </Button>
+                      ) : (
+                          <Button size="sm" onClick={assignSeniorFieldGroup} disabled={!selectedSeniorFieldGroupId && !selectedSeniorField.user_group_id}>
+                              Save
+                          </Button>
+                      )}
+                      <Button size="sm" variant="outline" onClick={() => setSelectedSeniorField(null)}>
+                          Cancel
+                      </Button>
                   </div>
                 </div>
               </div>
