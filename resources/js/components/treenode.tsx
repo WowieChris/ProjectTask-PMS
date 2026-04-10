@@ -53,15 +53,15 @@ export function TreeNode({
   return (
     <div className="select-none">
       <div
-        draggable={isMovable}
-        onDragStart={(e) => isMovable && nodeData && onDragStart?.(e, nodeData)}
-        // onDragOver={(e) => { e.preventDefault(); nodeData && onDragOver?.(e, nodeData); }}
-        onDragOver={(e) => {
-          e.preventDefault();
-          if (nodeData) onDragOver?.(e, nodeData);
-        }}
-        onDragLeave={onDragLeave}
-        onDrop={(e) => nodeData && onDrop?.(e, nodeData)}
+        // draggable={isMovable}
+        // onDragStart={(e) => isMovable && nodeData && onDragStart?.(e, nodeData)}
+        // // onDragOver={(e) => { e.preventDefault(); nodeData && onDragOver?.(e, nodeData); }}
+        // onDragOver={(e) => {
+        //   e.preventDefault();
+        //   if (nodeData) onDragOver?.(e, nodeData);
+        // }}
+        // onDragLeave={onDragLeave}
+        // onDrop={(e) => nodeData && onDrop?.(e, nodeData)}
         onClick={() => {
           if (hasChildren) setOpen(o => !o);
           if (nodeData && isMovable) onSelect?.(nodeData);
@@ -71,12 +71,14 @@ export function TreeNode({
           transition-all duration-150 cursor-pointer
           ${isSelected
             ? 'bg-primary text-primary-foreground shadow-sm'
-            : isDragOver
-              ? 'bg-emerald-500/10 border border-dashed border-emerald-500/50'
+            // : isDragOver
+            //   ? 'bg-emerald-500/10 border border-dashed border-emerald-500/50'
               : 'hover:bg-muted/70'
           }
-          ${isMovable ? 'cursor-grab active:cursor-grabbing' : ''}
-        `}
+          `
+        //   ${isMovable ? 'cursor-grab active:cursor-grabbing' : ''}
+        // `
+        }
       >
         {/* Drag handle — only visible on hover for movable nodes */}
         {isMovable && (

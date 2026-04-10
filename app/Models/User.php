@@ -94,6 +94,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(\App\Models\Division::class, 'user_division');
     }
 
+    public function userGroup()
+    {
+        return $this->belongsTo(UserGroup::class);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Accessors

@@ -298,7 +298,7 @@ export default function EngineerAssignment({
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/5 border border-primary/10"
+                                    className="flex items-center gap-1 px-2 py-2 rounded-lg bg-primary/5 border border-primary/10"
                                 >
                                     <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                                         <span className="text-[10px] font-bold text-primary">
@@ -314,7 +314,7 @@ export default function EngineerAssignment({
                         </div>
 
                         {/* Area Overrides */}
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-1.5">
                                     <RefreshCw size={12} className="text-muted-foreground" />
@@ -353,7 +353,7 @@ export default function EngineerAssignment({
                                                 }`} />
 
                                             <div className={`p-3 ${hasOverride ? 'bg-amber-500/5' : 'bg-card'}`}>
-                                                <div className="flex items-start justify-between gap-2 mb-3">
+                                                <div className="flex items-start justify-between gap-5 mb-2">
                                                     <div className="flex items-center gap-2 min-w-0">
                                                         <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${hasOverride
                                                             ? 'bg-amber-500/15 border border-amber-500/20'
@@ -381,7 +381,7 @@ export default function EngineerAssignment({
                                                 </div>
 
                                                 {assignedEngineerId ? (
-                                                    <div className={`flex items-center gap-2 px-2.5 py-2 rounded-lg mb-3 ${hasOverride
+                                                    <div className={`flex items-center gap-2 px-2.5 py-1 rounded-xl mb-2 ${hasOverride
                                                         ? 'bg-amber-500/10 border border-amber-500/15'
                                                         : 'bg-muted/50 border border-border/50'
                                                         }`}>
@@ -411,7 +411,7 @@ export default function EngineerAssignment({
                                                     <select
                                                         value={areaOverrides[area.id] ?? ""}
                                                         onChange={(e) => handleAreaOverrideChange(area.id, e.target.value)}
-                                                        className={`w-full appearance-none rounded-lg border px-3 py-2 pr-8 text-xs font-medium cursor-pointer focus:outline-none focus:ring-2 transition-all ${hasOverride
+                                                        className={`w-full appearance-none rounded-2xl border px-3 py-1.5 pr-8 text-xs font-medium cursor-pointer focus:outline-none focus:ring-2 transition-all ${hasOverride
                                                             ? 'border-amber-500/30 bg-amber-500/10 text-amber-500 focus:ring-amber-500/20'
                                                             : 'border-input bg-background text-foreground focus:ring-ring/30'
                                                             }`}
