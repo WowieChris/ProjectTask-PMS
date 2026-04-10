@@ -24,9 +24,10 @@ class NavigationController extends Controller
 
         $areaAssignments = AreaEngineer::all();
 
-        $seniorFields = User::whereHas('designation', function ($q) {
-            $q->where('name', 'Senior Field Engineer');
-        })
+        $seniorFields = User::with('userGroup')
+            ->whereHas('designation', function ($q) {
+                $q->where('name', 'Senior Field Engineer');
+            })
             ->when($userGroupId, function ($query) use ($userGroupId) {
                 $query->where('user_group_id', $userGroupId);
             })
@@ -36,9 +37,10 @@ class NavigationController extends Controller
             'userGroups'      => UserGroup::all(),
             'seniorFields'    => $seniorFields,
             'districts'       => District::with(['areas', 'engineer'])->get(),
-            'engineers'       => User::whereHas('designation', fn($q) => $q->where('name', 'Field Engineer'))->get(),
+            'engineers'       => User::whereHas('designation', fn ($q) => $q->where('name', 'Field Engineer'))->get(),
             'areaAssignments' => $areaAssignments,
             'divisions'       => Division::with('districts.areas.branches')->get(),
+            'filters'         => ['user_group_id' => $userGroupId],
         ]);
     }
 
@@ -151,4 +153,16 @@ class NavigationController extends Controller
             'logs' => $logs
         ]);
     }
+    public function assignSeniorFieldGroup(Request $request)
+{
+    $request->validate([
+        'senior_field_id' => 'required|exists:users,id',
+        'user_group_id'   => 'nullable|exists:user_groups,id',
+    ]);
+
+    User::where('id', $request->senior_field_id)
+        ->update(['user_group_id' => $request->user_group_id ?: null]);
+
+    return back()->with('success', 'Senior Field Engineer assigned!');
+}
 }
