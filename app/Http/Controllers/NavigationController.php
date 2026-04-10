@@ -24,14 +24,24 @@ class NavigationController extends Controller
 
         $areaAssignments = AreaEngineer::all();
 
-        $seniorFields = User::with('userGroup')
+        $seniorFields = User::with('userGroup','designation')
             ->whereHas('designation', function ($q) {
                 $q->where('name', 'Senior Field Engineer');
             })
             ->when($userGroupId, function ($query) use ($userGroupId) {
                 $query->where('user_group_id', $userGroupId);
             })
-            ->get();
+            ->get()
+            ->map(fn($u) => [
+        'id'            => $u->id,
+        'name'          => $u->name,
+        'last_name'     => $u->last_name,
+        'user_group_id' => $u->user_group_id,
+        'userGroup'     => $u->userGroup ? [
+            'id'   => $u->userGroup->id,
+            'name' => $u->userGroup->name,
+        ] : null,
+    ]);
 
         return Inertia::render('ConfigFiles/Navigation/Index', [
             'userGroups'      => UserGroup::all(),

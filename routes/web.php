@@ -168,11 +168,12 @@ Route::middleware(['auth'])->group(function () {
         //NAVIGATION index
         Route::get('/ConfigFiles/Navigation', [NavigationController::class, 'index']);
         Route::post('/ConfigFiles/Navigation', [NavigationController::class, 'store']);
+        Route::post('/seniorfieldassignment', [NavigationController::class, 'assignSeniorFieldGroup']);
     });
     //EA Monitoring
     Route::get('/EAMonitoring/Request', function () {
         return Inertia::render('EAMonitoring/Request/Index');
     })->name('EAMonitoring.request');
 
-    Route::post('/assign-senior-field-usergroup', [UserController::class, 'assignUserGroup']);
+    //Route::post('/assign-senior-field-usergroup', [UserController::class, 'assignUserGroup']);
 });
