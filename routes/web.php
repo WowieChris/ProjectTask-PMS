@@ -21,6 +21,8 @@ use App\Http\Controllers\MyLocationController;
 use App\Http\Controllers\EngineerAssignmentController;
 use App\Http\Controllers\SeniorFieldAssignmentController;
 use App\Http\Controllers\NavigationController;
+use App\Http\Controllers\EARequestController;
+use App\Http\Controllers\EAHVAController;
 
 
 Route::get('/', function () {
@@ -171,9 +173,30 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/seniorfieldassignment', [NavigationController::class, 'assignSeniorFieldGroup']);
     });
     //EA Monitoring
-    Route::get('/EAMonitoring/Request', function () {
-        return Inertia::render('EAMonitoring/Request/Index');
-    })->name('EAMonitoring.request');
+    // Prefix all routes with EAMonitoring/Request
+    Route::prefix('EAMonitoring/Request')->name('EAMonitoring.request.')->group(function () {
+
+    // List all requests
+        Route::get('/', [EARequestController::class, 'index'])->name('index');
+
+    // Show form to create a new request
+        Route::get('/create', [EARequestController::class, 'create'])->name('create');
+
+    // Store new request
+        Route::post('/', [EARequestController::class, 'store'])->name('store');
+
+    // Delete a request
+        Route::delete('/{id}', [EARequestController::class, 'destroy'])->name('destroy');
+
+    // Bulk update selected requests
+        Route::post('/bulk-update', [EARequestController::class, 'bulkUpdate'])->name('bulk');
+    });
+     Route::prefix('EAMonitoring/HVA')->name('EAMonitoring.hva.')->group(function () {
+
+        Route::get('/', [EAHVAController::class, 'index'])->name('index');
+        Route::post('/', [EAHVAController::class, 'store'])->name('store');
+        Route::delete('/{id}', [EAHVAController::class, 'destroy'])->name('destroy');
+    });
 
     //Route::post('/assign-senior-field-usergroup', [UserController::class, 'assignUserGroup']);
 });
