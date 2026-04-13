@@ -1,6 +1,6 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 /**
- * @see routes/web.php:168
+ * @see routes/web.php:182
  * @route '/EAMonitoring/Request'
  */
 export const request = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -14,7 +14,7 @@ request.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
- * @see routes/web.php:168
+ * @see routes/web.php:182
  * @route '/EAMonitoring/Request'
  */
 request.url = (options?: RouteQueryOptions) => {
@@ -22,7 +22,7 @@ request.url = (options?: RouteQueryOptions) => {
 }
 
 /**
- * @see routes/web.php:168
+ * @see routes/web.php:182
  * @route '/EAMonitoring/Request'
  */
 request.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -30,7 +30,7 @@ request.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     method: 'get',
 })
 /**
- * @see routes/web.php:168
+ * @see routes/web.php:182
  * @route '/EAMonitoring/Request'
  */
 request.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -39,7 +39,7 @@ request.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
- * @see routes/web.php:168
+ * @see routes/web.php:182
  * @route '/EAMonitoring/Request'
  */
     const requestForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -48,7 +48,7 @@ request.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
- * @see routes/web.php:168
+ * @see routes/web.php:182
  * @route '/EAMonitoring/Request'
  */
         requestForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -56,7 +56,7 @@ request.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
             /**
- * @see routes/web.php:168
+ * @see routes/web.php:182
  * @route '/EAMonitoring/Request'
  */
         requestForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
