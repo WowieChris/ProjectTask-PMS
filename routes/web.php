@@ -152,6 +152,14 @@ Route::middleware(['auth'])->group(function () {
 
     //Transfer Logs 
     Route::get('/navigation/logs', [NavigationController::class, 'logs']);
+    Route::get('/navigation/EngineerTransferLogs', [NavigationController::class, 'engineerTransferLogs'])
+        ->name('navigation.engineer-transfer-logs');
+    // ✅ Specific route FIRST
+    Route::post('/ConfigFiles/Field-Eng/area-override', [EngineerAssignmentController::class, 'saveAreaOverride']);
+
+    // General route AFTER
+    Route::post('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'store']);
+
     //TreeNodeMove  
     Route::patch('/navigation/move', [NavigationController::class, 'move']);
     //FIELD ENG CONTROLLER
@@ -174,6 +182,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/EAMonitoring/Request', function () {
         return Inertia::render('EAMonitoring/Request/Index');
     })->name('EAMonitoring.request');
+
+
 
     //Route::post('/assign-senior-field-usergroup', [UserController::class, 'assignUserGroup']);
 });
