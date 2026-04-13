@@ -61,8 +61,8 @@ export default function App() {
     }, {
       preserveScroll: true,
       onSuccess: () => {
-            setSelectedSeniorField(null);
-            router.reload({ only: ['seniorFields'] }); // 👈 refresh the list
+        setSelectedSeniorField(null);
+        router.reload({ only: ['seniorFields'] }); // 👈 refresh the list
       },
     });
   };
@@ -229,33 +229,33 @@ export default function App() {
                   </select>
 
                   <div className="flex items-center gap-2">
-                      {selectedSeniorField.user_group_id && !selectedSeniorFieldGroupId ? (
-                          <Button 
-                              size="sm" 
-                              variant="destructive"
-                              onClick={() => {
-                                  router.post('/seniorfieldassignment', {
-                                      senior_field_id: selectedSeniorField.id,
-                                      user_group_id: null,
-                                  }, {
-                                      preserveScroll: true,
-                                      onSuccess: () => {
-                                          setSelectedSeniorField(null);
-                                          router.reload({ only: ['seniorFields'] });
-                                      },
-                                  });
-                              }}
-                          >
-                              Unassign
-                          </Button>
-                      ) : (
-                          <Button size="sm" onClick={assignSeniorFieldGroup} disabled={!selectedSeniorFieldGroupId && !selectedSeniorField.user_group_id}>
-                              Save
-                          </Button>
-                      )}
-                      <Button size="sm" variant="outline" onClick={() => setSelectedSeniorField(null)}>
-                          Cancel
+                    {selectedSeniorField.user_group_id && !selectedSeniorFieldGroupId ? (
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => {
+                          router.post('/seniorfieldassignment', {
+                            senior_field_id: selectedSeniorField.id,
+                            user_group_id: null,
+                          }, {
+                            preserveScroll: true,
+                            onSuccess: () => {
+                              setSelectedSeniorField(null);
+                              router.reload({ only: ['seniorFields'] });
+                            },
+                          });
+                        }}
+                      >
+                        Unassign
                       </Button>
+                    ) : (
+                      <Button size="sm" onClick={assignSeniorFieldGroup} disabled={!selectedSeniorFieldGroupId && !selectedSeniorField.user_group_id}>
+                        Save
+                      </Button>
+                    )}
+                    <Button size="sm" variant="outline" onClick={() => setSelectedSeniorField(null)}>
+                      Cancel
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -275,6 +275,14 @@ export default function App() {
                 onClick={() => router.get('/navigation/logs')}
               >
                 View Transfer Logs
+              </Button>
+
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => router.get('/navigation/EngineerTransferLogs')}
+              >
+                Engineer Transfer Logs
               </Button>
             </div>
 
@@ -330,10 +338,10 @@ export default function App() {
                         type: 'division'   // 👈 REQUIRED
                       }}
                       isSelected={selectedNode?.id === division.id && selectedNode?.type === 'division'}
-                      // isDragOver={dragOverNode?.id === division.id && dragOverNode?.type === 'division'}
-                      // onDragOver={(_, node) => setDragOverNode(node)}
-                      // onDragLeave={() => setDragOverNode(null)}
-                      // onDrop={() => { if (draggedNode) { setSelectedNode(draggedNode); setDragOverNode(null); setMoveModalOpen(true); } }}
+                    // isDragOver={dragOverNode?.id === division.id && dragOverNode?.type === 'division'}
+                    // onDragOver={(_, node) => setDragOverNode(node)}
+                    // onDragLeave={() => setDragOverNode(null)}
+                    // onDrop={() => { if (draggedNode) { setSelectedNode(draggedNode); setDragOverNode(null); setMoveModalOpen(true); } }}
                     >
                       {(division.districts ?? []).map(district => (
                         <TreeNode
@@ -366,10 +374,10 @@ export default function App() {
                               isSelected={selectedNode?.id === area.id && selectedNode?.type === 'area'}
                               // isDragOver={dragOverNode?.id === area.id && dragOverNode?.type === 'area'}
                               onSelect={setSelectedNode}
-                              // onDragStart={(_, node) => setDraggedNode(node)}
-                              // onDragOver={(_, node) => setDragOverNode(node)}
-                              // onDragLeave={() => setDragOverNode(null)}
-                              // onDrop={() => { if (draggedNode) { setSelectedNode(draggedNode); setDragOverNode(null); setMoveModalOpen(true); } }}
+                            // onDragStart={(_, node) => setDraggedNode(node)}
+                            // onDragOver={(_, node) => setDragOverNode(node)}
+                            // onDragLeave={() => setDragOverNode(null)}
+                            // onDrop={() => { if (draggedNode) { setSelectedNode(draggedNode); setDragOverNode(null); setMoveModalOpen(true); } }}
                             >
                               {(area.branches ?? []).map(branch => (
                                 <TreeNode
@@ -378,7 +386,7 @@ export default function App() {
                                   nodeData={{ id: branch.id, name: branch.name, type: 'branch' }}
                                   isSelected={selectedNode?.id === branch.id && selectedNode?.type === 'branch'}
                                   onSelect={setSelectedNode}
-                                  // onDragStart={(_, node) => setDraggedNode(node)}
+                                // onDragStart={(_, node) => setDraggedNode(node)}
                                 />
                               ))}
                             </TreeNode>

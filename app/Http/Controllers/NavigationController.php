@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\DistrictEngineer;
 use Illuminate\Support\Facades\DB;
 use App\Models\LocationTransferLog;
+use App\Models\EngineerMovementLog;  // ✅ correct model
 use Illuminate\Support\Facades\Auth;
 
 class NavigationController extends Controller
@@ -24,7 +25,7 @@ class NavigationController extends Controller
 
         $areaAssignments = AreaEngineer::all();
 
-        $seniorFields = User::with('userGroup','designation')
+        $seniorFields = User::with('userGroup', 'designation')
             ->whereHas('designation', function ($q) {
                 $q->where('name', 'Senior Field Engineer');
             })
@@ -33,21 +34,21 @@ class NavigationController extends Controller
             })
             ->get()
             ->map(fn($u) => [
-        'id'            => $u->id,
-        'name'          => $u->name,
-        'last_name'     => $u->last_name,
-        'user_group_id' => $u->user_group_id,
-        'userGroup'     => $u->userGroup ? [
-            'id'   => $u->userGroup->id,
-            'name' => $u->userGroup->name,
-        ] : null,
-    ]);
+                'id'            => $u->id,
+                'name'          => $u->name,
+                'last_name'     => $u->last_name,
+                'user_group_id' => $u->user_group_id,
+                'userGroup'     => $u->userGroup ? [
+                    'id'   => $u->userGroup->id,
+                    'name' => $u->userGroup->name,
+                ] : null,
+            ]);
 
         return Inertia::render('ConfigFiles/Navigation/Index', [
             'userGroups'      => UserGroup::all(),
             'seniorFields'    => $seniorFields,
             'districts'       => District::with(['areas', 'engineer'])->get(),
-            'engineers'       => User::whereHas('designation', fn ($q) => $q->where('name', 'Field Engineer'))->get(),
+            'engineers'       => User::whereHas('designation', fn($q) => $q->where('name', 'Field Engineer'))->get(),
             'areaAssignments' => $areaAssignments,
             'divisions'       => Division::with('districts.areas.branches')->get(),
             'filters'         => ['user_group_id' => $userGroupId],
@@ -124,26 +125,66 @@ class NavigationController extends Controller
     {
         DB::transaction(function () use ($request) {
 
-            // 1. Save or clear base engineer
+            $districtId = $request->district_id;
+
+            // 1. Get previous base engineer name (before update)
+            $previousEngineer = DistrictEngineer::with('user')
+                ->where('district_id', $districtId)
+                ->first();
+            $previousEngineerName = $previousEngineer?->user?->name ?? '—';
+
+            // 2. Save or clear base engineer
             if ($request->base_engineer) {
                 DistrictEngineer::updateOrCreate(
-                    ['district_id' => $request->district_id],
+                    ['district_id' => $districtId],
                     ['user_id'     => $request->base_engineer]
                 );
             } else {
-                DistrictEngineer::where('district_id', $request->district_id)->delete();
+                DistrictEngineer::where('district_id', $districtId)->delete();
             }
 
-            // 2. Always wipe old area overrides for this district first
-            $areaIds = Area::where('district_id', $request->district_id)->pluck('id');
+            // 3. Always wipe old area overrides for this district first
+            $areas = Area::where('district_id', $districtId)->get();
+            $areaIds = $areas->pluck('id');
             AreaEngineer::whereIn('area_id', $areaIds)->delete();
 
-            // 3. Re-insert new overrides only
+            // 4. Re-insert new overrides and log each change
             foreach ($request->overrides ?? [] as $area_id => $user_id) {
                 if ($user_id) {
                     AreaEngineer::create([
                         'area_id' => $area_id,
                         'user_id' => $user_id,
+                    ]);
+                }
+
+                // Log the movement per area
+                $area            = $areas->firstWhere('id', $area_id);
+                $newEngineerName = $user_id
+                    ? User::find($user_id)?->name ?? '—'
+                    : (User::find($request->base_engineer)?->name ?? '—');
+
+                EngineerMovementLog::create([
+                    'area_name'         => $area?->name ?? "Area #{$area_id}",
+                    'previous_engineer' => $previousEngineerName,
+                    'new_engineer'      => $newEngineerName,
+                    'assigned_by'       => Auth::user()?->name ?? '—',
+                    'effectivity_date'  => now()->toDateString(),
+                ]);
+            }
+
+            // 5. If no overrides, still log the base engineer change for all areas
+            if (empty($request->overrides)) {
+                $newEngineerName = $request->base_engineer
+                    ? User::find($request->base_engineer)?->name ?? '—'
+                    : '—';
+
+                foreach ($areas as $area) {
+                    EngineerMovementLog::create([
+                        'area_name'         => $area->name,
+                        'previous_engineer' => $previousEngineerName,
+                        'new_engineer'      => $newEngineerName,
+                        'assigned_by'       => Auth::user()?->name ?? '—',
+                        'effectivity_date'  => now()->toDateString(),
                     ]);
                 }
             }
@@ -160,19 +201,29 @@ class NavigationController extends Controller
             ->get();
 
         return Inertia::render('ConfigFiles/Navigation/Logs', [
-            'logs' => $logs
+            'logs' => $logs,
         ]);
     }
+
+    public function engineerTransferLogs()
+    {
+        $logs = EngineerMovementLog::latest()->get();
+
+        return Inertia::render('ConfigFiles/Navigation/EngineerTransferLogs', [
+            'logs' => $logs,
+        ]);
+    }
+
     public function assignSeniorFieldGroup(Request $request)
-{
-    $request->validate([
-        'senior_field_id' => 'required|exists:users,id',
-        'user_group_id'   => 'nullable|exists:user_groups,id',
-    ]);
+    {
+        $request->validate([
+            'senior_field_id' => 'required|exists:users,id',
+            'user_group_id'   => 'nullable|exists:user_groups,id',
+        ]);
 
-    User::where('id', $request->senior_field_id)
-        ->update(['user_group_id' => $request->user_group_id ?: null]);
+        User::where('id', $request->senior_field_id)
+            ->update(['user_group_id' => $request->user_group_id ?: null]);
 
-    return back()->with('success', 'Senior Field Engineer assigned!');
-}
+        return back()->with('success', 'Senior Field Engineer assigned!');
+    }
 }
