@@ -61,12 +61,30 @@ class EngineerAssignmentController extends Controller
                 $areas   = Area::where('district_id', $districtId)->get();
                 $areaIds = $areas->pluck('id');
 
-                AreaEngineer::whereIn('area_id', $areaIds)->delete();
-
                 $overrides = $request->overrides ?? [];
 
+                // ✅ STEP 1: Get previous per-area assignment BEFORE deleting
+                $previousAssignments = [];
+
                 foreach ($areas as $area) {
+                    $override = AreaEngineer::where('area_id', $area->id)->first();
+
+                    $previousAssignments[$area->id] = $override
+                        ? $override->user_id
+                        : $previousEngineer?->user_id;
+                }
+
+                // ✅ STEP 2: NOW delete old overrides
+                AreaEngineer::whereIn('area_id', $areaIds)->delete();
+
+                // ✅ STEP 3: Process new assignments
+                foreach ($areas as $area) {
+
                     $overrideUserId = $overrides[$area->id] ?? null;
+
+                    $newUserId = $overrideUserId ?: $request->base_engineer;
+
+                    $previousUserId = $previousAssignments[$area->id] ?? null;
 
                     if ($overrideUserId) {
                         AreaEngineer::create([
@@ -75,17 +93,16 @@ class EngineerAssignmentController extends Controller
                         ]);
                     }
 
-                    $newEngineerName = $overrideUserId
-                        ? User::find($overrideUserId)?->name ?? '—'
-                        : $newBaseEngineerName;
-
-                    EngineerMovementLog::create([
-                        'area_name'         => $area->name,
-                        'previous_engineer' => $previousEngineerName,
-                        'new_engineer'      => $newEngineerName,
-                        'assigned_by'       => Auth::user()?->name ?? '—',
-                        'effectivity_date'  => now()->toDateString(),
-                    ]);
+                    // ✅ NOW this will work correctly
+                    if ($previousUserId != $newUserId) {
+                        EngineerMovementLog::create([
+                            'area_name'         => $area->name,
+                            'previous_engineer' => User::find($previousUserId)?->name ?? '—',
+                            'new_engineer'      => User::find($newUserId)?->name ?? '—',
+                            'assigned_by'       => Auth::user()?->name ?? '—',
+                            'effectivity_date'  => now()->toDateString(),
+                        ]);
+                    }
                 }
             });
 

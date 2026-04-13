@@ -50,7 +50,12 @@ export default function EngineerAssignment({
     };
 
     const handleAreaOverrideChange = (areaId: string, value: string) => {
-        setAreaOverrides({ ...areaOverrides, [areaId]: value || null });
+        // If selected engineer is same as base, clear the override
+        if (value && value == baseEngineer) {
+            setAreaOverrides({ ...areaOverrides, [areaId]: null });
+        } else {
+            setAreaOverrides({ ...areaOverrides, [areaId]: value || null });
+        }
     };
     const handleSave = () => {
         if (!selectedDistrict) return;
