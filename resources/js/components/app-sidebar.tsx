@@ -98,6 +98,8 @@ export function AppSidebar() {
       icon: Monitor,
       children: [
         { title: 'Request', href: '/EAMonitoring/Request' },
+        { title: 'HVA', href: '/EAMonitoring/HVA' },
+        { title: 'TAR', href: '/EAMonitoring/TAR' },
       ],
     },
   ];
