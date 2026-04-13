@@ -12,6 +12,8 @@ import MyLocationController from './MyLocationController'
 import NavigationController from './NavigationController'
 import EngineerAssignmentController from './EngineerAssignmentController'
 import SeniorFieldAssignmentController from './SeniorFieldAssignmentController'
+import EARequestController from './EARequestController'
+import EAHVAController from './EAHVAController'
 const Controllers = {
     Auth: Object.assign(Auth, Auth),
 UserController: Object.assign(UserController, UserController),
@@ -27,6 +29,8 @@ MyLocationController: Object.assign(MyLocationController, MyLocationController),
 NavigationController: Object.assign(NavigationController, NavigationController),
 EngineerAssignmentController: Object.assign(EngineerAssignmentController, EngineerAssignmentController),
 SeniorFieldAssignmentController: Object.assign(SeniorFieldAssignmentController, SeniorFieldAssignmentController),
+EARequestController: Object.assign(EARequestController, EARequestController),
+EAHVAController: Object.assign(EAHVAController, EAHVAController),
 }
 
 export default Controllers
