@@ -1,7 +1,7 @@
 import { Transition } from '@headlessui/react';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import * as React from 'react';
-
+import { route } from 'ziggy-js';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -102,138 +102,82 @@ export default function Profile() {
 
       <SettingsLayout>
         <div className="flex flex-col w-full">
-          <form onSubmit={submit} className="flex w-9/10 border rounded-lg p-4">
-            <div className="flex flex-1 items-start justify-between">
-              {/* LEFT SIDE — FORM FIELDS */}
-              <div className=" flex flex-col w-1/2 gap-6">
-              <Heading
-            variant="small"
-            title="Profile information"
-            description="Update your name, email address, and profile photo"
-          />
-
           <form
             onSubmit={submit}
-            className="space-y-6"
+            className="flex w-9/10 border rounded-lg p-4"
             encType="multipart/form-data"
           >
-            <div className="grid gap-8 md:grid-cols-[1fr_220px] items-start">
-              <div className="space-y-6">
-                <div className="grid gap-2">
-                  <Label htmlFor="name">Name</Label>
+            <div className="flex flex-1 items-start justify-between gap-6">
 
-                  <Input
-                    id="name"
-                    className="mt-1 block w-3/4"
-                    value={form.data.name}
-                    onChange={(e) => form.setData('name', e.target.value)}
-                    name="name"
-                    required
-                    autoComplete="name"
-                    placeholder="Full name"
-                  />
+              {/* LEFT SIDE */}
+              <div className="flex flex-col w-1/2 gap-6">
+                <Heading
+                  variant="small"
+                  title="Profile information"
+                  description="Update your name, email address, and profile photo"
+                />
 
-                  <InputError className="mt-2" message={form.errors.name} />
-                </div>
+                <div className="space-y-6">
+                  {/* NAME */}
+                  <div className="grid gap-2">
+                    <Label htmlFor="name">Name</Label>
+                    <Input
+                      id="name"
+                      value={form.data.name}
+                      onChange={(e) => form.setData('name', e.target.value)}
+                      required
+                    />
+                    <InputError message={form.errors.name} />
+                  </div>
 
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email address</Label>
+                  {/* EMAIL */}
+                  <div className="grid gap-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={form.data.email}
+                      onChange={(e) => form.setData('email', e.target.value)}
+                      required
+                    />
+                    <InputError message={form.errors.email} />
+                  </div>
 
-                  <Input
-                    id="email"
-                    type="email"
-                    className="mt-1 block w-3/4"
-                    value={form.data.email}
-                    onChange={(e) => form.setData('email', e.target.value)}
-                    name="email"
-                    required
-                    autoComplete="username"
-                    placeholder="Email address"
-                  />
+                  {/* SAVE BUTTON */}
+                  <div className="flex items-center gap-4">
+                    <Button disabled={form.processing}>Save</Button>
 
-                  <InputError className="mt-2" message={form.errors.email} />
+                    <Transition show={form.recentlySuccessful}>
+                      <p className="text-sm text-neutral-600">Saved</p>
+                    </Transition>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex flex-col items-center gap-3">
-                <div className="h-40 w-40 overflow-hidden rounded-full border bg-muted shadow">
+              {/* RIGHT SIDE */}
+              <div className="flex flex-col w-5/12 gap-5 border p-4 rounded-lg">
+                <div className="aspect-square overflow-hidden rounded-full border">
                   {photoPreview ? (
-                    <img
-                      src={photoPreview}
-                      alt="Profile preview"
-                      className="h-full w-full object-cover"
-                    />
+                    <img src={photoPreview} className="h-full w-full object-cover" />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">
+                    <div className="flex h-full items-center justify-center">
                       No photo
                     </div>
                   )}
                 </div>
 
                 <Input
-                  id="photo"
                   type="file"
                   accept="image/*"
                   onChange={onPhotoChange}
-                  className="max-w-[180px]"
                 />
 
-                <InputError className="mt-2 text-center" message={form.errors.photo} />
+                <InputError message={form.errors.photo} />
               </div>
             </div>
-
-            <div className="flex items-center gap-4">
-              <Button disabled={form.processing} data-test="update-profile-button">
-                Save
-              </Button>
-
-              <Transition
-                show={form.recentlySuccessful}
-                enter="transition ease-in-out"
-                enterFrom="opacity-0"
-                leave="transition ease-in-out"
-                leaveTo="opacity-0"
-              >
-                <p className="text-sm text-neutral-600">Saved</p>
-              </Transition>
-            </div>
-           </div> 
-          </div>
-            {/*end of left */}
-             
-
-             {/* RIGHT SIDE — PROFILE PHOTO */}
-              <div className="flex flex-col w-5/12 gap-5 border p-4 rounded-lg">
-                <div className="flex w-full  my-auto aspect-square overflow-hidden rounded-full border bg-muted shadow" >
-                  {photoPreview ? (
-                    <img
-                      src={photoPreview}
-                      alt="Profile preview"
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">
-                      No photo
-                    </div>
-                  )}
-                </div>
-
-             <Input
-                id="photo"
-                name="photo"
-                type="file"
-                accept="image/*"
-                onChange={onPhotoChange}
-                className="max-w-[180px] mx-auto"
-              />
-
-                <InputError className="mt-2 text-center" message={form.errors.photo} />
-              </div>
-            </div>
-
           </form>
         </div>
-            
+
       </SettingsLayout>
     </AppLayout>
   );
