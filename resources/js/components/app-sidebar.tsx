@@ -87,12 +87,6 @@ export function AppSidebar() {
     },
     {
       section: 'Management',
-      title: 'My Location',
-      href: '/mylocation',
-      icon: MapPin,
-    },
-    {
-      section: 'Management',
       title: 'EA Monitoring',
       href: '/EAMonitoring',
       icon: Monitor,

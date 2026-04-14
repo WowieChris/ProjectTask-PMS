@@ -8,9 +8,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
-import { logout } from '@/routes';
+import { logout, mylocation } from '@/routes';
 import { edit } from '@/routes/profile';
 import type { User } from '@/types';
+import { MapPin } from 'lucide-react';
+
 
 type Props = {
     user: User;
@@ -42,6 +44,20 @@ export function UserMenuContent({ user }: Props) {
                     >
                         <Settings className="mr-2" />
                         Settings
+                    </Link>
+                </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+                <DropdownMenuItem asChild>
+                    <Link
+                        className="block w-full cursor-pointer"
+                        href={mylocation().url}
+                        prefetch
+                        onClick={cleanup}
+                    >
+                        <MapPin className="mr-2" />
+                        My Location
                     </Link>
                 </DropdownMenuItem>
             </DropdownMenuGroup>
