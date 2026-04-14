@@ -195,25 +195,76 @@ class NavigationController extends Controller
 
     public function logs(Request $request)
     {
-        $logs = LocationTransferLog::with('user')
+        $logs = LocationTransferLog::with(['user.photo'])  // 👈 eager load photo
             ->latest()
             ->limit(100)
-            ->get();
+            ->get()
+            ->map(fn($log) => [
+                'id'               => $log->id,
+                'type'             => $log->type,
+                'location_id'      => $log->location_id,
+                'location_name'    => $log->location_name,
+                'from_parent_id'   => $log->from_parent_id,
+                'from_parent_name' => $log->from_parent_name,
+                'to_parent_id'     => $log->to_parent_id,
+                'to_parent_name'   => $log->to_parent_name,
+                'effectivity_date' => $log->effectivity_date,
+                'created_at'       => $log->created_at,
+                'user' => $log->user ? [
+                    'name'  => $log->user->name,
+                    'photo' => $log->user->photo?->path ?? null, // 👈 add photo path
+                ] : null,
+            ]);
 
         return Inertia::render('ConfigFiles/Navigation/Logs', [
             'logs' => $logs,
         ]);
     }
 
+    // public function engineerTransferLogs()
+    // {
+    //     $logs = EngineerMovementLog::latest()->get();
+
+    //     return Inertia::render('ConfigFiles/Navigation/EngineerTransferLogs', [
+    //         'logs' => $logs,
+    //     ]);
+    // }
+
     public function engineerTransferLogs()
     {
-        $logs = EngineerMovementLog::latest()->get();
+        $logs = EngineerMovementLog::orderByDesc('created_at')->get();
+
+        $allUsers = User::with('photo')->get();
+
+        // Key by first name only (logs store first name only)
+        $usersByFirstName = $allUsers->keyBy(fn($user) => trim($user->name));
+
+        // Key by full name as fallback
+        $usersByFullName = $allUsers->keyBy(fn($user) => trim($user->name . ' ' . $user->last_name));
+
+        $resolvePhoto = function (?string $name) use ($usersByFirstName, $usersByFullName): ?string {
+            if (!$name || $name === '—') return null;
+            $user = $usersByFullName[trim($name)] ?? $usersByFirstName[trim($name)] ?? null;
+            return $user?->photo?->path ?? null; // 👈 path not url
+        };
+
+        $mapped = $logs->map(fn($log) => [
+            'id'                      => $log->id,
+            'area_name'               => $log->area_name,
+            'previous_engineer'       => $log->previous_engineer,
+            'new_engineer'            => $log->new_engineer,
+            'assigned_by'             => $log->assigned_by,
+            'effectivity_date'        => $log->effectivity_date,
+            'created_at'              => $log->created_at,
+            'previous_engineer_photo' => $resolvePhoto($log->previous_engineer),
+            'new_engineer_photo'      => $resolvePhoto($log->new_engineer),
+            'assigned_by_photo'       => $resolvePhoto($log->assigned_by),
+        ]);
 
         return Inertia::render('ConfigFiles/Navigation/EngineerTransferLogs', [
-            'logs' => $logs,
+            'logs' => $mapped,
         ]);
     }
-
     public function assignSeniorFieldGroup(Request $request)
     {
         $request->validate([

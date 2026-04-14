@@ -84,6 +84,41 @@ export default function Logs() {
             default: return 'bg-muted text-muted-foreground';
         }
     };
+    // Add this component near the top (after initials function)
+    const UserAvatar = ({ name, photo, isSelected }: {
+        name: string;
+        photo: string | null;
+        isSelected: boolean;
+    }) => {
+        return photo ? (
+            <img
+                src={`/storage/${photo}`}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                className={`w-6 h-6 rounded-full object-cover shrink-0 ring-1 ${isSelected ? 'ring-primary' : 'ring-muted'
+                    }`}
+            />
+        ) : (
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${isSelected ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'
+                }`}>
+                {initials(name)}
+            </div>
+        );
+    };
+
+    // Add this after filteredLogs useMemo
+    const currentLogIds = useMemo(() => {
+        const seen = new Set<string>();
+        const currentIds = new Set<number>();
+        for (const log of logs) {
+            const key = `${log.type}-${log.location_id}`;
+            if (!seen.has(key)) {
+                seen.add(key);
+                currentIds.add(log.id);
+            }
+        }
+        return currentIds;
+    }, [logs]);
+
 
     return (
         <AppLayout>
@@ -249,9 +284,9 @@ export default function Logs() {
                                 >
                                     {/* Status dot */}
                                     <td className="px-4 py-3">
-                                        <div className="w-2 h-2 rounded-full bg-blue-400" />
+                                        <div className={`w-2 h-2 rounded-full ${currentLogIds.has(log.id) ? 'bg-emerald-400' : 'bg-blue-400'
+                                            }`} />
                                     </td>
-
                                     {/* Type badge */}
                                     <td className="px-4 py-3">
                                         <span className={`text-[11px] px-2 py-0.5 rounded capitalize font-medium ${typeColor(log.type)}`}>
@@ -264,13 +299,13 @@ export default function Logs() {
                                         <button
                                             onClick={() => handleLocationClick(log.location_name)}
                                             className={`flex items-center gap-1.5 text-xs transition-colors ${selectedLocation === log.location_name
-                                                    ? 'text-amber-400 font-semibold'
-                                                    : 'text-foreground hover:text-amber-400'
+                                                ? 'text-amber-400 font-semibold'
+                                                : 'text-foreground hover:text-amber-400'
                                                 }`}
                                         >
                                             <MapPin size={11} className={`shrink-0 ${selectedLocation === log.location_name
-                                                    ? 'text-amber-400'
-                                                    : 'text-muted-foreground'
+                                                ? 'text-amber-400'
+                                                : 'text-muted-foreground'
                                                 }`} />
                                             {log.location_name || `#${log.location_id}`}
                                         </button>
@@ -285,9 +320,16 @@ export default function Logs() {
 
                                     {/* To */}
                                     <td className="px-4 py-3">
-                                        <span className="text-xs text-green-400 font-medium">
-                                            {resolveName(log, log.to_parent_name, log.to_parent_id)}
-                                        </span>
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="text-xs text-green-400 font-medium">
+                                                {resolveName(log, log.to_parent_name, log.to_parent_id)}
+                                            </span>
+                                            {currentLogIds.has(log.id) && (
+                                                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium leading-none">
+                                                    Current
+                                                </span>
+                                            )}
+                                        </div>
                                     </td>
 
                                     {/* Moved By — clickable */}
@@ -296,16 +338,15 @@ export default function Logs() {
                                             <button
                                                 onClick={() => handleUserClick(log.user.name)}
                                                 className={`flex items-center gap-2 text-left transition-colors ${selectedUser === log.user.name
-                                                        ? 'text-primary'
-                                                        : 'hover:text-primary text-foreground'
+                                                    ? 'text-primary'
+                                                    : 'hover:text-primary text-foreground'
                                                     }`}
                                             >
-                                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${selectedUser === log.user.name
-                                                        ? 'bg-primary/20 text-primary'
-                                                        : 'bg-muted text-muted-foreground'
-                                                    }`}>
-                                                    {initials(log.user.name)}
-                                                </div>
+                                                <UserAvatar
+                                                    name={log.user.name}
+                                                    photo={log.user.photo}
+                                                    isSelected={selectedUser === log.user.name}
+                                                />
                                                 <span className="text-xs truncate max-w-[120px]">
                                                     {log.user.name}
                                                 </span>
