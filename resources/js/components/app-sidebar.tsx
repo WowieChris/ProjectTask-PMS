@@ -80,22 +80,22 @@ export function AppSidebar() {
       icon: Columns2Icon,
     },
     {
-      section: 'Management',
-      title: 'Office Management',
-      href: '/officeManagement', // ✅ fixed slash
-      icon: Warehouse,
-    },
+  section: 'Management',
+  title: 'Office Management',
+  href: '/officeManagement',
+  icon: Warehouse,
+  children: [
     {
-      section: 'Management',
       title: 'EA Monitoring',
       href: '/EAMonitoring',
-      icon: Monitor,
       children: [
         { title: 'Request', href: '/EAMonitoring/Request' },
         { title: 'HVA', href: '/EAMonitoring/HVA' },
         { title: 'TAR', href: '/EAMonitoring/TAR' },
       ],
     },
+  ],
+},
   ];
 
   // 🔹 ADMIN SECTION
