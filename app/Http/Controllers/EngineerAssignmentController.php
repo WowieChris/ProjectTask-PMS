@@ -144,37 +144,53 @@ class EngineerAssignmentController extends Controller
 
     public function logs()
     {
+
         $logs = EngineerMovementLog::orderByDesc('created_at')->get();
+
+        // ✅ preload areas with district
+        $areas = Area::with('district')->get()->keyBy('name');
+
 
         $allNames = $logs->flatMap(fn($log) => [
             $log->previous_engineer,
             $log->new_engineer,
         ])->filter(fn($n) => $n && $n !== '—')->unique()->values();
 
-        // Match full name (name + last_name concatenated)
         $users = User::with('photo')
             ->get()
             ->filter(fn($user) => $allNames->contains(trim($user->name . ' ' . $user->last_name))
                 || $allNames->contains($user->name))
             ->keyBy(fn($user) => trim($user->name . ' ' . $user->last_name));
 
-        // Also key by first name only as fallback
         $usersByFirstName = $users->keyBy('name');
 
+
         $mapped = $logs->map(fn($log) => [
-            'id'                      => $log->id,
-            'area_name'               => $log->area_name,
-            'previous_engineer'       => $log->previous_engineer,
-            'new_engineer'            => $log->new_engineer,
-            'assigned_by'             => $log->assigned_by,
-            'effectivity_date'        => $log->effectivity_date,
-            'created_at'              => $log->created_at,
+
+            'id'                => $log->id,
+            'area_name'         => $log->area_name,
+
+            // ✅ THIS LINE FIXES EVERYTHING
+            'district' => optional(
+                Area::whereRaw('REPLACE(LOWER(name), " ", "") = ?', [
+                    str_replace(' ', '', strtolower($log->area_name))
+                ])->with('district')->first()
+            )?->district?->name,
+
+            'previous_engineer' => $log->previous_engineer,
+            'new_engineer'      => $log->new_engineer,
+            'assigned_by'       => $log->assigned_by,
+            'effectivity_date'  => $log->effectivity_date,
+            'created_at'        => $log->created_at,
+
             'previous_engineer_photo' => ($users[$log->previous_engineer]
                 ?? $usersByFirstName[$log->previous_engineer]
                 ?? null)?->photo?->path,
-            'new_engineer_photo'      => ($users[$log->new_engineer]
+
+            'new_engineer_photo' => ($users[$log->new_engineer]
                 ?? $usersByFirstName[$log->new_engineer]
                 ?? null)?->photo?->path,
+
         ]);
 
         return Inertia::render('Navigation/EngineerTransferLogs', [

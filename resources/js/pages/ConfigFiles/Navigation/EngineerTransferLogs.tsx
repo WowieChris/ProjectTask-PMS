@@ -14,6 +14,20 @@ export default function EngineerTransferLogs() {
     const [currentPage, setCurrentPage] = useState(1);
     const perPage = 15;
 
+    // Latest log per area = current assigned
+    const currentLogIds = useMemo(() => {
+        const seen = new Set<string>();
+        const currentIds = new Set<number>();
+        for (const log of logs) {
+            const key = log.area_name;
+            if (!seen.has(key)) {
+                seen.add(key);
+                currentIds.add(log.id);
+            }
+        }
+        return currentIds;
+    }, [logs]);
+
     const filteredLogs = useMemo(() => {
         return logs.filter((log: any) => {
             const matchEngineer = selectedEngineer
@@ -59,12 +73,8 @@ export default function EngineerTransferLogs() {
     const initials = (name: string) =>
         name ? name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : '?';
 
-    // Reusable engineer avatar
     const EngineerAvatar = ({
-        name,
-        photo,
-        isSelected,
-        colorVariant,
+        name, photo, isSelected, colorVariant,
     }: {
         name: string;
         photo: string | null;
@@ -74,14 +84,13 @@ export default function EngineerTransferLogs() {
         const ringClass = isSelected
             ? 'ring-primary'
             : colorVariant === 'red' ? 'ring-red-400/40' : 'ring-emerald-400/40';
-
         const bgClass = isSelected
             ? 'bg-primary/20 text-primary'
             : colorVariant === 'red' ? 'bg-red-500/10 text-red-400' : 'bg-emerald-500/10 text-emerald-400';
 
         return photo ? (
             <img
-                src={`/storage/${photo}`}  // 👈 add /storage/ prefix here
+                src={`/storage/${photo}`}
                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                 className={`w-6 h-6 rounded-full object-cover shrink-0 ring-1 ${ringClass}`}
             />
@@ -173,7 +182,6 @@ export default function EngineerTransferLogs() {
                         >
                             <div className="flex items-center gap-2 flex-wrap">
                                 <span className="text-xs text-muted-foreground">Filtered by:</span>
-
                                 {selectedEngineer && (
                                     <span className="flex items-center gap-1.5 px-3 py-1 text-xs rounded-full bg-primary/10 text-primary border border-primary/20 font-medium">
                                         <User size={11} />
@@ -183,7 +191,6 @@ export default function EngineerTransferLogs() {
                                         </button>
                                     </span>
                                 )}
-
                                 {selectedArea && (
                                     <span className="flex items-center gap-1.5 px-3 py-1 text-xs rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium">
                                         <MapPin size={11} />
@@ -193,7 +200,6 @@ export default function EngineerTransferLogs() {
                                         </button>
                                     </span>
                                 )}
-
                                 <span className="text-xs text-muted-foreground">
                                     {filteredLogs.length} result{filteredLogs.length !== 1 ? 's' : ''}
                                 </span>
@@ -206,14 +212,17 @@ export default function EngineerTransferLogs() {
                 <div className="flex-1 overflow-auto rounded-lg border border-border">
                     <table className="w-full text-sm">
                         <thead className="sticky top-0 z-10 bg-muted/60 backdrop-blur border-b border-border">
-                            <tr>
-                                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-6"></th>
-                                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Area</th>
-                                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Previous Engineer</th>
-                                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">New Engineer</th>
-                                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Assigned By</th>
-                                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Effective Date</th>
-                                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Logged At</th>
+                            <tr className="text-[11px] uppercase tracking-widest text-muted-foreground whitespace-nowrap">
+                                <th className="px-4 py-3 min-w-[10px]"></th>
+
+                                <th className="px-4 py-3 min-w-[100px]">Previous Engineer</th>
+                                <th className="px-4 py-3 min-w-[100px]">District</th>
+                                <th className="px-4 py-3 min-w-[100px]">Area</th>
+                                <th className="px-4 py-3 min-w-[100px]">New Engineer</th>
+                                <th className="px-4 py-3 min-w-[140px]">Status</th>
+                                <th className="px-4 py-3 min-w-[100px]">Assigned By</th>
+                                <th className="px-4 py-3 min-w-[100px]">Effective Date</th>
+                                <th className="px-4 py-3 min-w-[100px]">Logged At</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -225,118 +234,152 @@ export default function EngineerTransferLogs() {
                                 </tr>
                             )}
 
-                            {paginatedLogs.map((log: any, i: number) => (
-                                <motion.tr
-                                    key={log.id}
-                                    initial={{ opacity: 0, y: 6 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: i * 0.02 }}
-                                    className="border-b border-border hover:bg-muted/30 transition-colors"
-                                >
-                                    {/* Status dot */}
-                                    <td className="px-4 py-3">
-                                        <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                                    </td>
+                            {paginatedLogs.map((log: any, i: number) => {
+                                const isCurrent = currentLogIds.has(log.id);
+                                return (
+                                    <motion.tr
+                                        key={log.id}
+                                        initial={{ opacity: 0, y: 6 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: i * 0.02 }}
+                                        className="border-b border-border hover:bg-muted/30 transition-colors"
+                                    >
+                                        {/* Status dot */}
+                                        <td className="px-4 py-3">
+                                            <div className={`w-2 h-2 rounded-full ${isCurrent ? 'bg-emerald-400' : 'bg-muted-foreground/30'}`} />
+                                        </td>
 
-                                    {/* Area */}
-                                    <td className="px-4 py-3">
-                                        <button
-                                            onClick={() => handleAreaClick(log.area_name)}
-                                            className={`flex items-center gap-1.5 text-xs transition-colors ${selectedArea === log.area_name
-                                                ? 'text-amber-400 font-semibold'
-                                                : 'text-foreground hover:text-amber-400'
-                                                }`}
-                                        >
-                                            <MapPin size={11} className={`shrink-0 ${selectedArea === log.area_name ? 'text-amber-400' : 'text-muted-foreground'
-                                                }`} />
-                                            {log.area_name ?? '—'}
-                                        </button>
-                                    </td>
+                                        {/* Previous Engineer */}
+                                        <td className="px-4 py-3">
+                                            {log.previous_engineer && log.previous_engineer !== '—' ? (
+                                                <button
+                                                    onClick={() => handleEngineerClick(log.previous_engineer)}
+                                                    className={`flex items-center gap-2 text-left transition-colors ${selectedEngineer === log.previous_engineer
+                                                        ? 'text-primary'
+                                                        : 'hover:text-primary text-foreground'
+                                                        }`}
+                                                >
+                                                    <EngineerAvatar
+                                                        name={log.previous_engineer}
+                                                        photo={log.previous_engineer_photo}
+                                                        isSelected={selectedEngineer === log.previous_engineer}
+                                                        colorVariant="red"
+                                                    />
+                                                    <span className="text-xs truncate max-w-[120px]">
+                                                        {log.previous_engineer}
+                                                    </span>
+                                                </button>
+                                            ) : (
+                                                <span className="text-xs text-muted-foreground">—</span>
+                                            )}
+                                        </td>
 
-                                    {/* Previous Engineer */}
-                                    <td className="px-4 py-3">
-                                        {log.previous_engineer && log.previous_engineer !== '—' ? (
+                                        {/* District */}
+                                        <td className="px-4 py-3">
                                             <button
-                                                onClick={() => handleEngineerClick(log.previous_engineer)}
-                                                className={`flex items-center gap-2 text-left transition-colors ${selectedEngineer === log.previous_engineer
-                                                    ? 'text-primary'
-                                                    : 'hover:text-primary text-foreground'
+                                                onClick={() => handleAreaClick(log.district)}
+                                                className={`flex items-center gap-1.5 text-xs transition-colors ${selectedArea === log.district
+                                                    ? 'text-amber-400 font-semibold'
+                                                    : 'text-foreground hover:text-amber-400'
                                                     }`}
                                             >
-                                                <EngineerAvatar
-                                                    name={log.previous_engineer}
-                                                    photo={log.previous_engineer_photo}
-                                                    isSelected={selectedEngineer === log.previous_engineer}
-                                                    colorVariant="red"
-                                                />
-                                                <span className="text-xs truncate max-w-[120px]">
-                                                    {log.previous_engineer}
-                                                </span>
+                                                <MapPin size={11} className={`shrink-0 ${selectedArea === log.district ? 'text-amber-400' : 'text-muted-foreground'
+                                                    }`} />
+                                                {log.district ?? '—'}
                                             </button>
-                                        ) : (
-                                            <span className="text-xs text-muted-foreground">—</span>
-                                        )}
-                                    </td>
+                                        </td>
 
-                                    {/* New Engineer */}
-                                    <td className="px-4 py-3">
-                                        {log.new_engineer && log.new_engineer !== '—' ? (
+
+
+                                        {/* Area */}
+                                        <td className="px-4 py-3">
                                             <button
-                                                onClick={() => handleEngineerClick(log.new_engineer)}
-                                                className={`flex items-center gap-2 text-left transition-colors ${selectedEngineer === log.new_engineer
-                                                    ? 'text-primary'
-                                                    : 'hover:text-primary text-foreground'
+                                                onClick={() => handleAreaClick(log.area_name)}
+                                                className={`flex items-center gap-1.5 text-xs transition-colors ${selectedArea === log.area_name
+                                                    ? 'text-amber-400 font-semibold'
+                                                    : 'text-foreground hover:text-amber-400'
                                                     }`}
                                             >
-                                                <EngineerAvatar
-                                                    name={log.new_engineer}
-                                                    photo={log.new_engineer_photo}
-                                                    isSelected={selectedEngineer === log.new_engineer}
-                                                    colorVariant="green"
-                                                />
-                                                <span className="text-xs truncate max-w-[120px]">
-                                                    {log.new_engineer}
-                                                </span>
+                                                <MapPin size={11} className={`shrink-0 ${selectedArea === log.area_name ? 'text-amber-400' : 'text-muted-foreground'
+                                                    }`} />
+                                                {log.area_name ?? '—'}
                                             </button>
-                                        ) : (
-                                            <span className="text-xs text-muted-foreground">—</span>
-                                        )}
-                                    </td>
+                                        </td>
 
-                                    {/* Assigned By */}
-                                    <td className="px-4 py-3">
-                                        {log.assigned_by && log.assigned_by !== '—' ? (
-                                            <div className="flex items-center gap-2">
-                                                <EngineerAvatar
-                                                    name={log.assigned_by}
-                                                    photo={log.assigned_by_photo}
-                                                    isSelected={false}
-                                                    colorVariant="green"
-                                                />
-                                                <span className="text-xs text-muted-foreground">
-                                                    {log.assigned_by}
+                                        {/* New Engineer + Current badge */}
+                                        <td className="px-4 py-3">
+                                            {log.new_engineer && log.new_engineer !== '—' ? (
+                                                <button
+                                                    onClick={() => handleEngineerClick(log.new_engineer)}
+                                                    className={`flex items-center gap-2 text-left transition-colors ${selectedEngineer === log.new_engineer
+                                                        ? 'text-primary'
+                                                        : 'hover:text-primary text-foreground'
+                                                        }`}
+                                                >
+                                                    <EngineerAvatar
+                                                        name={log.new_engineer}
+                                                        photo={log.new_engineer_photo}
+                                                        isSelected={selectedEngineer === log.new_engineer}
+                                                        colorVariant="green"
+                                                    />
+                                                    <span className="text-xs truncate max-w-[120px]">
+                                                        {log.new_engineer}
+                                                    </span>
+
+                                                    {/* {isCurrent && (
+                                                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium leading-none shrink-0">
+                                                            Current Assigned
+                                                        </span>
+                                                    )} */}
+                                                </button>
+                                            ) : (
+                                                <span className="text-xs text-muted-foreground">—</span>
+                                            )}
+                                        </td>
+
+                                        <td className="px-4 py-3">
+                                            {isCurrent && (
+                                                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium leading-none shrink-0">
+                                                    Current Assigned
                                                 </span>
-                                            </div>
-                                        ) : (
-                                            <span className="text-xs text-muted-foreground">—</span>
-                                        )}
-                                    </td>
+                                            )}
+                                        </td>
 
-                                    {/* Effective Date */}
-                                    <td className="px-4 py-3">
-                                        <span className="text-xs text-muted-foreground">
-                                            {log.effectivity_date ?? '—'}
-                                        </span>
-                                    </td>
+                                        {/* Assigned By */}
+                                        <td className="px-4 py-3">
+                                            {log.assigned_by && log.assigned_by !== '—' ? (
+                                                <div className="flex items-center gap-2">
+                                                    <EngineerAvatar
+                                                        name={log.assigned_by}
+                                                        photo={log.assigned_by_photo}
+                                                        isSelected={false}
+                                                        colorVariant="green"
+                                                    />
+                                                    <span className="text-xs text-muted-foreground">
+                                                        {log.assigned_by}
+                                                    </span>
+                                                </div>
+                                            ) : (
+                                                <span className="text-xs text-muted-foreground">—</span>
+                                            )}
+                                        </td>
 
-                                    {/* Logged At */}
-                                    <td className="px-4 py-3">
-                                        <span className="text-xs text-muted-foreground">
-                                            {new Date(log.created_at).toLocaleString()}
-                                        </span>
-                                    </td>
-                                </motion.tr>
-                            ))}
+                                        {/* Effective Date */}
+                                        <td className="px-4 py-3">
+                                            <span className="text-xs text-muted-foreground">
+                                                {log.effectivity_date ?? '—'}
+                                            </span>
+                                        </td>
+
+                                        {/* Logged At */}
+                                        <td className="px-4 py-3">
+                                            <span className="text-xs text-muted-foreground">
+                                                {new Date(log.created_at).toLocaleString()}
+                                            </span>
+                                        </td>
+                                    </motion.tr>
+                                );
+                            })}
                         </tbody>
                     </table>
                 </div>
