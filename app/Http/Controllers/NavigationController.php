@@ -234,32 +234,47 @@ class NavigationController extends Controller
     {
         $logs = EngineerMovementLog::orderByDesc('created_at')->get();
 
+        // ✅ LOAD AREAS WITH DISTRICT
+        $areas = Area::with('district')->get();
+
         $allUsers = User::with('photo')->get();
 
-        // Key by first name only (logs store first name only)
         $usersByFirstName = $allUsers->keyBy(fn($user) => trim($user->name));
-
-        // Key by full name as fallback
         $usersByFullName = $allUsers->keyBy(fn($user) => trim($user->name . ' ' . $user->last_name));
 
         $resolvePhoto = function (?string $name) use ($usersByFirstName, $usersByFullName): ?string {
             if (!$name || $name === '—') return null;
             $user = $usersByFullName[trim($name)] ?? $usersByFirstName[trim($name)] ?? null;
-            return $user?->photo?->path ?? null; // 👈 path not url
+            return $user?->photo?->path ?? null;
         };
 
-        $mapped = $logs->map(fn($log) => [
-            'id'                      => $log->id,
-            'area_name'               => $log->area_name,
-            'previous_engineer'       => $log->previous_engineer,
-            'new_engineer'            => $log->new_engineer,
-            'assigned_by'             => $log->assigned_by,
-            'effectivity_date'        => $log->effectivity_date,
-            'created_at'              => $log->created_at,
-            'previous_engineer_photo' => $resolvePhoto($log->previous_engineer),
-            'new_engineer_photo'      => $resolvePhoto($log->new_engineer),
-            'assigned_by_photo'       => $resolvePhoto($log->assigned_by),
-        ]);
+        $mapped = $logs->map(function ($log) use ($areas, $resolvePhoto) {
+
+            // ✅ MATCH AREA (safe match)
+            $area = $areas->first(
+                fn($a) =>
+                str_replace(' ', '', strtolower($a->name)) ===
+                    str_replace(' ', '', strtolower($log->area_name))
+            );
+
+            return [
+                'id'                => $log->id,
+                'area_name'         => $log->area_name,
+
+                // ✅ THIS IS THE FIX
+                'district'          => $area?->district?->name,
+
+                'previous_engineer' => $log->previous_engineer,
+                'new_engineer'      => $log->new_engineer,
+                'assigned_by'       => $log->assigned_by,
+                'effectivity_date'  => $log->effectivity_date,
+                'created_at'        => $log->created_at,
+
+                'previous_engineer_photo' => $resolvePhoto($log->previous_engineer),
+                'new_engineer_photo'      => $resolvePhoto($log->new_engineer),
+                'assigned_by_photo'       => $resolvePhoto($log->assigned_by),
+            ];
+        });
 
         return Inertia::render('ConfigFiles/Navigation/EngineerTransferLogs', [
             'logs' => $mapped,

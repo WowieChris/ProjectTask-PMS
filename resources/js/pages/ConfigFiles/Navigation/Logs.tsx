@@ -255,7 +255,7 @@ export default function Logs() {
                     <table className="w-full text-sm">
                         <thead className="sticky top-0 z-10 bg-muted/60 backdrop-blur border-b border-border">
                             <tr>
-                                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground w-6"></th>
+                                <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground"></th>
                                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Type</th>
                                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Location</th>
                                 <th className="text-left px-4 py-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">From</th>

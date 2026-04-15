@@ -355,7 +355,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\NavigationController::assignSeniorFieldGroup
- * @see app/Http/Controllers/NavigationController.php:268
+ * @see app/Http/Controllers/NavigationController.php:283
  * @route '/seniorfieldassignment'
  */
 export const assignSeniorFieldGroup = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -370,7 +370,7 @@ assignSeniorFieldGroup.definition = {
 
 /**
 * @see \App\Http\Controllers\NavigationController::assignSeniorFieldGroup
- * @see app/Http/Controllers/NavigationController.php:268
+ * @see app/Http/Controllers/NavigationController.php:283
  * @route '/seniorfieldassignment'
  */
 assignSeniorFieldGroup.url = (options?: RouteQueryOptions) => {
@@ -379,7 +379,7 @@ assignSeniorFieldGroup.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\NavigationController::assignSeniorFieldGroup
- * @see app/Http/Controllers/NavigationController.php:268
+ * @see app/Http/Controllers/NavigationController.php:283
  * @route '/seniorfieldassignment'
  */
 assignSeniorFieldGroup.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -389,7 +389,7 @@ assignSeniorFieldGroup.post = (options?: RouteQueryOptions): RouteDefinition<'po
 
     /**
 * @see \App\Http\Controllers\NavigationController::assignSeniorFieldGroup
- * @see app/Http/Controllers/NavigationController.php:268
+ * @see app/Http/Controllers/NavigationController.php:283
  * @route '/seniorfieldassignment'
  */
     const assignSeniorFieldGroupForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -399,7 +399,7 @@ assignSeniorFieldGroup.post = (options?: RouteQueryOptions): RouteDefinition<'po
 
             /**
 * @see \App\Http\Controllers\NavigationController::assignSeniorFieldGroup
- * @see app/Http/Controllers/NavigationController.php:268
+ * @see app/Http/Controllers/NavigationController.php:283
  * @route '/seniorfieldassignment'
  */
         assignSeniorFieldGroupForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
