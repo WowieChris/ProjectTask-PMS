@@ -31,33 +31,6 @@ class EngineerAssignmentController extends Controller
             'engineers'       => $engineers,
             'areaAssignments' => $areaAssignments,
         ]);
-
-        // $today = now()->toDateString();
-
-        // $logs = EngineerMovementLog::with(['newEngineer', 'previousEngineer', 'assignedBy'])
-        //     ->orderBy('area_name')
-        //     ->orderByDesc('effectivity_date')
-        //     ->orderByDesc('created_at')
-        //     ->get()
-        //     ->map(function ($log) use ($today) {
-        //         return [
-        //             'id'                      => $log->id,
-        //             'area_name'               => $log->area_name,
-        //             'district'                => $log->district,
-        //             'previous_engineer'       => $log->previousEngineer?->name ?? '—',
-        //             'previous_engineer_photo' => $log->previousEngineer?->photo,
-        //             'new_engineer'            => $log->newEngineer?->name ?? '—',
-        //             'new_engineer_photo'      => $log->newEngineer?->photo,
-        //             'assigned_by'             => $log->assignedBy?->name ?? '—',
-        //             'assigned_by_photo'       => $log->assignedBy?->photo,
-        //             'effectivity_date'        => $log->effectivity_date,
-        //             'created_at'              => $log->created_at,
-        //             // Key flag: is this log active today?
-        //             'is_active'               => $log->effectivity_date <= $today,
-        //         ];
-        //     });
-
-        // return inertia('EngineerTransferLogs', compact('logs'));
     }
 
     public function store(Request $request)
