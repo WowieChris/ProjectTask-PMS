@@ -79,7 +79,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\EARequestController::create
- * @see app/Http/Controllers/EARequestController.php:45
+ * @see app/Http/Controllers/EARequestController.php:46
  * @route '/EAMonitoring/Request/create'
  */
 export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -94,7 +94,7 @@ create.definition = {
 
 /**
 * @see \App\Http\Controllers\EARequestController::create
- * @see app/Http/Controllers/EARequestController.php:45
+ * @see app/Http/Controllers/EARequestController.php:46
  * @route '/EAMonitoring/Request/create'
  */
 create.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ create.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\EARequestController::create
- * @see app/Http/Controllers/EARequestController.php:45
+ * @see app/Http/Controllers/EARequestController.php:46
  * @route '/EAMonitoring/Request/create'
  */
 create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -112,7 +112,7 @@ create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\EARequestController::create
- * @see app/Http/Controllers/EARequestController.php:45
+ * @see app/Http/Controllers/EARequestController.php:46
  * @route '/EAMonitoring/Request/create'
  */
 create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -122,7 +122,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\EARequestController::create
- * @see app/Http/Controllers/EARequestController.php:45
+ * @see app/Http/Controllers/EARequestController.php:46
  * @route '/EAMonitoring/Request/create'
  */
     const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -132,7 +132,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\EARequestController::create
- * @see app/Http/Controllers/EARequestController.php:45
+ * @see app/Http/Controllers/EARequestController.php:46
  * @route '/EAMonitoring/Request/create'
  */
         createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -141,7 +141,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\EARequestController::create
- * @see app/Http/Controllers/EARequestController.php:45
+ * @see app/Http/Controllers/EARequestController.php:46
  * @route '/EAMonitoring/Request/create'
  */
         createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -157,7 +157,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     create.form = createForm
 /**
 * @see \App\Http\Controllers\EARequestController::store
- * @see app/Http/Controllers/EARequestController.php:51
+ * @see app/Http/Controllers/EARequestController.php:52
  * @route '/EAMonitoring/Request'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -172,7 +172,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\EARequestController::store
- * @see app/Http/Controllers/EARequestController.php:51
+ * @see app/Http/Controllers/EARequestController.php:52
  * @route '/EAMonitoring/Request'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -181,7 +181,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\EARequestController::store
- * @see app/Http/Controllers/EARequestController.php:51
+ * @see app/Http/Controllers/EARequestController.php:52
  * @route '/EAMonitoring/Request'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -191,7 +191,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\EARequestController::store
- * @see app/Http/Controllers/EARequestController.php:51
+ * @see app/Http/Controllers/EARequestController.php:52
  * @route '/EAMonitoring/Request'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -201,7 +201,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\EARequestController::store
- * @see app/Http/Controllers/EARequestController.php:51
+ * @see app/Http/Controllers/EARequestController.php:52
  * @route '/EAMonitoring/Request'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -211,8 +211,286 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     
     store.form = storeForm
 /**
+* @see \App\Http\Controllers\EARequestController::show
+ * @see app/Http/Controllers/EARequestController.php:82
+ * @route '/EAMonitoring/Request/{id}'
+ */
+export const show = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: show.url(args, options),
+    method: 'get',
+})
+
+show.definition = {
+    methods: ["get","head"],
+    url: '/EAMonitoring/Request/{id}',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\EARequestController::show
+ * @see app/Http/Controllers/EARequestController.php:82
+ * @route '/EAMonitoring/Request/{id}'
+ */
+show.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { id: args }
+    }
+
+    
+    if (Array.isArray(args)) {
+        args = {
+                    id: args[0],
+                }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+                        id: args.id,
+                }
+
+    return show.definition.url
+            .replace('{id}', parsedArgs.id.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\EARequestController::show
+ * @see app/Http/Controllers/EARequestController.php:82
+ * @route '/EAMonitoring/Request/{id}'
+ */
+show.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: show.url(args, options),
+    method: 'get',
+})
+/**
+* @see \App\Http\Controllers\EARequestController::show
+ * @see app/Http/Controllers/EARequestController.php:82
+ * @route '/EAMonitoring/Request/{id}'
+ */
+show.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: show.url(args, options),
+    method: 'head',
+})
+
+    /**
+* @see \App\Http\Controllers\EARequestController::show
+ * @see app/Http/Controllers/EARequestController.php:82
+ * @route '/EAMonitoring/Request/{id}'
+ */
+    const showForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: show.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\EARequestController::show
+ * @see app/Http/Controllers/EARequestController.php:82
+ * @route '/EAMonitoring/Request/{id}'
+ */
+        showForm.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\EARequestController::show
+ * @see app/Http/Controllers/EARequestController.php:82
+ * @route '/EAMonitoring/Request/{id}'
+ */
+        showForm.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    show.form = showForm
+/**
+* @see \App\Http\Controllers\EARequestController::edit
+ * @see app/Http/Controllers/EARequestController.php:92
+ * @route '/EAMonitoring/Request/{id}/edit'
+ */
+export const edit = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: edit.url(args, options),
+    method: 'get',
+})
+
+edit.definition = {
+    methods: ["get","head"],
+    url: '/EAMonitoring/Request/{id}/edit',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\EARequestController::edit
+ * @see app/Http/Controllers/EARequestController.php:92
+ * @route '/EAMonitoring/Request/{id}/edit'
+ */
+edit.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { id: args }
+    }
+
+    
+    if (Array.isArray(args)) {
+        args = {
+                    id: args[0],
+                }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+                        id: args.id,
+                }
+
+    return edit.definition.url
+            .replace('{id}', parsedArgs.id.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\EARequestController::edit
+ * @see app/Http/Controllers/EARequestController.php:92
+ * @route '/EAMonitoring/Request/{id}/edit'
+ */
+edit.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: edit.url(args, options),
+    method: 'get',
+})
+/**
+* @see \App\Http\Controllers\EARequestController::edit
+ * @see app/Http/Controllers/EARequestController.php:92
+ * @route '/EAMonitoring/Request/{id}/edit'
+ */
+edit.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: edit.url(args, options),
+    method: 'head',
+})
+
+    /**
+* @see \App\Http\Controllers\EARequestController::edit
+ * @see app/Http/Controllers/EARequestController.php:92
+ * @route '/EAMonitoring/Request/{id}/edit'
+ */
+    const editForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: edit.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\EARequestController::edit
+ * @see app/Http/Controllers/EARequestController.php:92
+ * @route '/EAMonitoring/Request/{id}/edit'
+ */
+        editForm.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: edit.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\EARequestController::edit
+ * @see app/Http/Controllers/EARequestController.php:92
+ * @route '/EAMonitoring/Request/{id}/edit'
+ */
+        editForm.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: edit.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    edit.form = editForm
+/**
+* @see \App\Http\Controllers\EARequestController::update
+ * @see app/Http/Controllers/EARequestController.php:102
+ * @route '/EAMonitoring/Request/{id}'
+ */
+export const update = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+    url: update.url(args, options),
+    method: 'put',
+})
+
+update.definition = {
+    methods: ["put"],
+    url: '/EAMonitoring/Request/{id}',
+} satisfies RouteDefinition<["put"]>
+
+/**
+* @see \App\Http\Controllers\EARequestController::update
+ * @see app/Http/Controllers/EARequestController.php:102
+ * @route '/EAMonitoring/Request/{id}'
+ */
+update.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { id: args }
+    }
+
+    
+    if (Array.isArray(args)) {
+        args = {
+                    id: args[0],
+                }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+                        id: args.id,
+                }
+
+    return update.definition.url
+            .replace('{id}', parsedArgs.id.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\EARequestController::update
+ * @see app/Http/Controllers/EARequestController.php:102
+ * @route '/EAMonitoring/Request/{id}'
+ */
+update.put = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+    url: update.url(args, options),
+    method: 'put',
+})
+
+    /**
+* @see \App\Http\Controllers\EARequestController::update
+ * @see app/Http/Controllers/EARequestController.php:102
+ * @route '/EAMonitoring/Request/{id}'
+ */
+    const updateForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: update.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PUT',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\EARequestController::update
+ * @see app/Http/Controllers/EARequestController.php:102
+ * @route '/EAMonitoring/Request/{id}'
+ */
+        updateForm.put = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PUT',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    update.form = updateForm
+/**
 * @see \App\Http\Controllers\EARequestController::destroy
- * @see app/Http/Controllers/EARequestController.php:76
+ * @see app/Http/Controllers/EARequestController.php:133
  * @route '/EAMonitoring/Request/{id}'
  */
 export const destroy = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -227,7 +505,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\EARequestController::destroy
- * @see app/Http/Controllers/EARequestController.php:76
+ * @see app/Http/Controllers/EARequestController.php:133
  * @route '/EAMonitoring/Request/{id}'
  */
 destroy.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -255,7 +533,7 @@ destroy.url = (args: { id: string | number } | [id: string | number ] | string |
 
 /**
 * @see \App\Http\Controllers\EARequestController::destroy
- * @see app/Http/Controllers/EARequestController.php:76
+ * @see app/Http/Controllers/EARequestController.php:133
  * @route '/EAMonitoring/Request/{id}'
  */
 destroy.delete = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -265,7 +543,7 @@ destroy.delete = (args: { id: string | number } | [id: string | number ] | strin
 
     /**
 * @see \App\Http\Controllers\EARequestController::destroy
- * @see app/Http/Controllers/EARequestController.php:76
+ * @see app/Http/Controllers/EARequestController.php:133
  * @route '/EAMonitoring/Request/{id}'
  */
     const destroyForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -280,7 +558,7 @@ destroy.delete = (args: { id: string | number } | [id: string | number ] | strin
 
             /**
 * @see \App\Http\Controllers\EARequestController::destroy
- * @see app/Http/Controllers/EARequestController.php:76
+ * @see app/Http/Controllers/EARequestController.php:133
  * @route '/EAMonitoring/Request/{id}'
  */
         destroyForm.delete = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -296,7 +574,7 @@ destroy.delete = (args: { id: string | number } | [id: string | number ] | strin
     destroy.form = destroyForm
 /**
 * @see \App\Http\Controllers\EARequestController::bulkUpdate
- * @see app/Http/Controllers/EARequestController.php:85
+ * @see app/Http/Controllers/EARequestController.php:142
  * @route '/EAMonitoring/Request/bulk-update'
  */
 export const bulkUpdate = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -311,7 +589,7 @@ bulkUpdate.definition = {
 
 /**
 * @see \App\Http\Controllers\EARequestController::bulkUpdate
- * @see app/Http/Controllers/EARequestController.php:85
+ * @see app/Http/Controllers/EARequestController.php:142
  * @route '/EAMonitoring/Request/bulk-update'
  */
 bulkUpdate.url = (options?: RouteQueryOptions) => {
@@ -320,7 +598,7 @@ bulkUpdate.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\EARequestController::bulkUpdate
- * @see app/Http/Controllers/EARequestController.php:85
+ * @see app/Http/Controllers/EARequestController.php:142
  * @route '/EAMonitoring/Request/bulk-update'
  */
 bulkUpdate.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -330,7 +608,7 @@ bulkUpdate.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\EARequestController::bulkUpdate
- * @see app/Http/Controllers/EARequestController.php:85
+ * @see app/Http/Controllers/EARequestController.php:142
  * @route '/EAMonitoring/Request/bulk-update'
  */
     const bulkUpdateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -340,7 +618,7 @@ bulkUpdate.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\EARequestController::bulkUpdate
- * @see app/Http/Controllers/EARequestController.php:85
+ * @see app/Http/Controllers/EARequestController.php:142
  * @route '/EAMonitoring/Request/bulk-update'
  */
         bulkUpdateForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -349,6 +627,6 @@ bulkUpdate.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
         })
     
     bulkUpdate.form = bulkUpdateForm
-const EARequestController = { index, create, store, destroy, bulkUpdate }
+const EARequestController = { index, create, store, show, edit, update, destroy, bulkUpdate }
 
 export default EARequestController

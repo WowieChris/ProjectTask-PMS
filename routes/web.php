@@ -173,24 +173,16 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/seniorfieldassignment', [NavigationController::class, 'assignSeniorFieldGroup']);
     });
     //EA Monitoring
-    // Prefix all routes with EAMonitoring/Request
-    Route::prefix('EAMonitoring/Request')->name('EAMonitoring.request.')->group(function () {
-
-    // List all requests
-        Route::get('/', [EARequestController::class, 'index'])->name('index');
-
-    // Show form to create a new request
-        Route::get('/create', [EARequestController::class, 'create'])->name('create');
-
-    // Store new request
-        Route::post('/', [EARequestController::class, 'store'])->name('store');
-
-    // Delete a request
-        Route::delete('/{id}', [EARequestController::class, 'destroy'])->name('destroy');
-
-    // Bulk update selected requests
-        Route::post('/bulk-update', [EARequestController::class, 'bulkUpdate'])->name('bulk');
-    });
+    Route::prefix('EAMonitoring')->name('EAMonitoring.')->group(function () {
+        Route::get('/Request',                    [EARequestController::class, 'index'])->name('request.index');
+        Route::get('/Request/create',             [EARequestController::class, 'create'])->name('request.create');
+        Route::post('/Request',                   [EARequestController::class, 'store'])->name('request.store');
+        Route::get('/Request/{id}',               [EARequestController::class, 'show'])->name('request.show');
+        Route::get('/Request/{id}/edit',          [EARequestController::class, 'edit'])->name('request.edit');
+        Route::put('/Request/{id}',               [EARequestController::class, 'update'])->name('request.update');
+        Route::delete('/Request/{id}',            [EARequestController::class, 'destroy'])->name('request.destroy');
+        Route::post('/Request/bulk-update',       [EARequestController::class, 'bulkUpdate'])->name('request.bulk-update');
+});
      Route::prefix('EAMonitoring/HVA')->name('EAMonitoring.hva.')->group(function () {
 
         Route::get('/', [EAHVAController::class, 'index'])->name('index');
