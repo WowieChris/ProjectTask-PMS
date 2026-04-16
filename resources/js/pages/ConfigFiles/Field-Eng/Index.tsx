@@ -8,7 +8,8 @@ export default function EngineerAssignment({
     districts = [],
     engineers = [],
     areaAssignments = [],
-    editingDistrict
+    editingDistrict,
+    onClose,
 }: any) {
 
     const selectedDistrict = useMemo(() => {
@@ -145,7 +146,7 @@ export default function EngineerAssignment({
                                         <X size={14} className="text-muted-foreground" />
                                     </button>
                                 </div>
-
+                                
                                 {/* Summary */}
                                 <div className="px-5 py-4 space-y-3 max-h-72 overflow-y-auto">
 
@@ -272,6 +273,7 @@ export default function EngineerAssignment({
                                 </p>
                             </div>
                         </div>
+                        
                     </div>
 
                     <div className="flex-1 overflow-y-auto p-4 space-y-5">
@@ -439,11 +441,11 @@ export default function EngineerAssignment({
                     </div>
 
                     {/* Save footer */}
-                    <div className="px-4 py-3 border-t border-border bg-card/50 shrink-0">
+                    <div className="px-4 py-3 border-t border-border bg-card/50 shrink-0 flex gap-2">
                         <Button
                             onClick={() => setConfirmOpen(true)}
                             disabled={saving}
-                            className="w-full h-9 text-xs font-medium"
+                            className="w-2/3 h-9 text-xs font-medium"
                         >
                             {saving ? (
                                 <span className="flex items-center gap-2">
@@ -454,6 +456,12 @@ export default function EngineerAssignment({
                                     <Save size={12} /> Save Assignment
                                 </span>
                             )}
+                        </Button>
+                        <Button
+                            onClick={onClose}
+                            className="w-1/3 h-9 text-xs font-medium"
+                        >
+                            Cancel
                         </Button>
                     </div>
                 </motion.div>
