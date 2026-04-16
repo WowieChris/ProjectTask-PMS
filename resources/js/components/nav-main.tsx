@@ -13,6 +13,7 @@ import {
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 
+
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import type { NavItem } from '@/types';
 
@@ -79,21 +80,51 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                     </CollapsibleTrigger>
 
                     <CollapsibleContent>
-                      <SidebarMenuSub>
-                        {item.children!.map((child) => (
-                          <SidebarMenuSubItem key={child.title}>
-                            <SidebarMenuSubButton
-                              asChild
-                              isActive={!!child.href && isCurrentUrl(child.href)}
-                            >
-                              <Link href={child.href ?? '#'} prefetch>
-                                <span>{child.title}</span>
-                              </Link>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
+  <SidebarMenuSub>
+    {item.children!.map((child) => (
+      <SidebarMenuSubItem key={child.title}>
+        {child.children ? (
+          // 👇 Child has its own children — render a nested collapsible
+          <Collapsible defaultOpen={child.children.some(gc => !!gc.href && isCurrentUrl(gc.href))}>
+            <CollapsibleTrigger asChild>
+              <SidebarMenuSubButton isActive={!!child.href && isCurrentUrl(child.href)}>
+                <span>{child.title}</span>
+                <ChevronDown className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+              </SidebarMenuSubButton>
+            </CollapsibleTrigger>
+
+            <CollapsibleContent>
+              <SidebarMenuSub className="pl-4 border-l border-border/50 ml-3">
+                {child.children.map((grandchild) => (
+                  <SidebarMenuSubItem key={grandchild.title}>
+                    <SidebarMenuSubButton
+                      asChild
+                      isActive={!!grandchild.href && isCurrentUrl(grandchild.href)}
+                    >
+                      <Link href={grandchild.href ?? '#'} prefetch>
+                        <span>{grandchild.title}</span>
+                      </Link>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                ))}
+              </SidebarMenuSub>
+            </CollapsibleContent>
+          </Collapsible>
+        ) : (
+          // 👇 No children — render normally like before
+          <SidebarMenuSubButton
+            asChild
+            isActive={!!child.href && isCurrentUrl(child.href)}
+          >
+            <Link href={child.href ?? '#'} prefetch>
+              <span>{child.title}</span>
+            </Link>
+          </SidebarMenuSubButton>
+        )}
+      </SidebarMenuSubItem>
+    ))}
+  </SidebarMenuSub>
+</CollapsibleContent>
                   </SidebarMenuItem>
                 </Collapsible>
               );

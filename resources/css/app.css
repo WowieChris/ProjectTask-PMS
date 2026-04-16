@@ -172,7 +172,7 @@
 .mondstadt {
     --background: #e8faf8;
     --foreground: #0d3d38;
-    --card: #ffffff;
+    --card: #85c7bf;
     --card-foreground: #0d3d38;
     --popover: #ffffff;
     --popover-foreground: #0d3d38;
@@ -194,7 +194,7 @@
     --chart-3: #00d4d4;
     --chart-4: #00bcd4;
     --chart-5: #80deea;
-    --sidebar: #ffffff;
+    --sidebar: #e5eeec;
     --sidebar-foreground: #0d3d38;
     --sidebar-primary: #0066cc;
     --sidebar-primary-foreground: #ffffff;
