@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('ea_requests', function (Blueprint $table) {
@@ -18,6 +15,7 @@ return new class extends Migration
             $table->string('department')->nullable();
             $table->string('request_title');
             $table->string('request_type');
+            $table->text('item_requested')->nullable();  // ← added
             $table->date('date_received');
             $table->string('srf_number')->nullable();
             $table->string('status')->default('Pending');
@@ -25,9 +23,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('ea_requests');
