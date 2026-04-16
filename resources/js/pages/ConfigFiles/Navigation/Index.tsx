@@ -276,14 +276,6 @@ export default function App() {
               >
                 View Transfer Logs
               </Button>
-
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => router.get('/navigation/EngineerTransferLogs')}
-              >
-                Engineer Transfer Logs
-              </Button>
             </div>
 
             {/* Move banner */}
@@ -410,10 +402,17 @@ export default function App() {
 
           {/* ── RIGHT: Engineer Assignment ── */}
           <div className="shrink-0 col-span-2 flex flex-col overflow-hidden">
-            <div className="px-4 py-3 border-b border-border bg-card/30 shrink-0">
+            <div className="px-4 py-2 border-b border-border bg-card/30 shrink-0 justify-between items-center flex">
               <span className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
                 Engineer Assignment
               </span>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => router.get('/navigation/EngineerTransferLogs')}
+              >
+                Engineer Transfer Logs
+              </Button>
             </div>
             <div className="flex-1 overflow-y-auto">
               <EngineerAssignment
@@ -421,6 +420,7 @@ export default function App() {
                 engineers={engineers}
                 areaAssignments={areaAssignments}
                 editingDistrict={editingDistrict}
+                onClose={() => setEditingDistrict(null)}
               />
             </div>
           </div>
