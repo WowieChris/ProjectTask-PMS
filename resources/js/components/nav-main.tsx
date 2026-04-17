@@ -12,10 +12,12 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
-
+import { useState } from 'react';
 
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import type { NavItem } from '@/types';
+
+
 
 export function NavMain({ items = [] }: { items: NavItem[] }) {
   const { isCurrentUrl } = useCurrentUrl();
@@ -47,7 +49,10 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
 
               const isActive =
                 (item.href ? isCurrentUrl(item.href) : false) ||
-                (item.children?.some((c) => c.href && isCurrentUrl(c.href)) ?? false);
+                (item.children?.some((c) =>
+                  (c.href && isCurrentUrl(c.href)) ||
+                  c.children?.some(gc => !!gc.href && isCurrentUrl(gc.href)) // 👈 check grandchildren too
+                ) ?? false);
 
               // ✅ SINGLE LINK
               if (!hasChildren) {
@@ -93,7 +98,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
               </SidebarMenuSubButton>
             </CollapsibleTrigger>
 
-            <CollapsibleContent>
+             <CollapsibleContent>
               <SidebarMenuSub className="pl-4 border-l border-border/50 ml-3">
                 {child.children.map((grandchild) => (
                   <SidebarMenuSubItem key={grandchild.title}>
@@ -111,7 +116,6 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
             </CollapsibleContent>
           </Collapsible>
         ) : (
-          // 👇 No children — render normally like before
           <SidebarMenuSubButton
             asChild
             isActive={!!child.href && isCurrentUrl(child.href)}
