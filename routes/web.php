@@ -84,12 +84,15 @@ Route::middleware(['auth'])->group(function () {
         //District routes
         Route::get('/districts', [DistrictController::class, 'index'])->name('districts.index');
         Route::post('/districts', [DistrictController::class, 'store']);
+        Route::post('/districts', [DistrictController::class, 'update']);
+
         Route::delete('/districts/{district}', [DistrictController::class, 'destroy']);
         Route::resource('districts', DistrictController::class);
 
         //Division routes
         Route::resource('divisions', DivisionController::class);
         Route::post('/divisions', [DivisionController::class, 'store']);
+        Route::post('/divisions', [DivisionController::class, 'update']);
         Route::delete('/divisions/{division}', [DivisionController::class, 'destroy']);
         //Area routes
         Route::get('/areas', [AreaController::class, 'index']);
@@ -190,8 +193,8 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/Request/{id}',               [EARequestController::class, 'update'])->name('request.update');
         Route::delete('/Request/{id}',            [EARequestController::class, 'destroy'])->name('request.destroy');
         Route::post('/Request/bulk-update',       [EARequestController::class, 'bulkUpdate'])->name('request.bulk-update');
-});
-     Route::prefix('EAMonitoring/HVA')->name('EAMonitoring.hva.')->group(function () {
+    });
+    Route::prefix('EAMonitoring/HVA')->name('EAMonitoring.hva.')->group(function () {
 
         Route::get('/', [EAHVAController::class, 'index'])->name('index');
         Route::post('/', [EAHVAController::class, 'store'])->name('store');

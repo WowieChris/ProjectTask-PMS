@@ -52,13 +52,26 @@ class DistrictController extends Controller
             'divisions' => Division::with('userGroup')->get(),
         ]);
 
-        $districts = District::with(['division.userGroup'])->get();
+        // $districts = District::with(['division.userGroup'])->get();
 
-        $divisions = Division::all();
+        // $divisions = Division::all();
 
         return Inertia::render('Districts/Index', [
             'districts' => $districts,
             'divisions' => $divisions,
         ]);
+    }
+
+    public function update(Request $request, District $district)
+    {
+
+        $data = $request->validate([
+            'division_id' => ['required', 'exists:divisions,id'],
+            'name'        => ['required', 'string', 'max:255'],
+            'address'     => ['required', 'string', 'max:255'],
+        ]);
+        $district->update($data);
+
+        return back()->with('success', 'District updated.');
     }
 }
