@@ -8,7 +8,7 @@ use Inertia\Inertia;
 
 class Area extends Model
 {
-    protected $fillable = ['name', 'district_id'];
+    protected $fillable = ['name', 'district_id', 'address'];
 
     public function branches(): HasMany
     {
