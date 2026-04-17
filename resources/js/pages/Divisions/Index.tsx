@@ -39,6 +39,7 @@ type Division = {
   name: string;
   user_group_id: number;
   user_group?: UserGroup;
+  address: string;
 };
 
 type PageProps = {
@@ -49,6 +50,7 @@ type PageProps = {
 interface DivisionForm {
   user_group_id: string;
   name: string;
+  address: string;
 }
 
 
@@ -61,10 +63,10 @@ export default function DivisionIndex({ userGroups, divisions }: PageProps) {
 
   // ── CREATE form ──
   const { data, setData, post, processing, errors, reset } =
-    useForm<DivisionForm>({ user_group_id: "", name: "" });
+    useForm<DivisionForm>({ user_group_id: "", name: "", address: "", });
 
   // ── EDIT form ──
-  const editForm = useForm<DivisionForm>({ user_group_id: "", name: "" });
+  const editForm = useForm<DivisionForm>({ user_group_id: "", name: "", address: "", });
 
   const filtered = useMemo(() => {
     const query = q.toLowerCase();
@@ -79,7 +81,7 @@ export default function DivisionIndex({ userGroups, divisions }: PageProps) {
     e.preventDefault();
     post("/divisions", {
       onSuccess: () => {
-        reset("user_group_id", "name");
+        reset("user_group_id", "name", "address");
         setAddOpen(false); // ← add this
       },
     });
@@ -95,6 +97,7 @@ export default function DivisionIndex({ userGroups, divisions }: PageProps) {
     editForm.setData({
       user_group_id: String(d.user_group_id),
       name: d.name,
+      address: d.address,
     });
   };
 
@@ -230,6 +233,7 @@ export default function DivisionIndex({ userGroups, divisions }: PageProps) {
               <TableHeader className="bg-muted/30">
                 <TableRow>
                   <TableHead className="pl-6">Division</TableHead>
+                  <TableHead>Address</TableHead>
                   <TableHead>User Group</TableHead>
                   <TableHead className="text-right pr-6">Actions</TableHead>
                 </TableRow>
@@ -245,6 +249,7 @@ export default function DivisionIndex({ userGroups, divisions }: PageProps) {
                   filtered.map((d) => (
                     <TableRow key={d.id} className="hover:bg-muted/40 transition">
                       <TableCell className="pl-6 font-medium">{d.name}</TableCell>
+                      <TableCell className="pl-6 font-medium">{d.address}</TableCell>
                       <TableCell>
                         <span
                           className={`px-3 py-1 text-xs rounded-full ${badgeColor(d.user_group?.name)}`}
@@ -317,6 +322,18 @@ export default function DivisionIndex({ userGroups, divisions }: PageProps) {
               />
               {editForm.errors.name && (
                 <p className="text-sm text-red-500">{editForm.errors.name}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Address</label>
+              <Input
+                value={editForm.data.address}
+                onChange={(e) => editForm.setData("address", e.target.value)}
+                placeholder="e.g. Cities"
+              />
+              {editForm.errors.name && (
+                <p className="text-sm text-red-500">{editForm.errors.address}</p>
               )}
             </div>
 

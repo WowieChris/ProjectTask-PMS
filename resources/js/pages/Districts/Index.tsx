@@ -31,12 +31,14 @@ import AppLayout from "@/layouts/app-layout";
 type UserGroup = {
   id: number;
   name: string;
+  address: string;
 };
 
 type Division = {
   id: number;
   name: string;
   user_group?: UserGroup;
+
 };
 
 type District = {
@@ -44,6 +46,8 @@ type District = {
   name: string;
   division_id: number;
   division?: Division;
+  address: string;
+
 };
 
 type PageProps = {
@@ -60,12 +64,14 @@ export default function DistrictIndex({ divisions = [], districts = [] }: PagePr
   const { data, setData, post, processing, errors, reset } = useForm({
     division_id: "",
     name: "",
+    address: "",
   });
 
   // ── EDIT form ──
   const editForm = useForm({
     division_id: "",
     name: "",
+    address: "",
   });
 
   const filtered = useMemo(() => {
@@ -74,7 +80,8 @@ export default function DistrictIndex({ divisions = [], districts = [] }: PagePr
       (d) =>
         d.name.toLowerCase().includes(query) ||
         d.division?.name?.toLowerCase().includes(query) ||
-        d.division?.user_group?.name?.toLowerCase().includes(query)
+        d.division?.user_group?.name?.toLowerCase().includes(query) ||
+        d.address?.toLowerCase().includes(query)
     );
   }, [districts, q]);
 
@@ -82,7 +89,7 @@ export default function DistrictIndex({ divisions = [], districts = [] }: PagePr
     e.preventDefault();
     post("/districts", {
       onSuccess: () => {
-        reset("division_id", "name");
+        reset("division_id", "name", "address");
         setAddOpen(false);
       },
     });
@@ -98,6 +105,7 @@ export default function DistrictIndex({ divisions = [], districts = [] }: PagePr
     editForm.setData({
       division_id: String(d.division_id),
       name: d.name,
+      address: d.address,
     });
   };
 
@@ -178,6 +186,8 @@ export default function DistrictIndex({ divisions = [], districts = [] }: PagePr
                   <TableHead className="pl-6">District</TableHead>
                   <TableHead>Division</TableHead>
                   <TableHead>User Group</TableHead>
+                  <TableHead>Address</TableHead>
+
                   <TableHead className="text-right pr-6">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -203,6 +213,12 @@ export default function DistrictIndex({ divisions = [], districts = [] }: PagePr
                       <TableCell>
                         <span className={`px-3 py-1 text-xs rounded-full ${badgeColor(d.division?.user_group?.name)}`}>
                           {d.division?.user_group?.name ?? "No Group"}
+                        </span>
+                      </TableCell>
+
+                      <TableCell>
+                        <span className={`px-3 py-1 text-xs rounded-full ${badgeColor(d.address)}`}>
+                          {d.address ?? "No Address"}
                         </span>
                       </TableCell>
 
@@ -328,6 +344,18 @@ export default function DistrictIndex({ divisions = [], districts = [] }: PagePr
               />
               {editForm.errors.name && (
                 <p className="text-sm text-red-500">{editForm.errors.name}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Address</label>
+              <Input
+                value={editForm.data.address}
+                onChange={(e) => editForm.setData("address", e.target.value)}
+                placeholder="e.g. Cities"
+              />
+              {editForm.errors.address && (
+                <p className="text-sm text-red-500">{editForm.errors.address}</p>
               )}
             </div>
 

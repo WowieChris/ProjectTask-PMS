@@ -24,6 +24,7 @@ class DivisionController extends Controller
         $data = $request->validate([
             'user_group_id' => ['required', 'exists:user_groups,id'],
             'name' => ['required', 'string', 'max:255'],
+
         ]);
 
         Division::create($data);
@@ -36,5 +37,18 @@ class DivisionController extends Controller
         $division->delete();
 
         return back()->with('success', 'Division deleted.');
+    }
+
+    public function update(Request $request, Division $division)
+    {
+        $data = $request->validate([
+            'user_group_id' => ['required', 'exists:user_groups,id'],
+            'name' => ['required', 'string', 'max:255'],
+            'address' => ['required', 'string', 'max:255']
+        ]);
+
+        $division->update($data);
+
+        return back()->with('success', 'Division updated.');
     }
 }

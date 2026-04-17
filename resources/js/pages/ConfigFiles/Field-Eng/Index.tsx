@@ -58,18 +58,31 @@ export default function EngineerAssignment({
             setAreaOverrides({ ...areaOverrides, [areaId]: value || null });
         }
     };
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!selectedDistrict) return;
         setSaving(true);
         setConfirmOpen(false);
+        await playSound(); // ← await now
         router.post('/ConfigFiles/Field-Eng', {
             district_id: selectedDistrict.id,
             base_engineer: baseEngineer,
-            overrides: areaOverrides, // sends {} when base changed → clears DB overrides
+            overrides: areaOverrides,
         }, {
             onFinish: () => setSaving(false),
         });
     };
+
+    const playSound = useCallback(async () => {
+        const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const response = await fetch('/Sounds/cartoon-laugh.wav');
+        const arrayBuffer = await response.arrayBuffer();
+        const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+
+        const source = ctx.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(ctx.destination);
+        source.start();
+    }, []);
 
     const overrideCount = Object.values(areaOverrides).filter(Boolean).length;
 
@@ -146,7 +159,7 @@ export default function EngineerAssignment({
                                         <X size={14} className="text-muted-foreground" />
                                     </button>
                                 </div>
-                                
+
                                 {/* Summary */}
                                 <div className="px-5 py-4 space-y-3 max-h-72 overflow-y-auto">
 
@@ -273,7 +286,7 @@ export default function EngineerAssignment({
                                 </p>
                             </div>
                         </div>
-                        
+
                     </div>
 
                     <div className="flex-1 overflow-y-auto p-4 space-y-5">
