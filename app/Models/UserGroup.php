@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class UserGroup extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'base_office'];
 
     public function areas(): HasMany
     {

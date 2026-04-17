@@ -159,13 +159,17 @@ class UserGroupController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:user_groups,name'],
+        $request->validate([
+            'name' => 'required',
+            'base_office' => 'nullable|string',
         ]);
 
-        UserGroup::create($data);
+        UserGroup::create([
+            'name' => $request->name,
+            'base_office' => $request->base_office,
+        ]);
 
-        return back()->with('success', 'User Group saved.');
+        return back()->with(['success']);
     }
 
     public function destroy(UserGroup $userGroup)
@@ -187,5 +191,20 @@ class UserGroupController extends Controller
         $user->save();
 
         return back()->with('success', 'Assigned successfully');
+    }
+
+    public function update(Request $request, UserGroup $userGroup)
+    {
+        $request->validate([
+            'name' => 'required',
+            'base_office' => 'nullable|string',
+        ]);
+
+        $userGroup->update([
+            'name' => $request->name,
+            'base_office' => $request->base_office,
+        ]);
+
+        return back();
     }
 }
