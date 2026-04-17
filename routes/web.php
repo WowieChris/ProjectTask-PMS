@@ -96,6 +96,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/divisions/{division}', [DivisionController::class, 'destroy']);
         //Area routes
         Route::get('/areas', [AreaController::class, 'index']);
+        Route::post('/areas/update', [AreaController::class, 'update']);
         Route::get('/areas/{area}', [AreaController::class, 'show']);
         Route::get('/areas/{area}/divisions/{division}', [AreaController::class, 'division']);
         Route::get('/areas', [AreaController::class, 'index'])->name('areas.index');
