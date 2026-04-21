@@ -15,6 +15,7 @@ use App\Models\DistrictEngineer;
 use Illuminate\Support\Facades\DB;
 use App\Models\LocationTransferLog;
 use App\Models\EngineerMovementLog;  // ✅ correct model
+use App\Models\ScheduledEngineerTransfer;
 use Illuminate\Support\Facades\Auth;
 
 class NavigationController extends Controller
@@ -230,17 +231,17 @@ class NavigationController extends Controller
     //     ]);
     // }
 
+
     public function engineerTransferLogs()
     {
         $logs = EngineerMovementLog::orderByDesc('created_at')->get();
 
-        // ✅ LOAD AREAS WITH DISTRICT
         $areas = Area::with('district')->get();
 
         $allUsers = User::with('photo')->get();
 
         $usersByFirstName = $allUsers->keyBy(fn($user) => trim($user->name));
-        $usersByFullName = $allUsers->keyBy(fn($user) => trim($user->name . ' ' . $user->last_name));
+        $usersByFullName  = $allUsers->keyBy(fn($user) => trim($user->name . ' ' . $user->last_name));
 
         $resolvePhoto = function (?string $name) use ($usersByFirstName, $usersByFullName): ?string {
             if (!$name || $name === '—') return null;
@@ -249,8 +250,6 @@ class NavigationController extends Controller
         };
 
         $mapped = $logs->map(function ($log) use ($areas, $resolvePhoto) {
-
-            // ✅ MATCH AREA (safe match)
             $area = $areas->first(
                 fn($a) =>
                 str_replace(' ', '', strtolower($a->name)) ===
@@ -258,26 +257,44 @@ class NavigationController extends Controller
             );
 
             return [
-                'id'                => $log->id,
-                'area_name'         => $log->area_name,
-
-                // ✅ THIS IS THE FIX
-                'district'          => $area?->district?->name,
-
-                'previous_engineer' => $log->previous_engineer,
-                'new_engineer'      => $log->new_engineer,
-                'assigned_by'       => $log->assigned_by,
-                'effectivity_date'  => $log->effectivity_date,
-                'created_at'        => $log->created_at,
-
+                'id'                      => $log->id,
+                'area_name'               => $log->area_name,
+                'district'                => $area?->district?->name,
+                'previous_engineer'       => $log->previous_engineer,
+                'new_engineer'            => $log->new_engineer,
+                'assigned_by'             => $log->assigned_by,
+                'effectivity_date'        => $log->effectivity_date,
+                'created_at'              => $log->created_at,
                 'previous_engineer_photo' => $resolvePhoto($log->previous_engineer),
                 'new_engineer_photo'      => $resolvePhoto($log->new_engineer),
                 'assigned_by_photo'       => $resolvePhoto($log->assigned_by),
             ];
         });
 
+        // ✅ FIXED: only pass pending transfers — applied/cancelled are irrelevant to the badge
+        $scheduledTransfers = ScheduledEngineerTransfer::with(['engineer', 'district', 'area'])
+            ->where('status', 'pending')          // ← was missing the filter before
+            ->orderBy('scheduled_at')
+            ->get()
+            ->map(fn($t) => [
+                'id'            => $t->id,
+                'engineer_id'   => $t->engineer_id,
+                'engineer_name' => trim(($t->engineer?->name ?? '') . ' ' . ($t->engineer?->last_name ?? '')),
+                'district_id'   => $t->district_id,
+                'district_name' => $t->district?->name,
+                'area_id'       => $t->area_id,
+                'area_name'     => $t->area?->name,
+                'scheduled_at'  => $t->scheduled_at->toIso8601String(),
+                'status'        => $t->status,
+                'scheduled_by'  => $t->scheduled_by,
+                'notes'         => $t->notes,
+                'applied_at'    => $t->applied_at?->toIso8601String(),
+                'applied_by'    => $t->applied_by,
+            ]);
+
         return Inertia::render('ConfigFiles/Navigation/EngineerTransferLogs', [
-            'logs' => $mapped,
+            'logs'               => $mapped,
+            'scheduledTransfers' => $scheduledTransfers,
         ]);
     }
     public function assignSeniorFieldGroup(Request $request)

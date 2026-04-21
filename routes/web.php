@@ -23,6 +23,7 @@ use App\Http\Controllers\SeniorFieldAssignmentController;
 use App\Http\Controllers\NavigationController;
 use App\Http\Controllers\EARequestController;
 use App\Http\Controllers\EAHVAController;
+use App\Http\Controllers\ScheduledTransferController;
 
 
 Route::get('/', function () {
@@ -205,4 +206,37 @@ Route::middleware(['auth'])->group(function () {
 
 
     //Route::post('/assign-senior-field-usergroup', [UserController::class, 'assignUserGroup']);
+//scheduled engineer transfers
+    Route::prefix('ConfigFiles/Field-Eng')->middleware(['auth'])->group(function () {
+ 
+    // List scheduled transfers for a district (AJAX / Inertia)
+    Route::get('/scheduled',           [ScheduledTransferController::class, 'index'])->name('scheduled-transfers.index');
+ 
+    // Create a new scheduled transfer
+    Route::post('/scheduled',          [ScheduledTransferController::class, 'store'])->name('scheduled-transfers.store');
+ 
+    // Manually apply a pending transfer
+    Route::post('/scheduled/{scheduledTransfer}/apply',  [ScheduledTransferController::class, 'apply'])->name('scheduled-transfers.apply');
+ 
+    // Cancel a pending transfer
+    Route::post('/scheduled/{scheduledTransfer}/cancel', [ScheduledTransferController::class, 'cancel'])->name('scheduled-transfers.cancel');
+ 
 });
+Route::middleware(['auth'])->group(function () {
+ 
+    // Create a scheduled transfer (called from the confirm modal)
+    Route::post('/ConfigFiles/Field-Eng/scheduled', [ScheduledTransferController::class, 'store'])
+        ->name('scheduled-transfers.store');
+ 
+    // Manually apply a pending transfer (called from the pending panel)
+    Route::post('/ConfigFiles/Field-Eng/scheduled/{scheduledTransfer}/apply', [ScheduledTransferController::class, 'apply'])
+        ->name('scheduled-transfers.apply');
+ 
+    // Cancel a pending transfer
+    Route::post('/ConfigFiles/Field-Eng/scheduled/{scheduledTransfer}/cancel', [ScheduledTransferController::class, 'cancel'])
+        ->name('scheduled-transfers.cancel');
+ 
+});
+}
+
+);
