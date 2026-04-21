@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ScheduledEngineerTransfer; // ✅ was missing
 use App\Models\District;
 use App\Models\User;
 use App\Models\Area;
@@ -27,9 +28,28 @@ class EngineerAssignmentController extends Controller
         $areaAssignments = AreaEngineer::all();
 
         return Inertia::render('ConfigFiles/Field-Eng/Index', [
-            'districts'       => $districts,
-            'engineers'       => $engineers,
-            'areaAssignments' => $areaAssignments,
+            'districts'          => $districts,
+            'engineers'          => $engineers,
+            'areaAssignments'    => $areaAssignments,
+            'scheduledTransfers' => ScheduledEngineerTransfer::with(['engineer', 'area', 'district'])
+                ->where('status', 'pending')
+                ->orderBy('scheduled_at')
+                ->get()
+                ->map(fn($t) => [
+                    'id'            => $t->id,
+                    'engineer_id'   => $t->engineer_id,
+                    'engineer_name' => $t->engineer?->name,
+                    'district_id'   => $t->district_id,
+                    'district_name' => $t->district?->name,
+                    'area_id'       => $t->area_id,
+                    'area_name'     => $t->area?->name,
+                    'scheduled_at'  => $t->scheduled_at->toIso8601String(),
+                    'status'        => $t->status,
+                    'notes'         => $t->notes,
+                    'scheduled_by'  => $t->scheduled_by,
+                    'applied_at'    => $t->applied_at?->toIso8601String(),
+                    'applied_by'    => $t->applied_by,
+                ]),
         ]);
     }
 
@@ -63,27 +83,22 @@ class EngineerAssignmentController extends Controller
 
                 $overrides = $request->overrides ?? [];
 
-                // ✅ STEP 1: Get previous per-area assignment BEFORE deleting
+                // STEP 1: Get previous per-area assignment BEFORE deleting
                 $previousAssignments = [];
-
                 foreach ($areas as $area) {
                     $override = AreaEngineer::where('area_id', $area->id)->first();
-
                     $previousAssignments[$area->id] = $override
                         ? $override->user_id
                         : $previousEngineer?->user_id;
                 }
 
-                // ✅ STEP 2: NOW delete old overrides
+                // STEP 2: Delete old overrides
                 AreaEngineer::whereIn('area_id', $areaIds)->delete();
 
-                // ✅ STEP 3: Process new assignments
+                // STEP 3: Process new assignments
                 foreach ($areas as $area) {
-
                     $overrideUserId = $overrides[$area->id] ?? null;
-
-                    $newUserId = $overrideUserId ?: $request->base_engineer;
-
+                    $newUserId      = $overrideUserId ?: $request->base_engineer;
                     $previousUserId = $previousAssignments[$area->id] ?? null;
 
                     if ($overrideUserId) {
@@ -93,7 +108,6 @@ class EngineerAssignmentController extends Controller
                         ]);
                     }
 
-                    // ✅ NOW this will work correctly
                     if ($previousUserId != $newUserId) {
                         EngineerMovementLog::create([
                             'area_name'         => $area->name,
@@ -119,7 +133,6 @@ class EngineerAssignmentController extends Controller
             $areaName   = $request->area_name;
             $overrideId = $request->override_user_id;
 
-            // Get previous engineer for this area
             $previous     = AreaEngineer::with('user')->where('area_id', $areaId)->first();
             $previousName = $previous?->user?->name ?? '—';
 
@@ -127,7 +140,6 @@ class EngineerAssignmentController extends Controller
                 ? User::find($overrideId)?->name ?? '—'
                 : User::find($request->base_engineer)?->name ?? '—';
 
-            // ✅ ONLY log — do NOT touch area_engineers
             EngineerMovementLog::create([
                 'area_name'         => $areaName,
                 'previous_engineer' => $previousName,
@@ -142,16 +154,12 @@ class EngineerAssignmentController extends Controller
         }
     }
 
+    
     public function logs()
     {
+        $movementLogs = EngineerMovementLog::orderByDesc('created_at')->get();
 
-        $logs = EngineerMovementLog::orderByDesc('created_at')->get();
-
-        // ✅ preload areas with district
-        $areas = Area::with('district')->get()->keyBy('name');
-
-
-        $allNames = $logs->flatMap(fn($log) => [
+        $allNames = $movementLogs->flatMap(fn($log) => [
             $log->previous_engineer,
             $log->new_engineer,
         ])->filter(fn($n) => $n && $n !== '—')->unique()->values();
@@ -164,13 +172,10 @@ class EngineerAssignmentController extends Controller
 
         $usersByFirstName = $users->keyBy('name');
 
+        $mapped = $movementLogs->map(fn($log) => [
+            'id'        => $log->id,
+            'area_name' => $log->area_name,
 
-        $mapped = $logs->map(fn($log) => [
-
-            'id'                => $log->id,
-            'area_name'         => $log->area_name,
-
-            // ✅ THIS LINE FIXES EVERYTHING
             'district' => optional(
                 Area::whereRaw('REPLACE(LOWER(name), " ", "") = ?', [
                     str_replace(' ', '', strtolower($log->area_name))
@@ -190,11 +195,32 @@ class EngineerAssignmentController extends Controller
             'new_engineer_photo' => ($users[$log->new_engineer]
                 ?? $usersByFirstName[$log->new_engineer]
                 ?? null)?->photo?->path,
-
         ]);
 
+        // ✅ Pass pending scheduled transfers so the logs page can show the badge
+        $scheduledTransfers = ScheduledEngineerTransfer::with(['engineer', 'area', 'district'])
+            ->where('status', 'pending')
+            ->orderBy('scheduled_at')
+            ->get()
+            ->map(fn($t) => [
+                'id'            => $t->id,
+                'engineer_id'   => $t->engineer_id,
+                'engineer_name' => $t->engineer?->name,
+                'district_id'   => $t->district_id,
+                'district_name' => $t->district?->name,
+                'area_id'       => $t->area_id,
+                'area_name'     => $t->area?->name,
+                'scheduled_at'  => $t->scheduled_at->toIso8601String(),
+                'status'        => $t->status,
+                'notes'         => $t->notes,
+                'scheduled_by'  => $t->scheduled_by,
+            ]);
+
+            
         return Inertia::render('Navigation/EngineerTransferLogs', [
-            'logs' => $mapped,
+            
+            'logs'               => $mapped,
+            'scheduledTransfers' => $scheduledTransfers,
         ]);
     }
 }

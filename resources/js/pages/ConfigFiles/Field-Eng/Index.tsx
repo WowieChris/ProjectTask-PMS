@@ -1,16 +1,23 @@
 import { router } from "@inertiajs/react";
-import { MapPin, User, ChevronDown, Save, RefreshCw, AlertTriangle, X } from "lucide-react";
+import { MapPin, User, ChevronDown, Save, RefreshCw, AlertTriangle, X, Clock, CalendarPlus } from "lucide-react";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
 
+// ✅ ScheduleTransferPanel import removed — scheduling is now inside the confirm modal
+
 export default function EngineerAssignment({
-    districts = [],
-    engineers = [],
-    areaAssignments = [],
+    districts,
+    engineers,
+    areaAssignments,
+    scheduledTransfers,
     editingDistrict,
-    onClose,
+    onClose
 }: any) {
+    districts = districts || [];
+    engineers = engineers || [];
+    areaAssignments = areaAssignments || [];
+    scheduledTransfers = scheduledTransfers || [];
 
     const selectedDistrict = useMemo(() => {
         return editingDistrict
@@ -22,6 +29,17 @@ export default function EngineerAssignment({
     const [areaOverrides, setAreaOverrides] = useState<any>({});
     const [saving, setSaving] = useState(false);
     const [confirmOpen, setConfirmOpen] = useState(false);
+
+    // ── Scheduling state ──────────────────────────────────────────
+    const [scheduleMode, setScheduleMode] = useState(false);
+    const [scheduledAt, setScheduledAt] = useState("");
+    const [scheduleNotes, setScheduleNotes] = useState("");
+
+    const minDateTime = () => {
+        const d = new Date();
+        d.setMinutes(d.getMinutes() + 1);
+        return d.toISOString().slice(0, 16);
+    };
 
     useEffect(() => {
         if (!selectedDistrict) return;
@@ -35,6 +53,15 @@ export default function EngineerAssignment({
         setBaseEngineer(newBaseEngineer);
         setAreaOverrides(newOverrides);
     }, [selectedDistrict, areaAssignments]);
+
+    // Reset schedule fields whenever the modal closes
+    useEffect(() => {
+        if (!confirmOpen) {
+            setScheduleMode(false);
+            setScheduledAt("");
+            setScheduleNotes("");
+        }
+    }, [confirmOpen]);
 
     const getEngineerName = useCallback((engineerId: string) => {
         return engineers.find((e: any) => e.id == engineerId)?.name || "";
@@ -51,22 +78,39 @@ export default function EngineerAssignment({
     };
 
     const handleAreaOverrideChange = (areaId: string, value: string) => {
-        // If selected engineer is same as base, clear the override
         if (value && value == baseEngineer) {
             setAreaOverrides({ ...areaOverrides, [areaId]: null });
         } else {
             setAreaOverrides({ ...areaOverrides, [areaId]: value || null });
         }
     };
+
+    // ── Immediate save ────────────────────────────────────────────
     const handleSave = async () => {
         if (!selectedDistrict) return;
         setSaving(true);
         setConfirmOpen(false);
-        await playSound(); // ← await now
+        await playSound();
         router.post('/ConfigFiles/Field-Eng', {
             district_id: selectedDistrict.id,
             base_engineer: baseEngineer,
             overrides: areaOverrides,
+        }, {
+            onFinish: () => setSaving(false),
+        });
+    };
+
+    // ── Schedule save ─────────────────────────────────────────────
+    const handleSchedule = () => {
+        if (!selectedDistrict || !scheduledAt) return;
+        setSaving(true);
+        setConfirmOpen(false);
+        router.post('/ConfigFiles/Field-Eng/scheduled', {
+            district_id:   selectedDistrict.id,
+            base_engineer: baseEngineer,
+            overrides:     areaOverrides,
+            scheduled_at:  scheduledAt,
+            notes:         scheduleNotes || null,
         }, {
             onFinish: () => setSaving(false),
         });
@@ -77,7 +121,6 @@ export default function EngineerAssignment({
         const response = await fetch('/Sounds/cartoon-laugh.wav');
         const arrayBuffer = await response.arrayBuffer();
         const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
-
         const source = ctx.createBufferSource();
         source.buffer = audioBuffer;
         source.connect(ctx.destination);
@@ -99,7 +142,7 @@ export default function EngineerAssignment({
         }) ?? [];
     }, [selectedDistrict, areaOverrides, baseEngineer, getEngineerName]);
 
-    // ── Empty state ──
+    // ── Empty state ───────────────────────────────────────────────
     if (!selectedDistrict) {
         return (
             <div className="h-full flex flex-col items-center justify-center gap-3 text-center p-6">
@@ -141,14 +184,21 @@ export default function EngineerAssignment({
                         >
                             <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-sm pointer-events-auto overflow-hidden">
 
-                                {/* Modal header */}
+                                {/* Modal header — icon + title swap based on mode */}
                                 <div className="flex items-center justify-between px-5 py-4 border-b border-border">
                                     <div className="flex items-center gap-2.5">
-                                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                                            <Save size={15} className="text-primary" />
+                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
+                                            scheduleMode ? 'bg-amber-500/10' : 'bg-primary/10'
+                                        }`}>
+                                            {scheduleMode
+                                                ? <Clock size={15} className="text-amber-400" />
+                                                : <Save size={15} className="text-primary" />
+                                            }
                                         </div>
                                         <div>
-                                            <p className="text-sm font-semibold text-foreground">Confirm Assignment</p>
+                                            <p className="text-sm font-semibold text-foreground">
+                                                {scheduleMode ? 'Schedule Assignment' : 'Confirm Assignment'}
+                                            </p>
                                             <p className="text-[10px] text-muted-foreground">{selectedDistrict.name}</p>
                                         </div>
                                     </div>
@@ -160,8 +210,8 @@ export default function EngineerAssignment({
                                     </button>
                                 </div>
 
-                                {/* Summary */}
-                                <div className="px-5 py-4 space-y-3 max-h-72 overflow-y-auto">
+                                {/* Summary — scrollable */}
+                                <div className="px-5 py-4 space-y-3 max-h-56 overflow-y-auto">
 
                                     {/* Base engineer row */}
                                     <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/10">
@@ -198,12 +248,12 @@ export default function EngineerAssignment({
                                             className={`flex items-center gap-3 p-2.5 rounded-xl border ${row.isOverride
                                                 ? 'bg-amber-500/5 border-amber-500/20'
                                                 : 'bg-muted/30 border-border'
-                                                }`}
+                                            }`}
                                         >
                                             <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[10px] font-bold ${row.isOverride
                                                 ? 'bg-amber-500/15 text-amber-400'
                                                 : 'bg-primary/10 text-primary'
-                                                }`}>
+                                            }`}>
                                                 {row.engineer
                                                     ? row.engineer.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
                                                     : '?'
@@ -224,6 +274,82 @@ export default function EngineerAssignment({
                                     ))}
                                 </div>
 
+                                {/* ── Schedule toggle + fields ── */}
+                                <div className="px-5 pb-3 space-y-0">
+                                    <button
+                                        onClick={() => setScheduleMode(m => !m)}
+                                        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl border transition-all ${
+                                            scheduleMode
+                                                ? 'border-amber-500/30 bg-amber-500/5'
+                                                : 'border-border bg-muted/30 hover:bg-muted/50'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <CalendarPlus size={13} className={scheduleMode ? 'text-amber-400' : 'text-muted-foreground'} />
+                                            <span className={`text-xs font-medium ${scheduleMode ? 'text-amber-400' : 'text-muted-foreground'}`}>
+                                                Schedule for a later date
+                                            </span>
+                                        </div>
+                                        {/* Toggle pill */}
+                                        <div className={`w-8 h-4 rounded-full transition-colors relative shrink-0 ${
+                                            scheduleMode ? 'bg-amber-400' : 'bg-muted-foreground/30'
+                                        }`}>
+                                            <motion.div
+                                                animate={{ x: scheduleMode ? 16 : 2 }}
+                                                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                                                className="absolute top-0.5 w-3 h-3 rounded-full bg-white shadow-sm"
+                                            />
+                                        </div>
+                                    </button>
+
+                                    {/* Slide-in date + notes fields */}
+                                    <AnimatePresence initial={false}>
+                                        {scheduleMode && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: 'auto', opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                transition={{ duration: 0.2 }}
+                                                className="overflow-hidden"
+                                            >
+                                                <div className="pt-3 space-y-2.5">
+                                                    {/* Date & time */}
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                                                            Transfer Date & Time
+                                                        </label>
+                                                        <input
+                                                            type="datetime-local"
+                                                            value={scheduledAt}
+                                                            min={minDateTime()}
+                                                            onChange={e => setScheduledAt(e.target.value)}
+                                                            className="w-full rounded-lg border border-input bg-background px-3 py-2
+                                                                text-xs font-medium text-foreground focus:outline-none
+                                                                focus:ring-2 focus:ring-amber-500/30"
+                                                        />
+                                                    </div>
+
+                                                    {/* Notes */}
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                                                            Notes <span className="normal-case font-normal">(optional)</span>
+                                                        </label>
+                                                        <textarea
+                                                            value={scheduleNotes}
+                                                            onChange={e => setScheduleNotes(e.target.value)}
+                                                            rows={2}
+                                                            placeholder="Reason for transfer, deployment details…"
+                                                            className="w-full resize-none rounded-lg border border-input bg-background
+                                                                px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground/50
+                                                                focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+
                                 {/* Warning if no base engineer */}
                                 {!baseEngineer && (
                                     <div className="mx-5 mb-3 flex items-center gap-2 px-3 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
@@ -232,7 +358,7 @@ export default function EngineerAssignment({
                                     </div>
                                 )}
 
-                                {/* Actions */}
+                                {/* Actions — button swaps based on mode */}
                                 <div className="flex gap-2 px-5 py-4 border-t border-border bg-muted/20">
                                     <Button
                                         variant="secondary"
@@ -241,21 +367,40 @@ export default function EngineerAssignment({
                                     >
                                         Cancel
                                     </Button>
-                                    <Button
-                                        className="flex-1 h-9 text-xs"
-                                        onClick={handleSave}
-                                        disabled={saving}
-                                    >
-                                        {saving ? (
-                                            <span className="flex items-center gap-1.5">
-                                                <RefreshCw size={11} className="animate-spin" /> Saving...
-                                            </span>
-                                        ) : (
-                                            <span className="flex items-center gap-1.5">
-                                                <Save size={11} /> Confirm Save
-                                            </span>
-                                        )}
-                                    </Button>
+
+                                    {scheduleMode ? (
+                                        <Button
+                                            className="flex-1 h-9 text-xs bg-amber-500 hover:bg-amber-600 text-white border-0"
+                                            onClick={handleSchedule}
+                                            disabled={saving || !scheduledAt}
+                                        >
+                                            {saving ? (
+                                                <span className="flex items-center gap-1.5">
+                                                    <RefreshCw size={11} className="animate-spin" /> Scheduling…
+                                                </span>
+                                            ) : (
+                                                <span className="flex items-center gap-1.5">
+                                                    <CalendarPlus size={11} /> Schedule Transfer
+                                                </span>
+                                            )}
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            className="flex-1 h-9 text-xs"
+                                            onClick={handleSave}
+                                            disabled={saving}
+                                        >
+                                            {saving ? (
+                                                <span className="flex items-center gap-1.5">
+                                                    <RefreshCw size={11} className="animate-spin" /> Saving...
+                                                </span>
+                                            ) : (
+                                                <span className="flex items-center gap-1.5">
+                                                    <Save size={11} /> Confirm Save
+                                                </span>
+                                            )}
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
                         </motion.div>
@@ -286,7 +431,6 @@ export default function EngineerAssignment({
                                 </p>
                             </div>
                         </div>
-
                     </div>
 
                     <div className="flex-1 overflow-y-auto p-4 space-y-5">
@@ -365,12 +509,12 @@ export default function EngineerAssignment({
                                             className={`group relative rounded-xl border overflow-hidden transition-all duration-200 ${hasOverride
                                                 ? 'border-amber-500/30 shadow-amber-500/5 shadow-md'
                                                 : 'border-border hover:border-border/80'
-                                                }`}
+                                            }`}
                                         >
                                             <div className={`h-0.5 w-full ${hasOverride
                                                 ? 'bg-gradient-to-r from-amber-500/80 to-amber-300/40'
                                                 : 'bg-gradient-to-r from-emerald-500/40 to-transparent'
-                                                }`} />
+                                            }`} />
 
                                             <div className={`p-3 ${hasOverride ? 'bg-amber-500/5' : 'bg-card'}`}>
                                                 <div className="flex items-start justify-between gap-5 mb-2">
@@ -378,7 +522,7 @@ export default function EngineerAssignment({
                                                         <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${hasOverride
                                                             ? 'bg-amber-500/15 border border-amber-500/20'
                                                             : 'bg-muted border border-border'
-                                                            }`}>
+                                                        }`}>
                                                             <MapPin size={12} className={hasOverride ? 'text-amber-400' : 'text-muted-foreground'} />
                                                         </div>
                                                         <div className="min-w-0">
@@ -404,11 +548,11 @@ export default function EngineerAssignment({
                                                     <div className={`flex items-center gap-2 px-2.5 py-1 rounded-xl mb-2 ${hasOverride
                                                         ? 'bg-amber-500/10 border border-amber-500/15'
                                                         : 'bg-muted/50 border border-border/50'
-                                                        }`}>
+                                                    }`}>
                                                         <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-[10px] font-bold ${hasOverride
                                                             ? 'bg-amber-500/20 text-amber-400'
                                                             : 'bg-primary/10 text-primary'
-                                                            }`}>
+                                                        }`}>
                                                             {initials}
                                                         </div>
                                                         <div className="min-w-0">
@@ -434,7 +578,7 @@ export default function EngineerAssignment({
                                                         className={`w-full appearance-none rounded-2xl border px-3 py-1.5 pr-8 text-xs font-medium cursor-pointer focus:outline-none focus:ring-2 transition-all ${hasOverride
                                                             ? 'border-amber-500/30 bg-amber-500/10 text-amber-500 focus:ring-amber-500/20'
                                                             : 'border-input bg-background text-foreground focus:ring-ring/30'
-                                                            }`}
+                                                        }`}
                                                     >
                                                         <option value="">
                                                             Use Base{baseEngineer ? ` — ${getEngineerName(baseEngineer)}` : ''}
@@ -477,6 +621,7 @@ export default function EngineerAssignment({
                             Cancel
                         </Button>
                     </div>
+                    {/* ✅ ScheduleTransferPanel removed — scheduling is now inside the confirm modal above */}
                 </motion.div>
             </AnimatePresence>
         </>
