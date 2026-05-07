@@ -17,6 +17,11 @@ import {
 } from '@/components/ui/table';
 
 import AppLayout from '@/layouts/app-layout';
+import {
+  Users,
+  Search,
+  Building2,
+} from 'lucide-react';
 
 type UserGroup = {
   id: number;
@@ -30,7 +35,6 @@ type PageProps = {
 
 export default function UserGroupsIndex(props: PageProps) {
   const userGroups = props.userGroups ?? [];
-
   const [search, setSearch] = useState('');
   const [open, setOpen] = useState(false);
 
@@ -120,102 +124,353 @@ export default function UserGroupsIndex(props: PageProps) {
     >
       <Head title="User Groups" />
 
-      <div className="p-6 space-y-6">
+      <div className="p-6 space-y-5">
 
         {/* HEADER */}
-        <div className="flex justify-between items-center">
-          <Input
-            placeholder="Search user group..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-80"
-          />
+        <div className="flex items-center justify-between shrink-0">
+
+          <div className="flex items-center gap-3">
+
+            <div className="w-11 h-11 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+              <Users className="w-5 h-5 text-primary" />
+            </div>
+
+            <div>
+              <h1 className="text-2xl font-semibold tracking-tight">
+                User Groups
+              </h1>
+
+              <p className="text-sm text-muted-foreground">
+                Manage engineer organizational groups
+              </p>
+            </div>
+          </div>
 
           {/* CREATE MODAL */}
           <Dialog open={open} onOpenChange={setOpen}>
+
             <DialogTrigger asChild>
-              <Button>Add Group</Button>
+
+              <Button className="rounded-xl">
+                Add Group
+              </Button>
+
             </DialogTrigger>
 
-            <DialogContent>
+            <DialogContent className="sm:max-w-md">
+
               <DialogHeader>
-                <DialogTitle>Create User Group</DialogTitle>
+                <DialogTitle>
+                  Create User Group
+                </DialogTitle>
               </DialogHeader>
 
-              <form onSubmit={submit} className="space-y-4">
-                <Input
-                  placeholder="Group name"
-                  value={form.data.name}
-                  onChange={(e) => form.setData('name', e.target.value)}
-                />
+              <form
+                onSubmit={submit}
+                className="space-y-4"
+              >
 
-                <Input
-                  placeholder="Base Office"
-                  value={form.data.base_office}
-                  onChange={(e) => form.setData('base_office', e.target.value)}
-                />
+                <div className="space-y-2">
 
-                <Button type="submit" className="w-full">
-                  Save
+                  <label className="text-sm font-medium">
+                    Group Name
+                  </label>
+
+                  <Input
+                    placeholder="e.g. Mindanao Team"
+                    value={form.data.name}
+                    onChange={(e) =>
+                      form.setData('name', e.target.value)
+                    }
+                  />
+                </div>
+
+                <div className="space-y-2">
+
+                  <label className="text-sm font-medium">
+                    Base Office
+                  </label>
+
+                  <Input
+                    placeholder="e.g. Davao"
+                    value={form.data.base_office}
+                    onChange={(e) =>
+                      form.setData('base_office', e.target.value)
+                    }
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full rounded-xl"
+                >
+                  Save Group
                 </Button>
               </form>
             </DialogContent>
           </Dialog>
         </div>
 
+        {/* STATS */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0">
+
+          <Card className="rounded-2xl border-border/50 shadow-sm">
+            <CardContent className="p-5">
+
+              <div className="flex items-center justify-between">
+
+                <div>
+
+                  <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                    Total Groups
+                  </p>
+
+                  <h2 className="text-3xl font-bold mt-2">
+                    {userGroups.length}
+                  </h2>
+                </div>
+
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                  <Users className="w-5 h-5 text-primary" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-2xl border-border/50 shadow-sm">
+            <CardContent className="p-5">
+
+              <div className="flex items-center justify-between">
+
+                <div>
+
+                  <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                    Offices
+                  </p>
+
+                  <h2 className="text-3xl font-bold mt-2">
+                    {
+                      userGroups.filter(
+                        (g) => g.base_office
+                      ).length
+                    }
+                  </h2>
+                </div>
+
+                <div className="w-12 h-12 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+                  <Building2 className="w-5 h-5 text-green-400" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-2xl border-border/50 shadow-sm">
+            <CardContent className="p-5">
+
+              <div className="flex items-center justify-between">
+
+                <div>
+
+                  <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                    Filtered
+                  </p>
+
+                  <h2 className="text-3xl font-bold mt-2">
+                    {filtered.length}
+                  </h2>
+                </div>
+
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+                  <Search className="w-5 h-5 text-amber-400" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* SEARCH */}
+        <div className="flex items-center justify-between gap-3 shrink-0">
+
+          <div className="relative w-full max-w-sm">
+
+            <Search
+              size={15}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+            />
+
+            <Input
+              placeholder="Search user group..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9 rounded-xl"
+            />
+          </div>
+
+          <span className="text-xs text-muted-foreground">
+            {filtered.length} result
+            {filtered.length !== 1 ? 's' : ''}
+          </span>
+        </div>
+
         {/* EDIT MODAL */}
         <Dialog open={editOpen} onOpenChange={setEditOpen}>
-          <DialogContent>
+
+          <DialogContent className="sm:max-w-md">
+
             <DialogHeader>
-              <DialogTitle>Edit User Group</DialogTitle>
+              <DialogTitle>
+                Edit User Group
+              </DialogTitle>
             </DialogHeader>
 
-            <form onSubmit={update} className="space-y-4">
-              <Input
-                value={editForm.data.name}
-                onChange={(e) => editForm.setData('name', e.target.value)}
-              />
+            <form
+              onSubmit={update}
+              className="space-y-4"
+            >
 
-              <Input
-                value={editForm.data.base_office}
-                onChange={(e) => editForm.setData('base_office', e.target.value)}
-              />
+              <div className="space-y-2">
 
-              <Button type="submit" className="w-full">
-                Update
+                <label className="text-sm font-medium">
+                  Group Name
+                </label>
+
+                <Input
+                  value={editForm.data.name}
+                  onChange={(e) =>
+                    editForm.setData('name', e.target.value)
+                  }
+                />
+              </div>
+
+              <div className="space-y-2">
+
+                <label className="text-sm font-medium">
+                  Base Office
+                </label>
+
+                <Input
+                  value={editForm.data.base_office}
+                  onChange={(e) =>
+                    editForm.setData(
+                      'base_office',
+                      e.target.value
+                    )
+                  }
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full rounded-xl"
+              >
+                Update Group
               </Button>
             </form>
           </DialogContent>
         </Dialog>
 
         {/* TABLE */}
-        <Card>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
+        <div className="flex-1 overflow-auto rounded-2xl border border-border bg-card shadow-xl">
+
+          <Table>
+
+            <TableHeader className="sticky top-0 z-10 bg-background/90 backdrop-blur-xl border-b border-border">
+
+              <TableRow className="hover:bg-transparent">
+
+                <TableHead className="px-5 py-4 text-[11px] uppercase tracking-[0.18em]">
+                  Group
+                </TableHead>
+
+                <TableHead className="px-5 py-4 text-[11px] uppercase tracking-[0.18em]">
+                  Base Office
+                </TableHead>
+
+                <TableHead className="px-5 py-4 text-right text-[11px] uppercase tracking-[0.18em]">
+                  Actions
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+
+            <TableBody>
+
+              {filtered.length === 0 && (
+
                 <TableRow>
-                  <TableHead>Group</TableHead>
-                  <TableHead>Base Office</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+
+                  <TableCell
+                    colSpan={3}
+                    className="py-20 text-center"
+                  >
+
+                    <div className="flex flex-col items-center gap-2">
+
+                      <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center">
+
+                        <Users className="w-6 h-6 text-muted-foreground" />
+                      </div>
+
+                      <p className="text-sm font-medium text-muted-foreground">
+                        No user groups found
+                      </p>
+
+                      <p className="text-xs text-muted-foreground/70">
+                        Try adjusting your search.
+                      </p>
+                    </div>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
+              )}
 
-              <TableBody>
-                {filtered.map((g) => (
-                  <TableRow key={g.id}>
-                    <TableCell>{g.name}</TableCell>
+              {filtered.map((g, i) => (
 
-                    <TableCell>
-                      <span className={`px-3 py-1 rounded-full text-xs ${badgeColor(g.name)}`}>
-                        {g.base_office ?? 'No Office'}
-                      </span>
-                    </TableCell>
+                <TableRow
+                  key={g.id}
+                  className="group border-b border-border/50 hover:bg-muted/20 transition-all"
+                >
 
-                    <TableCell className="text-right space-x-2">
-                      {/* ✅ FIXED EDIT BUTTON */}
+                  {/* GROUP */}
+                  <TableCell className="px-5 py-4">
+
+                    <div className="flex items-center gap-3">
+
+                      <div className="w-11 h-11 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+
+                        <Users className="w-5 h-5 text-primary" />
+                      </div>
+
+                      <div>
+
+                        <p className="font-semibold text-sm">
+                          {g.name}
+                        </p>
+
+                        <p className="text-xs text-muted-foreground">
+                          Group {g.id}
+                        </p>
+                      </div>
+                    </div>
+                  </TableCell>
+
+                  {/* OFFICE */}
+                  <TableCell className="px-5 py-4">
+
+                    <span
+                      className={`inline-flex items-center px-3 py-1.5 rounded-full text-[11px] font-medium ${badgeColor(g.name)}`}
+                    >
+                      {g.base_office ?? 'No Office'}
+                    </span>
+                  </TableCell>
+
+                  {/* ACTIONS */}
+                  <TableCell className="px-5 py-4 text-right">
+
+                    <div className="flex items-center justify-end gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
+
                       <Button
                         size="sm"
                         variant="secondary"
+                        className="rounded-xl"
                         onClick={() => openEdit(g)}
                       >
                         Edit
@@ -224,19 +479,18 @@ export default function UserGroupsIndex(props: PageProps) {
                       <Button
                         size="sm"
                         variant="destructive"
+                        className="rounded-xl"
                         onClick={() => deleteUG(g.id)}
                       >
                         Delete
                       </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-
-            </Table>
-          </CardContent>
-        </Card>
-
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </AppLayout>
   );
