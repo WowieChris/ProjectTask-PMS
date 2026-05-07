@@ -78,6 +78,61 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     index.form = indexForm
 /**
+* @see \App\Http\Controllers\AreaController::update
+ * @see app/Http/Controllers/AreaController.php:35
+ * @route '/areas/update'
+ */
+export const update = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: update.url(options),
+    method: 'post',
+})
+
+update.definition = {
+    methods: ["post"],
+    url: '/areas/update',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\AreaController::update
+ * @see app/Http/Controllers/AreaController.php:35
+ * @route '/areas/update'
+ */
+update.url = (options?: RouteQueryOptions) => {
+    return update.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\AreaController::update
+ * @see app/Http/Controllers/AreaController.php:35
+ * @route '/areas/update'
+ */
+update.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: update.url(options),
+    method: 'post',
+})
+
+    /**
+* @see \App\Http\Controllers\AreaController::update
+ * @see app/Http/Controllers/AreaController.php:35
+ * @route '/areas/update'
+ */
+    const updateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: update.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\AreaController::update
+ * @see app/Http/Controllers/AreaController.php:35
+ * @route '/areas/update'
+ */
+        updateForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(options),
+            method: 'post',
+        })
+    
+    update.form = updateForm
+/**
 * @see \App\Http\Controllers\AreaController::show
  * @see app/Http/Controllers/AreaController.php:0
  * @route '/areas/{area}'
@@ -326,7 +381,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\AreaController::destroy
- * @see app/Http/Controllers/AreaController.php:35
+ * @see app/Http/Controllers/AreaController.php:54
  * @route '/areas/{area}'
  */
 export const destroy = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -341,7 +396,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\AreaController::destroy
- * @see app/Http/Controllers/AreaController.php:35
+ * @see app/Http/Controllers/AreaController.php:54
  * @route '/areas/{area}'
  */
 destroy.url = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -374,7 +429,7 @@ destroy.url = (args: { area: number | { id: number } } | [area: number | { id: n
 
 /**
 * @see \App\Http\Controllers\AreaController::destroy
- * @see app/Http/Controllers/AreaController.php:35
+ * @see app/Http/Controllers/AreaController.php:54
  * @route '/areas/{area}'
  */
 destroy.delete = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -384,7 +439,7 @@ destroy.delete = (args: { area: number | { id: number } } | [area: number | { id
 
     /**
 * @see \App\Http\Controllers\AreaController::destroy
- * @see app/Http/Controllers/AreaController.php:35
+ * @see app/Http/Controllers/AreaController.php:54
  * @route '/areas/{area}'
  */
     const destroyForm = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -399,7 +454,7 @@ destroy.delete = (args: { area: number | { id: number } } | [area: number | { id
 
             /**
 * @see \App\Http\Controllers\AreaController::destroy
- * @see app/Http/Controllers/AreaController.php:35
+ * @see app/Http/Controllers/AreaController.php:54
  * @route '/areas/{area}'
  */
         destroyForm.delete = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -413,6 +468,6 @@ destroy.delete = (args: { area: number | { id: number } } | [area: number | { id
         })
     
     destroy.form = destroyForm
-const AreaController = { index, show, division, store, destroy }
+const AreaController = { index, update, show, division, store, destroy }
 
 export default AreaController

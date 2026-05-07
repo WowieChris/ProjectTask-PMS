@@ -495,10 +495,10 @@ edit.head = (args: { district: string | number } | [district: string | number ] 
     edit.form = editForm
 /**
 * @see \App\Http\Controllers\DistrictController::update
- * @see app/Http/Controllers/DistrictController.php:0
+ * @see app/Http/Controllers/DistrictController.php:65
  * @route '/districts/{district}'
  */
-export const update = (args: { district: string | number } | [district: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { district: number | { id: number } } | [district: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -510,14 +510,17 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\DistrictController::update
- * @see app/Http/Controllers/DistrictController.php:0
+ * @see app/Http/Controllers/DistrictController.php:65
  * @route '/districts/{district}'
  */
-update.url = (args: { district: string | number } | [district: string | number ] | string | number, options?: RouteQueryOptions) => {
+update.url = (args: { district: number | { id: number } } | [district: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { district: args }
     }
 
+            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+            args = { district: args.id }
+        }
     
     if (Array.isArray(args)) {
         args = {
@@ -528,7 +531,9 @@ update.url = (args: { district: string | number } | [district: string | number ]
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-                        district: args.district,
+                        district: typeof args.district === 'object'
+                ? args.district.id
+                : args.district,
                 }
 
     return update.definition.url
@@ -538,29 +543,29 @@ update.url = (args: { district: string | number } | [district: string | number ]
 
 /**
 * @see \App\Http\Controllers\DistrictController::update
- * @see app/Http/Controllers/DistrictController.php:0
+ * @see app/Http/Controllers/DistrictController.php:65
  * @route '/districts/{district}'
  */
-update.put = (args: { district: string | number } | [district: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { district: number | { id: number } } | [district: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
 /**
 * @see \App\Http\Controllers\DistrictController::update
- * @see app/Http/Controllers/DistrictController.php:0
+ * @see app/Http/Controllers/DistrictController.php:65
  * @route '/districts/{district}'
  */
-update.patch = (args: { district: string | number } | [district: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+update.patch = (args: { district: number | { id: number } } | [district: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
 
     /**
 * @see \App\Http\Controllers\DistrictController::update
- * @see app/Http/Controllers/DistrictController.php:0
+ * @see app/Http/Controllers/DistrictController.php:65
  * @route '/districts/{district}'
  */
-    const updateForm = (args: { district: string | number } | [district: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const updateForm = (args: { district: number | { id: number } } | [district: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: update.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'PUT',
@@ -572,10 +577,10 @@ update.patch = (args: { district: string | number } | [district: string | number
 
             /**
 * @see \App\Http\Controllers\DistrictController::update
- * @see app/Http/Controllers/DistrictController.php:0
+ * @see app/Http/Controllers/DistrictController.php:65
  * @route '/districts/{district}'
  */
-        updateForm.put = (args: { district: string | number } | [district: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        updateForm.put = (args: { district: number | { id: number } } | [district: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PUT',
@@ -586,10 +591,10 @@ update.patch = (args: { district: string | number } | [district: string | number
         })
             /**
 * @see \App\Http\Controllers\DistrictController::update
- * @see app/Http/Controllers/DistrictController.php:0
+ * @see app/Http/Controllers/DistrictController.php:65
  * @route '/districts/{district}'
  */
-        updateForm.patch = (args: { district: string | number } | [district: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        updateForm.patch = (args: { district: number | { id: number } } | [district: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PATCH',

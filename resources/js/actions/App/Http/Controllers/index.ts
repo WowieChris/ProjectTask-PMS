@@ -14,6 +14,7 @@ import EngineerAssignmentController from './EngineerAssignmentController'
 import SeniorFieldAssignmentController from './SeniorFieldAssignmentController'
 import EARequestController from './EARequestController'
 import EAHVAController from './EAHVAController'
+import ScheduledTransferController from './ScheduledTransferController'
 const Controllers = {
     Auth: Object.assign(Auth, Auth),
 UserController: Object.assign(UserController, UserController),
@@ -31,6 +32,7 @@ EngineerAssignmentController: Object.assign(EngineerAssignmentController, Engine
 SeniorFieldAssignmentController: Object.assign(SeniorFieldAssignmentController, SeniorFieldAssignmentController),
 EARequestController: Object.assign(EARequestController, EARequestController),
 EAHVAController: Object.assign(EAHVAController, EAHVAController),
+ScheduledTransferController: Object.assign(ScheduledTransferController, ScheduledTransferController),
 }
 
 export default Controllers

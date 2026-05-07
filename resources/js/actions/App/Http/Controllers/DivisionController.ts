@@ -156,60 +156,178 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     create.form = createForm
 /**
-* @see \App\Http\Controllers\DivisionController::store
- * @see app/Http/Controllers/DivisionController.php:22
+* @see \App\Http\Controllers\DivisionController::update
+ * @see app/Http/Controllers/DivisionController.php:42
  * @route '/divisions'
  */
-export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: store.url(options),
+const update69bcaa8b79d8884c98a833baa3f8ce9b = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: update69bcaa8b79d8884c98a833baa3f8ce9b.url(options),
     method: 'post',
 })
 
-store.definition = {
+update69bcaa8b79d8884c98a833baa3f8ce9b.definition = {
     methods: ["post"],
     url: '/divisions',
 } satisfies RouteDefinition<["post"]>
 
 /**
-* @see \App\Http\Controllers\DivisionController::store
- * @see app/Http/Controllers/DivisionController.php:22
+* @see \App\Http\Controllers\DivisionController::update
+ * @see app/Http/Controllers/DivisionController.php:42
  * @route '/divisions'
  */
-store.url = (options?: RouteQueryOptions) => {
-    return store.definition.url + queryParams(options)
+update69bcaa8b79d8884c98a833baa3f8ce9b.url = (options?: RouteQueryOptions) => {
+    return update69bcaa8b79d8884c98a833baa3f8ce9b.definition.url + queryParams(options)
 }
 
 /**
-* @see \App\Http\Controllers\DivisionController::store
- * @see app/Http/Controllers/DivisionController.php:22
+* @see \App\Http\Controllers\DivisionController::update
+ * @see app/Http/Controllers/DivisionController.php:42
  * @route '/divisions'
  */
-store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: store.url(options),
+update69bcaa8b79d8884c98a833baa3f8ce9b.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: update69bcaa8b79d8884c98a833baa3f8ce9b.url(options),
     method: 'post',
 })
 
     /**
-* @see \App\Http\Controllers\DivisionController::store
- * @see app/Http/Controllers/DivisionController.php:22
+* @see \App\Http\Controllers\DivisionController::update
+ * @see app/Http/Controllers/DivisionController.php:42
  * @route '/divisions'
  */
-    const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: store.url(options),
+    const update69bcaa8b79d8884c98a833baa3f8ce9bForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: update69bcaa8b79d8884c98a833baa3f8ce9b.url(options),
         method: 'post',
     })
 
             /**
-* @see \App\Http\Controllers\DivisionController::store
- * @see app/Http/Controllers/DivisionController.php:22
+* @see \App\Http\Controllers\DivisionController::update
+ * @see app/Http/Controllers/DivisionController.php:42
  * @route '/divisions'
  */
-        storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: store.url(options),
+        update69bcaa8b79d8884c98a833baa3f8ce9bForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update69bcaa8b79d8884c98a833baa3f8ce9b.url(options),
             method: 'post',
         })
     
-    store.form = storeForm
+    update69bcaa8b79d8884c98a833baa3f8ce9b.form = update69bcaa8b79d8884c98a833baa3f8ce9bForm
+    /**
+* @see \App\Http\Controllers\DivisionController::update
+ * @see app/Http/Controllers/DivisionController.php:42
+ * @route '/divisions/{division}'
+ */
+const update685fb09d2a80c49e6f6730ac9ec4ea1f = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+    url: update685fb09d2a80c49e6f6730ac9ec4ea1f.url(args, options),
+    method: 'put',
+})
+
+update685fb09d2a80c49e6f6730ac9ec4ea1f.definition = {
+    methods: ["put","patch"],
+    url: '/divisions/{division}',
+} satisfies RouteDefinition<["put","patch"]>
+
+/**
+* @see \App\Http\Controllers\DivisionController::update
+ * @see app/Http/Controllers/DivisionController.php:42
+ * @route '/divisions/{division}'
+ */
+update685fb09d2a80c49e6f6730ac9ec4ea1f.url = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { division: args }
+    }
+
+            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+            args = { division: args.id }
+        }
+    
+    if (Array.isArray(args)) {
+        args = {
+                    division: args[0],
+                }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+                        division: typeof args.division === 'object'
+                ? args.division.id
+                : args.division,
+                }
+
+    return update685fb09d2a80c49e6f6730ac9ec4ea1f.definition.url
+            .replace('{division}', parsedArgs.division.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\DivisionController::update
+ * @see app/Http/Controllers/DivisionController.php:42
+ * @route '/divisions/{division}'
+ */
+update685fb09d2a80c49e6f6730ac9ec4ea1f.put = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+    url: update685fb09d2a80c49e6f6730ac9ec4ea1f.url(args, options),
+    method: 'put',
+})
+/**
+* @see \App\Http\Controllers\DivisionController::update
+ * @see app/Http/Controllers/DivisionController.php:42
+ * @route '/divisions/{division}'
+ */
+update685fb09d2a80c49e6f6730ac9ec4ea1f.patch = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: update685fb09d2a80c49e6f6730ac9ec4ea1f.url(args, options),
+    method: 'patch',
+})
+
+    /**
+* @see \App\Http\Controllers\DivisionController::update
+ * @see app/Http/Controllers/DivisionController.php:42
+ * @route '/divisions/{division}'
+ */
+    const update685fb09d2a80c49e6f6730ac9ec4ea1fForm = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: update685fb09d2a80c49e6f6730ac9ec4ea1f.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PUT',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\DivisionController::update
+ * @see app/Http/Controllers/DivisionController.php:42
+ * @route '/divisions/{division}'
+ */
+        update685fb09d2a80c49e6f6730ac9ec4ea1fForm.put = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update685fb09d2a80c49e6f6730ac9ec4ea1f.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PUT',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+            /**
+* @see \App\Http\Controllers\DivisionController::update
+ * @see app/Http/Controllers/DivisionController.php:42
+ * @route '/divisions/{division}'
+ */
+        update685fb09d2a80c49e6f6730ac9ec4ea1fForm.patch = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update685fb09d2a80c49e6f6730ac9ec4ea1f.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PATCH',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    update685fb09d2a80c49e6f6730ac9ec4ea1f.form = update685fb09d2a80c49e6f6730ac9ec4ea1fForm
+
+export const update = {
+    '/divisions': update69bcaa8b79d8884c98a833baa3f8ce9b,
+    '/divisions/{division}': update685fb09d2a80c49e6f6730ac9ec4ea1f,
+}
+
 /**
 * @see \App\Http\Controllers\DivisionController::show
  * @see app/Http/Controllers/DivisionController.php:0
@@ -405,115 +523,8 @@ edit.head = (args: { division: string | number } | [division: string | number ] 
     
     edit.form = editForm
 /**
-* @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:0
- * @route '/divisions/{division}'
- */
-export const update = (args: { division: string | number } | [division: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
-    url: update.url(args, options),
-    method: 'put',
-})
-
-update.definition = {
-    methods: ["put","patch"],
-    url: '/divisions/{division}',
-} satisfies RouteDefinition<["put","patch"]>
-
-/**
-* @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:0
- * @route '/divisions/{division}'
- */
-update.url = (args: { division: string | number } | [division: string | number ] | string | number, options?: RouteQueryOptions) => {
-    if (typeof args === 'string' || typeof args === 'number') {
-        args = { division: args }
-    }
-
-    
-    if (Array.isArray(args)) {
-        args = {
-                    division: args[0],
-                }
-    }
-
-    args = applyUrlDefaults(args)
-
-    const parsedArgs = {
-                        division: args.division,
-                }
-
-    return update.definition.url
-            .replace('{division}', parsedArgs.division.toString())
-            .replace(/\/+$/, '') + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:0
- * @route '/divisions/{division}'
- */
-update.put = (args: { division: string | number } | [division: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
-    url: update.url(args, options),
-    method: 'put',
-})
-/**
-* @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:0
- * @route '/divisions/{division}'
- */
-update.patch = (args: { division: string | number } | [division: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
-    url: update.url(args, options),
-    method: 'patch',
-})
-
-    /**
-* @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:0
- * @route '/divisions/{division}'
- */
-    const updateForm = (args: { division: string | number } | [division: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: update.url(args, {
-                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                        _method: 'PUT',
-                        ...(options?.query ?? options?.mergeQuery ?? {}),
-                    }
-                }),
-        method: 'post',
-    })
-
-            /**
-* @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:0
- * @route '/divisions/{division}'
- */
-        updateForm.put = (args: { division: string | number } | [division: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: update.url(args, {
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'PUT',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'post',
-        })
-            /**
-* @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:0
- * @route '/divisions/{division}'
- */
-        updateForm.patch = (args: { division: string | number } | [division: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: update.url(args, {
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'PATCH',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'post',
-        })
-    
-    update.form = updateForm
-/**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:34
+ * @see app/Http/Controllers/DivisionController.php:35
  * @route '/divisions/{division}'
  */
 export const destroy = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -528,7 +539,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:34
+ * @see app/Http/Controllers/DivisionController.php:35
  * @route '/divisions/{division}'
  */
 destroy.url = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -561,7 +572,7 @@ destroy.url = (args: { division: number | { id: number } } | [division: number |
 
 /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:34
+ * @see app/Http/Controllers/DivisionController.php:35
  * @route '/divisions/{division}'
  */
 destroy.delete = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -571,7 +582,7 @@ destroy.delete = (args: { division: number | { id: number } } | [division: numbe
 
     /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:34
+ * @see app/Http/Controllers/DivisionController.php:35
  * @route '/divisions/{division}'
  */
     const destroyForm = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -586,7 +597,7 @@ destroy.delete = (args: { division: number | { id: number } } | [division: numbe
 
             /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:34
+ * @see app/Http/Controllers/DivisionController.php:35
  * @route '/divisions/{division}'
  */
         destroyForm.delete = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -600,6 +611,6 @@ destroy.delete = (args: { division: number | { id: number } } | [division: numbe
         })
     
     destroy.form = destroyForm
-const DivisionController = { index, create, store, show, edit, update, destroy }
+const DivisionController = { index, create, update, show, edit, destroy }
 
 export default DivisionController
