@@ -46,7 +46,7 @@ class DivisionController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:255']
         ]);
-
+        //Test
         $division->update($data);
 
         return back()->with('success', 'Division updated.');
