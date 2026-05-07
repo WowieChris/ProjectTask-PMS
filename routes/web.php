@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\AssetController;
+use App\Http\Controllers\AssetDashboardController;
 use App\Http\Controllers\Auth\OtpController;
 use App\Http\Controllers\Auth\PasswordSetupController;
 use App\Http\Controllers\UserController;
@@ -24,6 +26,9 @@ use App\Http\Controllers\NavigationController;
 use App\Http\Controllers\EARequestController;
 use App\Http\Controllers\EAHVAController;
 use App\Http\Controllers\ScheduledTransferController;
+use App\Http\Controllers\AssetCategoryController;
+use App\Http\Controllers\AssetAssignmentController;
+use App\Http\Controllers\AssetTransferController;
 
 
 Route::get('/', function () {
@@ -250,4 +255,30 @@ Route::middleware(['auth'])->group(
         });
     }
 
+
+
 );
+
+//AssetManagement  
+
+Route::prefix('asset-management')
+    ->middleware(['auth'])
+    ->group(function () {
+
+        Route::resource('assets', AssetController::class, [
+            'only' => ['index']
+        ]);
+
+        Route::get('/dashboard', [AssetDashboardController::class, 'index']);
+
+        Route::resource('asset-categories', AssetCategoryController::class);
+
+        Route::resource('asset-assignments', AssetAssignmentController::class);
+
+        Route::resource('asset-transfers', AssetTransferController::class);
+
+        Route::resource('asset-maintenance', AssetMaintenanceController::class);
+
+        Route::resource('asset-logs', AssetLogController::class)
+            ->only(['index']);
+    });

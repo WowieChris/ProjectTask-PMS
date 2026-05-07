@@ -58,11 +58,10 @@ function TreeNode({ node, selected, onSelect, level = 0 }: any) {
                         onSelect(null);
                     }
                 }}
-                className={`mb-1 flex cursor-pointer items-center justify-between rounded-lg border px-3 py-2 text-sm transition-all ${
-                    isActive
+                className={`mb-1 flex cursor-pointer items-center justify-between rounded-lg border px-3 py-2 text-sm transition-all ${isActive
                         ? 'border-primary bg-secondary'
                         : 'bg-secondary hover:bg-ring'
-                } `}
+                    } `}
                 style={{ marginLeft: level * 14 }}
             >
                 <div className="flex items-center gap-2">

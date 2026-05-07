@@ -76,26 +76,44 @@ export function AppSidebar() {
     {
       section: 'Management',
       title: 'Asset Management',
-      href: '/assetManagement', // ✅ fixed slash
+      href: '/asset-management/dashboard',
       icon: Columns2Icon,
-    },
-    {
-  section: 'Management',
-  title: 'Office Management',
-  href: '/officeManagement',
-  icon: Warehouse,
-  children: [
-    {
-      title: 'EA Monitoring',
-      href: '/EAMonitoring',
       children: [
-        { title: 'Request', href: '/EAMonitoring/Request' },
-        { title: 'HVA', href: '/EAMonitoring/HVA' },
-        { title: 'TAR', href: '/EAMonitoring/TAR' },
+        {
+          title: 'Assets',
+          href: '/asset-management/assets',
+        },
+        {
+          title: 'Categories',
+          href: '/asset-management/categories',
+        },
+        {
+          title: 'Assignments',
+          href: '/asset-management/assignments',
+        },
+        {
+          title: 'Transfers',
+          href: '/asset-management/transfers',
+        },
       ],
     },
-  ],
-},
+    {
+      section: 'Management',
+      title: 'Office Management',
+      href: '/officeManagement',
+      icon: Warehouse,
+      children: [
+        {
+          title: 'EA Monitoring',
+          href: '/EAMonitoring',
+          children: [
+            { title: 'Request', href: '/EAMonitoring/Request' },
+            { title: 'HVA', href: '/EAMonitoring/HVA' },
+            { title: 'TAR', href: '/EAMonitoring/TAR' },
+          ],
+        },
+      ],
+    },
   ];
 
   // 🔹 ADMIN SECTION
