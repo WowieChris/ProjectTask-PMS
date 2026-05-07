@@ -137,7 +137,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
  * @see app/Http/Controllers/ScheduledTransferController.php:85
  * @route '/ConfigFiles/Field-Eng/scheduled/{scheduledTransfer}/apply'
  */
-export const apply = (args: { scheduledTransfer: string | number | { id: string | number } } | [scheduledTransfer: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const apply = (args: { scheduledTransfer: number | { id: number } } | [scheduledTransfer: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: apply.url(args, options),
     method: 'post',
 })
@@ -152,7 +152,7 @@ apply.definition = {
  * @see app/Http/Controllers/ScheduledTransferController.php:85
  * @route '/ConfigFiles/Field-Eng/scheduled/{scheduledTransfer}/apply'
  */
-apply.url = (args: { scheduledTransfer: string | number | { id: string | number } } | [scheduledTransfer: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+apply.url = (args: { scheduledTransfer: number | { id: number } } | [scheduledTransfer: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { scheduledTransfer: args }
     }
@@ -185,7 +185,7 @@ apply.url = (args: { scheduledTransfer: string | number | { id: string | number 
  * @see app/Http/Controllers/ScheduledTransferController.php:85
  * @route '/ConfigFiles/Field-Eng/scheduled/{scheduledTransfer}/apply'
  */
-apply.post = (args: { scheduledTransfer: string | number | { id: string | number } } | [scheduledTransfer: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+apply.post = (args: { scheduledTransfer: number | { id: number } } | [scheduledTransfer: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: apply.url(args, options),
     method: 'post',
 })
@@ -195,7 +195,7 @@ apply.post = (args: { scheduledTransfer: string | number | { id: string | number
  * @see app/Http/Controllers/ScheduledTransferController.php:85
  * @route '/ConfigFiles/Field-Eng/scheduled/{scheduledTransfer}/apply'
  */
-    const applyForm = (args: { scheduledTransfer: string | number | { id: string | number } } | [scheduledTransfer: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const applyForm = (args: { scheduledTransfer: number | { id: number } } | [scheduledTransfer: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: apply.url(args, options),
         method: 'post',
     })
@@ -205,7 +205,7 @@ apply.post = (args: { scheduledTransfer: string | number | { id: string | number
  * @see app/Http/Controllers/ScheduledTransferController.php:85
  * @route '/ConfigFiles/Field-Eng/scheduled/{scheduledTransfer}/apply'
  */
-        applyForm.post = (args: { scheduledTransfer: string | number | { id: string | number } } | [scheduledTransfer: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        applyForm.post = (args: { scheduledTransfer: number | { id: number } } | [scheduledTransfer: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: apply.url(args, options),
             method: 'post',
         })
@@ -216,7 +216,7 @@ apply.post = (args: { scheduledTransfer: string | number | { id: string | number
  * @see app/Http/Controllers/ScheduledTransferController.php:102
  * @route '/ConfigFiles/Field-Eng/scheduled/{scheduledTransfer}/cancel'
  */
-export const cancel = (args: { scheduledTransfer: string | number | { id: string | number } } | [scheduledTransfer: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const cancel = (args: { scheduledTransfer: number | { id: number } } | [scheduledTransfer: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: cancel.url(args, options),
     method: 'post',
 })
@@ -231,7 +231,7 @@ cancel.definition = {
  * @see app/Http/Controllers/ScheduledTransferController.php:102
  * @route '/ConfigFiles/Field-Eng/scheduled/{scheduledTransfer}/cancel'
  */
-cancel.url = (args: { scheduledTransfer: string | number | { id: string | number } } | [scheduledTransfer: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+cancel.url = (args: { scheduledTransfer: number | { id: number } } | [scheduledTransfer: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { scheduledTransfer: args }
     }
@@ -264,7 +264,7 @@ cancel.url = (args: { scheduledTransfer: string | number | { id: string | number
  * @see app/Http/Controllers/ScheduledTransferController.php:102
  * @route '/ConfigFiles/Field-Eng/scheduled/{scheduledTransfer}/cancel'
  */
-cancel.post = (args: { scheduledTransfer: string | number | { id: string | number } } | [scheduledTransfer: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+cancel.post = (args: { scheduledTransfer: number | { id: number } } | [scheduledTransfer: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: cancel.url(args, options),
     method: 'post',
 })
@@ -274,7 +274,7 @@ cancel.post = (args: { scheduledTransfer: string | number | { id: string | numbe
  * @see app/Http/Controllers/ScheduledTransferController.php:102
  * @route '/ConfigFiles/Field-Eng/scheduled/{scheduledTransfer}/cancel'
  */
-    const cancelForm = (args: { scheduledTransfer: string | number | { id: string | number } } | [scheduledTransfer: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const cancelForm = (args: { scheduledTransfer: number | { id: number } } | [scheduledTransfer: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: cancel.url(args, options),
         method: 'post',
     })
@@ -284,7 +284,7 @@ cancel.post = (args: { scheduledTransfer: string | number | { id: string | numbe
  * @see app/Http/Controllers/ScheduledTransferController.php:102
  * @route '/ConfigFiles/Field-Eng/scheduled/{scheduledTransfer}/cancel'
  */
-        cancelForm.post = (args: { scheduledTransfer: string | number | { id: string | number } } | [scheduledTransfer: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        cancelForm.post = (args: { scheduledTransfer: number | { id: number } } | [scheduledTransfer: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: cancel.url(args, options),
             method: 'post',
         })

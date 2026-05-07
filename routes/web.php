@@ -70,173 +70,184 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-Route::middleware(['auth'])->group(function () {
-    // Photo upload routes
-    Route::post('/user/photo/upload', [UserController::class, 'uploadPhoto'])->name('user.photo.upload');
-    Route::get('/user/photos', [UserController::class, 'getPhotos'])->name('user.photos');
-    Route::delete('/user/photo/{photo}', [UserController::class, 'deletePhoto'])->name('user.photo.delete');
-    Route::post('/user/photo/{photo}/set-current', [UserController::class, 'setCurrentPhoto'])->name('user.photo.set-current');
-    Route::get('password-setup', [PasswordSetupController::class, 'show'])->name('password.setup');
-    Route::post('password-setup', [PasswordSetupController::class, 'update'])->name('password.setup.update');
-    //District, Division, Area and Districts routes
-    Route::middleware(['auth'])->group(function () {
-        //location controller
-        Route::get('/locations', [LocationController::class, 'index']);
-        //District routes
-        Route::get('/districts', [DistrictController::class, 'index'])->name('districts.index');
-        Route::post('/districts', [DistrictController::class, 'store']);
-        Route::post('/districts', [DistrictController::class, 'update']);
+Route::middleware(['auth'])->group(
+    function () {
+        // Photo upload routes
+        Route::post('/user/photo/upload', [UserController::class, 'uploadPhoto'])->name('user.photo.upload');
+        Route::get('/user/photos', [UserController::class, 'getPhotos'])->name('user.photos');
+        Route::delete('/user/photo/{photo}', [UserController::class, 'deletePhoto'])->name('user.photo.delete');
+        Route::post('/user/photo/{photo}/set-current', [UserController::class, 'setCurrentPhoto'])->name('user.photo.set-current');
+        Route::get('password-setup', [PasswordSetupController::class, 'show'])->name('password.setup');
+        Route::post('password-setup', [PasswordSetupController::class, 'update'])->name('password.setup.update');
+        //District, Division, Area and Districts routes
+        Route::middleware(['auth'])->group(function () {
+            //location controller
+            Route::get('/locations', [LocationController::class, 'index']);
+            //District routes
+            Route::get('/districts', [DistrictController::class, 'index'])->name('districts.index');
+            Route::post('/districts', [DistrictController::class, 'store']);
+            Route::post('/districts', [DistrictController::class, 'update']);
 
-        Route::delete('/districts/{district}', [DistrictController::class, 'destroy']);
-        Route::resource('districts', DistrictController::class);
+            Route::delete('/districts/{district}', [DistrictController::class, 'destroy']);
+            Route::resource('districts', DistrictController::class);
 
-        //Division routes
-        Route::resource('divisions', DivisionController::class);
-        Route::post('/divisions', [DivisionController::class, 'store']);
-        Route::post('/divisions', [DivisionController::class, 'update']);
-        Route::delete('/divisions/{division}', [DivisionController::class, 'destroy']);
-        //Area routes
-        Route::get('/areas', [AreaController::class, 'index']);
-        Route::post('/areas/update', [AreaController::class, 'update']);
-        Route::get('/areas/{area}', [AreaController::class, 'show']);
-        Route::get('/areas/{area}/divisions/{division}', [AreaController::class, 'division']);
-        Route::get('/areas', [AreaController::class, 'index'])->name('areas.index');
-        Route::post('/areas', [AreaController::class, 'store'])->name('areas.store');
-        Route::delete('/areas/{area}', [AreaController::class, 'destroy'])->name('areas.destroy');
+            //Division routes
+            Route::resource('divisions', DivisionController::class);
+            Route::post('/divisions', [DivisionController::class, 'store']);
+            Route::post('/divisions', [DivisionController::class, 'update']);
+            Route::delete('/divisions/{division}', [DivisionController::class, 'destroy']);
+            //Area routes
+            Route::prefix('areas')->group(function () {
 
-        //Branch routes
+                Route::get('/', [AreaController::class, 'index'])
+                    ->name('areas.index');
 
-        Route::get('/branches', [BranchController::class, 'index'])->name('branches.index');
-        Route::get('/areas/{area}/branches', [BranchController::class, 'index']);
-        Route::post('/branches', [BranchController::class, 'store']);
-        Route::delete('/branches/{branch}', [BranchController::class, 'destroy']);
-    });
-    Route::middleware(['auth'])->group(function () {
-        // User Group routes
-        Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
-        Route::get('/user-groups/{userGroup}', [UserGroupController::class, 'show'])->name('user-groups.show');
-        Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
-        Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
-        Route::get('/user-groups', [UserGroupController::class, 'index'])->middleware('auth');
-    });
-    //UserGroup
-    Route::middleware(['auth'])->group(function () {
+                Route::post('/', [AreaController::class, 'store'])
+                    ->name('areas.store');
 
+                Route::get('/{area}', [AreaController::class, 'show'])
+                    ->name('areas.show');
 
-        Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
-        Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
-    });
+                Route::put('/{area}', [AreaController::class, 'update'])
+                    ->name('areas.update');
 
+                Route::delete('/{area}', [AreaController::class, 'destroy'])
+                    ->name('areas.destroy');
 
+                Route::get('/{area}/divisions/{division}', [AreaController::class, 'division']);
+            });
 
-    Route::middleware(['auth'])->group(function () {
-        Route::resource('designations', DesignationsController::class);
-    });
+            //Branch routes
 
-    //Service Order/
-    Route::prefix('service-order')->group(function () {
-
-        Route::get('/field-eng', function () {
-            return Inertia::render('Service-Order/Field-Eng/Index');
-        })->name('service-order.field');
-
-        Route::get('/technical-support-eng', function () {
-            return Inertia::render('Service-Order/Technical-Support-Eng/Index');
-        })->name('service-order.tech');
-
-        Route::get('/infrastructure-eng', function () {
-            return Inertia::render('Service-Order/Infrastructure-Eng/Index');
-        })->name('service-order.infra');
-    });
-    //My Loctions
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/mylocation', [MyLocationController::class, 'index'])
-            ->middleware('auth')
-            ->name('mylocation');
-    });
-    //Config FIle
-    //NAVIGATION CONTROLLER
-
-    //Transfer Logs 
-    Route::get('/navigation/logs', [NavigationController::class, 'logs']);
-    Route::get('/navigation/EngineerTransferLogs', [NavigationController::class, 'engineerTransferLogs'])
-        ->name('navigation.engineer-transfer-logs');
-    // ✅ Specific route FIRST
-    Route::post('/ConfigFiles/Field-Eng/area-override', [EngineerAssignmentController::class, 'saveAreaOverride']);
-
-    // General route AFTER
-    Route::post('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'store']);
-
-    //TreeNodeMove  
-    Route::patch('/navigation/move', [NavigationController::class, 'move']);
-    //FIELD ENG CONTROLLER
-    Route::get('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'Index']);
-    Route::post('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'store']);
+            Route::get('/branches', [BranchController::class, 'index'])->name('branches.index');
+            Route::get('/areas/{area}/branches', [BranchController::class, 'index']);
+            Route::post('/branches', [BranchController::class, 'store']);
+            Route::delete('/branches/{branch}', [BranchController::class, 'destroy']);
+        });
+        Route::middleware(['auth'])->group(function () {
+            // User Group routes
+            Route::get('/user-groups', [UserGroupController::class, 'index'])->name('user-groups.index');
+            Route::get('/user-groups/{userGroup}', [UserGroupController::class, 'show'])->name('user-groups.show');
+            Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
+            Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
+            Route::get('/user-groups', [UserGroupController::class, 'index'])->middleware('auth');
+        });
+        //UserGroup
+        Route::middleware(['auth'])->group(function () {
 
 
-    //SENIOR FIELD ENG CONTROLLER
-    Route::get('/ConfigFiles/SFE', [SeniorFieldAssignmentController::class, 'index']);
-    Route::post('/ConfigFiles/SFE', [SeniorFieldAssignmentController::class, 'store']);
-
-    //NAVIGATION INDEX
-    Route::middleware(['auth'])->group(function () {
-        //NAVIGATION index
-        Route::get('/ConfigFiles/Navigation', [NavigationController::class, 'index']);
-        Route::post('/ConfigFiles/Navigation', [NavigationController::class, 'store']);
-        Route::post('/seniorfieldassignment', [NavigationController::class, 'assignSeniorFieldGroup']);
-    });
-    //EA Monitoring
-    Route::prefix('EAMonitoring')->name('EAMonitoring.')->group(function () {
-        Route::get('/Request',                    [EARequestController::class, 'index'])->name('request.index');
-        Route::get('/Request/create',             [EARequestController::class, 'create'])->name('request.create');
-        Route::post('/Request',                   [EARequestController::class, 'store'])->name('request.store');
-        Route::get('/Request/{id}',               [EARequestController::class, 'show'])->name('request.show');
-        Route::get('/Request/{id}/edit',          [EARequestController::class, 'edit'])->name('request.edit');
-        Route::put('/Request/{id}',               [EARequestController::class, 'update'])->name('request.update');
-        Route::delete('/Request/{id}',            [EARequestController::class, 'destroy'])->name('request.destroy');
-        Route::post('/Request/bulk-update',       [EARequestController::class, 'bulkUpdate'])->name('request.bulk-update');
-    });
-    Route::prefix('EAMonitoring/HVA')->name('EAMonitoring.hva.')->group(function () {
-
-        Route::get('/', [EAHVAController::class, 'index'])->name('index');
-        Route::post('/', [EAHVAController::class, 'store'])->name('store');
-        Route::delete('/{id}', [EAHVAController::class, 'destroy'])->name('destroy');
-    });
+            Route::post('/user-groups', [UserGroupController::class, 'store'])->name('user-groups.store');
+            Route::delete('/user-groups/{userGroup}', [UserGroupController::class, 'destroy'])->name('user-groups.destroy');
+        });
 
 
 
-    //Route::post('/assign-senior-field-usergroup', [UserController::class, 'assignUserGroup']);
-//scheduled engineer transfers
-    Route::prefix('ConfigFiles/Field-Eng')->middleware(['auth'])->group(function () {
- 
-    // List scheduled transfers for a district (AJAX / Inertia)
-    Route::get('/scheduled',           [ScheduledTransferController::class, 'index'])->name('scheduled-transfers.index');
- 
-    // Create a new scheduled transfer
-    Route::post('/scheduled',          [ScheduledTransferController::class, 'store'])->name('scheduled-transfers.store');
- 
-    // Manually apply a pending transfer
-    Route::post('/scheduled/{scheduledTransfer}/apply',  [ScheduledTransferController::class, 'apply'])->name('scheduled-transfers.apply');
- 
-    // Cancel a pending transfer
-    Route::post('/scheduled/{scheduledTransfer}/cancel', [ScheduledTransferController::class, 'cancel'])->name('scheduled-transfers.cancel');
- 
-});
-Route::middleware(['auth'])->group(function () {
- 
-    // Create a scheduled transfer (called from the confirm modal)
-    Route::post('/ConfigFiles/Field-Eng/scheduled', [ScheduledTransferController::class, 'store'])
-        ->name('scheduled-transfers.store');
- 
-    // Manually apply a pending transfer (called from the pending panel)
-    Route::post('/ConfigFiles/Field-Eng/scheduled/{scheduledTransfer}/apply', [ScheduledTransferController::class, 'apply'])
-        ->name('scheduled-transfers.apply');
- 
-    // Cancel a pending transfer
-    Route::post('/ConfigFiles/Field-Eng/scheduled/{scheduledTransfer}/cancel', [ScheduledTransferController::class, 'cancel'])
-        ->name('scheduled-transfers.cancel');
- 
-});
-}
+        Route::middleware(['auth'])->group(function () {
+            Route::resource('designations', DesignationsController::class);
+        });
+
+        //Service Order/
+        Route::prefix('service-order')->group(function () {
+
+            Route::get('/field-eng', function () {
+                return Inertia::render('Service-Order/Field-Eng/Index');
+            })->name('service-order.field');
+
+            Route::get('/technical-support-eng', function () {
+                return Inertia::render('Service-Order/Technical-Support-Eng/Index');
+            })->name('service-order.tech');
+
+            Route::get('/infrastructure-eng', function () {
+                return Inertia::render('Service-Order/Infrastructure-Eng/Index');
+            })->name('service-order.infra');
+        });
+        //My Loctions
+        Route::middleware(['auth'])->group(function () {
+            Route::get('/mylocation', [MyLocationController::class, 'index'])
+                ->middleware('auth')
+                ->name('mylocation');
+        });
+        //Config FIle
+        //NAVIGATION CONTROLLER
+
+        //Transfer Logs 
+        Route::get('/navigation/logs', [NavigationController::class, 'logs']);
+        Route::get('/navigation/EngineerTransferLogs', [NavigationController::class, 'engineerTransferLogs'])
+            ->name('navigation.engineer-transfer-logs');
+        // ✅ Specific route FIRST
+        Route::post('/ConfigFiles/Field-Eng/area-override', [EngineerAssignmentController::class, 'saveAreaOverride']);
+
+        // General route AFTER
+        Route::post('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'store']);
+
+        //TreeNodeMove  
+        Route::patch('/navigation/move', [NavigationController::class, 'move']);
+        //FIELD ENG CONTROLLER
+        Route::get('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'Index']);
+        Route::post('/ConfigFiles/Field-Eng', [EngineerAssignmentController::class, 'store']);
+
+
+        //SENIOR FIELD ENG CONTROLLER
+        Route::get('/ConfigFiles/SFE', [SeniorFieldAssignmentController::class, 'index']);
+        Route::post('/ConfigFiles/SFE', [SeniorFieldAssignmentController::class, 'store']);
+
+        //NAVIGATION INDEX
+        Route::middleware(['auth'])->group(function () {
+            //NAVIGATION index
+            Route::get('/ConfigFiles/Navigation', [NavigationController::class, 'index']);
+            Route::post('/ConfigFiles/Navigation', [NavigationController::class, 'store']);
+            Route::post('/seniorfieldassignment', [NavigationController::class, 'assignSeniorFieldGroup']);
+        });
+        //EA Monitoring
+        Route::prefix('EAMonitoring')->name('EAMonitoring.')->group(function () {
+            Route::get('/Request',                    [EARequestController::class, 'index'])->name('request.index');
+            Route::get('/Request/create',             [EARequestController::class, 'create'])->name('request.create');
+            Route::post('/Request',                   [EARequestController::class, 'store'])->name('request.store');
+            Route::get('/Request/{id}',               [EARequestController::class, 'show'])->name('request.show');
+            Route::get('/Request/{id}/edit',          [EARequestController::class, 'edit'])->name('request.edit');
+            Route::put('/Request/{id}',               [EARequestController::class, 'update'])->name('request.update');
+            Route::delete('/Request/{id}',            [EARequestController::class, 'destroy'])->name('request.destroy');
+            Route::post('/Request/bulk-update',       [EARequestController::class, 'bulkUpdate'])->name('request.bulk-update');
+        });
+        Route::prefix('EAMonitoring/HVA')->name('EAMonitoring.hva.')->group(function () {
+
+            Route::get('/', [EAHVAController::class, 'index'])->name('index');
+            Route::post('/', [EAHVAController::class, 'store'])->name('store');
+            Route::delete('/{id}', [EAHVAController::class, 'destroy'])->name('destroy');
+        });
+
+
+
+        //Route::post('/assign-senior-field-usergroup', [UserController::class, 'assignUserGroup']);
+        //scheduled engineer transfers
+        Route::prefix('ConfigFiles/Field-Eng')->middleware(['auth'])->group(function () {
+
+            // List scheduled transfers for a district (AJAX / Inertia)
+            Route::get('/scheduled',           [ScheduledTransferController::class, 'index'])->name('scheduled-transfers.index');
+
+            // Create a new scheduled transfer
+            Route::post('/scheduled',          [ScheduledTransferController::class, 'store'])->name('scheduled-transfers.store');
+
+            // Manually apply a pending transfer
+            Route::post('/scheduled/{scheduledTransfer}/apply',  [ScheduledTransferController::class, 'apply'])->name('scheduled-transfers.apply');
+
+            // Cancel a pending transfer
+            Route::post('/scheduled/{scheduledTransfer}/cancel', [ScheduledTransferController::class, 'cancel'])->name('scheduled-transfers.cancel');
+        });
+        Route::middleware(['auth'])->group(function () {
+
+            // Create a scheduled transfer (called from the confirm modal)
+            Route::post('/ConfigFiles/Field-Eng/scheduled', [ScheduledTransferController::class, 'store'])
+                ->name('scheduled-transfers.store');
+
+            // Manually apply a pending transfer (called from the pending panel)
+            Route::post('/ConfigFiles/Field-Eng/scheduled/{scheduledTransfer}/apply', [ScheduledTransferController::class, 'apply'])
+                ->name('scheduled-transfers.apply');
+
+            // Cancel a pending transfer
+            Route::post('/ConfigFiles/Field-Eng/scheduled/{scheduledTransfer}/cancel', [ScheduledTransferController::class, 'cancel'])
+                ->name('scheduled-transfers.cancel');
+        });
+    }
 
 );

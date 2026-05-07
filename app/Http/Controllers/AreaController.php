@@ -32,21 +32,17 @@ class AreaController extends Controller
         return redirect()->back();
     }
 
-    public function update(Request $request)
+    public function update(Request $request, Area $area)
     {
+
+
         $data = $request->validate([
-            'id'          => ['required', 'exists:areas,id'],
             'district_id' => ['required', 'exists:districts,id'],
             'name'        => ['required', 'string', 'max:255'],
-            'address'     => ['required', 'string', 'max:255'],
+            'address'     => ['nullable', 'string', 'max:255'],
         ]);
 
-        $area = Area::findOrFail($data['id']);
-        $area->update([
-            'district_id' => $data['district_id'],
-            'name'        => $data['name'],
-            'address'     => $data['address'],
-        ]);
+        $area->update($data);
 
         return back()->with('success', 'Area updated.');
     }

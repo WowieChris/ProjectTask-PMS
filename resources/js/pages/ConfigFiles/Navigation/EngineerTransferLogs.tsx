@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from "motion/react";
 
 export default function EngineerTransferLogs() {
     const pageProps = usePage().props as any;
-    const movementLogs: any[]       = pageProps.logs               ?? [];
+    const movementLogs: any[] = pageProps.logs ?? [];
     const scheduledTransfers: any[] = pageProps.scheduledTransfers ?? [];
 
     const [dateFilter, setDateFilter] = useState('');
@@ -51,7 +51,7 @@ export default function EngineerTransferLogs() {
     // ── Current log IDs (latest per area) ────────────────────────
     const currentLogIds = useMemo(() => {
         const seen = new Set<string>();
-        const ids  = new Set<number>();
+        const ids = new Set<number>();
         for (const log of movementLogs) {
             if (!seen.has(log.area_name)) {
                 seen.add(log.area_name);
@@ -86,8 +86,8 @@ export default function EngineerTransferLogs() {
             const matchEngineer = selectedEngineer
                 ? log.new_engineer === selectedEngineer || log.previous_engineer === selectedEngineer
                 : true;
-            const matchArea  = selectedArea ? log.area_name === selectedArea : true;
-            const matchDate  = dateFilter   ? log.effectivity_date === dateFilter : true;
+            const matchArea = selectedArea ? log.area_name === selectedArea : true;
+            const matchDate = dateFilter ? log.effectivity_date === dateFilter : true;
             const q = search.toLowerCase();
             const matchSearch = !search || (
                 log.area_name?.toLowerCase().includes(q) ||
@@ -99,7 +99,7 @@ export default function EngineerTransferLogs() {
         });
     }, [movementLogs, selectedEngineer, selectedArea, dateFilter, search]);
 
-    const totalPages    = Math.ceil(filteredLogs.length / perPage);
+    const totalPages = Math.ceil(filteredLogs.length / perPage);
     const paginatedLogs = useMemo(() => {
         const start = (currentPage - 1) * perPage;
         return filteredLogs.slice(start, start + perPage);
@@ -226,7 +226,7 @@ export default function EngineerTransferLogs() {
                                             </thead>
                                             <tbody>
                                                 {pendingTransfers.map((t: any) => {
-                                                    const due       = isPast(t.scheduled_at);
+                                                    const due = isPast(t.scheduled_at);
                                                     const actioning = actioningId === t.id;
 
                                                     return (
@@ -304,11 +304,10 @@ export default function EngineerTransferLogs() {
                                                                         onClick={() => handleApply(t.id)}
                                                                         disabled={actioning}
                                                                         title="Apply this transfer now"
-                                                                        className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-colors disabled:opacity-50 ${
-                                                                            due
+                                                                        className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-colors disabled:opacity-50 ${due
                                                                                 ? 'bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 border border-emerald-500/25'
                                                                                 : 'bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 border border-amber-500/20'
-                                                                        }`}
+                                                                            }`}
                                                                     >
                                                                         {actioning
                                                                             ? <Loader2 size={11} className="animate-spin" />
@@ -428,7 +427,7 @@ export default function EngineerTransferLogs() {
                                 </tr>
                             )}
                             {paginatedLogs.map((log: any, i: number) => {
-                                const isCurrent      = currentLogIds.has(log.id);
+                                const isCurrent = currentLogIds.has(log.id);
                                 const pendingTransfer = isCurrent ? getPending(log) : null;
 
                                 return (
@@ -439,11 +438,10 @@ export default function EngineerTransferLogs() {
                                     >
                                         {/* Status dot */}
                                         <td className="px-4 py-3">
-                                            <div className={`w-2 h-2 rounded-full ${
-                                                isCurrent
+                                            <div className={`w-2 h-2 rounded-full ${isCurrent
                                                     ? pendingTransfer ? 'bg-amber-400' : 'bg-emerald-400'
                                                     : 'bg-muted-foreground/30'
-                                            }`} />
+                                                }`} />
                                         </td>
 
                                         {/* Previous Engineer */}

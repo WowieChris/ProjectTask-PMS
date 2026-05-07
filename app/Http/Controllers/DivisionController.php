@@ -44,7 +44,7 @@ class DivisionController extends Controller
         $data = $request->validate([
             'user_group_id' => ['required', 'exists:user_groups,id'],
             'name' => ['required', 'string', 'max:255'],
-            'address' => ['required', 'string', 'max:255']
+            'address' => ['nullable', 'string', 'max:255']
         ]);
 
         $division->update($data);
