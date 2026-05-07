@@ -13,9 +13,7 @@ class BranchController extends Controller
 {
     public function index()
     {
-        $branches = Branch::with([
-            'area.district.division'
-        ])->get();
+        $branches = Branch::with(['district', 'area'])->get();
 
         return Inertia::render('Branches/Index', [
             'branches' => $branches,
@@ -29,17 +27,35 @@ class BranchController extends Controller
     {
         $request->validate([
             'area_id' => 'required|exists:areas,id',
-            'name' => 'required|string|max:255',
-            'district_id' => 'nullable|exists:districts,id',
-            'division_id' => 'nullable|exists:divisions,id',
+            'name'    => 'required|string|max:255',
         ]);
+
+        $area = Area::findOrFail($request->area_id);
 
         Branch::create([
-            'area_id' => $request->area_id,
-            'name' => $request->name,
+            'name'        => $request->name,
+            'area_id'     => $area->id,
+            'district_id' => $area->district_id, // ← auto-derived
         ]);
 
+        return redirect()->back();
+    }
 
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'area_id' => 'required|exists:areas,id',
+            'name'    => 'required|string|max:255',
+        ]);
+
+        $area   = Area::findOrFail($request->area_id);
+        $branch = Branch::findOrFail($id);
+
+        $branch->update([
+            'name'        => $request->name,
+            'area_id'     => $area->id,
+            'district_id' => $area->district_id, // ← auto-derived
+        ]);
 
         return redirect()->back();
     }
