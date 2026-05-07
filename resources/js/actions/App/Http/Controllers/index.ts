@@ -15,6 +15,13 @@ import SeniorFieldAssignmentController from './SeniorFieldAssignmentController'
 import EARequestController from './EARequestController'
 import EAHVAController from './EAHVAController'
 import ScheduledTransferController from './ScheduledTransferController'
+import AssetController from './AssetController'
+import AssetDashboardController from './AssetDashboardController'
+import AssetCategoryController from './AssetCategoryController'
+import AssetAssignmentController from './AssetAssignmentController'
+import AssetTransferController from './AssetTransferController'
+import AssetMaintenanceController from './AssetMaintenanceController'
+import AssetLogController from './AssetLogController'
 const Controllers = {
     Auth: Object.assign(Auth, Auth),
 UserController: Object.assign(UserController, UserController),
@@ -33,6 +40,13 @@ SeniorFieldAssignmentController: Object.assign(SeniorFieldAssignmentController, 
 EARequestController: Object.assign(EARequestController, EARequestController),
 EAHVAController: Object.assign(EAHVAController, EAHVAController),
 ScheduledTransferController: Object.assign(ScheduledTransferController, ScheduledTransferController),
+AssetController: Object.assign(AssetController, AssetController),
+AssetDashboardController: Object.assign(AssetDashboardController, AssetDashboardController),
+AssetCategoryController: Object.assign(AssetCategoryController, AssetCategoryController),
+AssetAssignmentController: Object.assign(AssetAssignmentController, AssetAssignmentController),
+AssetTransferController: Object.assign(AssetTransferController, AssetTransferController),
+AssetMaintenanceController: Object.assign(AssetMaintenanceController, AssetMaintenanceController),
+AssetLogController: Object.assign(AssetLogController, AssetLogController),
 }
 
 export default Controllers
