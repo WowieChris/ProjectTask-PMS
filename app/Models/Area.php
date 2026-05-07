@@ -9,7 +9,7 @@ use Inertia\Inertia;
 class Area extends Model
 {
     protected $fillable = ['name', 'district_id', 'address'];
-
+    //Test
     public function branches(): HasMany
     {
         return $this->hasMany(Branch::class);
