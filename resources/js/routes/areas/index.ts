@@ -134,7 +134,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\AreaController::destroy
- * @see app/Http/Controllers/AreaController.php:35
+ * @see app/Http/Controllers/AreaController.php:54
  * @route '/areas/{area}'
  */
 export const destroy = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -149,7 +149,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\AreaController::destroy
- * @see app/Http/Controllers/AreaController.php:35
+ * @see app/Http/Controllers/AreaController.php:54
  * @route '/areas/{area}'
  */
 destroy.url = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -182,7 +182,7 @@ destroy.url = (args: { area: number | { id: number } } | [area: number | { id: n
 
 /**
 * @see \App\Http\Controllers\AreaController::destroy
- * @see app/Http/Controllers/AreaController.php:35
+ * @see app/Http/Controllers/AreaController.php:54
  * @route '/areas/{area}'
  */
 destroy.delete = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -192,7 +192,7 @@ destroy.delete = (args: { area: number | { id: number } } | [area: number | { id
 
     /**
 * @see \App\Http\Controllers\AreaController::destroy
- * @see app/Http/Controllers/AreaController.php:35
+ * @see app/Http/Controllers/AreaController.php:54
  * @route '/areas/{area}'
  */
     const destroyForm = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -207,7 +207,7 @@ destroy.delete = (args: { area: number | { id: number } } | [area: number | { id
 
             /**
 * @see \App\Http\Controllers\AreaController::destroy
- * @see app/Http/Controllers/AreaController.php:35
+ * @see app/Http/Controllers/AreaController.php:54
  * @route '/areas/{area}'
  */
         destroyForm.delete = (args: { area: number | { id: number } } | [area: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

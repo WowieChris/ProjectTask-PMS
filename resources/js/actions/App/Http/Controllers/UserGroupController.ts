@@ -231,7 +231,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\UserGroupController::destroy
- * @see app/Http/Controllers/UserGroupController.php:171
+ * @see app/Http/Controllers/UserGroupController.php:175
  * @route '/user-groups/{userGroup}'
  */
 export const destroy = (args: { userGroup: number | { id: number } } | [userGroup: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -246,7 +246,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\UserGroupController::destroy
- * @see app/Http/Controllers/UserGroupController.php:171
+ * @see app/Http/Controllers/UserGroupController.php:175
  * @route '/user-groups/{userGroup}'
  */
 destroy.url = (args: { userGroup: number | { id: number } } | [userGroup: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -279,7 +279,7 @@ destroy.url = (args: { userGroup: number | { id: number } } | [userGroup: number
 
 /**
 * @see \App\Http\Controllers\UserGroupController::destroy
- * @see app/Http/Controllers/UserGroupController.php:171
+ * @see app/Http/Controllers/UserGroupController.php:175
  * @route '/user-groups/{userGroup}'
  */
 destroy.delete = (args: { userGroup: number | { id: number } } | [userGroup: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -289,7 +289,7 @@ destroy.delete = (args: { userGroup: number | { id: number } } | [userGroup: num
 
     /**
 * @see \App\Http\Controllers\UserGroupController::destroy
- * @see app/Http/Controllers/UserGroupController.php:171
+ * @see app/Http/Controllers/UserGroupController.php:175
  * @route '/user-groups/{userGroup}'
  */
     const destroyForm = (args: { userGroup: number | { id: number } } | [userGroup: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -304,7 +304,7 @@ destroy.delete = (args: { userGroup: number | { id: number } } | [userGroup: num
 
             /**
 * @see \App\Http\Controllers\UserGroupController::destroy
- * @see app/Http/Controllers/UserGroupController.php:171
+ * @see app/Http/Controllers/UserGroupController.php:175
  * @route '/user-groups/{userGroup}'
  */
         destroyForm.delete = (args: { userGroup: number | { id: number } } | [userGroup: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

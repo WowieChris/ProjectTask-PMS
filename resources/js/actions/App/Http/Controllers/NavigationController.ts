@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\NavigationController::logs
- * @see app/Http/Controllers/NavigationController.php:196
+ * @see app/Http/Controllers/NavigationController.php:197
  * @route '/navigation/logs'
  */
 export const logs = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ logs.definition = {
 
 /**
 * @see \App\Http\Controllers\NavigationController::logs
- * @see app/Http/Controllers/NavigationController.php:196
+ * @see app/Http/Controllers/NavigationController.php:197
  * @route '/navigation/logs'
  */
 logs.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ logs.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\NavigationController::logs
- * @see app/Http/Controllers/NavigationController.php:196
+ * @see app/Http/Controllers/NavigationController.php:197
  * @route '/navigation/logs'
  */
 logs.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ logs.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\NavigationController::logs
- * @see app/Http/Controllers/NavigationController.php:196
+ * @see app/Http/Controllers/NavigationController.php:197
  * @route '/navigation/logs'
  */
 logs.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ logs.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\NavigationController::logs
- * @see app/Http/Controllers/NavigationController.php:196
+ * @see app/Http/Controllers/NavigationController.php:197
  * @route '/navigation/logs'
  */
     const logsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ logs.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\NavigationController::logs
- * @see app/Http/Controllers/NavigationController.php:196
+ * @see app/Http/Controllers/NavigationController.php:197
  * @route '/navigation/logs'
  */
         logsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ logs.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\NavigationController::logs
- * @see app/Http/Controllers/NavigationController.php:196
+ * @see app/Http/Controllers/NavigationController.php:197
  * @route '/navigation/logs'
  */
         logsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -79,7 +79,7 @@ logs.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     logs.form = logsForm
 /**
 * @see \App\Http\Controllers\NavigationController::engineerTransferLogs
- * @see app/Http/Controllers/NavigationController.php:233
+ * @see app/Http/Controllers/NavigationController.php:235
  * @route '/navigation/EngineerTransferLogs'
  */
 export const engineerTransferLogs = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -94,7 +94,7 @@ engineerTransferLogs.definition = {
 
 /**
 * @see \App\Http\Controllers\NavigationController::engineerTransferLogs
- * @see app/Http/Controllers/NavigationController.php:233
+ * @see app/Http/Controllers/NavigationController.php:235
  * @route '/navigation/EngineerTransferLogs'
  */
 engineerTransferLogs.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ engineerTransferLogs.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\NavigationController::engineerTransferLogs
- * @see app/Http/Controllers/NavigationController.php:233
+ * @see app/Http/Controllers/NavigationController.php:235
  * @route '/navigation/EngineerTransferLogs'
  */
 engineerTransferLogs.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -112,7 +112,7 @@ engineerTransferLogs.get = (options?: RouteQueryOptions): RouteDefinition<'get'>
 })
 /**
 * @see \App\Http\Controllers\NavigationController::engineerTransferLogs
- * @see app/Http/Controllers/NavigationController.php:233
+ * @see app/Http/Controllers/NavigationController.php:235
  * @route '/navigation/EngineerTransferLogs'
  */
 engineerTransferLogs.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -122,7 +122,7 @@ engineerTransferLogs.head = (options?: RouteQueryOptions): RouteDefinition<'head
 
     /**
 * @see \App\Http\Controllers\NavigationController::engineerTransferLogs
- * @see app/Http/Controllers/NavigationController.php:233
+ * @see app/Http/Controllers/NavigationController.php:235
  * @route '/navigation/EngineerTransferLogs'
  */
     const engineerTransferLogsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -132,7 +132,7 @@ engineerTransferLogs.head = (options?: RouteQueryOptions): RouteDefinition<'head
 
             /**
 * @see \App\Http\Controllers\NavigationController::engineerTransferLogs
- * @see app/Http/Controllers/NavigationController.php:233
+ * @see app/Http/Controllers/NavigationController.php:235
  * @route '/navigation/EngineerTransferLogs'
  */
         engineerTransferLogsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -141,7 +141,7 @@ engineerTransferLogs.head = (options?: RouteQueryOptions): RouteDefinition<'head
         })
             /**
 * @see \App\Http\Controllers\NavigationController::engineerTransferLogs
- * @see app/Http/Controllers/NavigationController.php:233
+ * @see app/Http/Controllers/NavigationController.php:235
  * @route '/navigation/EngineerTransferLogs'
  */
         engineerTransferLogsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -157,7 +157,7 @@ engineerTransferLogs.head = (options?: RouteQueryOptions): RouteDefinition<'head
     engineerTransferLogs.form = engineerTransferLogsForm
 /**
 * @see \App\Http\Controllers\NavigationController::move
- * @see app/Http/Controllers/NavigationController.php:58
+ * @see app/Http/Controllers/NavigationController.php:59
  * @route '/navigation/move'
  */
 export const move = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -172,7 +172,7 @@ move.definition = {
 
 /**
 * @see \App\Http\Controllers\NavigationController::move
- * @see app/Http/Controllers/NavigationController.php:58
+ * @see app/Http/Controllers/NavigationController.php:59
  * @route '/navigation/move'
  */
 move.url = (options?: RouteQueryOptions) => {
@@ -181,7 +181,7 @@ move.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\NavigationController::move
- * @see app/Http/Controllers/NavigationController.php:58
+ * @see app/Http/Controllers/NavigationController.php:59
  * @route '/navigation/move'
  */
 move.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -191,7 +191,7 @@ move.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
 
     /**
 * @see \App\Http\Controllers\NavigationController::move
- * @see app/Http/Controllers/NavigationController.php:58
+ * @see app/Http/Controllers/NavigationController.php:59
  * @route '/navigation/move'
  */
     const moveForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -206,7 +206,7 @@ move.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
 
             /**
 * @see \App\Http\Controllers\NavigationController::move
- * @see app/Http/Controllers/NavigationController.php:58
+ * @see app/Http/Controllers/NavigationController.php:59
  * @route '/navigation/move'
  */
         moveForm.patch = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -222,7 +222,7 @@ move.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     move.form = moveForm
 /**
 * @see \App\Http\Controllers\NavigationController::index
- * @see app/Http/Controllers/NavigationController.php:22
+ * @see app/Http/Controllers/NavigationController.php:23
  * @route '/ConfigFiles/Navigation'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -237,7 +237,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\NavigationController::index
- * @see app/Http/Controllers/NavigationController.php:22
+ * @see app/Http/Controllers/NavigationController.php:23
  * @route '/ConfigFiles/Navigation'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -246,7 +246,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\NavigationController::index
- * @see app/Http/Controllers/NavigationController.php:22
+ * @see app/Http/Controllers/NavigationController.php:23
  * @route '/ConfigFiles/Navigation'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -255,7 +255,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\NavigationController::index
- * @see app/Http/Controllers/NavigationController.php:22
+ * @see app/Http/Controllers/NavigationController.php:23
  * @route '/ConfigFiles/Navigation'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -265,7 +265,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\NavigationController::index
- * @see app/Http/Controllers/NavigationController.php:22
+ * @see app/Http/Controllers/NavigationController.php:23
  * @route '/ConfigFiles/Navigation'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -275,7 +275,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\NavigationController::index
- * @see app/Http/Controllers/NavigationController.php:22
+ * @see app/Http/Controllers/NavigationController.php:23
  * @route '/ConfigFiles/Navigation'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -284,7 +284,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\NavigationController::index
- * @see app/Http/Controllers/NavigationController.php:22
+ * @see app/Http/Controllers/NavigationController.php:23
  * @route '/ConfigFiles/Navigation'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -300,7 +300,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\NavigationController::store
- * @see app/Http/Controllers/NavigationController.php:124
+ * @see app/Http/Controllers/NavigationController.php:125
  * @route '/ConfigFiles/Navigation'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -315,7 +315,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\NavigationController::store
- * @see app/Http/Controllers/NavigationController.php:124
+ * @see app/Http/Controllers/NavigationController.php:125
  * @route '/ConfigFiles/Navigation'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -324,7 +324,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\NavigationController::store
- * @see app/Http/Controllers/NavigationController.php:124
+ * @see app/Http/Controllers/NavigationController.php:125
  * @route '/ConfigFiles/Navigation'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -334,7 +334,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\NavigationController::store
- * @see app/Http/Controllers/NavigationController.php:124
+ * @see app/Http/Controllers/NavigationController.php:125
  * @route '/ConfigFiles/Navigation'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -344,7 +344,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\NavigationController::store
- * @see app/Http/Controllers/NavigationController.php:124
+ * @see app/Http/Controllers/NavigationController.php:125
  * @route '/ConfigFiles/Navigation'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -355,7 +355,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\NavigationController::assignSeniorFieldGroup
- * @see app/Http/Controllers/NavigationController.php:283
+ * @see app/Http/Controllers/NavigationController.php:300
  * @route '/seniorfieldassignment'
  */
 export const assignSeniorFieldGroup = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -370,7 +370,7 @@ assignSeniorFieldGroup.definition = {
 
 /**
 * @see \App\Http\Controllers\NavigationController::assignSeniorFieldGroup
- * @see app/Http/Controllers/NavigationController.php:283
+ * @see app/Http/Controllers/NavigationController.php:300
  * @route '/seniorfieldassignment'
  */
 assignSeniorFieldGroup.url = (options?: RouteQueryOptions) => {
@@ -379,7 +379,7 @@ assignSeniorFieldGroup.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\NavigationController::assignSeniorFieldGroup
- * @see app/Http/Controllers/NavigationController.php:283
+ * @see app/Http/Controllers/NavigationController.php:300
  * @route '/seniorfieldassignment'
  */
 assignSeniorFieldGroup.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -389,7 +389,7 @@ assignSeniorFieldGroup.post = (options?: RouteQueryOptions): RouteDefinition<'po
 
     /**
 * @see \App\Http\Controllers\NavigationController::assignSeniorFieldGroup
- * @see app/Http/Controllers/NavigationController.php:283
+ * @see app/Http/Controllers/NavigationController.php:300
  * @route '/seniorfieldassignment'
  */
     const assignSeniorFieldGroupForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -399,7 +399,7 @@ assignSeniorFieldGroup.post = (options?: RouteQueryOptions): RouteDefinition<'po
 
             /**
 * @see \App\Http\Controllers\NavigationController::assignSeniorFieldGroup
- * @see app/Http/Controllers/NavigationController.php:283
+ * @see app/Http/Controllers/NavigationController.php:300
  * @route '/seniorfieldassignment'
  */
         assignSeniorFieldGroupForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
