@@ -27,6 +27,16 @@ import {
 } from "@/components/ui/table";
 
 import AppLayout from "@/layouts/app-layout";
+import {
+  Search,
+  MapPinned,
+  Plus,
+  Pencil,
+  Trash2,
+  Layers3,
+} from "lucide-react";
+
+import { motion } from "motion/react";
 
 type UserGroup = {
   id: number;
@@ -60,6 +70,10 @@ export default function DistrictIndex({ divisions = [], districts = [] }: PagePr
   const [addOpen, setAddOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<District | null>(null);
 
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const perPage = 15;
+
   // ── CREATE form ──
   const { data, setData, post, processing, errors, reset } = useForm({
     division_id: "",
@@ -84,6 +98,14 @@ export default function DistrictIndex({ divisions = [], districts = [] }: PagePr
         d.address?.toLowerCase().includes(query)
     );
   }, [districts, q]);
+
+  const totalPages = Math.ceil(filtered.length / perPage);
+
+  const paginatedDistricts = useMemo(() => {
+    const start = (currentPage - 1) * perPage;
+
+    return filtered.slice(start, start + perPage);
+  }, [filtered, currentPage]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,119 +156,258 @@ export default function DistrictIndex({ divisions = [], districts = [] }: PagePr
     >
       <Head title="Districts" />
 
-      <div className="p-6 space-y-6">
+      <div className="p-6 h-[calc(100vh-5rem)] flex flex-col gap-4">
+
+        {/* HEADER */}
+        <div className="flex items-center justify-between shrink-0">
+
+          <div className="flex items-center gap-3">
+
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+              <MapPinned className="w-5 h-5 text-primary" />
+            </div>
+
+            <div>
+              <h1 className="text-xl font-semibold tracking-tight">
+                District Management
+              </h1>
+
+              <p className="text-sm text-muted-foreground">
+                Manage districts and regions
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setAddOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition"
+          >
+            <Plus size={15} />
+            Add District
+          </button>
+        </div>
 
         {/* STATS */}
-        <div className="grid grid-cols-3 gap-4">
-          <Card className="hover:shadow-lg transition">
-            <CardContent className="p-4">
-              <p className="text-sm text-muted-foreground">Total Districts</p>
-              <p className="text-2xl font-bold">{districts.length}</p>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 shrink-0">
 
-          <Card className="hover:shadow-lg transition">
-            <CardContent className="p-4">
-              <p className="text-sm text-muted-foreground">Total Divisions</p>
-              <p className="text-2xl font-bold">{divisions.length}</p>
-            </CardContent>
-          </Card>
+          <div className="rounded-xl border border-border bg-card p-4">
+            <div className="flex items-center justify-between">
 
-          <Card className="hover:shadow-lg transition">
-            <CardContent className="p-4">
-              <p className="text-sm text-muted-foreground">No Division</p>
-              <p className="text-2xl font-bold">
-                {districts.filter((d) => !d.division).length}
-              </p>
-            </CardContent>
-          </Card>
+              <div>
+                <p className="text-xs uppercase tracking-widest text-muted-foreground">
+                  Total Districts
+                </p>
+
+                <h2 className="text-2xl font-bold mt-1">
+                  {districts.length}
+                </h2>
+              </div>
+
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <MapPinned size={18} className="text-primary" />
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-border bg-card p-4">
+            <div className="flex items-center justify-between">
+
+              <div>
+                <p className="text-xs uppercase tracking-widest text-muted-foreground">
+                  Divisions
+                </p>
+
+                <h2 className="text-2xl font-bold mt-1">
+                  {divisions.length}
+                </h2>
+              </div>
+
+              <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                <Layers3 size={18} className="text-amber-400" />
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-border bg-card p-4">
+            <div className="flex items-center justify-between">
+
+              <div>
+                <p className="text-xs uppercase tracking-widest text-muted-foreground">
+                  Unassigned
+                </p>
+
+                <h2 className="text-2xl font-bold mt-1">
+                  {districts.filter((d) => !d.division).length}
+                </h2>
+              </div>
+
+              <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
+                <Search size={18} className="text-red-400" />
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* ADD BUTTON */}
-        <div className="flex justify-end">
-          <Button onClick={() => setAddOpen(true)}>Add District</Button>
-        </div>
+        {/* SEARCH */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center justify-between gap-3 shrink-0"
+        >
 
-        {/* TABLE */}
-        <Card className="shadow-lg">
-          <CardHeader className="flex justify-between items-center">
-            <CardTitle>District List</CardTitle>
-            <Input
+          <div className="relative w-full max-w-sm">
+
+            <Search
+              size={14}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+            />
+
+            <input
+              type="text"
               placeholder="Search district..."
               value={q}
-              onChange={(e) => setQ(e.target.value)}
-              className="w-80"
+              onChange={(e) => {
+                setQ(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
             />
-          </CardHeader>
+          </div>
 
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader className="bg-muted/30">
-                <TableRow>
-                  <TableHead className="pl-6">District</TableHead>
-                  <TableHead>Division</TableHead>
-                  <TableHead>User Group</TableHead>
-                  <TableHead>Address</TableHead>
+          <span className="text-xs text-muted-foreground whitespace-nowrap">
+            {filtered.length} result{filtered.length !== 1 ? "s" : ""}
+          </span>
+        </motion.div>
 
-                  <TableHead className="text-right pr-6">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
+        {/* TABLE */}
+        <div className="flex-1 overflow-auto rounded-xl border border-border bg-card">
 
-              <TableBody>
-                {filtered.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={4} className="text-center py-12">
-                      No districts found.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  filtered.map((d) => (
-                    <TableRow key={d.id} className="hover:bg-muted/40 transition">
-                      <TableCell className="pl-6 font-medium">{d.name}</TableCell>
+          <table className="w-full text-sm">
 
-                      <TableCell>
-                        <span className="px-3 py-1 text-xs rounded-full bg-muted">
-                          {d.division?.name ?? "No Division"}
-                        </span>
-                      </TableCell>
+            <thead className="sticky top-0 z-10 bg-muted/60 backdrop-blur border-b border-border">
 
-                      <TableCell>
-                        <span className={`px-3 py-1 text-xs rounded-full ${badgeColor(d.division?.user_group?.name)}`}>
-                          {d.division?.user_group?.name ?? "No Group"}
-                        </span>
-                      </TableCell>
+              <tr className="text-[11px] uppercase tracking-widest text-muted-foreground whitespace-nowrap">
 
-                      <TableCell>
-                        <span className={`px-3 py-1 text-xs rounded-full ${badgeColor(d.address)}`}>
-                          {d.address ?? "No Address"}
-                        </span>
-                      </TableCell>
+                <th className="px-4 py-3 text-left">District</th>
 
-                      <TableCell className="text-right pr-6">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            onClick={() => openEdit(d)}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => handleDelete(d.id)}
-                          >
-                            Delete
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+                <th className="px-4 py-3 text-left">Division</th>
+
+                <th className="px-4 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              {paginatedDistricts.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={3}
+                    className="text-center py-16 text-sm text-muted-foreground"
+                  >
+                    No districts found.
+                  </td>
+                </tr>
+              )}
+
+              {paginatedDistricts.map((d, i) => (
+
+                <motion.tr
+                  key={d.id}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.02 }}
+                  className="border-b border-border hover:bg-muted/30 transition-colors"
+                >
+
+                  {/* DISTRICT */}
+                  <td className="px-4 py-3">
+
+                    <div className="flex items-center gap-3">
+
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <MapPinned size={14} className="text-primary" />
+                      </div>
+
+                      <div>
+                        <p className="font-medium text-foreground">
+                          {d.name}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+
+                  {/* DIVISION */}
+                  <td className="px-4 py-3">
+
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-[11px] bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                      {d.division?.name ?? "No Division"}
+                    </span>
+                  </td>
+
+                  {/* ACTIONS */}
+                  <td className="px-4 py-3">
+
+                    <div className="flex items-center justify-end gap-2">
+
+                      <button
+                        onClick={() => openEdit(d)}
+                        className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 transition"
+                      >
+                        <Pencil size={11} />
+                        Edit
+                      </button>
+
+                      <button
+                        onClick={() => handleDelete(d.id)}
+                        className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition"
+                      >
+                        <Trash2 size={11} />
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+
+                </motion.tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* PAGINATION */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between shrink-0">
+
+            <span className="text-xs text-muted-foreground">
+              Showing {((currentPage - 1) * perPage) + 1}
+              –
+              {Math.min(currentPage * perPage, filtered.length)}
+              {" "}of {filtered.length}
+            </span>
+
+            <div className="flex items-center gap-2">
+
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p: number) => p - 1)}
+                className="px-3 py-1.5 text-xs rounded-lg border border-input hover:bg-muted disabled:opacity-40 transition"
+              >
+                Prev
+              </button>
+
+              <span className="text-xs px-2">
+                Page {currentPage} of {totalPages}
+              </span>
+
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((p: number) => p + 1)}
+                className="px-3 py-1.5 text-xs rounded-lg border border-input hover:bg-muted disabled:opacity-40 transition"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ADD MODAL */}

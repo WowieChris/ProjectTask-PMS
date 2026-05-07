@@ -11,6 +11,7 @@ class Branch extends Model
         'area_id',
         'district_id',
         'division_id',
+        'address',
     ];
 
     public function area()
