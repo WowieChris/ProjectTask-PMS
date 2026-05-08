@@ -4,6 +4,8 @@ import {
   BadgeCheck,
   Building,
   Building2,
+  Building2Icon,
+  BuildingIcon,
   Cog,
   Columns2Icon,
   Database,
@@ -178,10 +180,13 @@ export function AppSidebar() {
             href: '/designations',
             icon: LucideIdCard,
           },
+          { title: 'Department', href: '/branches', icon: BuildingIcon },
+
           { title: 'Divisions', href: '/divisions', icon: BadgeCheck, },
           { title: 'Districts', href: '/districts', icon: MapPinned, },
           { title: 'Areas', href: '/areas', icon: MapPinCheckInside, },
           { title: 'Branches', href: '/branches', icon: Building2 },
+
         ],
       }
     );
