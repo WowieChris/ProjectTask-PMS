@@ -59,7 +59,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
  * @see app/Http/Controllers/ScheduledLocationMoveController.php:59
  * @route '/scheduled-location-moves/{scheduledLocationMove}/apply'
  */
-export const apply = (args: { scheduledLocationMove: string | number | { id: string | number } } | [scheduledLocationMove: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const apply = (args: { scheduledLocationMove: number | { id: number } } | [scheduledLocationMove: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: apply.url(args, options),
     method: 'post',
 })
@@ -74,7 +74,7 @@ apply.definition = {
  * @see app/Http/Controllers/ScheduledLocationMoveController.php:59
  * @route '/scheduled-location-moves/{scheduledLocationMove}/apply'
  */
-apply.url = (args: { scheduledLocationMove: string | number | { id: string | number } } | [scheduledLocationMove: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+apply.url = (args: { scheduledLocationMove: number | { id: number } } | [scheduledLocationMove: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { scheduledLocationMove: args }
     }
@@ -107,7 +107,7 @@ apply.url = (args: { scheduledLocationMove: string | number | { id: string | num
  * @see app/Http/Controllers/ScheduledLocationMoveController.php:59
  * @route '/scheduled-location-moves/{scheduledLocationMove}/apply'
  */
-apply.post = (args: { scheduledLocationMove: string | number | { id: string | number } } | [scheduledLocationMove: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+apply.post = (args: { scheduledLocationMove: number | { id: number } } | [scheduledLocationMove: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: apply.url(args, options),
     method: 'post',
 })
@@ -117,7 +117,7 @@ apply.post = (args: { scheduledLocationMove: string | number | { id: string | nu
  * @see app/Http/Controllers/ScheduledLocationMoveController.php:59
  * @route '/scheduled-location-moves/{scheduledLocationMove}/apply'
  */
-    const applyForm = (args: { scheduledLocationMove: string | number | { id: string | number } } | [scheduledLocationMove: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const applyForm = (args: { scheduledLocationMove: number | { id: number } } | [scheduledLocationMove: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: apply.url(args, options),
         method: 'post',
     })
@@ -127,7 +127,7 @@ apply.post = (args: { scheduledLocationMove: string | number | { id: string | nu
  * @see app/Http/Controllers/ScheduledLocationMoveController.php:59
  * @route '/scheduled-location-moves/{scheduledLocationMove}/apply'
  */
-        applyForm.post = (args: { scheduledLocationMove: string | number | { id: string | number } } | [scheduledLocationMove: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        applyForm.post = (args: { scheduledLocationMove: number | { id: number } } | [scheduledLocationMove: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: apply.url(args, options),
             method: 'post',
         })
@@ -138,7 +138,7 @@ apply.post = (args: { scheduledLocationMove: string | number | { id: string | nu
  * @see app/Http/Controllers/ScheduledLocationMoveController.php:76
  * @route '/scheduled-location-moves/{scheduledLocationMove}/cancel'
  */
-export const cancel = (args: { scheduledLocationMove: string | number | { id: string | number } } | [scheduledLocationMove: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const cancel = (args: { scheduledLocationMove: number | { id: number } } | [scheduledLocationMove: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: cancel.url(args, options),
     method: 'post',
 })
@@ -153,7 +153,7 @@ cancel.definition = {
  * @see app/Http/Controllers/ScheduledLocationMoveController.php:76
  * @route '/scheduled-location-moves/{scheduledLocationMove}/cancel'
  */
-cancel.url = (args: { scheduledLocationMove: string | number | { id: string | number } } | [scheduledLocationMove: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+cancel.url = (args: { scheduledLocationMove: number | { id: number } } | [scheduledLocationMove: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { scheduledLocationMove: args }
     }
@@ -186,7 +186,7 @@ cancel.url = (args: { scheduledLocationMove: string | number | { id: string | nu
  * @see app/Http/Controllers/ScheduledLocationMoveController.php:76
  * @route '/scheduled-location-moves/{scheduledLocationMove}/cancel'
  */
-cancel.post = (args: { scheduledLocationMove: string | number | { id: string | number } } | [scheduledLocationMove: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+cancel.post = (args: { scheduledLocationMove: number | { id: number } } | [scheduledLocationMove: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: cancel.url(args, options),
     method: 'post',
 })
@@ -196,7 +196,7 @@ cancel.post = (args: { scheduledLocationMove: string | number | { id: string | n
  * @see app/Http/Controllers/ScheduledLocationMoveController.php:76
  * @route '/scheduled-location-moves/{scheduledLocationMove}/cancel'
  */
-    const cancelForm = (args: { scheduledLocationMove: string | number | { id: string | number } } | [scheduledLocationMove: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const cancelForm = (args: { scheduledLocationMove: number | { id: number } } | [scheduledLocationMove: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: cancel.url(args, options),
         method: 'post',
     })
@@ -206,7 +206,7 @@ cancel.post = (args: { scheduledLocationMove: string | number | { id: string | n
  * @see app/Http/Controllers/ScheduledLocationMoveController.php:76
  * @route '/scheduled-location-moves/{scheduledLocationMove}/cancel'
  */
-        cancelForm.post = (args: { scheduledLocationMove: string | number | { id: string | number } } | [scheduledLocationMove: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        cancelForm.post = (args: { scheduledLocationMove: number | { id: number } } | [scheduledLocationMove: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: cancel.url(args, options),
             method: 'post',
         })

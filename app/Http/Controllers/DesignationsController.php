@@ -40,18 +40,21 @@ class DesignationsController extends Controller
     /**
      * Update the specified designation.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Designation $designation)
     {
-        $designation = Designation::findOrFail($id);
-
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:designations,name,'.$designation->id,
-            'role' => 'required|in:user,admin',
+            'name' => 'required|string',
+            'role' => 'required|string',
+            'permissions' => 'nullable|array',
         ]);
 
-        $designation->update($validated);
+        $designation->update([
+            'name' => $validated['name'],
+            'role' => $validated['role'],
+            'permissions' => $validated['permissions'] ?? [],
+        ]);
 
-        return redirect()->back()->with('success', 'Designation updated successfully.');
+        return back();
     }
 
     /**

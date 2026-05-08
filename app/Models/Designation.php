@@ -9,7 +9,13 @@ class Designation extends Model
     protected $fillable = [
         'name',
         'role',
+        'permissions',
     ];
+
+    protected $casts = [
+        'permissions' => 'array',
+    ];
+
     public function users()
     {
         return $this->hasMany(User::class);
