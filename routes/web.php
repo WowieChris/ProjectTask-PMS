@@ -179,6 +179,15 @@ Route::middleware(['auth'])->group(
         Route::get('/navigation/logs', [NavigationController::class, 'logs']);
         Route::get('/navigation/EngineerTransferLogs', [NavigationController::class, 'engineerTransferLogs'])
             ->name('navigation.engineer-transfer-logs');
+
+        Route::post('/scheduled-location-moves', [ScheduledLocationMoveController::class, 'store'])
+            ->name('scheduled-location-moves.store');
+
+        Route::post('/scheduled-location-moves/{scheduledLocationMove}/apply', [ScheduledLocationMoveController::class, 'apply'])
+            ->name('scheduled-location-moves.apply');
+
+        Route::post('/scheduled-location-moves/{scheduledLocationMove}/cancel', [ScheduledLocationMoveController::class, 'cancel'])
+            ->name('scheduled-location-moves.cancel');
         // ✅ Specific route FIRST
         Route::post('/ConfigFiles/Field-Eng/area-override', [EngineerAssignmentController::class, 'saveAreaOverride']);
 
