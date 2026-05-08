@@ -62,16 +62,25 @@ class User extends Authenticatable implements MustVerifyEmail
     | Relationships
     |--------------------------------------------------------------------------
     */
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
     public function district()
     {
         return $this->belongsTo(District::class);
     }
 
+    // public function designation()
+    // {
+    //     return $this->belongsTo(\App\Models\Designation::class);
+    // }
     public function designation()
     {
-        return $this->belongsTo(\App\Models\Designation::class);
+        return $this->belongsTo(Designation::class);
     }
-
     public function photo()
     {
         return $this->hasOne(\App\Models\UserPhoto::class, 'user_id')
@@ -98,6 +107,16 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsTo(UserGroup::class);
     }
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class);
+    }
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
 
     /*
     |--------------------------------------------------------------------------

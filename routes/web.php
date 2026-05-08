@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use  App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetDashboardController;
 use App\Http\Controllers\Auth\OtpController;
@@ -282,3 +283,18 @@ Route::prefix('asset-management')
         Route::resource('asset-logs', AssetLogController::class)
             ->only(['index']);
     });
+
+//Employees
+Route::resource('employees', EmployeeController::class);
+
+Route::prefix('employees')->group(function () {
+
+    Route::get('/archive', [EmployeeController::class, 'archive'])
+        ->name('employees.archive');
+
+    Route::post('/import', [EmployeeController::class, 'import'])
+        ->name('employees.import');
+
+    Route::post('/transfer', [EmployeeController::class, 'transfer'])
+        ->name('employees.transfer');
+});
