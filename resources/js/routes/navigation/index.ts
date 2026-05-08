@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\NavigationController::engineerTransferLogs
- * @see app/Http/Controllers/NavigationController.php:235
+ * @see app/Http/Controllers/NavigationController.php:268
  * @route '/navigation/EngineerTransferLogs'
  */
 export const engineerTransferLogs = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ engineerTransferLogs.definition = {
 
 /**
 * @see \App\Http\Controllers\NavigationController::engineerTransferLogs
- * @see app/Http/Controllers/NavigationController.php:235
+ * @see app/Http/Controllers/NavigationController.php:268
  * @route '/navigation/EngineerTransferLogs'
  */
 engineerTransferLogs.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ engineerTransferLogs.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\NavigationController::engineerTransferLogs
- * @see app/Http/Controllers/NavigationController.php:235
+ * @see app/Http/Controllers/NavigationController.php:268
  * @route '/navigation/EngineerTransferLogs'
  */
 engineerTransferLogs.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ engineerTransferLogs.get = (options?: RouteQueryOptions): RouteDefinition<'get'>
 })
 /**
 * @see \App\Http\Controllers\NavigationController::engineerTransferLogs
- * @see app/Http/Controllers/NavigationController.php:235
+ * @see app/Http/Controllers/NavigationController.php:268
  * @route '/navigation/EngineerTransferLogs'
  */
 engineerTransferLogs.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ engineerTransferLogs.head = (options?: RouteQueryOptions): RouteDefinition<'head
 
     /**
 * @see \App\Http\Controllers\NavigationController::engineerTransferLogs
- * @see app/Http/Controllers/NavigationController.php:235
+ * @see app/Http/Controllers/NavigationController.php:268
  * @route '/navigation/EngineerTransferLogs'
  */
     const engineerTransferLogsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ engineerTransferLogs.head = (options?: RouteQueryOptions): RouteDefinition<'head
 
             /**
 * @see \App\Http\Controllers\NavigationController::engineerTransferLogs
- * @see app/Http/Controllers/NavigationController.php:235
+ * @see app/Http/Controllers/NavigationController.php:268
  * @route '/navigation/EngineerTransferLogs'
  */
         engineerTransferLogsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ engineerTransferLogs.head = (options?: RouteQueryOptions): RouteDefinition<'head
         })
             /**
 * @see \App\Http\Controllers\NavigationController::engineerTransferLogs
- * @see app/Http/Controllers/NavigationController.php:235
+ * @see app/Http/Controllers/NavigationController.php:268
  * @route '/navigation/EngineerTransferLogs'
  */
         engineerTransferLogsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
