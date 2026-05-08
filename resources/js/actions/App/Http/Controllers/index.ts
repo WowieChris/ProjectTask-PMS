@@ -22,6 +22,7 @@ import AssetAssignmentController from './AssetAssignmentController'
 import AssetTransferController from './AssetTransferController'
 import AssetMaintenanceController from './AssetMaintenanceController'
 import AssetLogController from './AssetLogController'
+import EmployeeController from './EmployeeController'
 const Controllers = {
     Auth: Object.assign(Auth, Auth),
 UserController: Object.assign(UserController, UserController),
@@ -47,6 +48,7 @@ AssetAssignmentController: Object.assign(AssetAssignmentController, AssetAssignm
 AssetTransferController: Object.assign(AssetTransferController, AssetTransferController),
 AssetMaintenanceController: Object.assign(AssetMaintenanceController, AssetMaintenanceController),
 AssetLogController: Object.assign(AssetLogController, AssetLogController),
+EmployeeController: Object.assign(EmployeeController, EmployeeController),
 }
 
 export default Controllers

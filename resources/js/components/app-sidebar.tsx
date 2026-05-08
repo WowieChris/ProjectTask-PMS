@@ -1,16 +1,25 @@
 import { Link, usePage } from '@inertiajs/react';
 import {
+  Badge,
+  BadgeCheck,
+  Building,
+  Building2,
   Cog,
   Columns2Icon,
   Database,
+  FileUser,
   LayoutGrid,
   ListOrderedIcon,
+  LucideIdCard,
   MapPin,
+  MapPinCheckInside,
+  MapPinHouse,
   MapPinned,
   Monitor,
   NotepadTextDashedIcon,
   Search,
   User,
+  UserRound,
   Warehouse,
 } from 'lucide-react';
 
@@ -127,6 +136,12 @@ export function AppSidebar() {
       },
       {
         section: 'Admin',
+        title: 'Employee Management',
+        href: '/employees',
+        icon: FileUser,
+      },
+      {
+        section: 'Admin',
         title: 'Configuration File',
         icon: Cog,
         children: [
@@ -136,9 +151,16 @@ export function AppSidebar() {
             href: '/ConfigFiles/Navigation',
             icon: MapPinned,
           },
-          // { title: 'Senior Field Eng', href: '/ConfigFiles/SFE' },
+          {
+            title: 'Central Office Master FIle',
+            href: '',
+            icon: MapPinHouse
+          },
           // { title: 'Field Eng', href: '/ConfigFiles/Field-Eng' }, // ✅ fixed case + consistency
-          { title: 'RBAC', href: '/config-files/technical-support-eng' },
+          {
+            title: 'RBAC',
+            href: '/config-files/technical-support-eng',
+          },
         ],
       },
       {
@@ -146,12 +168,20 @@ export function AppSidebar() {
         title: 'Master Files',
         icon: Database,
         children: [
-          { title: 'User Groups', href: '/user-groups' },
-          { title: 'Designations', href: '/designations' },
-          { title: 'Divisions', href: '/divisions' },
-          { title: 'Districts', href: '/districts' },
-          { title: 'Areas', href: '/areas' },
-          { title: 'Branches', href: '/branches' },
+          {
+            title: 'User Groups',
+            href: '/user-groups',
+            icon: UserRound
+          },
+          {
+            title: 'Designations',
+            href: '/designations',
+            icon: LucideIdCard,
+          },
+          { title: 'Divisions', href: '/divisions', icon: BadgeCheck, },
+          { title: 'Districts', href: '/districts', icon: MapPinned, },
+          { title: 'Areas', href: '/areas', icon: MapPinCheckInside, },
+          { title: 'Branches', href: '/branches', icon: Building2 },
         ],
       }
     );
