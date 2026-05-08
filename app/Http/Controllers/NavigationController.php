@@ -195,32 +195,65 @@ class NavigationController extends Controller
     }
 
     public function logs(Request $request)
-    {
-        $logs = LocationTransferLog::with(['user.photo'])  // 👈 eager load photo
-            ->latest()
-            ->limit(100)
-            ->get()
-            ->map(fn($log) => [
-                'id'               => $log->id,
-                'type'             => $log->type,
-                'location_id'      => $log->location_id,
-                'location_name'    => $log->location_name,
-                'from_parent_id'   => $log->from_parent_id,
-                'from_parent_name' => $log->from_parent_name,
-                'to_parent_id'     => $log->to_parent_id,
-                'to_parent_name'   => $log->to_parent_name,
-                'effectivity_date' => $log->effectivity_date,
-                'created_at'       => $log->created_at,
-                'user' => $log->user ? [
-                    'name'  => $log->user->name,
-                    'photo' => $log->user->photo?->path ?? null, // 👈 add photo path
-                ] : null,
-            ]);
-
-        return Inertia::render('ConfigFiles/Navigation/Logs', [
-            'logs' => $logs,
+{
+    $logs = LocationTransferLog::with(['user.photo'])
+        ->latest()
+        ->limit(100)
+        ->get()
+        ->map(fn($log) => [
+            'id'               => $log->id,
+            'type'             => $log->type,
+            'location_id'      => $log->location_id,
+            'location_name'    => $log->location_name,
+            'from_parent_id'   => $log->from_parent_id,
+            'from_parent_name' => $log->from_parent_name,
+            'to_parent_id'     => $log->to_parent_id,
+            'to_parent_name'   => $log->to_parent_name,
+            'effectivity_date' => $log->effectivity_date,
+            'created_at'       => $log->created_at,
+            'user' => $log->user ? [
+                'name'  => $log->user->name,
+                'photo' => $log->user->photo?->path ?? null,
+            ] : null,
         ]);
-    }
+
+    $scheduledMoves = \App\Models\ScheduledLocationMove::where('status', 'pending')
+        ->orderBy('scheduled_at')
+        ->get()
+        ->map(function ($m) {
+            $location = match($m->location_type) {
+                'district' => District::find($m->location_id),
+                'area'     => Area::find($m->location_id),
+                'branch'   => Branch::find($m->location_id),
+                default    => null,
+            };
+
+            $parent = match($m->location_type) {
+                'district' => Division::find($m->target_parent_id),
+                'area'     => District::find($m->target_parent_id),
+                'branch'   => Area::find($m->target_parent_id),
+                default    => null,
+            };
+
+            return [
+                'id'                 => $m->id,
+                'location_type'      => $m->location_type,
+                'location_id'        => $m->location_id,
+                'location_name'      => $location?->name ?? "#{$m->location_id}",
+                'target_parent_id'   => $m->target_parent_id,
+                'target_parent_name' => $parent?->name ?? "#{$m->target_parent_id}",
+                'scheduled_at'       => $m->scheduled_at->toDateTimeString(),
+                'scheduled_by'       => $m->scheduled_by,
+                'notes'              => $m->notes,
+                'status'             => $m->status,
+            ];
+        });
+
+    return Inertia::render('ConfigFiles/Navigation/Logs', [
+        'logs'           => $logs,
+        'scheduledMoves' => $scheduledMoves,
+    ]);
+}
 
     // public function engineerTransferLogs()
     // {
@@ -309,4 +342,6 @@ class NavigationController extends Controller
 
         return back()->with('success', 'Senior Field Engineer assigned!');
     }
+
+   
 }
