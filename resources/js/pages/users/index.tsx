@@ -151,7 +151,7 @@ export default function UsersIndex({ users, designations }: Props) {
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Users" />
 
-      <div className="flex flex-col gap-4 p-4">
+      <div className="flex flex-col gap-6 p-6">
 
         {/* ── STATS ── */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -253,7 +253,7 @@ export default function UsersIndex({ users, designations }: Props) {
 
                 <Dialog open={openCreate} onOpenChange={setOpenCreate}>
                   <DialogTrigger asChild>
-                    <Button>Add User</Button>
+                    <Button className="shadow-lg">Add User</Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-2xl p-0">
                     <UsersCreate onSuccess={() => setOpenCreate(false)} />
@@ -273,7 +273,7 @@ export default function UsersIndex({ users, designations }: Props) {
 
                   <Input
                     placeholder="Search users..."
-                    className="pl-10 w-[280px]"
+                    className="pl-10 w-[280px] h-11 rounded-xl"
                     value={filterText}
                     onChange={(e) => setFilterText(e.target.value)}
                   />

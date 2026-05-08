@@ -10,6 +10,7 @@ import UserGroupController from './UserGroupController'
 import DesignationsController from './DesignationsController'
 import MyLocationController from './MyLocationController'
 import NavigationController from './NavigationController'
+import ScheduledLocationMoveController from './ScheduledLocationMoveController'
 import EngineerAssignmentController from './EngineerAssignmentController'
 import SeniorFieldAssignmentController from './SeniorFieldAssignmentController'
 import EARequestController from './EARequestController'
@@ -36,6 +37,7 @@ UserGroupController: Object.assign(UserGroupController, UserGroupController),
 DesignationsController: Object.assign(DesignationsController, DesignationsController),
 MyLocationController: Object.assign(MyLocationController, MyLocationController),
 NavigationController: Object.assign(NavigationController, NavigationController),
+ScheduledLocationMoveController: Object.assign(ScheduledLocationMoveController, ScheduledLocationMoveController),
 EngineerAssignmentController: Object.assign(EngineerAssignmentController, EngineerAssignmentController),
 SeniorFieldAssignmentController: Object.assign(SeniorFieldAssignmentController, SeniorFieldAssignmentController),
 EARequestController: Object.assign(EARequestController, EARequestController),
