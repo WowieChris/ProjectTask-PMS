@@ -136,12 +136,7 @@ export function AppSidebar() {
         href: '/users',
         icon: User,
       },
-      {
-        section: 'Admin',
-        title: 'Employee Management',
-        href: '/employees',
-        icon: FileUser,
-      },
+
       {
         section: 'Admin',
         title: 'Configuration File',
@@ -186,6 +181,11 @@ export function AppSidebar() {
           { title: 'Districts', href: '/districts', icon: MapPinned, },
           { title: 'Areas', href: '/areas', icon: MapPinCheckInside, },
           { title: 'Branches', href: '/branches', icon: Building2 },
+          {
+            title: 'Employee Management',
+            href: '/employees',
+            icon: FileUser,
+          },
 
         ],
       }

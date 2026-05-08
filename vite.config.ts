@@ -17,12 +17,15 @@ export default defineConfig({
       ssr: 'resources/js/ssr.tsx',
       refresh: true,
     }),
+
     react({
       babel: {
         plugins: ['babel-plugin-react-compiler'],
       },
     }),
+
     tailwindcss(),
+
     wayfinder({
       formVariants: true,
     }),
@@ -35,5 +38,8 @@ export default defineConfig({
   build: {
     outDir: 'public/build',
     emptyOutDir: true,
+
+    // ADD THIS
+    sourcemap: true,
   },
 });

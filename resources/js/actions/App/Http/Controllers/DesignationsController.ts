@@ -409,7 +409,7 @@ edit.head = (args: { designation: string | number } | [designation: string | num
  * @see app/Http/Controllers/DesignationsController.php:43
  * @route '/designations/{designation}'
  */
-export const update = (args: { designation: string | number } | [designation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { designation: number | { id: number } } | [designation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -424,11 +424,14 @@ update.definition = {
  * @see app/Http/Controllers/DesignationsController.php:43
  * @route '/designations/{designation}'
  */
-update.url = (args: { designation: string | number } | [designation: string | number ] | string | number, options?: RouteQueryOptions) => {
+update.url = (args: { designation: number | { id: number } } | [designation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { designation: args }
     }
 
+            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+            args = { designation: args.id }
+        }
     
     if (Array.isArray(args)) {
         args = {
@@ -439,7 +442,9 @@ update.url = (args: { designation: string | number } | [designation: string | nu
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-                        designation: args.designation,
+                        designation: typeof args.designation === 'object'
+                ? args.designation.id
+                : args.designation,
                 }
 
     return update.definition.url
@@ -452,7 +457,7 @@ update.url = (args: { designation: string | number } | [designation: string | nu
  * @see app/Http/Controllers/DesignationsController.php:43
  * @route '/designations/{designation}'
  */
-update.put = (args: { designation: string | number } | [designation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { designation: number | { id: number } } | [designation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -461,7 +466,7 @@ update.put = (args: { designation: string | number } | [designation: string | nu
  * @see app/Http/Controllers/DesignationsController.php:43
  * @route '/designations/{designation}'
  */
-update.patch = (args: { designation: string | number } | [designation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+update.patch = (args: { designation: number | { id: number } } | [designation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
@@ -471,7 +476,7 @@ update.patch = (args: { designation: string | number } | [designation: string | 
  * @see app/Http/Controllers/DesignationsController.php:43
  * @route '/designations/{designation}'
  */
-    const updateForm = (args: { designation: string | number } | [designation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const updateForm = (args: { designation: number | { id: number } } | [designation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: update.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'PUT',
@@ -486,7 +491,7 @@ update.patch = (args: { designation: string | number } | [designation: string | 
  * @see app/Http/Controllers/DesignationsController.php:43
  * @route '/designations/{designation}'
  */
-        updateForm.put = (args: { designation: string | number } | [designation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        updateForm.put = (args: { designation: number | { id: number } } | [designation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PUT',
@@ -500,7 +505,7 @@ update.patch = (args: { designation: string | number } | [designation: string | 
  * @see app/Http/Controllers/DesignationsController.php:43
  * @route '/designations/{designation}'
  */
-        updateForm.patch = (args: { designation: string | number } | [designation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        updateForm.patch = (args: { designation: number | { id: number } } | [designation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PATCH',
@@ -513,7 +518,7 @@ update.patch = (args: { designation: string | number } | [designation: string | 
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\DesignationsController::destroy
- * @see app/Http/Controllers/DesignationsController.php:60
+ * @see app/Http/Controllers/DesignationsController.php:63
  * @route '/designations/{designation}'
  */
 export const destroy = (args: { designation: string | number } | [designation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -528,7 +533,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\DesignationsController::destroy
- * @see app/Http/Controllers/DesignationsController.php:60
+ * @see app/Http/Controllers/DesignationsController.php:63
  * @route '/designations/{designation}'
  */
 destroy.url = (args: { designation: string | number } | [designation: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -556,7 +561,7 @@ destroy.url = (args: { designation: string | number } | [designation: string | n
 
 /**
 * @see \App\Http\Controllers\DesignationsController::destroy
- * @see app/Http/Controllers/DesignationsController.php:60
+ * @see app/Http/Controllers/DesignationsController.php:63
  * @route '/designations/{designation}'
  */
 destroy.delete = (args: { designation: string | number } | [designation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -566,7 +571,7 @@ destroy.delete = (args: { designation: string | number } | [designation: string 
 
     /**
 * @see \App\Http\Controllers\DesignationsController::destroy
- * @see app/Http/Controllers/DesignationsController.php:60
+ * @see app/Http/Controllers/DesignationsController.php:63
  * @route '/designations/{designation}'
  */
     const destroyForm = (args: { designation: string | number } | [designation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -581,7 +586,7 @@ destroy.delete = (args: { designation: string | number } | [designation: string 
 
             /**
 * @see \App\Http\Controllers\DesignationsController::destroy
- * @see app/Http/Controllers/DesignationsController.php:60
+ * @see app/Http/Controllers/DesignationsController.php:63
  * @route '/designations/{designation}'
  */
         destroyForm.delete = (args: { designation: string | number } | [designation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

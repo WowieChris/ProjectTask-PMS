@@ -305,7 +305,7 @@ export default function EmployeeIndex({
 
                                                 <div className="flex items-center gap-3">
 
-                                                    <div className="relative">
+                                                    <div>
 
                                                         {employee.photo?.path ? (
 
@@ -323,7 +323,6 @@ export default function EmployeeIndex({
 
                                                         )}
 
-                                                        <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-background bg-emerald-500"></span>
                                                     </div>
 
                                                     <div>
