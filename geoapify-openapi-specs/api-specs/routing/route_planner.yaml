@@ -1,0 +1,875 @@
+openapi: 3.0.0
+info:
+  title: Route Planner API
+  description: The Route Planner API enables developers to integrate advanced route planning and schedule optimization into their applications. This API allows users to calculate the most efficient routes between multiple locations, taking into account multiple vehicles or agents. It is ideal for logistics, delivery services, and fleet management, helping optimize routes for time, distance, and resource usage.
+  version: 1.0.0
+  contact:
+    name: Geoapify
+    url: https://geoapify.com
+    email: info@geoapify.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.geoapify.com/v1
+    description: Primary Geoapify API endpoint
+
+tags:
+  - name: Route Planner API
+    description: Optimizes routes between multiple locations, supporting multiple vehicles or agents for efficient route planning and schedule optimization.
+
+paths:
+  /routeplanner:
+    post:
+      tags:
+        - Route Planner API
+      summary: Generate optimized route plans for agents and jobs
+      description: Generates an optimized route plan for agents, jobs, and shipments by considering factors such as vehicle capacities, time windows, travel distances, and more. This helps ensure efficient delivery, fleet management, or logistics operations by optimizing routes for multiple agents and vehicles.
+      operationId: generateRoutePlan
+      parameters:
+        - name: apiKey
+          in: query
+          required: true
+          description: Your Geoapify API key to authenticate the request. You can sign up and obtain an API key for free at [https://myprojects.geoapify.com/](https://myprojects.geoapify.com/). The Free plan includes up to 3,000 requests per day.
+          schema:
+            type: string
+            example: "YOUR_API_KEY"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mode:
+                  type: string
+                  description: |
+                    Specifies the transportation mode to use for route planning. This helps optimize the route based on the vehicle or travel method. Available options include:
+
+                    - `drive`: Standard car or automobile.
+                    - `light_truck`: Light-duty truck.
+                    - `medium_truck`: Medium-duty truck.
+                    - `truck`: General truck.
+                    - `heavy_truck`: Heavy-duty truck.
+                    - `truck_dangerous_goods`: Truck carrying hazardous materials.
+                    - `long_truck`: Long or articulated truck.
+                    - `bus`: Public or private bus.
+                    - `scooter`: Motorized scooter.
+                    - `motorcycle`: Motorbike.
+                    - `bicycle`: Standard bicycle.
+                    - `mountain_bike`: Mountain bike for off-road travel.
+                    - `road_bike`: Road bicycle optimized for paved surfaces.
+                    - `walk`: Walking on foot.
+                    - `hike`: Hiking on rough terrain or trails.
+                    - `transit`: Public transportation routes with real-time data.
+                    - `approximated_transit`: Estimated public transit routes without real-time data.
+
+                  example: drive
+                agents:
+                  type: array
+                  description: List of agents representing vehicles or workers responsible for carrying out the route plan. Each agent can have specific attributes such as capacity, time windows, and location details.
+                  items:
+                    type: object
+                    properties:
+                      start_location:
+                        type: array
+                        items:
+                          type: number
+                        description: The starting location of the agent in [longitude, latitude] format.
+                        example: [13.381453755359324, 52.520666399999996]
+                      start_location_index:
+                        type: integer
+                        description: The index of the agent's starting location in the locations list.
+                      end_location:
+                        type: array
+                        items:
+                          type: number
+                        description: Optional end location for the agent in [longitude, latitude] format.
+                      end_location_index:
+                        type: integer
+                        description: The index of the agent's end location in the locations list, if applicable.
+                      pickup_capacity:
+                        type: number
+                        description: The agent's capacity for picking up bulky goods, measured in units (e.g., weight or volume).
+                      delivery_capacity:
+                        type: number
+                        description: The agent's capacity for delivering bulky goods, measured in units.
+                      capabilities:
+                        type: array
+                        items:
+                          type: string
+                        description: List of free-format strings representing the agent's capabilities or special features (e.g., vehicle type, specific equipment, or unique skills).
+                        example: ['electricity', 'extra-long']
+                      time_windows:
+                        type: array
+                        items:
+                          type: array
+                          items:
+                            type: number
+                        description: Working timeframes for the agent, represented as pairs of relative start and end times in seconds. The time is relative to the start of the working day, where `0` represents the beginning of the day.
+                        example: [[0, 7200]]
+                      breaks:
+                        type: array
+                        description: Scheduled breaks during the agent's working hours.
+                        items:
+                          type: object
+                          properties:
+                            duration:
+                              type: number
+                              description: The duration of the break in seconds.
+                            time_windows:
+                              type: array
+                              items:
+                                type: array
+                                items:
+                                  type: number
+                              description: The time intervals (in seconds) during which the break can occur.
+                              example: [[3600, 7200]]
+                      id:
+                        type: string
+                        description: Optional unique identifier for the agent.
+                      description:
+                        type: string
+                        description: A brief description of the agent (e.g., vehicle type or worker role).
+                jobs:
+                  type: array
+                  description: A list of jobs to be performed by the agents, where each job includes location, priority, duration, and other details related to the task.
+                  items:
+                    type: object
+                    properties:
+                      location:
+                        type: array
+                        items:
+                          type: number
+                        description: The job location specified in [longitude, latitude] format.
+                        example: [13.381175446198714, 52.50929975]
+                      location_index:
+                        type: integer
+                        description: Index of the job location in the locations list, linking it to a specific entry in the locations array.
+                      priority:
+                        type: integer
+                        description: Job priority, ranging from 0 (lowest) to 100 (highest), indicating the importance of the job relative to others.
+                        example: 50
+                      duration:
+                        type: number
+                        description: Duration of the job in seconds, representing how long it will take to complete the task.
+                        example: 600
+                      pickup_amount:
+                        type: number
+                        description: Amount of bulky goods (e.g., weight or volume) to be picked up during the job.
+                      delivery_amount:
+                        type: number
+                        description: Amount of bulky goods (e.g., weight or volume) to be delivered during the job.
+                      requirements:
+                        type: array
+                        items:
+                          type: string
+                        description: List of job-specific requirements that must match the agent’s capabilities, defined as free-format strings.
+                        example: ['electricity', 'extra-long']
+                      time_windows:
+                        type: array
+                        items:
+                          type: array
+                          items:
+                            type: number
+                        description: Timeframes in seconds within which the job must be completed. The time is relative, where `0` represents the start of the working day.
+                        example: [[0, 3600]]
+                      id:
+                        type: string
+                        description: Optional unique identifier for the job.
+                      description:
+                        type: string
+                        description: A brief description of the job or task.
+                shipments:
+                  type: array
+                  description: List of shipments that agents are responsible for picking up and delivering. Each shipment includes locations, timeframes, and other relevant details for both pickup and delivery.
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Unique identifier for the shipment.
+                      pickup:
+                        type: object
+                        properties:
+                          location:
+                            type: array
+                            items:
+                              type: number
+                            description: The pickup location in [longitude, latitude] format.
+                          location_index:
+                            type: integer
+                            description: Index of the pickup location in the locations list, referencing a specific entry.
+                          duration:
+                            type: number
+                            description: Duration of the pickup process in seconds.
+                            example: 120
+                          time_windows:
+                            type: array
+                            items:
+                              type: array
+                              items:
+                                type: number
+                            description: Timeframes within which the pickup must occur, in seconds relative to the start of the working day.
+                            example: [[0, 3600]]
+                      delivery:
+                        type: object
+                        properties:
+                          location:
+                            type: array
+                            items:
+                              type: number
+                            description: The delivery location in [longitude, latitude] format.
+                          location_index:
+                            type: integer
+                            description: Index of the delivery location in the locations list, referencing a specific entry.
+                          duration:
+                            type: number
+                            description: Duration of the delivery process in seconds.
+                            example: 120
+                          time_windows:
+                            type: array
+                            items:
+                              type: array
+                              items:
+                                type: number
+                            description: Timeframes within which the delivery must occur, in seconds relative to the start of the working day.
+                            example: [[0, 3600]]
+                      requirements:
+                        type: array
+                        items:
+                          type: string
+                        description: Specific requirements for handling the shipment, represented as free-format strings (e.g., refrigeration or fragile items).
+                      priority:
+                        type: integer
+                        description: Shipment priority, with a value ranging from 0 (lowest) to 100 (highest).
+                      description:
+                        type: string
+                        description: A brief description of the shipment, outlining its contents or special instructions.
+                      amount:
+                        type: number
+                        description: The amount of the shipment. The amount can be used in combination with the agent's delivery_capacity when the agent has limits.
+                locations:
+                  type: array
+                  description: List of locations referenced by jobs and shipments, each identified by unique coordinates.
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Unique identifier for the location, used to reference the location in jobs, shipments, or agent details.
+                      location:
+                        type: array
+                        items:
+                          type: number
+                        description: Coordinates of the location specified as [longitude, latitude].
+                        example: [13.4050, 52.5200]
+                avoid:
+                  type: array
+                  description: A list of road types or specific geographic locations that should be avoided during route planning.
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        description: Specifies the type of area or road to avoid (e.g., toll roads, highways, or specific locations).
+                        enum: [tolls, ferries, highways, location]
+                        example: tolls
+                      importance:
+                        type: number
+                        description: Specifies the importance of avoiding the selected road type or location, with values ranging from 0 to 1. A value of `1` means the avoidance is critical, while a value of `0` means it is not important and can be ignored if necessary.
+                      values:
+                        type: array
+                        items:
+                          type: object
+                          description: Coordinates of specific locations to avoid, when the type is 'location', defined by longitude and latitude.
+                          properties:
+                            lon:
+                              type: number
+                              description: Longitude of the location to avoid.
+                              example: 12.1830350
+                            lat:
+                              type: number
+                              description: Latitude of the location to avoid.
+                              example: 47.981384
+                traffic:
+                  type: string
+                  description: |
+                    Specifies the traffic model to use for route calculation.
+                      - `free_flow`: Ignores traffic conditions and assumes optimal driving conditions with no delays.
+                      - `approximated`: Takes into account potential traffic congestion, adjusting travel time estimates accordingly.
+                  enum: [ free_flow, approximated ]
+                  example: approximated
+
+                type:
+                  type: string
+                  description: |
+                    Specifies the type of route optimization to apply.
+                      - `balanced`: A balanced route that optimizes both time and distance.
+                      - `short`: Prioritizes the shortest route by distance.
+                      - `less_maneuvers`: Minimizes turns and complex maneuvers, which is useful for large vehicles or ease of driving.
+                  enum: [ balanced, short, less_maneuvers ]
+                  example: short
+
+                max_speed:
+                  type: number
+                  description: Maximum allowed speed for the route, in kilometers per hour (KPH). This is typically used for vehicle-based modes of transportation.
+                  example: 80
+
+                units:
+                  type: string
+                  description: |
+                    Unit system to be used for measuring distances in the response.
+                      - `metric`: Kilometers and meters.
+                      - `imperial`: Miles and feet.
+                  enum: [ metric, imperial ]
+                  example: metric
+
+            example:
+              mode: drive
+              agents:
+                - start_location: [ 13.381453755359324, 52.520666399999996 ]
+                  time_windows: [ [ 0, 7200 ] ]
+              jobs:
+                - location: [ 13.381175446198714, 52.50929975 ]
+                  duration: 600
+                  priority: 50
+              shipments:
+                - id: order_1
+                  pickup:
+                    location_index: 0
+                    duration: 120
+                  delivery:
+                    location: [ 13.381175446198714, 52.50929975 ]
+                    duration: 120
+              locations:
+                - id: warehouse-0
+                  location: [ 13.3465209, 52.5245064 ]
+              avoid:
+                - type: tolls
+              traffic: approximated
+              type: balanced
+              max_speed: 80
+              units: metric
+      responses:
+        '200':
+          description: A successful response containing the route planning results.
+          content:
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/RoutePlannerResponse'
+              example: |
+                {
+                  "type": "FeatureCollection",
+                  "properties": {
+                    "mode": "drive",
+                    "params": {
+                      "mode": "drive",
+                      "agents": [
+                        {
+                          "start_location": [
+                            13.381453755359324,
+                            52.520666399999996
+                          ],
+                          "time_windows": [
+                            [
+                              0,
+                              7200
+                            ]
+                          ]
+                        }
+                      ],
+                      "jobs": [
+                        {
+                          "location": [
+                            13.381175446198714,
+                            52.50929975
+                          ],
+                          "duration": 600,
+                          "priority": 50
+                        }
+                      ],
+                      "shipments": [
+                        {
+                          "id": "order_1",
+                          "pickup": {
+                            "location_index": 0,
+                            "duration": 120
+                          },
+                          "delivery": {
+                            "location": [
+                              13.381175446198714,
+                              52.50929975
+                            ],
+                            "duration": 120
+                          }
+                        }
+                      ],
+                      "locations": [
+                        {
+                          "id": "warehouse-0",
+                          "location": [
+                            13.3465209,
+                            52.5245064
+                          ]
+                        }
+                      ],
+                      "avoid": [
+                        {
+                          "type": "tolls"
+                        }
+                      ],
+                      "traffic": "approximated",
+                      "type": "balanced",
+                      "max_speed": 80,
+                      "units": "metric"
+                    }
+                  },
+                  "features": [
+                    {
+                      "geometry": {
+                        "type": "MultiLineString",
+                        "coordinates": [
+                          [
+                            [
+                              13.381707,
+                              52.520624
+                            ],
+                            [
+                              13.346817,
+                              52.524456
+                            ]
+                          ],
+                          [
+                            [
+                              13.346817,
+                              52.524456
+                            ],
+                            [
+                              13.381154,
+                              52.509437
+                            ]
+                          ]
+                        ]
+                      },
+                      "type": "Feature",
+                      "properties": {
+                        "agent_index": 0,
+                        "time": 2543,
+                        "start_time": 0,
+                        "end_time": 2543,
+                        "distance": 7005,
+                        "legs": [
+                          {
+                            "time": 664,
+                            "distance": 2795,
+                            "from_waypoint_index": 0,
+                            "to_waypoint_index": 1,
+                            "steps": [
+                              {
+                                "from_index": 0,
+                                "to_index": 1,
+                                "time": 664,
+                                "distance": 2795
+                              }
+                            ]
+                          },
+                          {
+                            "time": 1039,
+                            "distance": 4210,
+                            "from_waypoint_index": 1,
+                            "to_waypoint_index": 2,
+                            "steps": [
+                              {
+                                "from_index": 0,
+                                "to_index": 1,
+                                "time": 1039,
+                                "distance": 4210
+                              }
+                            ]
+                          }
+                        ],
+                        "mode": "drive",
+                        "actions": [
+                          {
+                            "index": 0,
+                            "type": "start",
+                            "start_time": 0,
+                            "duration": 0,
+                            "waypoint_index": 0
+                          },
+                          {
+                            "index": 1,
+                            "type": "pickup",
+                            "start_time": 664,
+                            "duration": 120,
+                            "shipment_index": 0,
+                            "shipment_id": "order_1",
+                            "location_index": 0,
+                            "location_id": "warehouse-0",
+                            "waypoint_index": 1
+                          },
+                          {
+                            "index": 2,
+                            "type": "delivery",
+                            "start_time": 1823,
+                            "duration": 120,
+                            "shipment_index": 0,
+                            "shipment_id": "order_1",
+                            "waypoint_index": 2
+                          },
+                          {
+                            "index": 3,
+                            "type": "job",
+                            "start_time": 1943,
+                            "duration": 600,
+                            "job_index": 0,
+                            "waypoint_index": 2
+                          },
+                          {
+                            "index": 4,
+                            "type": "end",
+                            "start_time": 2543,
+                            "duration": 0
+                          }
+                        ],
+                        "waypoints": [
+                          {
+                            "original_location": [
+                              13.381453755359324,
+                              52.520666399999996
+                            ],
+                            "location": [
+                              13.381707,
+                              52.520624
+                            ],
+                            "start_time": 0,
+                            "duration": 0,
+                            "actions": [
+                              {
+                                "index": 0,
+                                "type": "start",
+                                "start_time": 0,
+                                "duration": 0,
+                                "waypoint_index": 0
+                              }
+                            ],
+                            "next_leg_index": 0
+                          },
+                          {
+                            "original_location": [
+                              13.3465209,
+                              52.5245064
+                            ],
+                            "location": [
+                              13.346817,
+                              52.524456
+                            ],
+                            "start_time": 664,
+                            "duration": 120,
+                            "actions": [
+                              {
+                                "index": 1,
+                                "type": "pickup",
+                                "start_time": 664,
+                                "duration": 120,
+                                "shipment_index": 0,
+                                "shipment_id": "order_1",
+                                "location_index": 0,
+                                "location_id": "warehouse-0",
+                                "waypoint_index": 1
+                              }
+                            ],
+                            "original_location_index": 0,
+                            "original_location_id": "warehouse-0",
+                            "prev_leg_index": 0,
+                            "next_leg_index": 1
+                          },
+                          {
+                            "original_location": [
+                              13.381175446198714,
+                              52.50929975
+                            ],
+                            "location": [
+                              13.381154,
+                              52.509437
+                            ],
+                            "start_time": 1823,
+                            "duration": 720,
+                            "actions": [
+                              {
+                                "index": 2,
+                                "type": "delivery",
+                                "start_time": 1823,
+                                "duration": 120,
+                                "shipment_index": 0,
+                                "shipment_id": "order_1",
+                                "waypoint_index": 2
+                              },
+                              {
+                                "index": 3,
+                                "type": "job",
+                                "start_time": 1943,
+                                "duration": 600,
+                                "job_index": 0,
+                                "waypoint_index": 2
+                              }
+                            ],
+                            "prev_leg_index": 1
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+        '400':
+          description: Bad Request. The input provided is invalid or improperly formatted. Please verify and correct your request parameters.
+        '401':
+          description: Unauthorized. The API key is missing, incorrect, or invalid. Please provide a valid API key to authenticate the request.
+        '429':
+          description: Request limit exceeded. Too many requests have been sent in a short period, surpassing the allowed rate limits.
+        '500':
+          description: Internal Server Error. The server encountered an unexpected condition that prevented it from fulfilling the request. Please try again later or [contact support](mailto:info@geoapify.com) if the issue persists.
+
+components:
+  schemas:
+    # Main Route Planner Response (GeoJSON FeatureCollection)
+    RoutePlannerResponse:
+      allOf:
+        - $ref: '../common/shared-components.yaml#/components/schemas/GeoJsonFeatureCollection'
+        - type: object
+          properties:
+            properties:
+              $ref: '#/components/schemas/RoutePlannerProperties'
+            features:
+              type: array
+              items:
+                $ref: '#/components/schemas/AgentPlanFeature'
+              description: Array of agent plan features, each representing an optimized route for an agent
+    
+    # Route Planner response properties
+    RoutePlannerProperties:
+      type: object
+      properties:
+        mode:
+          type: string
+          description: Transportation mode used for route planning
+        params:
+          type: object
+          description: Original input parameters used for the route planning request
+          additionalProperties: true
+        issues:
+          $ref: '#/components/schemas/RoutePlannerIssues'
+    
+    # Issues that occurred during route planning
+    RoutePlannerIssues:
+      type: object
+      properties:
+        unassigned_agents:
+          type: array
+          items:
+            type: integer
+          description: List of agent indexes that do not have an execution plan (shipments or jobs)
+        unassigned_jobs:
+          type: array
+          items:
+            type: integer
+          description: List of job indexes that are not assigned to any agent
+        unassigned_shipments:
+          type: array
+          items:
+            type: integer
+          description: List of shipment indexes that are not assigned to any agent
+    
+    # Individual agent plan feature
+    AgentPlanFeature:
+      allOf:
+        - $ref: '../common/shared-components.yaml#/components/schemas/GeoJsonFeature'
+        - type: object
+          properties:
+            geometry:
+              $ref: '#/components/schemas/AgentPlanGeometry'
+            properties:
+              $ref: '#/components/schemas/AgentPlanProperties'
+    
+    # Agent plan geometry (MultiLineString)
+    AgentPlanGeometry:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [MultiLineString]
+          description: GeoJSON geometry type
+        coordinates:
+          type: array
+          items:
+            type: array
+            items:
+              type: array
+              items:
+                type: number
+              minItems: 2
+              maxItems: 2
+          description: MultiLineString coordinates representing the agent's route
+    
+    # Agent plan properties
+    AgentPlanProperties:
+      type: object
+      properties:
+        agent_index:
+          type: integer
+          description: Index of the corresponding agent in the agents input array
+        distance:
+          type: number
+          description: Distance in meters for the whole agent route
+        time:
+          type: number
+          description: Time in seconds, that contains travel time
+        total_time:
+          type: number
+          description: Total time in seconds, contains travel time and action durations
+        start_time:
+          type: number
+          description: Start time for the agent
+        end_time:
+          type: number
+          description: End time for the agent
+        mode:
+          type: string
+          description: Requested transportation or travel mode
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlannerAction'
+          description: An array of Actions corresponds to the single steps for the agent
+        waypoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlannerWaypoint'
+          description: An array of Waypoints corresponds to the jobs execution plan
+        legs:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlannerRouteLeg'
+          description: An array of RouteLeg. Each leg represents a route from one waypoint to another
+    
+    # Action object for route planner
+    PlannerAction:
+      type: object
+      properties:
+        index:
+          type: integer
+          description: Action index in the sequence
+        type:
+          type: string
+          enum: [start, end, pickup, delivery, job]
+          description: Type of the action. Possible values start, end, pickup, delivery, job
+        start_time:
+          type: number
+          description: Execution start time
+        duration:
+          type: number
+          description: Action duration
+        shipment_index:
+          type: integer
+          description: Index of the shipment in original shipments array
+        shipment_id:
+          type: string
+          description: Shipment unique identifier
+        job_index:
+          type: integer
+          description: Index of the job in original jobs array
+        job_id:
+          type: string
+          description: Job unique identifier if specified
+        location_index:
+          type: integer
+          description: Index of the location in the locations array
+        location_id:
+          type: string
+          description: Location unique identifier if specified
+        waypoint_index:
+          type: integer
+          description: Index of the corresponding waypoint
+    
+    # Waypoint object for route planner
+    PlannerWaypoint:
+      type: object
+      properties:
+        original_location:
+          type: array
+          items:
+            type: number
+          minItems: 2
+          maxItems: 2
+          description: Original location. An array of the coordinates [lon, lat]
+        original_location_index:
+          type: integer
+          description: Index of the original location if specified in locations input
+        original_location_id:
+          type: string
+          description: Identifier of the original location if specified in locations input
+        location:
+          type: array
+          items:
+            type: number
+          minItems: 2
+          maxItems: 2
+          description: Matched location. An array of the coordinates [lon, lat]
+        start_time:
+          type: number
+          description: Actions execution start time, corresponds to arrival time for the waypoint
+        duration:
+          type: number
+          description: All actions duration
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlannerAction'
+          description: An array of Actions planned for the waypoint
+        prev_leg_index:
+          type: integer
+          description: Route leg that leads to the waypoint
+        next_leg_index:
+          type: integer
+          description: Route leg that leads off the waypoint
+    
+    # Route leg object for route planner
+    PlannerRouteLeg:
+      type: object
+      properties:
+        distance:
+          type: number
+          description: Length of the route leg in meters
+        time:
+          type: number
+          description: Time in seconds for the route leg
+        from_waypoint_index:
+          type: integer
+          description: Index of the previous waypoint
+        to_waypoint_index:
+          type: integer
+          description: Index of the next waypoint
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlannerLegStep'
+          description: An array of LegStep. Steps of the route
+    
+    # Leg step object for route planner
+    PlannerLegStep:
+      type: object
+      properties:
+        distance:
+          type: number
+          description: Distance in meters for the step
+        time:
+          type: number
+          description: Time in seconds for the step
+        from_index:
+          type: integer
+          description: An index of the way start point in the corresponding feature coordinates array
+        to_index:
+          type: integer
+          description: An index of the way end point in the corresponding feature coordinates array

@@ -137,6 +137,14 @@ export function AppSidebar() {
         icon: User,
       },
 
+      //Mapping
+      {
+        section: 'Admin',
+        title: 'GeoLocation',
+        href: '/GeoMap',
+        icon: User,
+      },
+
       {
         section: 'Admin',
         title: 'Configuration File',

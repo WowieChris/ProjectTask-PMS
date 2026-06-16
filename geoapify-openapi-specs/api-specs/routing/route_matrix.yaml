@@ -1,0 +1,313 @@
+openapi: 3.0.0
+info:
+  title: Route Matrix API
+  description: The Route Matrix API enables you to calculate up to 1,000 travel distances and times between multiple locations in a single request. For even larger datasets, you can combine multiple matrices from separate API calls. The API supports various transportation modes, including passenger cars, delivery trucks, small motor vehicles, and walking. It's ideal for logistics, fleet management, or any application that requires time-distance analysis between numerous points.
+  version: 1.0.0
+  contact:
+    name: Geoapify
+    url: https://geoapify.com
+    email: info@geoapify.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: https://api.geoapify.com/v1
+    description: Primary Geoapify API endpoint
+tags:
+  - name: Route Matrix API
+    description: Generates a time-distance matrix between source and target locations.
+paths:
+  /routematrix:
+    post:
+      tags:
+        - Route Matrix API
+      summary: Generate a time-distance matrix between source and target locations
+      description: Generates a time-distance matrix for the specified source and target locations, providing valuable data for route optimization and travel analytics. The API supports various transportation modes, including driving, walking, and cycling, making it ideal for logistics, route planning, and other mobility applications.
+      operationId: generateRouteMatrix
+      parameters:
+        - name: apiKey
+          in: query
+          required: true
+          description: Your Geoapify API key to authenticate the request. You can sign up and obtain an API key for free at [https://myprojects.geoapify.com/](https://myprojects.geoapify.com/). The Free plan includes up to 3,000 requests per day.
+          schema:
+            type: string
+            example: "YOUR_API_KEY"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mode:
+                  type: string
+                  description: |
+                    Specifies the transportation mode to be used for route calculation. Choose from various options based on the vehicle or method of travel, including:
+
+                    - `drive`: Standard car or automobile.
+                    - `light_truck`: Light-duty truck.
+                    - `medium_truck`: Medium-duty truck.
+                    - `truck`: General truck.
+                    - `heavy_truck`: Heavy-duty truck.
+                    - `truck_dangerous_goods`: Truck carrying hazardous materials.
+                    - `long_truck`: Long or articulated truck.
+                    - `bus`: Public or private bus.
+                    - `scooter`: Motorized scooter.
+                    - `motorcycle`: Motorbike.
+                    - `bicycle`: Standard bicycle.
+                    - `mountain_bike`: Mountain bike, optimized for off-road travel.
+                    - `road_bike`: Road bicycle, optimized for paved surfaces.
+                    - `walk`: Walking on foot.
+                    - `hike`: Hiking, often on rough terrain or trails.
+                    - `transit`: Public transportation with real-time data.
+                    - `approximated_transit`: Estimated public transportation routes without real-time data.
+                  enum: [ drive, light_truck, medium_truck, truck, heavy_truck, truck_dangerous_goods, long_truck, bus, scooter, motorcycle, bicycle, mountain_bike, road_bike, walk, hike, transit, approximated_transit ]
+                  example: drive
+                sources:
+                  description: List of source waypoints, where each waypoint is defined by a pair of latitude and longitude coordinates.
+                  example: [{location: [11.757314, 48.291153]}, {location: [12.130849, 48.076897]}, {location: [12.545583, 47.823032]}]
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      location:
+                        type: array
+                        description: Latitude and longitude coordinates representing a waypoint.
+                        items:
+                          type: number
+                        example: [ 9.236501233317654, 47.79125886208948 ]
+                targets:
+                  type: array
+                  description: List of target waypoints, where each target is defined by a pair of longitude and latitude coordinates.
+                  example: [{location: [11.757314, 48.291153]}, {location: [12.130849, 48.076897]}, {location: [12.545583, 47.823032]}]
+                  items:
+                    type: object
+                    properties:
+                      location:
+                        type: array
+                        items:
+                          type: number
+                        description: Coordinates of the target location, represented as [longitude, latitude].
+                        example: [ 9.049297670979968, 47.572236047449366 ]
+                avoid:
+                  type: array
+                  description: A list of road types or specific locations to avoid during route calculation.
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        description: The type of feature to avoid, such as toll roads, highways, or specific geographic locations.
+                        enum: [tolls, ferries, highways, location]
+                        example: tolls
+                      importance:
+                        type: number
+                        description: Specifies the importance of avoiding the selected road type or location, with values ranging from 0 to 1. A value of `1` means the avoidance is critical, while a value of `0` means it is not important and can be ignored if necessary.
+                      values:
+                        type: array
+                        description: List of coordinates to avoid if the avoid type is set to "locations". This is useful for bypassing specific geographic areas or obstacles (e.g., road closures or restricted areas).
+                        items:
+                          type: object
+                          properties:
+                            lon:
+                              type: number
+                              description: Longitude of the location to avoid.
+                            lat:
+                              type: number
+                              description: Latitude of the location to avoid.
+                traffic:
+                  type: string
+                  description: |
+                    Specifies the traffic model to use for route calculation. 
+                      - `free_flow`: Assumes no traffic and calculates the route based on optimal conditions.
+                      - `approximated`: Takes potential traffic into account, adjusting travel speeds on congested roads.
+                  enum: [ free_flow, approximated ]
+                  example: approximated
+                type:
+                  type: string
+                  description: |
+                    Determines the type of route calculation optimization.
+                      - `balanced`: Provides a route that balances speed and distance.
+                      - `short`: Prioritizes the shortest distance.
+                      - `less_maneuvers`: Minimizes the number of turns and maneuvers, useful for larger vehicles or easier navigation.
+                  enum: [ balanced, short, less_maneuvers ]
+                  example: short
+                max_speed:
+                  type: number
+                  description: Maximum allowable speed for the route, specified in kilometers per hour (KPH). This is typically used for vehicle-based modes of transportation.
+                  example: 80
+                units:
+                  type: string
+                  description: |
+                    Specifies the unit system to use for measuring distances in the response.
+                      - `metric`: Uses kilometers and meters.
+                      - `imperial`: Uses miles and feet.
+                  enum: [ metric, imperial ]
+                  example: imperial
+            example:
+              mode: truck
+              sources:
+                - location: [ 9.236501233317654, 47.79125886208948 ]
+                - location: [ 9.29243400499115, 47.75443519732946 ]
+              targets:
+                - location: [ 9.049297670979968, 47.572236047449366 ]
+                - location: [ 9.204539649503204, 47.56068305549502 ]
+              avoid:
+                - type: tolls
+              traffic: approximated
+              type: balanced
+              max_speed: 80
+              units: metric
+      responses:
+        '200':
+          description: Successful response containing the time-distance matrix, which provides travel times and distances between specified source and target locations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouteMatrixResponse'
+              example: |
+                {
+                  "sources": [
+                    {
+                      "original_location": [
+                        9.236501233317654,
+                        47.79125886208948
+                      ],
+                      "location": [
+                        9.238094,
+                        47.792033
+                      ]
+                    },
+                    {
+                      "original_location": [
+                        9.29243400499115,
+                        47.75443519732946
+                      ],
+                      "location": [
+                        9.2926,
+                        47.754454
+                      ]
+                    }
+                  ],
+                  "targets": [
+                    {
+                      "original_location": [
+                        9.049297670979968,
+                        47.572236047449366
+                      ],
+                      "location": [
+                        9.049953,
+                        47.572671
+                      ]
+                    },
+                    {
+                      "original_location": [
+                        9.204539649503204,
+                        47.56068305549502
+                      ],
+                      "location": [
+                        9.204531,
+                        47.560683
+                      ]
+                    }
+                  ],
+                  "sources_to_targets": [
+                    [
+                      {
+                        "distance": 71016,
+                        "time": 7002,
+                        "source_index": 0,
+                        "target_index": 0
+                      },
+                      {
+                        "distance": 71027,
+                        "time": 7251,
+                        "source_index": 0,
+                        "target_index": 1
+                      }
+                    ],
+                    [
+                      {
+                        "distance": 38044,
+                        "time": 6772,
+                        "source_index": 1,
+                        "target_index": 0
+                      },
+                      {
+                        "distance": 38055,
+                        "time": 7021,
+                        "source_index": 1,
+                        "target_index": 1
+                      }
+                    ]
+                  ],
+                  "units": "metric",
+                  "distance_units": "meters",
+                  "mode": "truck",
+                  "type": "balanced",
+                  "traffic": "approximated",
+                  "max_speed": 80,
+                  "avoid": [
+                    {
+                      "type": "tolls"
+                    }
+                  ]
+                }
+        '400':
+          description: Bad Request. The input provided is invalid or improperly formatted. Please verify and correct your request parameters.
+        '401':
+          description: Unauthorized. The API key is missing, incorrect, or invalid. Please provide a valid API key to authenticate the request.
+        '429':
+          description: Request limit exceeded. Too many requests have been sent in a short period, surpassing the allowed rate limits.
+        '500':
+          description: Internal Server Error. The server encountered an unexpected condition that prevented it from fulfilling the request. Please try again later or [contact support](mailto:info@geoapify.com) if the issue persists.
+
+components:
+  schemas:
+    # Main Route Matrix Response
+    RouteMatrixResponse:
+      type: object
+      properties:
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/RouteMatrixLocation'
+          description: List of from-waypoints with original and matched to existing roads locations
+        targets:
+          type: array
+          items:
+            $ref: '#/components/schemas/RouteMatrixLocation'
+          description: List of to-waypoints with original and matched to existing roads locations
+        sources_to_targets:
+          type: array
+          items:
+            type: array
+            items:
+              $ref: '#/components/schemas/RouteMatrixEntry'
+          description: The time-distance matrix as a 2D array
+    
+    # Location object with original and matched coordinates
+    RouteMatrixLocation:
+      type: object
+      properties:
+        original_location:
+          $ref: '../common/shared-components.yaml#/components/schemas/CoordinateArray'
+        location:
+          $ref: '../common/shared-components.yaml#/components/schemas/CoordinateArray'
+    
+    # Individual matrix entry with distance and time
+    RouteMatrixEntry:
+      type: object
+      properties:
+        distance:
+          type: number
+          description: Distance in meters between source waypoint and target waypoint
+        time:
+          type: number
+          description: Travel time in seconds between source waypoint and target waypoint
+        source_index:
+          type: integer
+          description: Index of the source waypoint
+        target_index:
+          type: integer
+          description: Index of the target waypoint

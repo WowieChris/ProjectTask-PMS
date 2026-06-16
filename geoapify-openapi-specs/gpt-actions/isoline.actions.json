@@ -1,0 +1,499 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Isoline API",
+    "description": "The Isoline API calculates areas that are accessible from a specific location within a certain time (isochrones)\nor distance (isodistances). It supports multiple travel modes and returns GeoJSON isoline polygons.\n\nThis specification is intended for tool use and returns GeoJSON.\n",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Geoapify",
+      "url": "https://geoapify.com",
+      "email": "info@geoapify.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.geoapify.com/v1",
+      "description": "Primary Geoapify API endpoint"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Isoline",
+      "description": "Isochrones (time) and isodistances (distance) as GeoJSON."
+    }
+  ],
+  "paths": {
+    "/isoline": {
+      "get": {
+        "tags": [
+          "Isoline"
+        ],
+        "operationId": "getIsoline",
+        "summary": "Calculate isochrones or isodistances (GeoJSON)",
+        "description": "Returns isolines (isochrones or isodistances) for a location, travel mode, and range.\nGeoJSON coordinates are in [lon, lat] order.\n",
+        "security": [
+          {
+            "GeoapifyApiKey": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "lat",
+            "in": "query",
+            "required": true,
+            "description": "Latitude of the origin point.",
+            "schema": {
+              "type": "number"
+            },
+            "example": 28.293067
+          },
+          {
+            "name": "lon",
+            "in": "query",
+            "required": true,
+            "description": "Longitude of the origin point.",
+            "schema": {
+              "type": "number"
+            },
+            "example": -81.550409
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "description": "Isoline type: time (seconds) or distance (meters).",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "time",
+                "distance"
+              ]
+            },
+            "example": "time"
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "required": true,
+            "description": "Travel mode used to calculate the isoline.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "drive",
+                "light_truck",
+                "medium_truck",
+                "truck",
+                "heavy_truck",
+                "truck_dangerous_goods",
+                "long_truck",
+                "bus",
+                "scooter",
+                "motorcycle",
+                "bicycle",
+                "mountain_bike",
+                "road_bike",
+                "walk",
+                "hike",
+                "transit",
+                "approximated_transit"
+              ]
+            },
+            "example": "drive"
+          },
+          {
+            "name": "range",
+            "in": "query",
+            "required": true,
+            "description": "Range value: seconds for type=time, meters for type=distance.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "example": 900
+          },
+          {
+            "name": "avoid",
+            "in": "query",
+            "required": false,
+            "description": "Avoid options separated by \"|\", e.g. \"tolls:1|ferries|location:lat,lon\".",
+            "schema": {
+              "type": "string"
+            },
+            "example": "tolls:1|ferries|location:35.234045,-80.836392"
+          },
+          {
+            "name": "traffic",
+            "in": "query",
+            "required": false,
+            "description": "Traffic model (motorized modes only).",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "free_flow",
+                "approximated"
+              ]
+            },
+            "example": "free_flow"
+          },
+          {
+            "name": "route_type",
+            "in": "query",
+            "required": false,
+            "description": "Route optimization type.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "balanced",
+                "short",
+                "less_maneuvers"
+              ]
+            },
+            "example": "balanced"
+          },
+          {
+            "name": "max_speed",
+            "in": "query",
+            "required": false,
+            "description": "Maximum speed in km/h (motorized modes).",
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            },
+            "example": 80
+          },
+          {
+            "name": "units",
+            "in": "query",
+            "required": false,
+            "description": "Distance units in response.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "metric",
+                "imperial"
+              ]
+            },
+            "example": "metric"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "description": "ID of a previously generated isoline. Lets you fetch results (within the retention window) without recalculation.\n",
+            "schema": {
+              "type": "string"
+            },
+            "example": "a235ce27b9fa8a22688f06915cfe53e3"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Completed isoline GeoJSON FeatureCollection.",
+            "content": {
+              "application/geo+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IsolineResponse"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Accepted; calculation is still running. Use the returned id to poll later.",
+            "content": {
+              "application/geo+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IsolineAsyncResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "GeoapifyApiKey": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "apiKey",
+        "description": "API key used to authenticate requests to Geoapify services."
+      }
+    },
+    "schemas": {
+      "LonLat": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "type": "number"
+        },
+        "description": "Coordinate in [lon, lat] order"
+      },
+      "IsolineResponse": {
+        "type": "object",
+        "required": [
+          "type",
+          "features"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "FeatureCollection"
+            ]
+          },
+          "features": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IsolineFeature"
+            }
+          },
+          "properties": {
+            "$ref": "#/components/schemas/IsolineResponseProperties"
+          }
+        }
+      },
+      "IsolineAsyncResponse": {
+        "type": "object",
+        "required": [
+          "type",
+          "features",
+          "properties"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "FeatureCollection"
+            ]
+          },
+          "features": {
+            "type": "array",
+            "description": "Empty while processing.",
+            "items": {
+            }
+          },
+          "properties": {
+            "$ref": "#/components/schemas/IsolineResponseProperties"
+          }
+        }
+      },
+      "IsolineResponseProperties": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the isoline calculation."
+          }
+        }
+      },
+      "IsolineFeature": {
+        "type": "object",
+        "required": [
+          "type",
+          "geometry",
+          "properties"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "Feature"
+            ]
+          },
+          "properties": {
+            "$ref": "#/components/schemas/IsolineFeatureProperties"
+          },
+          "geometry": {
+            "$ref": "#/components/schemas/IsolineGeometry"
+          }
+        }
+      },
+      "IsolineFeatureProperties": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "lat": {
+            "type": "number"
+          },
+          "lon": {
+            "type": "number"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "drive",
+              "light_truck",
+              "medium_truck",
+              "truck",
+              "heavy_truck",
+              "truck_dangerous_goods",
+              "long_truck",
+              "bus",
+              "scooter",
+              "motorcycle",
+              "bicycle",
+              "mountain_bike",
+              "road_bike",
+              "walk",
+              "hike",
+              "transit",
+              "approximated_transit"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "time",
+              "distance"
+            ]
+          },
+          "range": {
+            "type": "number",
+            "description": "Range value (seconds for time, meters for distance)."
+          },
+          "route_type": {
+            "type": "string",
+            "enum": [
+              "balanced",
+              "short",
+              "less_maneuvers"
+            ]
+          },
+          "traffic": {
+            "type": "string",
+            "enum": [
+              "free_flow",
+              "approximated"
+            ]
+          },
+          "units": {
+            "type": "string",
+            "enum": [
+              "metric",
+              "imperial"
+            ]
+          },
+          "max_speed": {
+            "type": "number"
+          },
+          "id": {
+            "type": "string",
+            "description": "Isoline unique identifier."
+          },
+          "avoid": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Avoid options applied (if any)."
+          }
+        }
+      },
+      "IsolineGeometry": {
+        "type": "object",
+        "required": [
+          "type",
+          "coordinates"
+        ],
+        "additionalProperties": true,
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "Polygon": "#/components/schemas/PolygonGeometry",
+            "MultiPolygon": "#/components/schemas/MultiPolygonGeometry"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/PolygonGeometry"
+          },
+          {
+            "$ref": "#/components/schemas/MultiPolygonGeometry"
+          }
+        ]
+      },
+      "PolygonGeometry": {
+        "type": "object",
+        "required": [
+          "type",
+          "coordinates"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "Polygon"
+            ]
+          },
+          "coordinates": {
+            "type": "array",
+            "description": "Polygon coordinates [ [ [lon,lat], ... ] , ... ]",
+            "items": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/LonLat"
+              }
+            }
+          }
+        }
+      },
+      "MultiPolygonGeometry": {
+        "type": "object",
+        "required": [
+          "type",
+          "coordinates"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "MultiPolygon"
+            ]
+          },
+          "coordinates": {
+            "type": "array",
+            "description": "MultiPolygon coordinates [ [ [ [lon,lat], ... ] , ... ] , ... ]",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/LonLat"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

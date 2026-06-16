@@ -1,0 +1,539 @@
+openapi: 3.0.0
+info:
+  title: Reverse Geocoding API
+  description: The Reverse Geocoding API allows you to convert geographic coordinates (latitude and longitude) into human-readable addresses. This is particularly useful for obtaining an address based on GPS coordinates or determining the location of a point of interest, such as when a user clicks on a map. Common use cases include finding a customer’s address from their GPS data or identifying the address of a specific building.
+  version: 1.0.0
+  contact:
+    name: Geoapify
+    url: https://geoapify.com
+    email: info@geoapify.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: https://api.geoapify.com/v1
+    description: Primary Geoapify API endpoint
+
+tags:
+  - name: Reverse Geocoding API
+    description: Converts geographic coordinates into addresses.
+
+paths:
+  # Reverse Geocoding API
+  /geocode/reverse:
+    get:
+      tags:
+        - Reverse Geocoding API
+      summary: Retrieve address from geographic coordinates
+      description: Returns an address and its components (such as city, postcode, street, etc.) based on the provided latitude and longitude coordinates. Use this endpoint to convert coordinates into a human-readable address for various use cases, such as map applications or location-based services.
+      operationId: getReverseGeocode
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          description: The latitude of the location to reverse geocode.
+          schema:
+            type: number
+            format: float
+            example: 36.47032
+        - name: lon
+          in: query
+          required: true
+          description: The longitude of the location to reverse geocode.
+          schema:
+            type: number
+            format: float
+            example: -86.65138
+        - name: apiKey
+          in: query
+          required: true
+          description: Your Geoapify API key to authenticate the request. You can sign up and obtain an API key for free at [https://myprojects.geoapify.com/](https://myprojects.geoapify.com/). The Free plan includes up to 3,000 requests per day.
+          schema:
+            type: string
+            example: "YOUR_API_KEY"
+        - name: format
+          in: query
+          required: false
+          description: The format of the response (JSON, XML, or GeoJSON).
+          schema:
+            type: string
+            enum: [json, xml, geojson]
+            example: "json"
+        - name: limit
+          in: query
+          required: false
+          description: The maximum number of results to return.
+          schema:
+            type: integer
+            example: 1
+        - name: type
+          in: query
+          required: false
+          description: |
+            Defines the location type to be searched. Available types include:
+
+            - `country`: Search for countries.
+            - `state`: Search for states or regions.
+            - `city`: Search for cities or towns.
+            - `postcode`: Search for postal codes.
+            - `street`: Search for specific streets.
+            - `amenity`: Search for points of interest (e.g., schools, parks, etc.).
+          schema:
+            type: string
+            enum: [ country, state, city, postcode, street, amenity ]
+        - name: lang
+          in: query
+          required: false
+          description: Result language in [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format (e.g., 'en' for English).
+          schema:
+            type: string
+            example: en
+      responses:
+        '200':
+          description: Successful response with reverse geocoded address data.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ReverseGeocodingJsonResponse'
+                  - $ref: '#/components/schemas/ReverseGeocodingGeoJsonResponse'
+              examples: 
+                format=json:
+                  value: |
+                    {
+                      "results": [
+                        {
+                          "datasource": {
+                            "sourcename": "openstreetmap",
+                            "attribution": "© OpenStreetMap contributors",
+                            "license": "Open Database License",
+                            "url": "https://www.openstreetmap.org/copyright"
+                          },
+                          "country": "United States",
+                          "country_code": "us",
+                          "region": "Middle Tennessee",
+                          "state": "Tennessee",
+                          "county": "Sumner County",
+                          "city": "White House",
+                          "postcode": "37188",
+                          "lon": -86.6536503,
+                          "lat": 36.4682439,
+                          "state_code": "TN",
+                          "distance": 0,
+                          "result_type": "postcode",
+                          "formatted": "White House, TN 37188, United States of America",
+                          "address_line1": "White House, TN 37188",
+                          "address_line2": "United States of America",
+                          "category": "administrative",
+                          "timezone": {
+                            "name": "America/Chicago",
+                            "offset_STD": "-06:00",
+                            "offset_STD_seconds": -21600,
+                            "offset_DST": "-05:00",
+                            "offset_DST_seconds": -18000,
+                            "abbreviation_STD": "CST",
+                            "abbreviation_DST": "CDT"
+                          },
+                          "plus_code": "868MF89W+7G",
+                          "plus_code_short": "9W+7G White House, Sumner County, United States",
+                          "rank": {
+                            "importance": 0.3758389495615451,
+                            "popularity": 1.8230053383091829
+                          },
+                          "place_id": "5151611168d5a955c0599786866aef3b4240f00101f9017a02030000000000c0020792030833373138382b7573",
+                          "bbox": {
+                            "lon1": -86.714807,
+                            "lat1": 36.430421,
+                            "lon2": -86.624015,
+                            "lat2": 36.507271
+                          }
+                        }
+                      ],
+                      "query": {
+                        "lat": 36.47032,
+                        "lon": -86.65138,
+                        "plus_code": "868MF8CX+4C"
+                      }
+                    }
+                format=geojson:
+                  value:  |
+                    {
+                      "type": "FeatureCollection",
+                      "features": [
+                        {
+                          "type": "Feature",
+                          "properties": {
+                            "datasource": {
+                              "sourcename": "openstreetmap",
+                              "attribution": "© OpenStreetMap contributors",
+                              "license": "Open Database License",
+                              "url": "https://www.openstreetmap.org/copyright"
+                            },
+                            "country": "United States",
+                            "country_code": "us",
+                            "region": "Middle Tennessee",
+                            "state": "Tennessee",
+                            "county": "Sumner County",
+                            "city": "White House",
+                            "postcode": "37188",
+                            "lon": -86.6536503,
+                            "lat": 36.4682439,
+                            "state_code": "TN",
+                            "distance": 0,
+                            "result_type": "postcode",
+                            "formatted": "White House, TN 37188, United States of America",
+                            "address_line1": "White House, TN 37188",
+                            "address_line2": "United States of America",
+                            "category": "administrative",
+                            "timezone": {
+                              "name": "America/Chicago",
+                              "offset_STD": "-06:00",
+                              "offset_STD_seconds": -21600,
+                              "offset_DST": "-05:00",
+                              "offset_DST_seconds": -18000,
+                              "abbreviation_STD": "CST",
+                              "abbreviation_DST": "CDT"
+                            },
+                            "plus_code": "868MF89W+7G",
+                            "plus_code_short": "9W+7G White House, Sumner County, United States",
+                            "rank": {
+                              "importance": 0.3758389495615451,
+                              "popularity": 1.8230053383091829
+                            },
+                            "place_id": "5151611168d5a955c0599786866aef3b4240f00101f9017a02030000000000c0020792030833373138382b7573"
+                          },
+                          "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                              -86.6536503,
+                              36.4682439
+                            ]
+                          },
+                          "bbox": [
+                            -86.714807,
+                            36.430421,
+                            -86.624015,
+                            36.507271
+                          ]
+                        }
+                      ],
+                      "query": {
+                        "lat": 36.47032,
+                        "lon": -86.65138,
+                        "plus_code": "868MF8CX+4C"
+                      }
+                    }
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ReverseGeocodingXmlResponse'
+              examples: 
+                format=xml:
+                  value: |
+                    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                    <root>
+                      <results>
+                        <datasource>
+                          <sourcename>openstreetmap</sourcename>
+                          <attribution>© OpenStreetMap contributors</attribution>
+                          <license>Open Database License</license>
+                          <url>https://www.openstreetmap.org/copyright</url>
+                        </datasource>
+                        <country>United States</country>
+                        <country_code>us</country_code>
+                        <region>Middle Tennessee</region>
+                        <state>Tennessee</state>
+                        <county>Sumner County</county>
+                        <city>White House</city>
+                        <postcode>37188</postcode>
+                        <lon>-86.6536503</lon>
+                        <lat>36.4682439</lat>
+                        <state_code>TN</state_code>
+                        <distance>0</distance>
+                        <result_type>postcode</result_type>
+                        <formatted>White House, TN 37188, United States of America</formatted>
+                        <address_line1>White House, TN 37188</address_line1>
+                        <address_line2>United States of America</address_line2>
+                        <category>administrative</category>
+                        <timezone>
+                          <name>America/Chicago</name>
+                          <offset_STD>-06:00</offset_STD>
+                          <offset_STD_seconds>-21600</offset_STD_seconds>
+                          <offset_DST>-05:00</offset_DST>
+                          <offset_DST_seconds>-18000</offset_DST_seconds>
+                          <abbreviation_STD>CST</abbreviation_STD>
+                          <abbreviation_DST>CDT</abbreviation_DST>
+                        </timezone>
+                        <plus_code>868MF89W+7G</plus_code>
+                        <plus_code_short>9W+7G White House, Sumner County, United States</plus_code_short>
+                        <rank>
+                          <importance>0.3758389495615451</importance>
+                          <popularity>1.8230053383091829</popularity>
+                        </rank>
+                        <place_id>5151611168d5a955c0599786866aef3b4240f00101f9017a02030000000000c0020792030833373138382b7573</place_id>
+                        <bbox>
+                          <lon1>-86.714807</lon1>
+                          <lat1>36.430421</lat1>
+                          <lon2>-86.624015</lon2>
+                          <lat2>36.507271</lat2>
+                        </bbox>
+                      </results>
+                      <query>
+                        <lat>36.47032</lat>
+                        <lon>-86.65138</lon>
+                        <plus_code>868MF8CX+4C</plus_code>
+                      </query>
+                    </root>
+        '400':
+          description: Bad Request. The input provided is invalid or improperly formatted. Please verify and correct your request parameters.
+        '401':
+          description: Unauthorized. The API key is missing, incorrect, or invalid. Please provide a valid API key to authenticate the request.
+        '429':
+          description: Request limit exceeded. Too many requests have been sent in a short period, surpassing the allowed rate limits.
+        '500':
+          description: Internal Server Error. The server encountered an unexpected condition that prevented it from fulfilling the request. Please try again later or [contact support](mailto:info@geoapify.com) if the issue persists.
+
+components:
+  schemas:
+    # JSON Format Response Schema
+    ReverseGeocodingJsonResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReverseGeocodingResult'
+        query:
+          $ref: '#/components/schemas/ReverseQueryInfo'
+    
+    # GeoJSON Format Response Schema  
+    ReverseGeocodingGeoJsonResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [FeatureCollection]
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReverseGeoJsonFeature'
+        query:
+          $ref: '#/components/schemas/ReverseQueryInfo'
+    
+    # Individual reverse geocoding result object (based on documentation table)
+    ReverseGeocodingResult:
+      allOf:
+        - $ref: '../common/shared-components.yaml#/components/schemas/LatLonCoordinates'
+        - $ref: '../common/shared-components.yaml#/components/schemas/AddressComponents'
+        - $ref: '../common/shared-components.yaml#/components/schemas/FormattedAddressFields'
+        - type: object
+          properties:
+            name:
+              type: string
+              description: Location name
+            result_type:
+              $ref: '../common/shared-components.yaml#/components/schemas/ResultType'
+            distance:
+              type: number
+              description: Distance in meters to the given coordinates
+            rank:
+              $ref: '../common/shared-components.yaml#/components/schemas/Rank'
+            datasource:
+              $ref: '../common/shared-components.yaml#/components/schemas/Datasource'
+            category:
+              type: string
+              description: A place category from the list of Places API Categories
+            timezone:
+              $ref: '../common/shared-components.yaml#/components/schemas/Timezone'
+            # Additional fields from examples (not in documentation table)
+            region:
+              type: string
+              description: Region name (from examples)
+            plus_code:
+              type: string
+              description: Plus code (Open Location Code)
+            plus_code_short:
+              type: string
+              description: Shortened plus code
+            place_id:
+              type: string
+              description: Unique identifier for the place
+            bbox:
+              $ref: '../common/shared-components.yaml#/components/schemas/BoundingBox'
+    
+    # GeoJSON Feature
+    ReverseGeoJsonFeature:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [Feature]
+        properties:
+          $ref: '#/components/schemas/ReverseGeocodingResult'
+        geometry:
+          $ref: '#/components/schemas/ReverseGeometry'
+        bbox:
+          type: array
+          description: Bounding box [lon1, lat1, lon2, lat2]
+          items:
+            type: number
+          minItems: 4
+          maxItems: 4
+    
+    # GeoJSON Geometry
+    ReverseGeometry:
+      $ref: '../common/shared-components.yaml#/components/schemas/PointGeometry'
+    
+    # Datasource information
+    
+    # Query information
+    ReverseQueryInfo:
+      type: object
+      properties:
+        lat:
+          type: number
+          description: Query latitude
+        lon:
+          type: number
+          description: Query longitude
+        plus_code:
+          type: string
+          description: Plus code for the query coordinates
+    
+    # XML Format Response Schema
+    ReverseGeocodingXmlResponse:
+      type: object
+      xml:
+        name: root
+      properties:
+        results:
+          type: array
+          xml:
+            wrapped: false
+          items:
+            type: object
+            xml:
+              name: results
+            properties:
+              name:
+                type: string
+              country:
+                type: string
+              country_code:
+                type: string
+              state:
+                type: string
+              state_code:
+                type: string
+              county:
+                type: string
+              county_code:
+                type: string
+              postcode:
+                type: string
+              city:
+                type: string
+              street:
+                type: string
+              housenumber:
+                type: string
+              lat:
+                type: number
+              lon:
+                type: number
+              formatted:
+                type: string
+              address_line1:
+                type: string
+              address_line2:
+                type: string
+              result_type:
+                type: string
+              distance:
+                type: number
+              category:
+                type: string
+              region:
+                type: string
+              plus_code:
+                type: string
+              plus_code_short:
+                type: string
+              place_id:
+                type: string
+              datasource:
+                type: object
+                xml:
+                  name: datasource
+                properties:
+                  sourcename:
+                    type: string
+                  attribution:
+                    type: string
+                  license:
+                    type: string
+                  url:
+                    type: string
+              timezone:
+                type: object
+                xml:
+                  name: timezone
+                properties:
+                  name:
+                    type: string
+                  name_alt:
+                    type: string
+                  offset_STD:
+                    type: string
+                  offset_STD_seconds:
+                    type: integer
+                  offset_DST:
+                    type: string
+                  offset_DST_seconds:
+                    type: integer
+                  abbreviation_STD:
+                    type: string
+                  abbreviation_DST:
+                    type: string
+              rank:
+                type: object
+                xml:
+                  name: rank
+                properties:
+                  confidence:
+                    type: number
+                  confidence_city_level:
+                    type: number
+                  confidence_street_level:
+                    type: number
+                  confidence_building_level:
+                    type: number
+                  match_type:
+                    type: string
+                  importance:
+                    type: number
+                  popularity:
+                    type: number
+              bbox:
+                type: object
+                xml:
+                  name: bbox
+                properties:
+                  lon1:
+                    type: number
+                  lat1:
+                    type: number
+                  lon2:
+                    type: number
+                  lat2:
+                    type: number
+        query:
+          type: object
+          xml:
+            name: query
+          properties:
+            lat:
+              type: number
+            lon:
+              type: number
+            plus_code:
+              type: string
