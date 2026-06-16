@@ -30,7 +30,8 @@ use App\Http\Controllers\ScheduledTransferController;
 use App\Http\Controllers\AssetCategoryController;
 use App\Http\Controllers\AssetAssignmentController;
 use App\Http\Controllers\AssetTransferController;
-
+use App\Http\Controllers\Api\GeocodingController;
+use App\Http\Controllers\Api\GeoMapBranchController;
 
 Route::get('/', function () {
     return Inertia::render('auth/login', [
@@ -74,6 +75,40 @@ Route::middleware(['auth'])->group(function () {
 
         require __DIR__ . '/settings.php';
     });
+});
+
+//GEO MAP
+
+// Route::get('/test-geocode', function () {
+
+//     return app(
+//         \App\Services\NominatimService::class
+//     )->geocode(
+//         'SM North EDSA'
+//     );
+// });
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/GeoMap', function () {
+        return Inertia::render('GeoMap/Index');
+    })->middleware('auth');
+
+    Route::post('/geomap/geocode', [
+        GeocodingController::class,
+        'geocode'
+    ]);
+
+    Route::post('/geomap/reverse-geocode', [
+        GeocodingController::class,
+        'reverse'
+    ]);
+
+    Route::apiResource(
+        'geomap-branches',
+        GeoMapBranchController::class
+
+    );
 });
 
 Route::middleware(['auth'])->group(

@@ -1,0 +1,366 @@
+openapi: 3.0.0
+info:
+  title: Isoline API
+  description: The Isoline API calculates areas that are accessible from a specific location within a certain time (isochrones) or distance (isodistances). It helps determine how far you can travel from a given point based on various transportation modes, providing valuable insights for business planning, logistics, or finding optimal locations for services. This API is ideal for businesses looking to explore reachable areas, optimize service coverage, or identify new opportunities.
+  version: 1.0.0
+  contact:
+    name: Geoapify
+    url: https://geoapify.com
+    email: info@geoapify.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: https://api.geoapify.com/v1
+    description: Primary Geoapify API endpoint
+
+tags:
+  - name: Isoline API
+    description: API for calculating isochrones (time-based areas) and isodistances (distance-based areas) from a given location.
+
+paths:
+  /isoline:
+    get:
+      tags:
+        - Isoline API
+      summary: Calculate Isochrones or Isodistances
+      description: |
+        Returns isolines (Isochrones or Isodistances) based on a specified location, travel mode, and range. Isochrones represent areas accessible within a given travel time, while isodistances represent areas reachable within a certain distance.
+      operationId: getIsoline
+      parameters:
+        - name: apiKey
+          in: query
+          required: true
+          description: Your Geoapify API key to authenticate the request. You can sign up and obtain an API key for free at [https://myprojects.geoapify.com/](https://myprojects.geoapify.com/). The Free plan includes up to 3,000 requests per day.
+          schema:
+            type: string
+            example: "YOUR_API_KEY"
+        - name: lat
+          in: query
+          required: true
+          description: The latitude of the location from which to calculate the isoline.
+          schema:
+            type: number
+            example: 28.293067
+        - name: lon
+          in: query
+          required: true
+          description: The longitude of the location from which to calculate the isoline.
+          schema:
+            type: number
+            example: -81.550409
+        - name: type
+          in: query
+          required: true
+          description: |
+            Specifies whether to calculate an isochrone (based on travel time) or an isodistance (based on distance).
+          schema:
+            type: string
+            enum: [time, distance]
+            example: time
+        - name: mode
+          in: query
+          required: true
+          description: |
+            Determines how the accessible area is calculated based on the type of transportation or movement.
+
+            Available options include:
+            - `drive`: Standard car or automobile.
+            - `light_truck`: Light-duty truck.
+            - `medium_truck`: Medium-duty truck.
+            - `truck`: General truck.
+            - `heavy_truck`: Heavy-duty truck.
+            - `truck_dangerous_goods`: Truck carrying hazardous materials.
+            - `long_truck`: Long or articulated truck.
+            - `bus`: Public or private bus.
+            - `scooter`: Motorized scooter.
+            - `motorcycle`: Motorbike.
+            - `bicycle`: Standard bicycle.
+            - `mountain_bike`: Mountain bike.
+            - `road_bike`: Road bicycle.
+            - `walk`: Walking on foot.
+            - `hike`: Hiking, often on trails or rugged terrain.
+            - `transit`: Public transit routes (based on real-time data).
+            - `approximated_transit`: Estimated public transit routes (without real-time data).
+
+            Selecting the appropriate travel mode helps generate an isoline that accurately reflects the time or distance accessible for the specified mode.
+          schema:
+            type: string
+            enum: [ drive, light_truck, medium_truck, truck, heavy_truck, truck_dangerous_goods, long_truck, bus, scooter, motorcycle, bicycle, mountain_bike, road_bike, walk, hike, transit, approximated_transit ]
+            example: drive
+        - name: range
+          in: query
+          required: true
+          description: |
+            The range value for the isoline. For isochrones, the range is specified in seconds (travel time). For isodistances, it is specified in meters (travel distance).
+          schema:
+            type: string
+            example: "900"
+        - name: avoid
+          in: query
+          required: false
+          description: |
+            Specifies road types or specific locations to avoid during routing. Use this to exclude features like toll roads, highways, ferries, or particular geographic areas.
+          schema:
+            type: string
+            example: "tolls:1|ferries|location:35.234045,-80.836392"
+        - name: traffic
+          in: query
+          required: false
+          description: |
+            The traffic model to be used in route calculations. The default value is `free_flow`, which does not consider real-time traffic. Alternatively, use `approximated` for a traffic-influenced model.
+          schema:
+            $ref: '../common/shared-components.yaml#/components/schemas/TrafficEnum'
+        - name: route_type
+          in: query
+          required: false
+          description: |
+            Defines the type of route to calculate. Options include `balanced` for a mix of efficiency and speed, `short` for the shortest route, and `less_maneuvers` to minimize turns or complexity. The default is `balanced`.
+          schema:
+            $ref: '../common/shared-components.yaml#/components/schemas/RouteTypeEnum'
+        - name: max_speed
+          in: query
+          required: false
+          description: |
+            The maximum speed that a vehicle can travel. This applies to driving mode, all truck modes, and bus modes. The max_speed should be specified within the range of 10 to 252 KPH (6.5 - 155 MPH). For trucks, the standard setting is 90 kilometers per hour (KPH), while for automobiles and buses, it's set at 140 KPH by default.
+          schema:
+            type: number
+            example: 80
+        - name: units
+          in: query
+          required: false
+          description: |
+            Specifies the units of measurement for distances in the response. The default is metric. Use `imperial` for miles, feet, etc.
+          schema:
+            $ref: '../common/shared-components.yaml#/components/schemas/UnitsEnum'
+        - name: id
+          in: query
+          required: false
+          description: |
+            ID of previously generated isoline. This parameter allows you to retrieve previously calculated isolines within a 24-hour window without recalculating them.
+          schema:
+            type: string
+            example: "a235ce27b9fa8a22688f06915cfe53e3"
+      responses:
+        '200':
+          description: Successful response containing the calculated isoline(s), including details about the accessible areas based on the specified travel mode, range, and location.
+          content:
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/IsolineResponse'
+              example: |
+                {
+                  "features": [
+                    {
+                      "properties": {
+                        "lat": -20.318872,
+                        "lon": -27.023424,
+                        "mode": "truck_dangerous_goods",
+                        "type": "distance",
+                        "range": 1,
+                        "route_type": "short",
+                        "traffic": "free_flow",
+                        "units": "metric",
+                        "max_speed": 10,
+                        "id": "80529db168673d2f39930ee3090e77d0"
+                      },
+                      "geometry": {
+                        "coordinates": [
+                          [
+                            [
+                              [
+                                -27.023424,
+                                -20.318871
+                              ],
+                              [
+                                -27.023425,
+                                -20.318871
+                              ],
+                              [
+                                -27.023425,
+                                -20.318872
+                              ],
+                              [
+                                -27.023425,
+                                -20.318873
+                              ],
+                              [
+                                -27.023424,
+                                -20.318873
+                              ],
+                              [
+                                -27.023423,
+                                -20.318873
+                              ],
+                              [
+                                -27.023423,
+                                -20.318872
+                              ],
+                              [
+                                -27.023423,
+                                -20.318871
+                              ],
+                              [
+                                -27.023424,
+                                -20.318871
+                              ]
+                            ]
+                          ]
+                        ],
+                        "type": "MultiPolygon"
+                      },
+                      "type": "Feature"
+                    }
+                  ],
+                  "type": "FeatureCollection",
+                  "properties": {
+                    "id": "80529db168673d2f39930ee3090e77d0"
+                  }
+                }
+        '202':
+          description: Request accepted for processing but calculation is taking too much time. The response includes an ID that can be used to retrieve the isoline data later.
+          content:
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/IsolineAsyncResponse'
+              example: |
+                {
+                  "type": "FeatureCollection",
+                  "features": [],
+                  "properties": {
+                    "id": "a235ce27b9fa8a22688f06915cfe53e3"
+                  }
+                }
+        '400':
+          description: Bad Request. The input provided is invalid or improperly formatted. Please verify and correct your request parameters.
+        '401':
+          description: Unauthorized. The API key is missing, incorrect, or invalid. Please provide a valid API key to authenticate the request.
+        '429':
+          description: Request limit exceeded. Too many requests have been sent in a short period, surpassing the allowed rate limits.
+        '500':
+          description: Internal Server Error. The server encountered an unexpected condition that prevented it from fulfilling the request. Please try again later or [contact support](mailto:info@geoapify.com) if the issue persists.
+
+components:
+  schemas:
+    # Main Isoline Response (GeoJSON FeatureCollection)
+    IsolineResponse:
+      allOf:
+        - $ref: '../common/shared-components.yaml#/components/schemas/GeoJsonFeatureCollection'
+        - type: object
+          properties:
+            features:
+              type: array
+              items:
+                $ref: '#/components/schemas/IsolineFeature'
+              description: Array of isoline features, each representing an accessible area for a requested range
+            properties:
+              $ref: '#/components/schemas/IsolineResponseProperties'
+    
+    # Async processing response (202 status)
+    IsolineAsyncResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [FeatureCollection]
+          description: GeoJSON object type
+        features:
+          type: array
+          items: {}
+          description: Empty array when calculation is still in progress
+        properties:
+          type: object
+          properties:
+            id:
+              type: string
+              description: Unique identifier that can be used to retrieve the isoline data later
+    
+    # Response properties
+    IsolineResponseProperties:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the isoline calculation
+    
+    # Individual isoline feature
+    IsolineFeature:
+      allOf:
+        - $ref: '../common/shared-components.yaml#/components/schemas/GeoJsonFeature'
+        - type: object
+          properties:
+            properties:
+              $ref: '#/components/schemas/IsolineFeatureProperties'
+            geometry:
+              $ref: '#/components/schemas/IsolineGeometry'
+    
+    # Feature properties containing isoline details
+    IsolineFeatureProperties:
+      type: object
+      properties:
+        lat:
+          type: number
+          description: Latitude of the location
+        lon:
+          type: number
+          description: Longitude of the location
+        type:
+          type: string
+          enum: [time, distance]
+          description: Isoline type (isochrone or isodistance)
+        mode:
+          type: string
+          description: Travel type used for calculation
+        range:
+          type: number
+          description: The isoline range value (time in seconds or distance in meters)
+        avoid:
+          type: array
+          items:
+            type: string
+          description: Array of the avoided road types and locations
+        traffic:
+          $ref: '../common/shared-components.yaml#/components/schemas/TrafficEnum'
+        route_type:
+          $ref: '../common/shared-components.yaml#/components/schemas/RouteTypeEnum'
+        units:
+          $ref: '../common/shared-components.yaml#/components/schemas/UnitsEnum'
+        max_speed:
+          type: number
+          description: Maximum speed setting used in calculation
+        id:
+          type: string
+          description: Isoline unique identifier
+    
+    # Isoline geometry (Polygon or MultiPolygon)
+    IsolineGeometry:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [Polygon, MultiPolygon]
+          description: GeoJSON geometry type
+        coordinates:
+          oneOf:
+            - type: array
+              items:
+                type: array
+                items:
+                  type: array
+                  items:
+                    type: number
+                  minItems: 2
+                  maxItems: 2
+              description: Polygon coordinates
+            - type: array
+              items:
+                type: array
+                items:
+                  type: array
+                  items:
+                    type: array
+                    items:
+                      type: number
+                    minItems: 2
+                    maxItems: 2
+              description: MultiPolygon coordinates

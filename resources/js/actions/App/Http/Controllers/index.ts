@@ -1,6 +1,7 @@
 import Auth from './Auth'
 import UserController from './UserController'
 import Settings from './Settings'
+import Api from './Api'
 import locationController from './locationController'
 import DistrictController from './DistrictController'
 import DivisionController from './DivisionController'
@@ -28,6 +29,7 @@ const Controllers = {
     Auth: Object.assign(Auth, Auth),
 UserController: Object.assign(UserController, UserController),
 Settings: Object.assign(Settings, Settings),
+Api: Object.assign(Api, Api),
 locationController: Object.assign(locationController, locationController),
 DistrictController: Object.assign(DistrictController, DistrictController),
 DivisionController: Object.assign(DivisionController, DivisionController),
