@@ -213,3 +213,11 @@
         @apply bg-background text-foreground;
     }
 }
+
+
+.leaflet-routing-container {
+    background: rgba(50, 50, 50, 0.3);
+    color: black;
+    font-weight: 700;
+    padding: 10px;
+}

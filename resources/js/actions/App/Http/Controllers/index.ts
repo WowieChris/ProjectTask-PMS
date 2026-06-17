@@ -1,6 +1,7 @@
 import Auth from './Auth'
 import UserController from './UserController'
 import Settings from './Settings'
+import SavedLocationController from './SavedLocationController'
 import Api from './Api'
 import locationController from './locationController'
 import DistrictController from './DistrictController'
@@ -29,6 +30,7 @@ const Controllers = {
     Auth: Object.assign(Auth, Auth),
 UserController: Object.assign(UserController, UserController),
 Settings: Object.assign(Settings, Settings),
+SavedLocationController: Object.assign(SavedLocationController, SavedLocationController),
 Api: Object.assign(Api, Api),
 locationController: Object.assign(locationController, locationController),
 DistrictController: Object.assign(DistrictController, DistrictController),

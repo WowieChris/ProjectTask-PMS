@@ -32,6 +32,7 @@ use App\Http\Controllers\AssetAssignmentController;
 use App\Http\Controllers\AssetTransferController;
 use App\Http\Controllers\Api\GeocodingController;
 use App\Http\Controllers\Api\GeoMapBranchController;
+use App\Http\Controllers\SavedLocationController;
 
 Route::get('/', function () {
     return Inertia::render('auth/login', [
@@ -76,6 +77,12 @@ Route::middleware(['auth'])->group(function () {
         require __DIR__ . '/settings.php';
     });
 });
+
+//Geo location saving 
+
+Route::get('/saved-locations', [SavedLocationController::class, 'index'])->name('saved-locations.index');
+Route::post('/saved-locations', [SavedLocationController::class, 'store'])->name('saved-locations.store');
+Route::delete('/saved-locations/{savedLocation}', [SavedLocationController::class, 'destroy'])->name('saved-locations.destroy');
 
 //GEO MAP
 
