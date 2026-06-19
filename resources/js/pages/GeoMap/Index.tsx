@@ -6,7 +6,9 @@ import { ChevronDown } from 'lucide-react';
 import { useMap, MapContainer, TileLayer, Marker, Popup, Circle, Polyline, useMapEvents } from 'react-leaflet';
 
 import AppLayout from '@/layouts/app-layout';
-import { MapPin, Navigation, Route, Clock, ArrowRight, Milestone, Ship, Bookmark, X, Trash2 } from 'lucide-react';
+import { MapPin, Navigation, Route, Clock, ArrowRight, Milestone, Ship, Bookmark, X, Trash2, MapPinHouse } from 'lucide-react';
+import LocationSelector from '@/components/LocationSelector';
+import type { SelectedAddress } from '@/components/LocationSelector';
 
 // ── Colored pin factory — replaces the old unpkg PNG icons ──
 function createColorIcon(color: string) {
@@ -33,7 +35,7 @@ const selectedSavedIcon = createColorIcon('#8b5cf6');  // violet — saved point
 type Position = { lat: number; lng: number };
 type Step = { instruction: string; distance: string; lat: number; lng: number };
 type SavedLocation = { id: number; label: string; lat: number; lng: number };
-type AppMode = 'route' | 'save';
+type AppMode = 'route' | 'save' | 'address';
 
 function MapClickHandler({ onLocationChange }: { onLocationChange: (lat: number, lng: number) => void }) {
     useMapEvents({
@@ -185,10 +187,19 @@ export default function Index() {
     const [labelInput, setLabelInput] = useState('');
     const [saving, setSaving] = useState(false);
 
+    // Address form state
+    const [addressModalOpen, setAddressModalOpen] = useState(false);
+    const [selectedAddress, setSelectedAddress] = useState<SelectedAddress | null>(null);
+
     const handleMapClick = (lat: number, lng: number) => {
         if (mode === 'save') {
             setPendingPoint({ lat, lng });
             setLabelInput('');
+            return;
+        }
+        if (mode === 'address') {
+            // In address mode, clicking the map sets the location
+            setPendingPoint({ lat, lng });
             return;
         }
         if (clickTarget === 'from') setPosition({ lat, lng });
@@ -247,6 +258,33 @@ export default function Index() {
         });
     };
 
+    const handleAddressSubmit = () => {
+        if (!selectedAddress?.region || !selectedAddress?.province ||
+            !selectedAddress?.municipality || !selectedAddress?.barangay) {
+            return;
+        }
+
+        // Save the address to your backend
+        router.post('/addresses', {
+            region: selectedAddress.region.name,
+            province: selectedAddress.province.name,
+            municipality: selectedAddress.municipality.name,
+            barangay: selectedAddress.barangay.name,
+        }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setAddressModalOpen(false);
+                setSelectedAddress(null);
+            },
+        });
+    };
+
+    const isAddressComplete =
+        selectedAddress?.region &&
+        selectedAddress?.province &&
+        selectedAddress?.municipality &&
+        selectedAddress?.barangay;
+
     return (
         <AppLayout>
             <div className="flex flex-col h-screen max-h-screen p-4 gap-4 overflow-hidden">
@@ -263,7 +301,7 @@ export default function Index() {
                         </div>
                     </div>
 
-                    {/* ── Mode Toggle: Map Set vs Save Coordinates ── */}
+                    {/* ── Mode Toggle: Map Set vs Save Coordinates vs Address ── */}
                     <div className="flex rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 flex-shrink-0">
                         <button
                             onClick={() => setMode('route')}
@@ -285,6 +323,16 @@ export default function Index() {
                             <Bookmark className="w-3.5 h-3.5" />
                             Save Coordinates
                         </button>
+                        <button
+                            onClick={() => setMode('address')}
+                            className={`flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors ${mode === 'address'
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                                }`}
+                        >
+                            <MapPinHouse className="w-3.5 h-3.5" />
+                            Address
+                        </button>
                     </div>
                 </div>
 
@@ -294,7 +342,7 @@ export default function Index() {
                     {/* ── Left Panel ── */}
                     <div className="xl:col-span-1 flex flex-col gap-3 min-h-0 overflow-y-auto pr-1">
 
-                        {/* Map Legend — visible in both modes */}
+                        {/* Map Legend — visible in all modes */}
                         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-3 flex-shrink-0">
                             <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2">
                                 Map Legend
@@ -511,7 +559,7 @@ export default function Index() {
                                     </div>
                                 </div>
                             </>
-                        ) : (
+                        ) : mode === 'save' ? (
                             <>
                                 {/* ── Save Coordinates mode UI ── */}
                                 <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-3 flex-shrink-0">
@@ -605,6 +653,64 @@ export default function Index() {
                                         </div>
                                     )}
                                 </div>
+                            </>
+                        ) : (
+                            /* ── Address Mode UI ── */
+                            <>
+                                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-3 flex-shrink-0">
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <MapPinHouse className="w-4 h-4 text-blue-700 dark:text-blue-400" />
+                                        <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">Address Mode</p>
+                                    </div>
+                                    <p className="text-xs text-blue-700 dark:text-blue-400">
+                                        Select a region, province, municipality, and barangay to save an address.
+                                    </p>
+                                </div>
+
+                                {/* LocationSelector component */}
+                                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden flex-1 min-h-0">
+                                    <div className="p-3 h-full overflow-y-auto">
+                                        <LocationSelector onChange={setSelectedAddress} />
+                                    </div>
+                                </div>
+
+                                {/* Address Summary & Submit */}
+                                {selectedAddress && (
+                                    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-3 flex-shrink-0 space-y-2">
+                                        <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
+                                            Selected Address
+                                        </p>
+                                        <div className="text-xs space-y-1">
+                                            <p className="text-gray-600 dark:text-gray-300">
+                                                <span className="text-gray-400 dark:text-gray-500">Region:</span>{' '}
+                                                {selectedAddress.region?.name || '—'}
+                                            </p>
+                                            <p className="text-gray-600 dark:text-gray-300">
+                                                <span className="text-gray-400 dark:text-gray-500">Province:</span>{' '}
+                                                {selectedAddress.province?.name || '—'}
+                                            </p>
+                                            <p className="text-gray-600 dark:text-gray-300">
+                                                <span className="text-gray-400 dark:text-gray-500">Municipality:</span>{' '}
+                                                {selectedAddress.municipality?.name || '—'}
+                                            </p>
+                                            <p className="text-gray-600 dark:text-gray-300">
+                                                <span className="text-gray-400 dark:text-gray-500">Barangay:</span>{' '}
+                                                {selectedAddress.barangay?.name || '—'}
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={handleAddressSubmit}
+                                            disabled={!isAddressComplete}
+                                            className={`w-full py-2 rounded-lg text-sm font-medium transition-colors
+                                                ${isAddressComplete
+                                                    ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                                                    : 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                                                }`}
+                                        >
+                                            Save Address
+                                        </button>
+                                    </div>
+                                )}
                             </>
                         )}
                     </div>
@@ -722,7 +828,7 @@ export default function Index() {
                                 })}
 
                                 {/* Pending point marker — while labeling */}
-                                {pendingPoint && (
+                                {pendingPoint && mode === 'save' && (
                                     <Circle
                                         center={[pendingPoint.lat, pendingPoint.lng]}
                                         radius={60}
@@ -735,7 +841,9 @@ export default function Index() {
                         <p className="mt-1.5 text-xs text-gray-400 dark:text-gray-500 text-center flex-shrink-0">
                             {mode === 'route'
                                 ? <>Click map to place <strong className="text-gray-500">{clickTarget === 'from' ? 'From' : 'To'}</strong> marker · Drag either marker to adjust</>
-                                : <>Click anywhere on the map to save a new labeled location</>
+                                : mode === 'save'
+                                    ? <>Click anywhere on the map to save a new labeled location</>
+                                    : <>Select a complete Philippine address from the dropdowns above</>
                             }
                         </p>
                     </div>

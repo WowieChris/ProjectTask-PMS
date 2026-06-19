@@ -1,5 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import {
+    Globe2,
+    Landmark,
+    Building2,
+    Home,
+    ChevronDown,
+    Search,
+    Check,
+} from "lucide-react";
 
 interface PSGCItem {
     psgc_code: string;
@@ -16,40 +25,46 @@ export interface SelectedAddress {
 
 interface LocationSelectorProps {
     onChange?: (address: SelectedAddress) => void;
+    className?: string;
 }
 
-/**
- * A searchable dropdown to replace native <select>. Click to open, type to
- * filter, click an option to select. Avoids any native scroll quirks and
- * stays usable even with hundreds of options (e.g. barangay lists).
- */
+type LevelKey = "region" | "province" | "municipality" | "barangay";
+
+const LEVELS: Record<
+    LevelKey,
+    { label: string; icon: React.ElementType; placeholder: string }
+> = {
+    region: { label: "Region", icon: Globe2, placeholder: "Select region" },
+    province: { label: "Province", icon: Landmark, placeholder: "Select province" },
+    municipality: { label: "Municipality / City", icon: Building2, placeholder: "Select municipality" },
+    barangay: { label: "Barangay", icon: Home, placeholder: "Select barangay" },
+};
+
 interface SearchableSelectProps {
+    level: LevelKey;
     items: PSGCItem[];
     value: string;
     onSelect: (code: string) => void;
-    placeholder: string;
     disabled?: boolean;
     loading?: boolean;
 }
 
 const SearchableSelect: React.FC<SearchableSelectProps> = ({
+    level,
     items,
     value,
     onSelect,
-    placeholder,
     disabled,
     loading,
 }) => {
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState("");
     const containerRef = useRef<HTMLDivElement>(null);
+    const { label, icon: Icon, placeholder } = LEVELS[level];
 
     const selectedItem = items.find((item) => item.psgc_code === value);
 
     const filteredItems = query
-
-
-
         ? items.filter((item) =>
             item.area_name.toLowerCase().includes(query.toLowerCase())
         )
@@ -71,60 +86,125 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
 
     return (
         <div className="relative" ref={containerRef}>
+            {/* Icon badge + label */}
+            <div className="flex items-center gap-3 mb-2">
+                <span
+                    className={`flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200 ${selectedItem
+                            ? "bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/30"
+                            : "bg-slate-800/60 text-slate-400 ring-1 ring-slate-700/50"
+                        }`}
+                >
+                    <Icon size={16} strokeWidth={2} />
+                </span>
+                <span className="text-sm font-medium text-slate-300">
+                    {label}
+                </span>
+                {selectedItem && (
+                    <span className="text-xs text-emerald-400/70 font-medium ml-auto">
+                        ✓ Selected
+                    </span>
+                )}
+            </div>
+
             <button
                 type="button"
-                className="border p-2 w-full bg-secondary text-primary text-left flex justify-between items-center disabled:opacity-50"
                 disabled={disabled}
                 onClick={() => setOpen((prev) => !prev)}
+                className={`w-full flex items-center justify-between gap-2 rounded-xl border px-4 py-3 text-sm transition-all duration-200
+                    ${disabled
+                        ? "border-slate-700/50 bg-slate-800/40 text-slate-600 cursor-not-allowed"
+                        : open
+                            ? "border-emerald-500/60 bg-slate-800 text-slate-100 ring-2 ring-emerald-500/20 shadow-lg shadow-emerald-500/5"
+                            : "border-slate-700/70 bg-slate-800/60 text-slate-100 hover:border-slate-600 hover:bg-slate-800/80 hover:shadow-lg hover:shadow-black/20"
+                    }`}
             >
-                <span className={selectedItem ? "" : "text-gray-400"}>
-                    {loading
-                        ? "Loading..."
-                        : selectedItem
-                            ? selectedItem.area_name
-                            : placeholder}
+                <span className={`truncate ${selectedItem ? "text-slate-100" : "text-slate-500"}`}>
+                    {loading ? (
+                        <span className="flex items-center gap-2">
+                            <span className="animate-pulse">Loading</span>
+                            <span className="inline-block w-1 h-1 bg-slate-500 rounded-full animate-bounce" />
+                            <span className="inline-block w-1 h-1 bg-slate-500 rounded-full animate-bounce delay-100" />
+                            <span className="inline-block w-1 h-1 bg-slate-500 rounded-full animate-bounce delay-200" />
+                        </span>
+                    ) : selectedItem ? (
+                        selectedItem.area_name
+                    ) : (
+                        placeholder
+                    )}
                 </span>
-                <span className="ml-2">▾</span>
+                <ChevronDown
+                    size={16}
+                    className={`flex-shrink-0 text-slate-500 transition-all duration-300 ${open ? "rotate-180 text-emerald-400" : ""
+                        }`}
+                />
             </button>
 
             {open && !disabled && (
-                <div className="absolute z-10 mt-1 w-full bg-secondary text-primary border rounded shadow-lg max-h-64 overflow-y-auto">
-                    <div className="p-2 sticky top-0 bg-secondary border-b">
+                <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-xl border border-slate-700/70 bg-slate-800 shadow-2xl shadow-black/50 backdrop-blur-sm">
+                    <div className="flex items-center gap-2 border-b border-slate-700/50 px-4 py-3 bg-slate-800/50">
+                        <Search size={16} className="text-slate-500 flex-shrink-0" />
                         <input
                             type="text"
                             autoFocus
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
-                            placeholder="Type to search..."
-                            className="w-full border p-1 bg-transparent outline-none"
+                            placeholder={`Search ${label.toLowerCase()}...`}
+                            className="w-full bg-transparent text-sm text-slate-100 placeholder-slate-500 outline-none"
                         />
+                        {query && (
+                            <button
+                                onClick={() => setQuery("")}
+                                className="text-slate-500 hover:text-slate-300 transition-colors"
+                            >
+                                ×
+                            </button>
+                        )}
                     </div>
 
-                    {filteredItems.length === 0 && (
-                        <div className="p-2 text-sm text-gray-400">No matches</div>
-                    )}
+                    <div className="max-h-60 overflow-y-auto py-1.5">
+                        {filteredItems.length === 0 && (
+                            <div className="px-4 py-4 text-sm text-slate-500 text-center">
+                                No matches found
+                            </div>
+                        )}
 
-                    {filteredItems.map((item) => (
-                        <div
-                            key={item.psgc_code}
-                            onClick={() => {
-                                onSelect(item.psgc_code);
-                                setOpen(false);
-                                setQuery("");
-                            }}
-                            className={`p-2 cursor-pointer hover:bg-blue-100 hover:text-black ${item.psgc_code === value ? "font-semibold" : ""
-                                }`}
-                        >
-                            {item.area_name}
-                        </div>
-                    ))}
+                        {filteredItems.map((item) => {
+                            const isSelected = item.psgc_code === value;
+                            return (
+                                <div
+                                    key={item.psgc_code}
+                                    onClick={() => {
+                                        onSelect(item.psgc_code);
+                                        setOpen(false);
+                                        setQuery("");
+                                    }}
+                                    className={`flex items-center justify-between gap-2 px-4 py-2.5 text-sm cursor-pointer transition-all duration-150
+                                        ${isSelected
+                                            ? "bg-emerald-500/10 text-emerald-300 border-l-2 border-emerald-500"
+                                            : "text-slate-300 hover:bg-slate-700/50 hover:text-slate-100 hover:pl-5"
+                                        }`}
+                                >
+                                    <span className="truncate">{item.area_name}</span>
+                                    {isSelected && (
+                                        <Check size={14} className="flex-shrink-0 text-emerald-400" />
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             )}
         </div>
     );
 };
 
-const LocationSelector: React.FC<LocationSelectorProps> = ({ onChange }) => {
+const Connector: React.FC = () => (
+    <div className="flex justify-start pl-4">
+        <div className="h-5 w-0.5 bg-gradient-to-b from-slate-700/50 to-slate-700/20" />
+    </div>
+);
+
+const LocationSelector: React.FC<LocationSelectorProps> = ({ onChange, className }) => {
     const [regions, setRegions] = useState<PSGCItem[]>([]);
     const [provinces, setProvinces] = useState<PSGCItem[]>([]);
     const [municipalities, setMunicipalities] = useState<PSGCItem[]>([]);
@@ -211,10 +291,6 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({ onChange }) => {
                 area_name: item.name,
                 geographic_level: "Bgy",
             }));
-
-            console.log("Municipality:", municipalityCode);
-            console.log("Barangays response:", normalized);
-
             setBarangays(normalized);
         } catch (err) {
             console.error(err);
@@ -243,40 +319,33 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({ onChange }) => {
                 : null,
             barangay: barangay ? { code: barangay.psgc_code, name: barangay.area_name } : null,
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedRegion, selectedProvince, selectedMunicipality, selectedBarangay]);
+    }, [selectedRegion, selectedProvince, selectedMunicipality, selectedBarangay, onChange, regions, provinces, municipalities, barangays]);
 
     const handleRegionSelect = (code: string) => {
         setSelectedRegion(code);
         setSelectedProvince("");
         setSelectedMunicipality("");
         setSelectedBarangay("");
-
         setProvinces([]);
         setMunicipalities([]);
         setBarangays([]);
-
-        loadProvinces(code);
+        if (code) loadProvinces(code);
     };
 
     const handleProvinceSelect = (code: string) => {
         setSelectedProvince(code);
         setSelectedMunicipality("");
         setSelectedBarangay("");
-
         setMunicipalities([]);
         setBarangays([]);
-
-        loadMunicipalities(code);
+        if (code) loadMunicipalities(code);
     };
 
     const handleMunicipalitySelect = (code: string) => {
         setSelectedMunicipality(code);
         setSelectedBarangay("");
-
         setBarangays([]);
-
-        loadBarangays(code);
+        if (code) loadBarangays(code);
     };
 
     const handleBarangaySelect = (code: string) => {
@@ -287,55 +356,36 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({ onChange }) => {
         loadRegions();
     }, []);
 
+    const steps: { key: LevelKey; items: PSGCItem[]; value: string; onSelect: (c: string) => void; disabled: boolean; loading: boolean }[] = [
+        { key: "region", items: regions, value: selectedRegion, onSelect: handleRegionSelect, disabled: false, loading: loadingRegions },
+        { key: "province", items: provinces, value: selectedProvince, onSelect: handleProvinceSelect, disabled: !selectedRegion, loading: loadingProvinces },
+        { key: "municipality", items: municipalities, value: selectedMunicipality, onSelect: handleMunicipalitySelect, disabled: !selectedProvince, loading: loadingMunicipalities },
+        { key: "barangay", items: barangays, value: selectedBarangay, onSelect: handleBarangaySelect, disabled: !selectedMunicipality, loading: loadingBarangays },
+    ];
+
     return (
-        <div className="space-y-4 p-4">
-            {error && <div className="text-red-600 text-sm">{error}</div>}
+        <div className={`rounded-2xl border border-slate-800/70 bg-slate-900/80 p-6 backdrop-blur-sm ${className || ""}`}>
+            {error && (
+                <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-sm text-red-400 flex items-center gap-2">
+                    <span className="text-red-400">⚠</span>
+                    {error}
+                </div>
+            )}
 
-            <div>
-                <label>Region</label>
-                <SearchableSelect
-                    items={regions}
-                    value={selectedRegion}
-                    onSelect={handleRegionSelect}
-                    placeholder="Select Region"
-                    loading={loadingRegions}
-                />
-            </div>
-
-            <div>
-                <label>Province</label>
-                <SearchableSelect
-                    items={provinces}
-                    value={selectedProvince}
-                    onSelect={handleProvinceSelect}
-                    placeholder="Select Province"
-                    disabled={!selectedRegion}
-                    loading={loadingProvinces}
-                />
-            </div>
-
-            <div>
-                <label>Municipality / City</label>
-                <SearchableSelect
-                    items={municipalities}
-                    value={selectedMunicipality}
-                    onSelect={handleMunicipalitySelect}
-                    placeholder="Select Municipality"
-                    disabled={!selectedProvince}
-                    loading={loadingMunicipalities}
-                />
-            </div>
-
-            <div>
-                <label>Barangay</label>
-                <SearchableSelect
-                    items={barangays}
-                    value={selectedBarangay}
-                    onSelect={handleBarangaySelect}
-                    placeholder="Select Barangay"
-                    disabled={!selectedMunicipality}
-                    loading={loadingBarangays}
-                />
+            <div className="space-y-1">
+                {steps.map((step, idx) => (
+                    <React.Fragment key={step.key}>
+                        {idx > 0 && <Connector />}
+                        <SearchableSelect
+                            level={step.key}
+                            items={step.items}
+                            value={step.value}
+                            onSelect={step.onSelect}
+                            disabled={step.disabled}
+                            loading={step.loading}
+                        />
+                    </React.Fragment>
+                ))}
             </div>
         </div>
     );
