@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    'psgc' => [
+        'base_url' => env('PSGC_API_BASE_URL'),
+        'version' => env('PSGC_API_VERSION'),
+        'token' => env('PSGC_API_TOKEN'),
+        'timeout' => env('PSGC_API_TIMEOUT', 120),
+        'page_size' => env('PSGC_API_PAGE_SIZE', 1000),
+        'retry_count' => env('PSGC_API_RETRY_COUNT', 3),
+        'retry_delay_ms' => env('PSGC_API_RETRY_DELAY_MS', 1500),
+    ],
+
+
 ];
