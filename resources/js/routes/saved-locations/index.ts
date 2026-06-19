@@ -137,7 +137,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
  * @see app/Http/Controllers/SavedLocationController.php:34
  * @route '/saved-locations/{savedLocation}'
  */
-export const destroy = (args: { savedLocation: string | number | { id: string | number } } | [savedLocation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { savedLocation: number | { id: number } } | [savedLocation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -152,7 +152,7 @@ destroy.definition = {
  * @see app/Http/Controllers/SavedLocationController.php:34
  * @route '/saved-locations/{savedLocation}'
  */
-destroy.url = (args: { savedLocation: string | number | { id: string | number } } | [savedLocation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+destroy.url = (args: { savedLocation: number | { id: number } } | [savedLocation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { savedLocation: args }
     }
@@ -185,7 +185,7 @@ destroy.url = (args: { savedLocation: string | number | { id: string | number } 
  * @see app/Http/Controllers/SavedLocationController.php:34
  * @route '/saved-locations/{savedLocation}'
  */
-destroy.delete = (args: { savedLocation: string | number | { id: string | number } } | [savedLocation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { savedLocation: number | { id: number } } | [savedLocation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -195,7 +195,7 @@ destroy.delete = (args: { savedLocation: string | number | { id: string | number
  * @see app/Http/Controllers/SavedLocationController.php:34
  * @route '/saved-locations/{savedLocation}'
  */
-    const destroyForm = (args: { savedLocation: string | number | { id: string | number } } | [savedLocation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const destroyForm = (args: { savedLocation: number | { id: number } } | [savedLocation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: destroy.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'DELETE',
@@ -210,7 +210,7 @@ destroy.delete = (args: { savedLocation: string | number | { id: string | number
  * @see app/Http/Controllers/SavedLocationController.php:34
  * @route '/saved-locations/{savedLocation}'
  */
-        destroyForm.delete = (args: { savedLocation: string | number | { id: string | number } } | [savedLocation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        destroyForm.delete = (args: { savedLocation: number | { id: number } } | [savedLocation: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: destroy.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'DELETE',
