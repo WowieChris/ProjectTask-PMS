@@ -351,7 +351,7 @@ edit.head = (args: { division: string | number } | [division: string | number ] 
     edit.form = editForm
 /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions/{division}'
  */
 export const update = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -366,7 +366,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions/{division}'
  */
 update.url = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -399,7 +399,7 @@ update.url = (args: { division: number | { id: number } } | [division: number | 
 
 /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions/{division}'
  */
 update.put = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -408,7 +408,7 @@ update.put = (args: { division: number | { id: number } } | [division: number | 
 })
 /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions/{division}'
  */
 update.patch = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -418,7 +418,7 @@ update.patch = (args: { division: number | { id: number } } | [division: number 
 
     /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions/{division}'
  */
     const updateForm = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -433,7 +433,7 @@ update.patch = (args: { division: number | { id: number } } | [division: number 
 
             /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions/{division}'
  */
         updateForm.put = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -447,7 +447,7 @@ update.patch = (args: { division: number | { id: number } } | [division: number 
         })
             /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions/{division}'
  */
         updateForm.patch = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

@@ -1,5 +1,83 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
+* @see \App\Http\Controllers\DivisionController::geoMap
+ * @see app/Http/Controllers/DivisionController.php:22
+ * @route '/GeoMap'
+ */
+export const geoMap = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: geoMap.url(options),
+    method: 'get',
+})
+
+geoMap.definition = {
+    methods: ["get","head"],
+    url: '/GeoMap',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\DivisionController::geoMap
+ * @see app/Http/Controllers/DivisionController.php:22
+ * @route '/GeoMap'
+ */
+geoMap.url = (options?: RouteQueryOptions) => {
+    return geoMap.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\DivisionController::geoMap
+ * @see app/Http/Controllers/DivisionController.php:22
+ * @route '/GeoMap'
+ */
+geoMap.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: geoMap.url(options),
+    method: 'get',
+})
+/**
+* @see \App\Http\Controllers\DivisionController::geoMap
+ * @see app/Http/Controllers/DivisionController.php:22
+ * @route '/GeoMap'
+ */
+geoMap.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: geoMap.url(options),
+    method: 'head',
+})
+
+    /**
+* @see \App\Http\Controllers\DivisionController::geoMap
+ * @see app/Http/Controllers/DivisionController.php:22
+ * @route '/GeoMap'
+ */
+    const geoMapForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: geoMap.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\DivisionController::geoMap
+ * @see app/Http/Controllers/DivisionController.php:22
+ * @route '/GeoMap'
+ */
+        geoMapForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: geoMap.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\DivisionController::geoMap
+ * @see app/Http/Controllers/DivisionController.php:22
+ * @route '/GeoMap'
+ */
+        geoMapForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: geoMap.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    geoMap.form = geoMapForm
+/**
 * @see \App\Http\Controllers\DivisionController::index
  * @see app/Http/Controllers/DivisionController.php:12
  * @route '/divisions'
@@ -157,7 +235,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     create.form = createForm
 /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions'
  */
 const update69bcaa8b79d8884c98a833baa3f8ce9b = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -172,7 +250,7 @@ update69bcaa8b79d8884c98a833baa3f8ce9b.definition = {
 
 /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions'
  */
 update69bcaa8b79d8884c98a833baa3f8ce9b.url = (options?: RouteQueryOptions) => {
@@ -181,7 +259,7 @@ update69bcaa8b79d8884c98a833baa3f8ce9b.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions'
  */
 update69bcaa8b79d8884c98a833baa3f8ce9b.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -191,7 +269,7 @@ update69bcaa8b79d8884c98a833baa3f8ce9b.post = (options?: RouteQueryOptions): Rou
 
     /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions'
  */
     const update69bcaa8b79d8884c98a833baa3f8ce9bForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -201,7 +279,7 @@ update69bcaa8b79d8884c98a833baa3f8ce9b.post = (options?: RouteQueryOptions): Rou
 
             /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions'
  */
         update69bcaa8b79d8884c98a833baa3f8ce9bForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -212,7 +290,7 @@ update69bcaa8b79d8884c98a833baa3f8ce9b.post = (options?: RouteQueryOptions): Rou
     update69bcaa8b79d8884c98a833baa3f8ce9b.form = update69bcaa8b79d8884c98a833baa3f8ce9bForm
     /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions/{division}'
  */
 const update685fb09d2a80c49e6f6730ac9ec4ea1f = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -227,7 +305,7 @@ update685fb09d2a80c49e6f6730ac9ec4ea1f.definition = {
 
 /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions/{division}'
  */
 update685fb09d2a80c49e6f6730ac9ec4ea1f.url = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -260,7 +338,7 @@ update685fb09d2a80c49e6f6730ac9ec4ea1f.url = (args: { division: number | { id: n
 
 /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions/{division}'
  */
 update685fb09d2a80c49e6f6730ac9ec4ea1f.put = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -269,7 +347,7 @@ update685fb09d2a80c49e6f6730ac9ec4ea1f.put = (args: { division: number | { id: n
 })
 /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions/{division}'
  */
 update685fb09d2a80c49e6f6730ac9ec4ea1f.patch = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -279,7 +357,7 @@ update685fb09d2a80c49e6f6730ac9ec4ea1f.patch = (args: { division: number | { id:
 
     /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions/{division}'
  */
     const update685fb09d2a80c49e6f6730ac9ec4ea1fForm = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -294,7 +372,7 @@ update685fb09d2a80c49e6f6730ac9ec4ea1f.patch = (args: { division: number | { id:
 
             /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions/{division}'
  */
         update685fb09d2a80c49e6f6730ac9ec4ea1fForm.put = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -308,7 +386,7 @@ update685fb09d2a80c49e6f6730ac9ec4ea1f.patch = (args: { division: number | { id:
         })
             /**
 * @see \App\Http\Controllers\DivisionController::update
- * @see app/Http/Controllers/DivisionController.php:42
+ * @see app/Http/Controllers/DivisionController.php:58
  * @route '/divisions/{division}'
  */
         update685fb09d2a80c49e6f6730ac9ec4ea1fForm.patch = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -524,7 +602,7 @@ edit.head = (args: { division: string | number } | [division: string | number ] 
     edit.form = editForm
 /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:35
+ * @see app/Http/Controllers/DivisionController.php:51
  * @route '/divisions/{division}'
  */
 export const destroy = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -539,7 +617,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:35
+ * @see app/Http/Controllers/DivisionController.php:51
  * @route '/divisions/{division}'
  */
 destroy.url = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -572,7 +650,7 @@ destroy.url = (args: { division: number | { id: number } } | [division: number |
 
 /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:35
+ * @see app/Http/Controllers/DivisionController.php:51
  * @route '/divisions/{division}'
  */
 destroy.delete = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -582,7 +660,7 @@ destroy.delete = (args: { division: number | { id: number } } | [division: numbe
 
     /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:35
+ * @see app/Http/Controllers/DivisionController.php:51
  * @route '/divisions/{division}'
  */
     const destroyForm = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -597,7 +675,7 @@ destroy.delete = (args: { division: number | { id: number } } | [division: numbe
 
             /**
 * @see \App\Http\Controllers\DivisionController::destroy
- * @see app/Http/Controllers/DivisionController.php:35
+ * @see app/Http/Controllers/DivisionController.php:51
  * @route '/divisions/{division}'
  */
         destroyForm.delete = (args: { division: number | { id: number } } | [division: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -611,6 +689,6 @@ destroy.delete = (args: { division: number | { id: number } } | [division: numbe
         })
     
     destroy.form = destroyForm
-const DivisionController = { index, create, update, show, edit, destroy }
+const DivisionController = { geoMap, index, create, update, show, edit, destroy }
 
 export default DivisionController

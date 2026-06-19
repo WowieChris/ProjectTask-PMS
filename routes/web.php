@@ -81,6 +81,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 //Geo location saving 
+Route::get('/GeoMap', [DivisionController::class, 'geoMap']);
 
 Route::get('/saved-locations', [SavedLocationController::class, 'index'])->name('saved-locations.index');
 Route::post('/saved-locations', [SavedLocationController::class, 'store'])->name('saved-locations.store');
@@ -106,9 +107,9 @@ Route::get('/GeoMap/AddressForm', function () {
 
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('/GeoMap', function () {
-        return Inertia::render('GeoMap/Index');
-    })->middleware('auth');
+    // Route::get('/GeoMap', function () {
+    //     return Inertia::render('GeoMap/Index');
+    // })->middleware('auth');
 
     Route::post('/geomap/geocode', [
         GeocodingController::class,
