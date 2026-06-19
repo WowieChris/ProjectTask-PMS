@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::index
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:12
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:13
  * @route '/geomap-branches'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::index
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:12
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:13
  * @route '/geomap-branches'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::index
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:12
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:13
  * @route '/geomap-branches'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::index
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:12
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:13
  * @route '/geomap-branches'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::index
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:12
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:13
  * @route '/geomap-branches'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::index
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:12
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:13
  * @route '/geomap-branches'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::index
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:12
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:13
  * @route '/geomap-branches'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -79,7 +79,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::store
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:18
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:32
  * @route '/geomap-branches'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -94,7 +94,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::store
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:18
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:32
  * @route '/geomap-branches'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::store
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:18
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:32
  * @route '/geomap-branches'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -113,7 +113,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::store
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:18
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:32
  * @route '/geomap-branches'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -123,7 +123,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::store
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:18
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:32
  * @route '/geomap-branches'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -134,7 +134,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::show
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:32
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:46
  * @route '/geomap-branches/{geomap_branch}'
  */
 export const show = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -149,7 +149,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::show
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:32
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:46
  * @route '/geomap-branches/{geomap_branch}'
  */
 show.url = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -177,7 +177,7 @@ show.url = (args: { geomap_branch: string | number } | [geomap_branch: string | 
 
 /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::show
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:32
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:46
  * @route '/geomap-branches/{geomap_branch}'
  */
 show.get = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -186,7 +186,7 @@ show.get = (args: { geomap_branch: string | number } | [geomap_branch: string | 
 })
 /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::show
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:32
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:46
  * @route '/geomap-branches/{geomap_branch}'
  */
 show.head = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -196,7 +196,7 @@ show.head = (args: { geomap_branch: string | number } | [geomap_branch: string |
 
     /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::show
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:32
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:46
  * @route '/geomap-branches/{geomap_branch}'
  */
     const showForm = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -206,7 +206,7 @@ show.head = (args: { geomap_branch: string | number } | [geomap_branch: string |
 
             /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::show
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:32
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:46
  * @route '/geomap-branches/{geomap_branch}'
  */
         showForm.get = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -215,7 +215,7 @@ show.head = (args: { geomap_branch: string | number } | [geomap_branch: string |
         })
             /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::show
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:32
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:46
  * @route '/geomap-branches/{geomap_branch}'
  */
         showForm.head = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -231,7 +231,7 @@ show.head = (args: { geomap_branch: string | number } | [geomap_branch: string |
     show.form = showForm
 /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::update
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:37
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:51
  * @route '/geomap-branches/{geomap_branch}'
  */
 export const update = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -246,7 +246,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::update
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:37
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:51
  * @route '/geomap-branches/{geomap_branch}'
  */
 update.url = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -274,7 +274,7 @@ update.url = (args: { geomap_branch: string | number } | [geomap_branch: string 
 
 /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::update
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:37
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:51
  * @route '/geomap-branches/{geomap_branch}'
  */
 update.put = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -283,7 +283,7 @@ update.put = (args: { geomap_branch: string | number } | [geomap_branch: string 
 })
 /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::update
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:37
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:51
  * @route '/geomap-branches/{geomap_branch}'
  */
 update.patch = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -293,7 +293,7 @@ update.patch = (args: { geomap_branch: string | number } | [geomap_branch: strin
 
     /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::update
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:37
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:51
  * @route '/geomap-branches/{geomap_branch}'
  */
     const updateForm = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -308,7 +308,7 @@ update.patch = (args: { geomap_branch: string | number } | [geomap_branch: strin
 
             /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::update
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:37
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:51
  * @route '/geomap-branches/{geomap_branch}'
  */
         updateForm.put = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -322,7 +322,7 @@ update.patch = (args: { geomap_branch: string | number } | [geomap_branch: strin
         })
             /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::update
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:37
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:51
  * @route '/geomap-branches/{geomap_branch}'
  */
         updateForm.patch = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -338,7 +338,7 @@ update.patch = (args: { geomap_branch: string | number } | [geomap_branch: strin
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::destroy
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:53
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:67
  * @route '/geomap-branches/{geomap_branch}'
  */
 export const destroy = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -353,7 +353,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::destroy
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:53
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:67
  * @route '/geomap-branches/{geomap_branch}'
  */
 destroy.url = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -381,7 +381,7 @@ destroy.url = (args: { geomap_branch: string | number } | [geomap_branch: string
 
 /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::destroy
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:53
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:67
  * @route '/geomap-branches/{geomap_branch}'
  */
 destroy.delete = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -391,7 +391,7 @@ destroy.delete = (args: { geomap_branch: string | number } | [geomap_branch: str
 
     /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::destroy
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:53
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:67
  * @route '/geomap-branches/{geomap_branch}'
  */
     const destroyForm = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -406,7 +406,7 @@ destroy.delete = (args: { geomap_branch: string | number } | [geomap_branch: str
 
             /**
 * @see \App\Http\Controllers\Api\GeoMapBranchController::destroy
- * @see app/Http/Controllers/Api/GeoMapBranchController.php:53
+ * @see app/Http/Controllers/Api/GeoMapBranchController.php:67
  * @route '/geomap-branches/{geomap_branch}'
  */
         destroyForm.delete = (args: { geomap_branch: string | number } | [geomap_branch: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

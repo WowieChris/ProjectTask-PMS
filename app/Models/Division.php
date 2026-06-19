@@ -11,7 +11,9 @@ class Division extends Model
         'user_group_id',
         'name',
         'area_id',
-        'address'
+        'address',
+        'latitude',
+        'longitude',
     ];
 
     public function engineer()

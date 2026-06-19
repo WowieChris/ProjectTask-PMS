@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SavedLocation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Division;
 
 class SavedLocationController extends Controller
 {
@@ -12,6 +13,23 @@ class SavedLocationController extends Controller
     {
         return Inertia::render('GeoMap/Index', [
             'savedLocations' => \App\Models\SavedLocation::orderBy('created_at', 'desc')->get(),
+        ]);
+    }
+
+    public function geoMap()
+    {
+        $divisions = Division::select(
+            'id',
+            'name',
+            'latitude',
+            'longitude'
+        )
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->get();
+        dd($divisions);
+        return Inertia::render('GeoMap/Index', [
+            'divisions' => $divisions,
         ]);
     }
 

@@ -31,6 +31,7 @@ const fromIcon = createColorIcon('#10b981');          // emerald — From marker
 const toIcon = createColorIcon('#ef4444');             // red — To marker
 const savedIcon = createColorIcon('#f59e0b');          // amber — saved point, idle
 const selectedSavedIcon = createColorIcon('#8b5cf6');  // violet — saved point currently used as From/To
+const divisionIcon = createColorIcon('#2563eb');
 
 type Position = { lat: number; lng: number };
 type Step = { instruction: string; distance: string; lat: number; lng: number };
@@ -165,8 +166,18 @@ function PanToHover({ point }: { point: { lat: number; lng: number } | null }) {
     return null;
 }
 
+
+type Division = {
+    id: number;
+    name: string;
+    latitude: number;
+    longitude: number;
+};
 export default function Index() {
-    const { props } = usePage<{ savedLocations?: SavedLocation[] }>();
+    const { props } = usePage<{
+        savedLocations?: SavedLocation[];
+        divisions?: Division[];
+    }>();
 
     const [position, setPosition] = useState<Position>({ lat: 10.8110262, lng: 122.6562518 });
     const [destination, setDestination] = useState<Position>({ lat: 10.7202000, lng: 122.5628000 });
@@ -183,6 +194,7 @@ export default function Index() {
     const [mode, setMode] = useState<AppMode>('route');
 
     const [savedLocations, setSavedLocations] = useState<SavedLocation[]>(props.savedLocations ?? []);
+    const divisions = props.divisions ?? [];
     const [pendingPoint, setPendingPoint] = useState<Position | null>(null);
     const [labelInput, setLabelInput] = useState('');
     const [saving, setSaving] = useState(false);
@@ -284,6 +296,30 @@ export default function Index() {
         selectedAddress?.province &&
         selectedAddress?.municipality &&
         selectedAddress?.barangay;
+
+
+    function FitDivisionBounds({
+        divisions,
+    }: {
+        divisions: Division[];
+    }) {
+        const map = useMap();
+
+        useEffect(() => {
+            if (divisions.length === 0) return;
+
+            const bounds = L.latLngBounds(
+                divisions.map((d) => [
+                    Number(d.latitude),
+                    Number(d.longitude),
+                ])
+            );
+
+            map.fitBounds(bounds, { padding: [50, 50] });
+        }, [divisions, map]);
+
+        return null;
+    }
 
     return (
         <AppLayout>
@@ -726,6 +762,25 @@ export default function Index() {
                                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
                                 <MapClickHandler onLocationChange={handleMapClick} />
+
+                                {divisions.map((division) => (
+                                    <Marker
+                                        key={division.id}
+                                        position={[
+                                            Number(division.latitude),
+                                            Number(division.longitude),
+                                        ]}
+                                        icon={divisionIcon}
+                                    >
+                                        <Popup>
+                                            <strong>{division.name}</strong>
+                                            <br />
+                                            Latitude: {division.latitude}
+                                            <br />
+                                            Longitude: {division.longitude}
+                                        </Popup>
+                                    </Marker>
+                                ))}
 
                                 {mode === 'route' && (
                                     <>

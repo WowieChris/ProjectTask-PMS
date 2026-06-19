@@ -19,6 +19,22 @@ class DivisionController extends Controller
         ]);
     }
 
+    public function geoMap()
+    {
+        $divisions = Division::select(
+            'id',
+            'name',
+            'latitude',
+            'longitude'
+        )
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->get();
+
+        return Inertia::render('GeoMap/Index', [
+            'divisions' => $divisions,
+        ]);
+    }
     public function store(Request $request)
     {
         $data = $request->validate([
