@@ -8,7 +8,7 @@ use Inertia\Inertia;
 
 class Area extends Model
 {
-    protected $fillable = ['name', 'district_id', 'address'];
+    protected $fillable = ['name', 'district_id', 'address','longitude', 'latitude','geocode_status','geocoded_at',];
     //Test
     public function branches(): HasMany
     {

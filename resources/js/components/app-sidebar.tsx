@@ -188,7 +188,13 @@ export function AppSidebar() {
           },
 
         ],
-      }
+      },
+      //geomap
+      {
+        title: 'Geomap',
+        href: '/officemap',
+        icon: MapPin,
+      },
     );
   }
 

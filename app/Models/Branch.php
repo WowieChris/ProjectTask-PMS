@@ -12,6 +12,11 @@ class Branch extends Model
         'district_id',
         'division_id',
         'address',
+        'longitude',
+        'latitude',
+        'geocode_status',
+        'geocoded_at',
+        
     ];
 
     public function area()

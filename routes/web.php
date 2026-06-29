@@ -30,6 +30,7 @@ use App\Http\Controllers\ScheduledTransferController;
 use App\Http\Controllers\AssetCategoryController;
 use App\Http\Controllers\AssetAssignmentController;
 use App\Http\Controllers\AssetTransferController;
+use App\Http\Controllers\OfficeMapController;
 
 
 Route::get('/', function () {
@@ -307,3 +308,8 @@ Route::prefix('employees')->group(function () {
     Route::post('/transfer', [EmployeeController::class, 'transfer'])
         ->name('employees.transfer');
 });
+
+// Geomap page — what users navigate to
+Route::get('/officemap', function () {
+    return Inertia::render('OfficeMap/Index');
+})->name('officemap.index');
