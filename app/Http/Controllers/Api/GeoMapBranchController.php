@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
+use App\Models\Branch;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use App\Models\Division;
+use Illuminate\Support\Facades\DB;
+use App\Models\FieldBranch;
+
+class GeoMapBranchController extends Controller
+{
+    public function index()
+    {
+        // return Branch::latest()->get();
+        return Inertia::render('GeoMap/Index');
+    }
+
+    public function geoMap()
+    {
+        $divisions = Division::select(
+            'id',
+            'name',
+            'latitude',
+            'longitude'
+        )->get();
+
+        return Inertia::render('GeoMap/Index', [
+            'divisions' => $divisions,
+        ]);
+    }
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required'],
+            'address' => ['nullable'],
+            'latitude' => ['required', 'numeric'],
+            'longitude' => ['required', 'numeric'],
+        ]);
+
+        $branch = Branch::create($validated);
+
+        return response()->json($branch, 201);
+    }
+
+    public function show(Branch $branch)
+    {
+        return $branch;
+    }
+
+    public function update(
+        Request $request,
+        Branch $branch
+    ) {
+        $validated = $request->validate([
+            'name' => ['required'],
+            'address' => ['nullable'],
+            'latitude' => ['required', 'numeric'],
+            'longitude' => ['required', 'numeric'],
+        ]);
+
+        $branch->update($validated);
+
+        return response()->json($branch);
+    }
+
+    public function destroy(Branch $branch)
+    {
+        $branch->delete();
+
+        return response()->json([
+            'message' => 'Deleted'
+        ]);
+    }
+
+
+}

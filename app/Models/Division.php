@@ -11,7 +11,11 @@ class Division extends Model
         'user_group_id',
         'name',
         'area_id',
-        'address'
+        'address',
+        'longitude',
+        'latitude',
+        'geocode_status',
+        'geocoded_at',
     ];
 
     public function engineer()
