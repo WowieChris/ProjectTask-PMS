@@ -1,0 +1,247 @@
+openapi: 3.0.0
+info:
+  title: Geoapify Shared Components
+  description: Common reusable components used across multiple Geoapify APIs
+  version: 1.0.0
+  contact:
+    name: Geoapify
+    url: https://geoapify.com
+    email: info@geoapify.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: https://api.geoapify.com/v1
+    description: Primary Geoapify API endpoint
+paths: {}
+tags: []
+components:
+  schemas:
+    # Common coordinate representation for lat/lon fields
+    # Used across all geocoding APIs with identical structure
+    LatLonCoordinates:
+      type: object
+      properties:
+        lat:
+          type: number
+          format: double
+          description: Latitude coordinate of the location
+        lon:
+          type: number
+          format: double
+          description: Longitude coordinate of the location
+    
+    # Common address components used across geocoding APIs
+    # All geocoding APIs use these identical field structures
+    AddressComponents:
+      type: object
+      properties:
+        country:
+          type: string
+          description: Country component of the address
+        country_code:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+        state:
+          type: string
+          description: State component of the address
+        state_code:
+          type: string
+          description: State shortcode, the shortcode might be missing for some countries and languages
+        city:
+          type: string
+          description: City component of the address
+        county:
+          type: string
+          description: County component of the address
+        county_code:
+          type: string
+          description: County shortcode, the shortcode might be missing for some countries and languages
+        postcode:
+          type: string
+          description: Postcode or ZIP code of the address
+        street:
+          type: string
+          description: Street component of the address
+        housenumber:
+          type: string
+          description: House number component of an address
+        suburb:
+          type: string
+          description: Suburb component of the address
+        district:
+          type: string
+          description: District name
+    
+    # Common formatted address fields used across geocoding APIs
+    FormattedAddressFields:
+      type: object
+      properties:
+        formatted:
+          type: string
+          description: Display address
+        address_line1:
+          type: string
+          description: Main part of the display address, contains building street and house number or amenity name
+        address_line2:
+          type: string
+          description: The second part of the display address, contains address parts not included to address_line1
+    
+    # Common result type field used across geocoding APIs  
+    ResultType:
+      type: string
+      description: Found location type (e.g., building, street, city, county, state, country)
+    
+    # Common coordinate array format used in routing APIs
+    # Represents coordinates as [longitude, latitude]
+    CoordinateArray:
+      type: array
+      items:
+        type: number
+      minItems: 2
+      maxItems: 2
+      description: Coordinates as [longitude, latitude]
+    
+    # Common enums used across routing and isoline APIs
+    UnitsEnum:
+      type: string
+      enum: [metric, imperial]
+      description: Distance units used
+    
+    TrafficEnum:
+      type: string
+      enum: [free_flow, approximated]
+      description: Traffic model used in calculation
+    
+    RouteTypeEnum:
+      type: string
+      enum: [balanced, short, less_maneuvers]
+      description: Route type used in calculation
+    
+    # Common GeoJSON base structures
+    GeoJsonFeatureCollection:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [FeatureCollection]
+          description: GeoJSON object type
+        features:
+          type: array
+          items:
+            type: object
+          description: Array of GeoJSON features
+    
+    GeoJsonFeature:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [Feature]
+          description: GeoJSON feature type
+        properties:
+          type: object
+          description: Feature properties
+        geometry:
+          type: object
+          description: Feature geometry
+    
+    # Common datasource structure used across all geocoding APIs
+    Datasource:
+      type: object
+      properties:
+        sourcename:
+          type: string
+          description: Name of the data source
+        attribution:
+          type: string
+          description: Attribution text
+        license:
+          type: string
+          description: License name
+        url:
+          type: string
+          format: uri
+          description: URL to license or source
+    
+    # Common timezone structure used across all geocoding APIs
+    Timezone:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Timezone name (e.g., Europe/Berlin)
+        name_alt:
+          type: string
+          description: The alternative name of the timezone, if exist
+        offset_STD:
+          type: string
+          description: Standard time offset (e.g., +01:00)
+        offset_STD_seconds:
+          type: integer
+          description: Standard time offset in seconds
+        offset_DST:
+          type: string
+          description: Daylight saving time offset (e.g., +02:00)
+        offset_DST_seconds:
+          type: integer
+          description: Daylight saving time offset in seconds
+        abbreviation_STD:
+          type: string
+          description: Standard time abbreviation (e.g., CET)
+        abbreviation_DST:
+          type: string
+          description: Daylight saving time abbreviation (e.g., CEST)
+    
+    # Common bounding box structure used across all geocoding APIs
+    BoundingBox:
+      type: object
+      properties:
+        lon1:
+          type: number
+          description: Minimum longitude
+        lat1:
+          type: number
+          description: Minimum latitude
+        lon2:
+          type: number
+          description: Maximum longitude
+        lat2:
+          type: number
+          description: Maximum latitude
+    
+    # Common ranking/confidence structure used across geocoding APIs
+    Rank:
+      type: object
+      properties:
+        confidence:
+          type: number
+          description: Confidence value, takes values from 0 to 1
+        confidence_city_level:
+          type: number
+          description: City-level confidence, takes values from 0 to 1. Evaluates if the city is correct
+        confidence_street_level:
+          type: number
+          description: Street-level confidence, takes values from 0 to 1. Evaluates if the street is correct
+        confidence_building_level:
+          type: number
+          description: Building-level confidence, takes values from 0 to 1. Evaluates if the building position is correct
+        match_type:
+          type: string
+          description: Match type between requested address and result address
+    
+    # Common Point geometry used across geocoding APIs
+    PointGeometry:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [Point]
+          description: GeoJSON geometry type
+        coordinates:
+          type: array
+          items:
+            type: number
+          minItems: 2
+          maxItems: 2
+          description: Coordinates as [longitude, latitude]

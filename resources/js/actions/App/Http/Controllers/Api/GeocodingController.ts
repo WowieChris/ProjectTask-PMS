@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \App\Http\Controllers\Api\GeocodingController::geocode
  * @see app/Http/Controllers/Api/GeocodingController.php:12
- * @route '/api/geomap/geocode'
+ * @route '/geomap/geocode'
  */
 export const geocode = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: geocode.url(options),
@@ -11,13 +11,13 @@ export const geocode = (options?: RouteQueryOptions): RouteDefinition<'post'> =>
 
 geocode.definition = {
     methods: ["post"],
-    url: '/api/geomap/geocode',
+    url: '/geomap/geocode',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\Api\GeocodingController::geocode
  * @see app/Http/Controllers/Api/GeocodingController.php:12
- * @route '/api/geomap/geocode'
+ * @route '/geomap/geocode'
  */
 geocode.url = (options?: RouteQueryOptions) => {
     return geocode.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ geocode.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\Api\GeocodingController::geocode
  * @see app/Http/Controllers/Api/GeocodingController.php:12
- * @route '/api/geomap/geocode'
+ * @route '/geomap/geocode'
  */
 geocode.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: geocode.url(options),
@@ -36,7 +36,7 @@ geocode.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     /**
 * @see \App\Http\Controllers\Api\GeocodingController::geocode
  * @see app/Http/Controllers/Api/GeocodingController.php:12
- * @route '/api/geomap/geocode'
+ * @route '/geomap/geocode'
  */
     const geocodeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: geocode.url(options),
@@ -46,7 +46,7 @@ geocode.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             /**
 * @see \App\Http\Controllers\Api\GeocodingController::geocode
  * @see app/Http/Controllers/Api/GeocodingController.php:12
- * @route '/api/geomap/geocode'
+ * @route '/geomap/geocode'
  */
         geocodeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: geocode.url(options),
@@ -57,7 +57,7 @@ geocode.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 /**
 * @see \App\Http\Controllers\Api\GeocodingController::reverse
  * @see app/Http/Controllers/Api/GeocodingController.php:27
- * @route '/api/geomap/reverse-geocode'
+ * @route '/geomap/reverse-geocode'
  */
 export const reverse = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: reverse.url(options),
@@ -66,13 +66,13 @@ export const reverse = (options?: RouteQueryOptions): RouteDefinition<'post'> =>
 
 reverse.definition = {
     methods: ["post"],
-    url: '/api/geomap/reverse-geocode',
+    url: '/geomap/reverse-geocode',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\Api\GeocodingController::reverse
  * @see app/Http/Controllers/Api/GeocodingController.php:27
- * @route '/api/geomap/reverse-geocode'
+ * @route '/geomap/reverse-geocode'
  */
 reverse.url = (options?: RouteQueryOptions) => {
     return reverse.definition.url + queryParams(options)
@@ -81,7 +81,7 @@ reverse.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\Api\GeocodingController::reverse
  * @see app/Http/Controllers/Api/GeocodingController.php:27
- * @route '/api/geomap/reverse-geocode'
+ * @route '/geomap/reverse-geocode'
  */
 reverse.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: reverse.url(options),
@@ -91,7 +91,7 @@ reverse.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     /**
 * @see \App\Http\Controllers\Api\GeocodingController::reverse
  * @see app/Http/Controllers/Api/GeocodingController.php:27
- * @route '/api/geomap/reverse-geocode'
+ * @route '/geomap/reverse-geocode'
  */
     const reverseForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: reverse.url(options),
@@ -101,7 +101,7 @@ reverse.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             /**
 * @see \App\Http\Controllers\Api\GeocodingController::reverse
  * @see app/Http/Controllers/Api/GeocodingController.php:27
- * @route '/api/geomap/reverse-geocode'
+ * @route '/geomap/reverse-geocode'
  */
         reverseForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: reverse.url(options),

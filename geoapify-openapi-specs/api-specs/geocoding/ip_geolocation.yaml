@@ -1,0 +1,296 @@
+openapi: 3.0.0
+info:
+  title: IP Geolocation API
+  description: The IP Geolocation API provides a convenient way to detect a user's geographical location based on their IP address. This API offers valuable data, such as the user's country, region, city, and timezone, as well as language and currency information, which can be used to enhance user experiences—like customizing content, localizing payment forms, or adjusting language settings.
+  version: 1.0.0
+  contact:
+    name: Geoapify
+    url: https://geoapify.com
+    email: info@geoapify.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: https://api.geoapify.com/v1
+    description: Primary Geoapify API endpoint
+
+tags:
+  - name: IP Geolocation API
+    description: Retrieves geographical location, language, and currency information based on the user's IP address.
+
+paths:
+  # IP Geolocation API
+  /ipinfo:
+    get:
+      tags:
+        - IP Geolocation API
+      summary: Retrieve geolocation data for a given IP address
+      description: Returns location details such as country, city, currency, and language based on the specified IP address. If no IP address is provided, the user's own IP address will be automatically detected and used for the lookup. This API can help customize user experiences, such as localizing content or payment forms based on location.
+      operationId: getIPGeolocation
+      parameters:
+        - name: apiKey
+          in: query
+          required: true
+          description: Your Geoapify API key used to authenticate the request. Sign up for a free API key at [https://myprojects.geoapify.com/](https://myprojects.geoapify.com/), which includes up to 3,000 requests per day on the Free plan.
+          schema:
+            type: string
+            example: "YOUR_API_KEY"
+        - name: ip
+          in: query
+          required: false
+          description: The IP address to retrieve location information for. If not provided, the request will use the client's IP address automatically.
+          schema:
+            type: string
+            format: ipv4
+            example: 8.8.4.4
+
+      responses:
+        '200':
+          description: Successful response with geolocation information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IPGeolocationResponse'
+              example: |
+                {
+                  "city": {
+                    "names": {
+                      "en": "Mountain View"
+                    },
+                    "name": "Mountain View"
+                  },
+                  "continent": {
+                    "code": "NA",
+                    "geoname_id": 6255149,
+                    "names": {
+                      "de": "Nordamerika",
+                      "en": "North America",
+                      "es": "Norteamérica",
+                      "fa": " امریکای شمالی",
+                      "fr": "Amérique Du Nord",
+                      "ja": "北アメリカ大陸",
+                      "ko": "북아메리카",
+                      "pt-BR": "América Do Norte",
+                      "ru": "Северная Америка",
+                      "zh-CN": "北美洲"
+                    },
+                    "name": "North America"
+                  },
+                  "country": {
+                    "geoname_id": 6252001,
+                    "iso_code": "US",
+                    "names": {
+                      "de": "Vereinigte Staaten von Amerika",
+                      "en": "United States",
+                      "es": "Estados Unidos de América (los)",
+                      "fa": "ایالات متحدهٔ امریکا",
+                      "fr": "États-Unis",
+                      "ja": "アメリカ合衆国",
+                      "ko": "미국",
+                      "pt-BR": "Estados Unidos",
+                      "ru": "США",
+                      "zh-CN": "美国"
+                    },
+                    "name": "United States",
+                    "name_native": "United States",
+                    "phone_code": "1",
+                    "capital": "Washington D.C.",
+                    "currency": "USD,USN,USS",
+                    "flag": "🇺🇸",
+                    "languages": [
+                      {
+                        "iso_code": "en",
+                        "name": "English",
+                        "name_native": "English"
+                      }
+                    ]
+                  },
+                  "location": {
+                    "latitude": 37.4223,
+                    "longitude": -122.085
+                  },
+                  "subdivisions": [
+                    {
+                      "names": {
+                        "en": "California"
+                      }
+                    }
+                  ],
+                  "state": {
+                    "name": "California"
+                  },
+                  "datasource": [
+                    {
+                      "name": "IP to City Lite",
+                      "attribution": "<a href='https://db-ip.com'>IP Geolocation by DB-IP</a>",
+                      "license": "Creative Commons Attribution License"
+                    }
+                  ],
+                  "ip": "8.8.4.4"
+                }
+        '400':
+          description: Bad Request. The input provided is invalid or improperly formatted. Please verify and correct your request parameters.
+        '401':
+          description: Unauthorized. The API key is missing, incorrect, or invalid. Please provide a valid API key to authenticate the request.
+        '429':
+          description: Request limit exceeded. Too many requests have been sent in a short period, surpassing the allowed rate limits.
+        '500':
+          description: Internal Server Error. The server encountered an unexpected condition that prevented it from fulfilling the request. Please try again later or [contact support](mailto:info@geoapify.com) if the issue persists.
+
+components:
+  schemas:
+    # Main IP Geolocation Response
+    IPGeolocationResponse:
+      type: object
+      properties:
+        city:
+          $ref: '#/components/schemas/IPCity'
+        continent:
+          $ref: '#/components/schemas/IPContinent'
+        country:
+          $ref: '#/components/schemas/IPCountry'
+        location:
+          $ref: '#/components/schemas/IPLocation'
+        subdivisions:
+          type: array
+          items:
+            $ref: '#/components/schemas/IPSubdivision'
+        state:
+          $ref: '#/components/schemas/IPState'
+        datasource:
+          type: array
+          items:
+            $ref: '#/components/schemas/IPDatasource'
+        ip:
+          type: string
+          description: The IP address that was looked up
+          format: ipv4
+    
+    # City information
+    IPCity:
+      type: object
+      properties:
+        names:
+          type: object
+          description: City names in different languages
+          additionalProperties:
+            type: string
+        name:
+          type: string
+          description: City name in English
+    
+    # Continent information
+    IPContinent:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Two-letter continent code
+        geoname_id:
+          type: integer
+          description: GeoNames database identifier
+        names:
+          type: object
+          description: Continent names in different languages
+          additionalProperties:
+            type: string
+        name:
+          type: string
+          description: Continent name in English
+    
+    # Country information
+    IPCountry:
+      type: object
+      properties:
+        geoname_id:
+          type: integer
+          description: GeoNames database identifier
+        iso_code:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+        names:
+          type: object
+          description: Country names in different languages
+          additionalProperties:
+            type: string
+        name:
+          type: string
+          description: Country name in English
+        name_native:
+          type: string
+          description: Country name in native language
+        phone_code:
+          type: string
+          description: International dialing code
+        capital:
+          type: string
+          description: Capital city name
+        currency:
+          type: string
+          description: Currency codes (comma-separated if multiple)
+        flag:
+          type: string
+          description: Country flag emoji
+        languages:
+          type: array
+          items:
+            $ref: '#/components/schemas/IPLanguage'
+    
+    # Geographic location coordinates
+    IPLocation:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+          description: Latitude coordinate
+        longitude:
+          type: number
+          format: double
+          description: Longitude coordinate
+    
+    # Subdivision (state/province) information
+    IPSubdivision:
+      type: object
+      properties:
+        names:
+          type: object
+          description: Subdivision names in different languages
+          additionalProperties:
+            type: string
+    
+    # State information
+    IPState:
+      type: object
+      properties:
+        name:
+          type: string
+          description: State or province name
+    
+    # Language information
+    IPLanguage:
+      type: object
+      properties:
+        iso_code:
+          type: string
+          description: ISO 639-1 language code
+        name:
+          type: string
+          description: Language name in English
+        name_native:
+          type: string
+          description: Language name in native script
+    
+    # Data source information
+    IPDatasource:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the data source
+        attribution:
+          type: string
+          description: Attribution text (may contain HTML)
+        license:
+          type: string
+          description: License name

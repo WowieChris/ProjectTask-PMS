@@ -30,8 +30,11 @@ use App\Http\Controllers\ScheduledTransferController;
 use App\Http\Controllers\AssetCategoryController;
 use App\Http\Controllers\AssetAssignmentController;
 use App\Http\Controllers\AssetTransferController;
-use App\Http\Controllers\OfficeMapController;
-
+use App\Http\Controllers\Api\GeocodingController;
+use App\Http\Controllers\Api\GeoMapBranchController;
+use App\Http\Controllers\SavedLocationController;
+use App\Http\Controllers\PsgcController;
+use Illuminate\Support\Facades\Http;
 
 Route::get('/', function () {
     return Inertia::render('auth/login', [
@@ -75,6 +78,54 @@ Route::middleware(['auth'])->group(function () {
 
         require __DIR__ . '/settings.php';
     });
+});
+
+//Geo location saving 
+Route::get('/GeoMap', [DivisionController::class, 'geoMap']);
+
+Route::get('/saved-locations', [SavedLocationController::class, 'index'])->name('saved-locations.index');
+Route::post('/saved-locations', [SavedLocationController::class, 'store'])->name('saved-locations.store');
+Route::delete('/saved-locations/{savedLocation}', [SavedLocationController::class, 'destroy'])->name('saved-locations.destroy');
+Route::get('/psgc/refresh', [PsgcController::class, 'refreshCache']); // run once / on schedule
+Route::get('/psgc/regions', [PsgcController::class, 'regions']);
+Route::get('/psgc/provinces', [PsgcController::class, 'provinces']);
+Route::get('/psgc/municipalities', [PsgcController::class, 'municipalities']);
+Route::get('/psgc/barangays', [PsgcController::class, 'barangays']);
+Route::get('/GeoMap/AddressForm', function () {
+    return Inertia::render('GeoMap/AddressForm');
+})->middleware(['auth']);
+//GEO MAP
+
+// Route::get('/test-geocode', function () {
+
+//     return app(
+//         \App\Services\NominatimService::class
+//     )->geocode(
+//         'SM North EDSA'
+//     );
+// });
+
+Route::middleware(['auth'])->group(function () {
+
+    // Route::get('/GeoMap', function () {
+    //     return Inertia::render('GeoMap/Index');
+    // })->middleware('auth');
+
+    Route::post('/geomap/geocode', [
+        GeocodingController::class,
+        'geocode'
+    ]);
+
+    Route::post('/geomap/reverse-geocode', [
+        GeocodingController::class,
+        'reverse'
+    ]);
+
+    Route::apiResource(
+        'geomap-branches',
+        GeoMapBranchController::class
+
+    );
 });
 
 Route::middleware(['auth'])->group(
@@ -309,7 +360,60 @@ Route::prefix('employees')->group(function () {
         ->name('employees.transfer');
 });
 
-// Geomap page — what users navigate to
-Route::get('/officemap', function () {
-    return Inertia::render('OfficeMap/Index');
-})->name('officemap.index');
+
+Route::get('/psgc-debug', function () {
+
+    $url = 'https://classification.psa.gov.ph/psgc/Q2_2024/all';
+    $token = env('PSGC_API_TOKEN');
+
+    $tests = [];
+
+    $headersToTry = [
+        'Authorization' => 'Bearer ' . $token,
+        'Token' => $token,
+        'token' => $token,
+        'X-API-Key' => $token,
+        'api-key' => $token,
+    ];
+
+    foreach ($headersToTry as $name => $value) {
+        $response = Http::withHeaders([
+            $name => $value,
+        ])->get($url);
+
+        $tests[$name] = [
+            'status' => $response->status(),
+            'body' => $response->body(),
+        ];
+    }
+
+    return response()->json($tests);
+});
+
+Route::get('/psgc-debug2', function () {
+
+    $url = 'https://classification.psa.gov.ph/psgc/Q2_2024/all';
+    $token = env('PSGC_API_TOKEN');
+
+    $tests = [];
+
+    $tests['token'] = Http::get($url, [
+        'token' => $token,
+    ])->json();
+
+    $tests['api_key'] = Http::get($url, [
+        'api_key' => $token,
+    ])->json();
+
+    $tests['apikey'] = Http::get($url, [
+        'apikey' => $token,
+    ])->json();
+
+    $tests['access_token'] = Http::get($url, [
+        'access_token' => $token,
+    ])->json();
+
+    return $tests;
+});
+
+Route::get('/psgc/locations', [PsgcController::class, 'locations']);

@@ -1,0 +1,200 @@
+openapi: 3.0.0
+info:
+  title: Places API
+  description: |
+    The Places API enables querying local points of interest and amenities. You can search for places within a city, a radius, an isoline, or a bounding box, filtered by categories, conditions (e.g., free Wi-Fi, wheelchair accessibility).
+  version: 1.0.0
+  contact:
+    name: Geoapify GmbH
+    url: https://geoapify.com
+    email: info@geoapify.com
+  license:
+    name: MIT
+    url: https://opensource.org/license/mit
+servers:
+  - url: https://api.geoapify.com/v2
+    description: Main Geoapify API server
+
+tags:
+  - name: Places API
+    description: API for querying points of interest and amenities.
+
+paths:
+  /places:
+    get:
+      tags:
+        - Places API
+      summary: Search for places by category and location
+      description: |
+        Returns points of interest based on specified location and filters. You can filter places by category, conditions (e.g., wheelchair accessible), and geometry (bounding box, circle, etc.).
+      operationId: getPlaces
+      parameters:
+        - name: apiKey
+          in: query
+          required: true
+          description: The API key for Geoapify services.
+          schema:
+            type: string
+            example: "YOUR_API_KEY"
+        - name: categories
+          in: query
+          required: true
+          description: Comma-separated list of place categories (e.g., catering.restaurant, catering.cafe).
+          schema:
+            type: string
+            example: catering.restaurant,catering.cafe
+        - name: conditions
+          in: query
+          required: false
+          description: |
+            Filter results by conditions (e.g., wheelchair accessibility, internet access). Check supported values for conditions.
+          schema:
+            type: string
+            example: wheelchair.limited
+        - name: filter
+          in: query
+          required: false
+          description: |
+            Filter results by geometry. For example, use `rect:lon1,lat1,lon2,lat2` for a bounding box or `circle:lon,lat,radiusMeters` for a circle.
+          schema:
+            type: string
+            example: rect:11.573106549898483,48.13898913611139,11.57704581350751,48.13666585409989
+        - name: bias
+          in: query
+          required: false
+          description: |
+            Search places near the specified location. Note, the search will prioritize places within 50km.
+          schema:
+            type: string
+            example: proximity:11.573106549898483,48.13898913611139
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of results per page.
+          schema:
+            type: integer
+            example: 20
+        - name: offset
+          in: query
+          required: false
+          description: Offset to the first result index for pagination.
+          schema:
+            type: integer
+            example: 0
+        - name: lang
+          in: query
+          required: false
+          description: The language of the result. Supports 2-character ISO 639-1 language codes (e.g., "en").
+          schema:
+            type: string
+            example: en
+        - name: name
+          in: query
+          required: false
+          description: Filter places by the given name.
+          schema:
+            type: string
+            example: "Guido al Duomo"
+      responses:
+        '200':
+          description: Successful response containing places data.
+          content:
+            application/geo+json:
+              example: |
+                {
+                  "type": "FeatureCollection",
+                  "features": [
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "name": "Guido al Duomo",
+                        "country": "Germany",
+                        "country_code": "de",
+                        "state": "Bavaria",
+                        "city": "Munich",
+                        "postcode": "80331",
+                        "district": "Kreuzviertel",
+                        "suburb": "Altstadt-Lehel",
+                        "quarter": "Kreuzviertel",
+                        "street": "Frauenplatz",
+                        "housenumber": "12",
+                        "lon": 11.5742388,
+                        "lat": 48.1389272,
+                        "state_code": "BY",
+                        "formatted": "Guido al Duomo, Frauenplatz 12, 80331 Munich, Germany",
+                        "address_line1": "Guido al Duomo",
+                        "address_line2": "Frauenplatz 12, 80331 Munich, Germany",
+                        "categories": [
+                          "catering",
+                          "catering.cafe",
+                          "vegan",
+                          "vegetarian",
+                          "wheelchair",
+                          "wheelchair.limited"
+                        ],
+                        "details": [
+                          "details",
+                          "details.catering",
+                          "details.contact",
+                          "details.facilities"
+                        ],
+                        "datasource": {
+                          "sourcename": "openstreetmap",
+                          "attribution": "© OpenStreetMap contributors",
+                          "license": "Open Database License",
+                          "url": "https://www.openstreetmap.org/copyright",
+                          "raw": {
+                            "name": "Guido al Duomo",
+                            "phone": "+49 89 24231690",
+                            "osm_id": 656252993,
+                            "amenity": "cafe",
+                            "website": "https://guido-al-duomo-muenchen.xregional.de/",
+                            "osm_type": "n",
+                            "addr:city": "München",
+                            "diet:vegan": "yes",
+                            "wheelchair": "limited",
+                            "addr:street": "Frauenplatz",
+                            "addr:country": "DE",
+                            "addr:postcode": 80331,
+                            "opening_hours": "Mo-Sa 09:00-24:00",
+                            "diet:vegetarian": "yes",
+                            "addr:housenumber": 12,
+                            "check_date:opening_hours": "2023-11-12"
+                          }
+                        },
+                        "website": "https://guido-al-duomo-muenchen.xregional.de/",
+                        "opening_hours": "Mo-Sa 09:00-24:00",
+                        "contact": {
+                          "phone": "+49 89 24231690"
+                        },
+                        "facilities": {
+                          "wheelchair": true,
+                          "wheelchair_details": {
+                            "condition": "limited"
+                          }
+                        },
+                        "catering": {
+                          "diet": {
+                            "vegan": true,
+                            "vegetarian": true
+                          }
+                        },
+                        "distance": 85,
+                        "place_id": "514630c4a00226274059990ed25dc8114840f00103f90141a01d270000000092030e477569646f20616c2044756f6d6f"
+                      },
+                      "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                          11.5742388,
+                          48.13892719990435
+                        ]
+                      }
+                    }
+                  ]
+                }
+        '400':
+          description: Invalid request or missing parameters.
+        '401':
+          description: Unauthorized, invalid API key.
+        '500':
+          description: Internal server error.

@@ -1,0 +1,748 @@
+openapi: 3.0.0
+info:
+  title: Geocoding API
+  description: The Geoapify Forward Geocoding API allows you to search and retrieve address data from locations worldwide. It is a RESTful API that uses HTTP GET requests and supports JSON or XML format responses. The API is designed to be cross-platform, making it compatible with most programming languages and development environments.
+  version: 1.0.0
+  contact:
+    name: Geoapify
+    url: https://geoapify.com
+    email: info@geoapify.com
+  license:
+    name: MIT
+    url: https://opensource.org/license/mit
+servers:
+  - url: https://api.geoapify.com/v1
+    description: Primary Geoapify API endpoint
+
+tags:
+  - name: Geocoding API
+    description: Converts addresses into geographic coordinates
+
+paths:
+  # Forward Geocoding API
+  /geocode/search:
+    get:
+      tags:
+        - Geocoding API
+      summary: Search for an address using a free-form string or structured address components
+      description: |
+        The Forward Geocoding API allows you to search for geographic coordinates based on address information. You can provide:
+          
+        - A free-form text string in the `text` parameter (e.g., full address or place name)
+        - Or use structured address components in the `housenumber`, `street`, `postcode`, `city`, `state`, and `country` parameters
+
+        One of these input formats must be supplied to successfully retrieve latitude and longitude coordinates.
+
+        Additionally, the API allows you to apply filters, such as by **country**, **bounding rectangle**, **radius**, or specific **place**, to refine your search results. You can also set a bias using the same criteria to prioritize results from a preferred area.
+
+        The API supports cross-platform usage and returns responses in **JSON**, **GEOJSON** and **XML** formats.
+ 
+      operationId: geocodeSearch
+      parameters: 
+        - name: apiKey
+          in: query
+          required: true
+          description: Your Geoapify API key to authenticate the request. You can sign up and obtain an API key for free at [https://myprojects.geoapify.com/](https://myprojects.geoapify.com/). The Free plan includes up to 3,000 requests per day.
+          schema:
+            type: string
+            example: "YOUR_API_KEY"
+        - name: text
+          in: query
+          required: false
+          description: Free-form address to search
+          schema:
+            type: string
+            example: "Hannoverstr. 8, 80997 Munich"
+        - name: name
+          in: query
+          required: false
+          description: Amenity or place name.
+          schema:
+            type: string
+        - name: housenumber
+          in: query
+          required: false
+          description: House number.
+          schema:
+            type: string
+        - name: street
+          in: query
+          required: false
+          description: Street name.
+          schema:
+            type: string
+        - name: postcode
+          in: query
+          required: false
+          description: Postcode or ZIP code.
+          schema:
+            type: string
+        - name: city
+          in: query
+          required: false
+          description: City name.
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: false
+          description: State name.
+          schema:
+            type: string
+        - name: country
+          in: query
+          required: false
+          description: Country name.
+          schema:
+            type: string
+        - name: type
+          in: query
+          required: false
+          description: |
+            Defines the location type to be searched. Available types include:
+
+            - `country`: Search for countries.
+            - `state`: Search for states or regions.
+            - `city`: Search for cities or towns.
+            - `postcode`: Search for postal codes.
+            - `street`: Search for specific streets.
+            - `amenity`: Search for points of interest (e.g., schools, parks, etc.).
+            - `locality`: Search for administrative areas, which can include postcodes, districts, cities, counties, and states.
+          schema:
+            type: string
+            enum: [ country, state, city, postcode, street, amenity ]
+        - name: lang
+          in: query
+          required: false
+          description: Result language in [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format (e.g., 'en' for English).
+          schema:
+            type: string
+            example: en
+        - name: limit
+          in: query
+          required: false
+          description: "Max number of results (default: 5)."
+          schema:
+            type: integer
+        - name: filter
+          in: query
+          required: false
+          description: |
+            Allows you to refine your search results based on specific geographic criteria. You can use the following location filters to make the results more relevant:
+            - **By circle**:  
+            Format: `circle:lon,lat,radiusMeters`  
+            Description: Search for places within a defined circle based on longitude, latitude, and radius in meters.  
+            Example: `filter=circle:-87.770231,41.878968,5000`
+            
+            - **By rectangle**:  
+            Format: `rect:lon1,lat1,lon2,lat2`  
+            Description: Search for places within a rectangular area defined by two longitude and latitude points (representing the southwest and northeast corners).  
+            Example: `filter=rect:-89.097540,39.668983,-88.399274,40.383412`
+  
+            - **By country**:  
+            Format: Comma-separated ISO 3166-1 Alpha-2 country codes (in lowercase). Use `'auto'` to detect the country by IP address. Use `'none'` to skip country filtering (default value).  
+            Description: Search for places within specified countries.  
+            Example: `filter=countrycode:de,es,fr`
+  
+            - **By place**:  
+            Format: `place:placeId`  
+            Description: Search within a specific boundary, such as a city, district, or postcode, using a `place_id` returned by the Geocoding, Reverse Geocoding, Places, or Boundaries APIs.  
+            Example: `filter=place:51f07665660fc4024059dc0a96dfac6c...`
+          schema:
+            type: string
+        - name: bias
+          in: query
+          required: false
+          description: |
+            Allows you to prioritize search results based on proximity to a specific point, radius, bounding box, or country without restricting the search to that area. This can be useful for displaying nearby results first while still allowing for global search.
+
+            - **By circle**:  
+              Format: `circle:lon,lat,radiusMeters`  
+              Description: Prioritize search results from within a defined circle (based on longitude, latitude, and radius in meters), and then search worldwide.  
+              Example: `bias=circle:-87.770231,41.878968,5000`
+  
+            - **By rectangle**:  
+              Format: `rect:lon1,lat1,lon2,lat2`  
+              Description: Prioritize results from within a defined rectangular area (using two longitude and latitude points representing the southwest and northeast corners), and then search worldwide.  
+              Example: `bias=rect:-89.097540,39.668983,-88.399274,40.383412`
+  
+            - **By country**:  
+              Format: Comma-separated ISO 3166-1 Alpha-2 country codes (in lowercase). Use `'auto'` to detect the country by IP address. Use `'none'` to skip country bias (default value).  
+              Description: Prioritize results from the specified countries first, and then search globally.  
+              Example: `bias=countrycode:de,es,fr`
+  
+            - **By location**:  
+              Format: `proximity:lon,lat`  
+              Description: Prioritize results based on distance from a specific longitude and latitude.  
+              Example: `bias=proximity:41.2257145,52.971411`
+          schema:
+            type: string
+        - name: format
+          in: query
+          required: false
+          description: "Response format (default is `geojson`). Other options: `json`, `xml`."
+          schema:
+            type: string
+            enum: [json, xml, geojson]
+            example: 'json'
+      responses:
+        '200':
+          description: The geocoded results.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/GeocodingJsonResponse'
+                  - $ref: '#/components/schemas/GeocodingGeoJsonResponse'
+              examples: 
+                format=json: 
+                  summary: JSON format response (format=json)
+                  value: |
+                    {
+                      "results": [
+                        {
+                          "datasource": {
+                            "sourcename": "openstreetmap",
+                            "attribution": "© OpenStreetMap contributors",
+                            "license": "Open Database License",
+                            "url": "https://www.openstreetmap.org/copyright"
+                          },
+                          "country": "Germany",
+                          "country_code": "de",
+                          "state": "Bavaria",
+                          "city": "Munich",
+                          "postcode": "80997",
+                          "district": "Moosach-Bahnhof",
+                          "suburb": "Moosach",
+                          "street": "Hannoverstraße",
+                          "housenumber": "8",
+                          "lon": 11.50395619013508,
+                          "lat": 48.18515935,
+                          "state_code": "BY",
+                          "result_type": "building",
+                          "formatted": "Hannoverstraße 8, 80997 Munich, Germany",
+                          "address_line1": "Hannoverstraße 8",
+                          "address_line2": "80997 Munich, Germany",
+                          "category": "building.residential",
+                          "timezone": {
+                            "name": "Europe/Berlin",
+                            "offset_STD": "+01:00",
+                            "offset_STD_seconds": 3600,
+                            "offset_DST": "+02:00",
+                            "offset_DST_seconds": 7200,
+                            "abbreviation_STD": "CET",
+                            "abbreviation_DST": "CEST"
+                          },
+                          "plus_code": "8FWH5GP3+3H",
+                          "plus_code_short": "5GP3+3H Munich, Bavaria, Germany",
+                          "rank": {
+                            "importance": 0.00000999999999995449,
+                            "confidence": 0,
+                            "confidence_city_level": 0,
+                            "confidence_street_level": 0,
+                            "confidence_building_level": 0,
+                            "match_type": "match_by_building"
+                          },
+                          "place_id": "516d7eb68b06022740593966344db3174840f00102f901e098c30500000000c00203",
+                          "bbox": {
+                            "lon1": 11.5037848,
+                            "lat1": 48.1850482,
+                            "lon2": 11.5041224,
+                            "lat2": 48.1852642
+                          }
+                        }
+                      ],
+                      "query": {
+                        "text": "Hannoverstr",
+                        "housenumber": "1A",
+                        "street": "Hannoverstraße",
+                        "postcode": "44651",
+                        "city": "Herne",
+                        "state": "Westphalia",
+                        "country": "Germany",
+                        "parsed": {
+                          "house": "hannoverstr hannoverstraße",
+                          "housenumber": "1A",
+                          "street": "Hannoverstraße",
+                          "postcode": "44651",
+                          "city": "Herne",
+                          "state": "Westphalia",
+                          "country": "Germany",
+                          "expected_type": "amenity"
+                        }
+                      }
+                    }
+                format=geojson:
+                  summary: GeoJSON format response (format=geojson, default)
+                  value: |
+                    {
+                      "type": "FeatureCollection",
+                      "features": [
+                        {
+                          "type": "Feature",
+                          "properties": {
+                            "datasource": {
+                              "sourcename": "openstreetmap",
+                              "attribution": "© OpenStreetMap contributors",
+                              "license": "Open Database License",
+                              "url": "https://www.openstreetmap.org/copyright"
+                            },
+                            "country": "Germany",
+                            "country_code": "de",
+                            "state": "Bavaria",
+                            "city": "Munich",
+                            "postcode": "80997",
+                            "district": "Moosach-Bahnhof",
+                            "suburb": "Moosach",
+                            "street": "Hannoverstraße",
+                            "housenumber": "8",
+                            "lon": 11.50395619013508,
+                            "lat": 48.18515935,
+                            "state_code": "BY",
+                            "result_type": "building",
+                            "formatted": "Hannoverstraße 8, 80997 Munich, Germany",
+                            "address_line1": "Hannoverstraße 8",
+                            "address_line2": "80997 Munich, Germany",
+                            "category": "building.residential",
+                            "timezone": {
+                              "name": "Europe/Berlin",
+                              "offset_STD": "+01:00",
+                              "offset_STD_seconds": 3600,
+                              "offset_DST": "+02:00",
+                              "offset_DST_seconds": 7200,
+                              "abbreviation_STD": "CET",
+                              "abbreviation_DST": "CEST"
+                            },
+                            "plus_code": "8FWH5GP3+3H",
+                            "plus_code_short": "5GP3+3H Munich, Bavaria, Germany",
+                            "rank": {
+                              "importance": 0.00000999999999995449,
+                              "confidence": 0,
+                              "confidence_city_level": 0,
+                              "confidence_street_level": 0,
+                              "confidence_building_level": 0,
+                              "match_type": "match_by_building"
+                            },
+                            "place_id": "516d7eb68b06022740593966344db3174840f00102f901e098c30500000000c00203"
+                          },
+                          "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                              11.50395619013508,
+                              48.18515935
+                            ]
+                          },
+                          "bbox": [
+                            11.5037848,
+                            48.1850482,
+                            11.5041224,
+                            48.1852642
+                          ]
+                        }
+                      ],
+                      "query": {
+                        "text": "Hannoverstr",
+                        "housenumber": "1A",
+                        "street": "Hannoverstraße",
+                        "postcode": "44651",
+                        "city": "Herne",
+                        "state": "Westphalia",
+                        "country": "Germany",
+                        "parsed": {
+                          "house": "hannoverstr hannoverstraße",
+                          "housenumber": "1A",
+                          "street": "Hannoverstraße",
+                          "postcode": "44651",
+                          "city": "Herne",
+                          "state": "Westphalia",
+                          "country": "Germany",
+                          "expected_type": "amenity"
+                        }
+                      }
+                    }
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/GeocodingXmlResponse'
+              example: |
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <root>
+                  <results>
+                    <datasource>
+                      <sourcename>openstreetmap</sourcename>
+                      <attribution>© OpenStreetMap contributors</attribution>
+                      <license>Open Database License</license>
+                      <url>https://www.openstreetmap.org/copyright</url>
+                    </datasource>
+                    <country>Germany</country>
+                    <country_code>de</country_code>
+                    <state>Bavaria</state>
+                    <city>Munich</city>
+                    <postcode>80997</postcode>
+                    <district>Moosach-Bahnhof</district>
+                    <suburb>Moosach</suburb>
+                    <street>Hannoverstraße</street>
+                    <housenumber>8</housenumber>
+                    <lon>11.50395619013508</lon>
+                    <lat>48.18515935</lat>
+                    <state_code>BY</state_code>
+                    <result_type>building</result_type>
+                    <formatted>Hannoverstraße 8, 80997 Munich, Germany</formatted>
+                    <address_line1>Hannoverstraße 8</address_line1>
+                    <address_line2>80997 Munich, Germany</address_line2>
+                    <category>building.residential</category>
+                    <timezone>
+                      <name>Europe/Berlin</name>
+                      <offset_STD>+01:00</offset_STD>
+                      <offset_STD_seconds>3600</offset_STD_seconds>
+                      <offset_DST>+02:00</offset_DST>
+                      <offset_DST_seconds>7200</offset_DST_seconds>
+                      <abbreviation_STD>CET</abbreviation_STD>
+                      <abbreviation_DST>CEST</abbreviation_DST>
+                    </timezone>
+                    <plus_code>8FWH5GP3+3H</plus_code>
+                    <plus_code_short>5GP3+3H Munich, Bavaria, Germany</plus_code_short>
+                    <rank>
+                      <importance>0.00000999999999995449</importance>
+                      <confidence>0</confidence>
+                      <confidence_city_level>0</confidence_city_level>
+                      <confidence_street_level>0</confidence_street_level>
+                      <confidence_building_level>0</confidence_building_level>
+                      <match_type>match_by_building</match_type>
+                    </rank>
+                    <place_id>516d7eb68b06022740593966344db3174840f00102f901e098c30500000000c00203</place_id>
+                    <bbox>
+                      <lon1>11.5037848</lon1>
+                      <lat1>48.1850482</lat1>
+                      <lon2>11.5041224</lon2>
+                      <lat2>48.1852642</lat2>
+                    </bbox>
+                  </results>
+                  <query>
+                    <text>Hannoverstr</text>
+                    <housenumber>1A</housenumber>
+                    <street>Hannoverstraße</street>
+                    <postcode>44651</postcode>
+                    <city>Herne</city>
+                    <state>Westphalia</state>
+                    <country>Germany</country>
+                    <parsed>
+                      <house>hannoverstr hannoverstraße</house>
+                      <housenumber>1A</housenumber>
+                      <street>Hannoverstraße</street>
+                      <postcode>44651</postcode>
+                      <city>Herne</city>
+                      <state>Westphalia</state>
+                      <country>Germany</country>
+                      <expected_type>amenity</expected_type>
+                    </parsed>
+                  </query>
+                </root>
+        '400':
+          description: Bad Request. The input provided is invalid or improperly formatted. Please verify and correct your request parameters.
+        '401':
+          description: Unauthorized. The API key is missing, incorrect, or invalid. Please provide a valid API key to authenticate the request.
+        '429':
+          description: Request limit exceeded. Too many requests have been sent in a short period, surpassing the allowed rate limits.
+        '500':
+          description: Internal Server Error. The server encountered an unexpected condition that prevented it from fulfilling the request. Please try again later or [contact support](mailto:info@geoapify.com) if the issue persists.
+
+components:
+  schemas:
+    # JSON Format Response Schema
+    GeocodingJsonResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeocodingResult'
+        query:
+          $ref: '#/components/schemas/QueryInfo'
+    
+    # GeoJSON Format Response Schema  
+    GeocodingGeoJsonResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [FeatureCollection]
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeoJsonFeature'
+        query:
+          $ref: '#/components/schemas/QueryInfo'
+    
+    # Individual geocoding result object
+    GeocodingResult:
+      allOf:
+        - $ref: '../common/shared-components.yaml#/components/schemas/LatLonCoordinates'
+        - $ref: '../common/shared-components.yaml#/components/schemas/AddressComponents'
+        - $ref: '../common/shared-components.yaml#/components/schemas/FormattedAddressFields'
+        - type: object
+          properties:
+            datasource:
+              $ref: '../common/shared-components.yaml#/components/schemas/Datasource'
+            category:
+              type: string
+              description: Category of the location
+            result_type:
+              $ref: '../common/shared-components.yaml#/components/schemas/ResultType'
+            rank:
+              $ref: '../common/shared-components.yaml#/components/schemas/Rank'
+            place_id:
+              type: string
+              description: Unique identifier for the place
+            bbox:
+              $ref: '../common/shared-components.yaml#/components/schemas/BoundingBox'
+            timezone:
+              $ref: '../common/shared-components.yaml#/components/schemas/Timezone'
+            plus_code:
+              type: string
+              description: Plus code (Open Location Code)
+            plus_code_short:
+              type: string
+              description: Shortened plus code
+            distance:
+              type: number
+              description: Distance in meters from the bias point (only present when using bias parameter)
+            name:
+              type: string
+              description: Name of the place or amenity
+    
+    # GeoJSON Feature
+    GeoJsonFeature:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [Feature]
+        properties:
+          $ref: '#/components/schemas/GeocodingResult'
+        geometry:
+          $ref: '#/components/schemas/Geometry'
+        bbox:
+          type: array
+          description: Bounding box [lon1, lat1, lon2, lat2]
+          items:
+            type: number
+          minItems: 4
+          maxItems: 4
+    
+    # GeoJSON Geometry
+    Geometry:
+      $ref: '../common/shared-components.yaml#/components/schemas/PointGeometry'
+    
+    # Query information
+    QueryInfo:
+      type: object
+      properties:
+        text:
+          type: string
+          description: Original query text
+        housenumber:
+          type: string
+          description: House number from query
+        street:
+          type: string
+          description: Street from query
+        postcode:
+          type: string
+          description: Postcode from query
+        city:
+          type: string
+          description: City from query
+        state:
+          type: string
+          description: State from query
+        country:
+          type: string
+          description: Country from query
+        parsed:
+          type: object
+          description: Parsed query components
+          properties:
+            house:
+              type: string
+            housenumber:
+              type: string
+            street:
+              type: string
+            postcode:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            country:
+              type: string
+            expected_type:
+              type: string
+    
+    # XML Format Response Schema
+    GeocodingXmlResponse:
+      type: object
+      xml:
+        name: root
+      properties:
+        results:
+          type: array
+          xml:
+            wrapped: false
+          items:
+            type: object
+            xml:
+              name: results
+            properties:
+              datasource:
+                type: object
+                xml:
+                  name: datasource
+                properties:
+                  sourcename:
+                    type: string
+                  attribution:
+                    type: string
+                  license:
+                    type: string
+                  url:
+                    type: string
+              country:
+                type: string
+              country_code:
+                type: string
+              state:
+                type: string
+              state_code:
+                type: string
+              city:
+                type: string
+              county:
+                type: string
+              county_code:
+                type: string
+              postcode:
+                type: string
+              district:
+                type: string
+              suburb:
+                type: string
+              street:
+                type: string
+              housenumber:
+                type: string
+              lon:
+                type: number
+              lat:
+                type: number
+              formatted:
+                type: string
+              address_line1:
+                type: string
+              address_line2:
+                type: string
+              category:
+                type: string
+              result_type:
+                type: string
+              place_id:
+                type: string
+              plus_code:
+                type: string
+              plus_code_short:
+                type: string
+              distance:
+                type: number
+              name:
+                type: string
+              timezone:
+                type: object
+                xml:
+                  name: timezone
+                properties:
+                  name:
+                    type: string
+                  name_alt:
+                    type: string
+                  offset_STD:
+                    type: string
+                  offset_STD_seconds:
+                    type: integer
+                  offset_DST:
+                    type: string
+                  offset_DST_seconds:
+                    type: integer
+                  abbreviation_STD:
+                    type: string
+                  abbreviation_DST:
+                    type: string
+              rank:
+                type: object
+                xml:
+                  name: rank
+                properties:
+                  importance:
+                    type: number
+                  confidence:
+                    type: number
+                  confidence_city_level:
+                    type: number
+                  confidence_street_level:
+                    type: number
+                  confidence_building_level:
+                    type: number
+                  match_type:
+                    type: string
+              bbox:
+                type: object
+                xml:
+                  name: bbox
+                properties:
+                  lon1:
+                    type: number
+                  lat1:
+                    type: number
+                  lon2:
+                    type: number
+                  lat2:
+                    type: number
+        query:
+          type: object
+          xml:
+            name: query
+          properties:
+            text:
+              type: string
+            housenumber:
+              type: string
+            street:
+              type: string
+            postcode:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            country:
+              type: string
+            parsed:
+              type: object
+              xml:
+                name: parsed
+              properties:
+                house:
+                  type: string
+                housenumber:
+                  type: string
+                street:
+                  type: string
+                postcode:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                country:
+                  type: string
+                expected_type:
+                  type: string
