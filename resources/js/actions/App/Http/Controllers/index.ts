@@ -1,3 +1,6 @@
+import Api from './Api'
+import PsgcController from './PsgcController'
+import OfficeAddressController from './OfficeAddressController'
 import Auth from './Auth'
 import UserController from './UserController'
 import Settings from './Settings'
@@ -28,7 +31,10 @@ import AssetMaintenanceController from './AssetMaintenanceController'
 import AssetLogController from './AssetLogController'
 import EmployeeController from './EmployeeController'
 const Controllers = {
-    Auth: Object.assign(Auth, Auth),
+    Api: Object.assign(Api, Api),
+PsgcController: Object.assign(PsgcController, PsgcController),
+OfficeAddressController: Object.assign(OfficeAddressController, OfficeAddressController),
+Auth: Object.assign(Auth, Auth),
 UserController: Object.assign(UserController, UserController),
 Settings: Object.assign(Settings, Settings),
 DivisionController: Object.assign(DivisionController, DivisionController),

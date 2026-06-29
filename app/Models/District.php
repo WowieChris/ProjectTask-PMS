@@ -8,7 +8,7 @@ use App\Models\UserGroup;
 
 class District extends Model
 {
-    protected $fillable = ['user_group_id', 'division_id', 'name', 'address'];
+    protected $fillable = ['user_group_id', 'division_id', 'name', 'address','longitude', 'latitude','geocode_status','geocoded_at',];
 
     public function division()
     {

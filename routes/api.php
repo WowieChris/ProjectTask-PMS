@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\GeocodingController;
 use App\Http\Controllers\Api\GeoMapBranchController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PsgcController;
+use App\Http\Controllers\OfficeAddressController;
 
 Route::post(
     '/geomap/geocode',
@@ -33,3 +34,6 @@ Route::get('/psgc-test', function () {
         'token'    => config('services.psgc.token'),
     ];
 });
+
+Route::get('/offices', [OfficeAddressController::class, 'mapData']);
+Route::patch('/offices/{level}/{id}/pin', [OfficeAddressController::class, 'movePin']);

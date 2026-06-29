@@ -1,8 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 /**
-* @see \App\Http\Controllers\BranchController::index
- * @see app/Http/Controllers/BranchController.php:17
- * @route '/branches'
+ * @see routes/web.php:313
+ * @route '/officemap'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -11,31 +10,28 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: '/branches',
+    url: '/officemap',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Http\Controllers\BranchController::index
- * @see app/Http/Controllers/BranchController.php:17
- * @route '/branches'
+ * @see routes/web.php:313
+ * @route '/officemap'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
 }
 
 /**
-* @see \App\Http\Controllers\BranchController::index
- * @see app/Http/Controllers/BranchController.php:17
- * @route '/branches'
+ * @see routes/web.php:313
+ * @route '/officemap'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
     method: 'get',
 })
 /**
-* @see \App\Http\Controllers\BranchController::index
- * @see app/Http/Controllers/BranchController.php:17
- * @route '/branches'
+ * @see routes/web.php:313
+ * @route '/officemap'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -43,9 +39,8 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
-* @see \App\Http\Controllers\BranchController::index
- * @see app/Http/Controllers/BranchController.php:17
- * @route '/branches'
+ * @see routes/web.php:313
+ * @route '/officemap'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -53,18 +48,16 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
-* @see \App\Http\Controllers\BranchController::index
- * @see app/Http/Controllers/BranchController.php:17
- * @route '/branches'
+ * @see routes/web.php:313
+ * @route '/officemap'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
             method: 'get',
         })
             /**
-* @see \App\Http\Controllers\BranchController::index
- * @see app/Http/Controllers/BranchController.php:17
- * @route '/branches'
+ * @see routes/web.php:313
+ * @route '/officemap'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({
@@ -77,8 +70,8 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
     
     index.form = indexForm
-const branches = {
+const officemap = {
     index: Object.assign(index, index),
 }
 
-export default branches
+export default officemap

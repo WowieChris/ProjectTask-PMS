@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Division;
+use Illuminate\Support\Facades\DB;
+use App\Models\FieldBranch;
 
 class GeoMapBranchController extends Controller
 {
@@ -72,4 +75,6 @@ class GeoMapBranchController extends Controller
             'message' => 'Deleted'
         ]);
     }
+
+
 }
