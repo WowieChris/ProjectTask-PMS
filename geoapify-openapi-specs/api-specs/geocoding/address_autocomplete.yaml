@@ -1,0 +1,568 @@
+openapi: 3.0.0
+info:
+  title: Address Autocomplete API
+  description: The Geoapify Address Autocomplete API enables the implementation of dynamic location autocomplete fields. It returns real-time suggestions for addresses or places based on partial input provided by the user. The API is designed to enhance user experience by offering relevant location-based suggestions as the user types, making it ideal for form fields that require address input, such as search bars or checkout forms.
+  version: 1.0.0
+  contact:
+    name: Geoapify
+    url: https://geoapify.com
+    email: info@geoapify.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: https://api.geoapify.com/v1
+    description: Primary Geoapify API endpoint
+
+tags:
+  - name: Address Autocomplete API
+    description: Provides real-time address or place suggestions based on user input.
+
+paths:
+  #  Address Autocomplete API
+  /geocode/autocomplete:
+    get:
+      tags:
+        - Address Autocomplete API
+      summary: Retrieve address suggestions based on input text
+      description: This endpoint returns a list of suggested addresses and associated location details (such as country, city, street, and more) based on the partial text provided by the user. It helps implement autocomplete functionality for address inputs, enhancing user experience by offering real-time suggestions.
+      operationId: getAddressAutocomplete
+      parameters:
+        - name: text
+          in: query
+          required: true
+          description: The partial address or place name to autocomplete. This input is used to generate location-based suggestions.
+          schema:
+            type: string
+            example: "Regen"
+        - name: apiKey
+          in: query
+          required: true
+          description: Your Geoapify API key to authenticate the request. You can sign up and obtain an API key for free at [https://myprojects.geoapify.com/](https://myprojects.geoapify.com/). The Free plan includes up to 3,000 requests per day.
+          schema:
+            type: string
+            example: "YOUR_API_KEY"
+        - name: format
+          in: query
+          required: false
+          description: The format of the response data. Supported formats include JSON, XML, and GeoJSON.
+          schema:
+            type: string
+            enum: [json, xml, geojson]
+            example: "json"
+        - name: type
+          in: query
+          required: false
+          description: |
+            Defines the location type to be searched. Available types include:
+
+            - `country`: Search for countries.
+            - `state`: Search for states or regions.
+            - `city`: Search for cities or towns.
+            - `postcode`: Search for postal codes.
+            - `street`: Search for specific streets.
+            - `amenity`: Search for points of interest (e.g., schools, parks, etc.).
+            - `locality`: Search for administrative areas, which can include postcodes, districts, cities, counties, and states.
+          schema:
+            type: string
+            enum: [ country, state, city, postcode, street, amenity ]
+            example: "city"
+        - name: limit
+          in: query
+          required: false
+          description: The maximum number of results to return. This limits the number of address suggestions displayed.
+          schema:
+            type: integer
+            example: 5
+        - name: lang
+          in: query
+          required: false
+          description: Result language in [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format (e.g., 'en' for English).
+          schema:
+            type: string
+            example: en
+        - name: filter
+          in: query
+          required: false
+          description: |
+            Refine your search results based on specific geographic criteria. You can apply the following filters to make the suggestions more relevant:
+
+            - **By circle**:  
+              Use `circle:lon,lat,radiusMeters` to search for places within a circular area, defined by longitude, latitude, and radius in meters.  
+              Example: `filter=circle:-87.770231,41.878968,5000`
+              
+            - **By rectangle**:  
+              Use `rect:lon1,lat1,lon2,lat2` to search within a rectangular area defined by two longitude and latitude points (southwest and northeast corners).  
+              Example: `filter=rect:-89.097540,39.668983,-88.399274,40.383412`
+              
+            - **By country**:  
+              Use a comma-separated list of ISO 3166-1 Alpha-2 country codes in lowercase to filter results by country. Use `'auto'` to detect the country by IP address, or `'none'` to skip country filtering.  
+              Example: `filter=countrycode:de,es,fr`
+              
+            - **By place**:  
+              Use `place:placeId` to search within a specific boundary, such as a city, district, or postcode, using a `place_id` returned by other Geoapify APIs (Geocoding, Reverse Geocoding, Places, or Boundaries APIs).  
+              Example: `filter=place:51f07665660fc4024059dc0a96dfac6c...`
+          schema:
+            type: string
+
+        - name: bias
+          in: query
+          required: false
+          description: |
+            Prioritize search results based on proximity to a point, radius, bounding box, or country without limiting the search area. This is useful for displaying nearby results first while allowing global search:
+
+            - **By circle**:  
+              Use `circle:lon,lat,radiusMeters` to prioritize results from within a circular area, and then search worldwide.  
+              Example: `bias=circle:-87.770231,41.878968,5000`
+              
+            - **By rectangle**:  
+              Use `rect:lon1,lat1,lon2,lat2` to prioritize results from within a rectangular area (defined by two longitude and latitude points representing the southwest and northeast corners), and then search globally.  
+              Example: `bias=rect:-89.097540,39.668983,-88.399274,40.383412`
+              
+            - **By country**:  
+              Use comma-separated ISO 3166-1 Alpha-2 country codes in lowercase to prioritize results from those countries first. Use `'auto'` to detect the country by IP address, or `'none'` to skip country bias.  
+              Example: `bias=countrycode:de,es,fr`
+              
+            - **By location**:  
+              Use `proximity:lon,lat` to prioritize results based on distance from a specific longitude and latitude.  
+              Example: `bias=proximity:41.2257145,52.971411`
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Successful response with address suggestions.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/AutocompleteJsonResponse'
+                  - $ref: '#/components/schemas/AutocompleteGeoJsonResponse'
+              examples: 
+                format=json: 
+                  value: |
+                    {
+                      "results": [
+                        {
+                          "datasource": {
+                            "sourcename": "openstreetmap",
+                            "attribution": "© OpenStreetMap contributors",
+                            "license": "Open Database License",
+                            "url": "https://www.openstreetmap.org/copyright"
+                          },
+                          "country": "Germany",
+                          "country_code": "de",
+                          "state": "Bavaria",
+                          "county": "Landkreis Regen",
+                          "city": "Regensburg",
+                          "postcode": "94209",
+                          "state_code": "BY",
+                          "result_type": "city",
+                          "formatted": "Regensburg, BY, Germany",
+                          "address_line1": "Regensburg",
+                          "address_line2": "BY, Germany",
+                          "category": "administrative",
+                          "timezone": {
+                            "name": "Europe/Berlin",
+                            "offset_STD": "+01:00",
+                            "offset_STD_seconds": 3600,
+                            "offset_DST": "+02:00",
+                            "offset_DST_seconds": 7200,
+                            "abbreviation_STD": "CET",
+                            "abbreviation_DST": "CEST"
+                          },
+                          "plus_code": "8FXJ239W+RX",
+                          "plus_code_short": "9W+RX Regensburg, Bavaria, Germany",
+                          "rank": {
+                            "confidence": 1,
+                            "confidence_city_level": 1,
+                            "match_type": "full_match"
+                          },
+                          "place_id": "51ac938ecde9312840596b57321180824840f00101f901cbf3000000000000c00208",
+                          "bbox": {
+                            "lon1": 12.0290745,
+                            "lat1": 48.9667457,
+                            "lon2": 12.1916078,
+                            "lat2": 49.0764158
+                          },
+                          "lon": 12.0974869,
+                          "lat": 49.0195333
+                        }
+                      ],
+                      "query": {
+                        "text": "Regen",
+                        "parsed": {
+                          "city": "regen",
+                          "expected_type": "unknown"
+                        }
+                      }
+                    }
+                format=geojson:
+                  value: |
+                    {
+                      "type": "FeatureCollection",
+                      "features": [
+                        {
+                          "type": "Feature",
+                          "properties": {
+                            "country": "Germany",
+                            "country_code": "de",
+                            "state": "Bavaria",
+                            "city": "Regensburg",
+                            "datasource": {
+                              "sourcename": "openstreetmap",
+                              "attribution": "© OpenStreetMap contributors",
+                              "license": "Open Database License",
+                              "url": "https://www.openstreetmap.org/copyright"
+                            },
+                            "state_code": "BY",
+                            "lon": 12.0974869,
+                            "lat": 49.0195333,
+                            "population": 145000,
+                            "result_type": "city",
+                            "formatted": "Regensburg, BY, Germany",
+                            "address_line1": "Regensburg",
+                            "address_line2": "BY, Germany",
+                            "category": "administrative",
+                            "timezone": {
+                              "name": "Europe/Berlin",
+                              "offset_STD": "+01:00",
+                              "offset_STD_seconds": 3600,
+                              "offset_DST": "+02:00",
+                              "offset_DST_seconds": 7200,
+                              "abbreviation_STD": "CET",
+                              "abbreviation_DST": "CEST"
+                            },
+                            "plus_code": "8FXJ239W+RX",
+                            "plus_code_short": "9W+RX Regensburg, Bavaria, Germany",
+                            "rank": {
+                              "confidence": 1,
+                              "confidence_city_level": 1,
+                              "match_type": "full_match"
+                            },
+                            "place_id": "51ac938ecde9312840596b57321180824840f00101f901cbf3000000000000c00208"
+                          },
+                          "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                              12.0974869,
+                              49.0195333
+                            ]
+                          },
+                          "bbox": [
+                            12.0290745,
+                            48.9667457,
+                            12.1916078,
+                            49.0764158
+                          ]
+                        }
+                      ],
+                      "query": {
+                        "text": "Regen",
+                        "parsed": {
+                          "city": "regen",
+                          "expected_type": "unknown"
+                        }
+                      }
+                    }
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AutocompleteXmlResponse'
+              examples: 
+                format=xml: 
+                  value: |
+                    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                    <root>
+                      <results>
+                        <country>Germany</country>
+                        <country_code>de</country_code>
+                        <state>Bavaria</state>
+                        <city>Regensburg</city>
+                        <datasource>
+                          <sourcename>openstreetmap</sourcename>
+                          <attribution>© OpenStreetMap contributors</attribution>
+                          <license>Open Database License</license>
+                          <url>https://www.openstreetmap.org/copyright</url>
+                        </datasource>
+                        <state_code>BY</state_code>
+                        <lon>12.0974869</lon>
+                        <lat>49.0195333</lat>
+                        <result_type>city</result_type>
+                        <formatted>Regensburg, BY, Germany</formatted>
+                        <address_line1>Regensburg</address_line1>
+                        <address_line2>BY, Germany</address_line2>
+                        <category>administrative</category>
+                        <timezone>
+                          <name>Europe/Berlin</name>
+                          <offset_STD>+01:00</offset_STD>
+                          <offset_STD_seconds>3600</offset_STD_seconds>
+                          <offset_DST>+02:00</offset_DST>
+                          <offset_DST_seconds>7200</offset_DST_seconds>
+                          <abbreviation_STD>CET</abbreviation_STD>
+                          <abbreviation_DST>CEST</abbreviation_DST>
+                        </timezone>
+                      </results>
+                      <query>
+                        <text>Regen</text>
+                        <parsed>
+                          <city>regen</city>
+                          <expected_type>unknown</expected_type>
+                        </parsed>
+                      </query>
+                    </root>
+        '400':
+          description: Bad Request. The input provided is invalid or improperly formatted. Please verify and correct your request parameters.
+        '401':
+          description: Unauthorized. The API key is missing, incorrect, or invalid. Please provide a valid API key to authenticate the request.
+        '429':
+          description: Request limit exceeded. Too many requests have been sent in a short period, surpassing the allowed rate limits.
+        '500':
+          description: Internal Server Error. The server encountered an unexpected condition that prevented it from fulfilling the request. Please try again later or [contact support](mailto:info@geoapify.com) if the issue persists.
+
+components:
+  schemas:
+    # JSON Format Response Schema
+    AutocompleteJsonResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AutocompleteResult'
+        query:
+          $ref: '#/components/schemas/AutocompleteQueryInfo'
+    
+    # GeoJSON Format Response Schema  
+    AutocompleteGeoJsonResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [FeatureCollection]
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/AutocompleteGeoJsonFeature'
+        query:
+          $ref: '#/components/schemas/AutocompleteQueryInfo'
+    
+    # Individual autocomplete result object (based on documentation table)
+    AutocompleteResult:
+      allOf:
+        - $ref: '../common/shared-components.yaml#/components/schemas/LatLonCoordinates'
+        - $ref: '../common/shared-components.yaml#/components/schemas/AddressComponents'
+        - $ref: '../common/shared-components.yaml#/components/schemas/FormattedAddressFields'
+        - type: object
+          properties:
+            name:
+              type: string
+              description: Location name
+            result_type:
+              $ref: '../common/shared-components.yaml#/components/schemas/ResultType'
+            distance:
+              type: number
+              description: Distance in meters to given bias:proximity
+            rank:
+              $ref: '../common/shared-components.yaml#/components/schemas/Rank'
+            datasource:
+              $ref: '../common/shared-components.yaml#/components/schemas/Datasource'
+            category:
+              type: string
+              description: A place category from the list of Places API Categories
+            timezone:
+              $ref: '../common/shared-components.yaml#/components/schemas/Timezone'
+            # Additional fields from examples (not in documentation table)
+            plus_code:
+              type: string
+              description: Plus code (Open Location Code)
+            plus_code_short:
+              type: string
+              description: Shortened plus code
+            place_id:
+              type: string
+              description: Unique identifier for the place
+            bbox:
+              $ref: '../common/shared-components.yaml#/components/schemas/BoundingBox'
+            population:
+              type: integer
+              description: Population count (from examples)
+    
+    # GeoJSON Feature
+    AutocompleteGeoJsonFeature:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [Feature]
+        properties:
+          $ref: '#/components/schemas/AutocompleteResult'
+        geometry:
+          $ref: '#/components/schemas/AutocompleteGeometry'
+        bbox:
+          type: array
+          description: Bounding box [lon1, lat1, lon2, lat2]
+          items:
+            type: number
+          minItems: 4
+          maxItems: 4
+    
+    # GeoJSON Geometry
+    AutocompleteGeometry:
+      $ref: '../common/shared-components.yaml#/components/schemas/PointGeometry'
+    
+    # Datasource information
+    # Query information
+    AutocompleteQueryInfo:
+      type: object
+      properties:
+        text:
+          type: string
+          description: Original query text
+        parsed:
+          type: object
+          description: Parsed query components
+          properties:
+            city:
+              type: string
+            expected_type:
+              type: string
+    
+    # XML Format Response Schema
+    AutocompleteXmlResponse:
+      type: object
+      xml:
+        name: root
+      properties:
+        results:
+          type: array
+          xml:
+            wrapped: false
+          items:
+            type: object
+            xml:
+              name: results
+            properties:
+              name:
+                type: string
+              country:
+                type: string
+              country_code:
+                type: string
+              state:
+                type: string
+              state_code:
+                type: string
+              county:
+                type: string
+              county_code:
+                type: string
+              postcode:
+                type: string
+              city:
+                type: string
+              street:
+                type: string
+              housenumber:
+                type: string
+              lat:
+                type: number
+              lon:
+                type: number
+              formatted:
+                type: string
+              address_line1:
+                type: string
+              address_line2:
+                type: string
+              result_type:
+                type: string
+              distance:
+                type: number
+              category:
+                type: string
+              plus_code:
+                type: string
+              plus_code_short:
+                type: string
+              place_id:
+                type: string
+              population:
+                type: integer
+              datasource:
+                type: object
+                xml:
+                  name: datasource
+                properties:
+                  sourcename:
+                    type: string
+                  attribution:
+                    type: string
+                  license:
+                    type: string
+                  url:
+                    type: string
+              timezone:
+                type: object
+                xml:
+                  name: timezone
+                properties:
+                  name:
+                    type: string
+                  name_alt:
+                    type: string
+                  offset_STD:
+                    type: string
+                  offset_STD_seconds:
+                    type: integer
+                  offset_DST:
+                    type: string
+                  offset_DST_seconds:
+                    type: integer
+                  abbreviation_STD:
+                    type: string
+                  abbreviation_DST:
+                    type: string
+              rank:
+                type: object
+                xml:
+                  name: rank
+                properties:
+                  confidence:
+                    type: number
+                  confidence_city_level:
+                    type: number
+                  confidence_street_level:
+                    type: number
+                  confidence_building_level:
+                    type: number
+                  match_type:
+                    type: string
+              bbox:
+                type: object
+                xml:
+                  name: bbox
+                properties:
+                  lon1:
+                    type: number
+                  lat1:
+                    type: number
+                  lon2:
+                    type: number
+                  lat2:
+                    type: number
+        query:
+          type: object
+          xml:
+            name: query
+          properties:
+            text:
+              type: string
+            parsed:
+              type: object
+              xml:
+                name: parsed
+              properties:
+                city:
+                  type: string
+                expected_type:
+                  type: string

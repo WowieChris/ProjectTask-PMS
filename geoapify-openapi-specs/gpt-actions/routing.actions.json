@@ -1,0 +1,820 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Geoapify Routing",
+    "description": "Geoapify routing services:\n- Routing: calculate a route between two or more waypoints (turn-by-turn directions).\n- Route Matrix: calculate travel time and distance between many origins and destinations.\n\nThis specification is intended for tool use and returns GeoJSON where applicable.\n",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Geoapify",
+      "url": "https://geoapify.com",
+      "email": "info@geoapify.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.geoapify.com/v1",
+      "description": "Primary Geoapify API endpoint"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Routing",
+      "description": "Route calculation between waypoints (GeoJSON route + instructions/properties)."
+    },
+    {
+      "name": "Route Matrix",
+      "description": "Travel time and distance matrix between origins and destinations."
+    }
+  ],
+  "paths": {
+    "/routing": {
+      "get": {
+        "tags": [
+          "Routing"
+        ],
+        "operationId": "calculateRoute",
+        "summary": "Calculate a route between waypoints (GeoJSON)",
+        "description": "Returns a route as a GeoJSON FeatureCollection with route geometry and properties (directions, distance, duration).",
+        "security": [
+          {
+            "GeoapifyApiKey": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "waypoints",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Waypoints as \"lat,lon|lat,lon|...\". At least two waypoints are required.\n",
+            "example": "50.679023,4.569876|50.661705,4.578667"
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "drive",
+                "light_truck",
+                "medium_truck",
+                "truck",
+                "heavy_truck",
+                "truck_dangerous_goods",
+                "long_truck",
+                "bus",
+                "scooter",
+                "motorcycle",
+                "bicycle",
+                "mountain_bike",
+                "road_bike",
+                "walk",
+                "hike",
+                "transit",
+                "approximated_transit"
+              ]
+            },
+            "description": "Transportation mode",
+            "example": "drive"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "balanced",
+                "short",
+                "less_maneuvers"
+              ]
+            },
+            "description": "Route optimization type",
+            "example": "balanced"
+          },
+          {
+            "name": "units",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "metric",
+                "imperial"
+              ],
+              "default": "metric"
+            },
+            "description": "Units for distances"
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ISO 639-1 language code",
+            "example": "en"
+          },
+          {
+            "name": "avoid",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Avoid options separated by \"|\", e.g. \"tolls:1|ferries|highways:0.7|location:lat,lon\".\n",
+            "example": "tolls:1|ferries"
+          },
+          {
+            "name": "details",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Additional details (comma-separated), e.g. \"instruction_details,route_details,elevation\".\n",
+            "example": "instruction_details,route_details"
+          },
+          {
+            "name": "traffic",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "free_flow",
+                "approximated"
+              ]
+            },
+            "description": "Traffic model (motorized modes only)",
+            "example": "free_flow"
+          },
+          {
+            "name": "max_speed",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Maximum speed in km/h",
+            "example": 80
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with routing details.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoutingGeoJsonResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request. The input provided is invalid or improperly formatted. Please verify and correct your request parameters."
+          },
+          "401": {
+            "description": "Unauthorized. The API key is missing, incorrect, or invalid. Please provide a valid API key to authenticate the request."
+          },
+          "429": {
+            "description": "Request limit exceeded. Too many requests have been sent in a short period, surpassing the allowed rate limits."
+          },
+          "500": {
+            "description": "Internal Server Error. The server encountered an unexpected condition that prevented it from fulfilling the request. Please try again later or [contact support](mailto:info@geoapify.com) if the issue persists."
+          }
+        }
+      }
+    },
+    "/routematrix": {
+      "post": {
+        "tags": [
+          "Route Matrix"
+        ],
+        "operationId": "generateRouteMatrix",
+        "summary": "Route Matrix (time-distance matrix)",
+        "description": "Compute a time-distance matrix between multiple source and target points.\nInput/Output coordinates are always in [lon, lat] order.\n",
+        "security": [
+          {
+            "GeoapifyApiKey": [
+
+            ]
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "mode",
+                  "sources",
+                  "targets"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "drive",
+                      "light_truck",
+                      "medium_truck",
+                      "truck",
+                      "heavy_truck",
+                      "truck_dangerous_goods",
+                      "long_truck",
+                      "bus",
+                      "scooter",
+                      "motorcycle",
+                      "bicycle",
+                      "mountain_bike",
+                      "road_bike",
+                      "walk",
+                      "hike",
+                      "transit",
+                      "approximated_transit"
+                    ]
+                  },
+                  "sources": {
+                    "type": "array",
+                    "minItems": 1,
+                    "description": "Source points. Each item is { location: [lon, lat] }.",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "location"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "location": {
+                          "type": "array",
+                          "minItems": 2,
+                          "maxItems": 2,
+                          "items": {
+                            "type": "number"
+                          },
+                          "description": "Coordinate in [lon, lat] order"
+                        }
+                      }
+                    }
+                  },
+                  "targets": {
+                    "type": "array",
+                    "minItems": 1,
+                    "description": "Target points. Each item is { location: [lon, lat] }.",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "location"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "location": {
+                          "type": "array",
+                          "minItems": 2,
+                          "maxItems": 2,
+                          "items": {
+                            "type": "number"
+                          },
+                          "description": "Coordinate in [lon, lat] order"
+                        }
+                      }
+                    }
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "Route optimization.",
+                    "enum": [
+                      "balanced",
+                      "short",
+                      "less_maneuvers"
+                    ]
+                  },
+                  "traffic": {
+                    "type": "string",
+                    "description": "Traffic model (motorized modes only)",
+                    "enum": [
+                      "free_flow",
+                      "approximated"
+                    ]
+                  },
+                  "units": {
+                    "type": "string",
+                    "description": "Distance units in response.",
+                    "enum": [
+                      "metric",
+                      "imperial"
+                    ]
+                  },
+                  "max_speed": {
+                    "type": "number",
+                    "description": "Max speed in km/h (optional)"
+                  },
+                  "avoid": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "tolls",
+                            "ferries",
+                            "highways",
+                            "location"
+                          ]
+                        },
+                        "importance": {
+                          "type": "number"
+                        },
+                        "location": {
+                          "$ref": "#/components/schemas/LonLat"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "examples": {
+                "minimal": {
+                  "value": {
+                    "mode": "drive",
+                    "sources": [
+                      {
+                        "location": [
+                          9.2365012333,
+                          47.7912588621
+                        ]
+                      },
+                      {
+                        "location": [
+                          9.292434005,
+                          47.7544351973
+                        ]
+                      }
+                    ],
+                    "targets": [
+                      {
+                        "location": [
+                          9.049297671,
+                          47.5722360474
+                        ]
+                      },
+                      {
+                        "location": [
+                          9.2045396495,
+                          47.5606830555
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Matrix result. sources_to_targets is a 2D array [sourceIndex][targetIndex].",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "sources",
+                    "targets",
+                    "sources_to_targets"
+                  ],
+                  "additionalProperties": true,
+                  "properties": {
+                    "sources": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "original_location",
+                          "location"
+                        ],
+                        "properties": {
+                          "original_location": {
+                            "type": "array",
+                            "minItems": 2,
+                            "maxItems": 2,
+                            "items": {
+                              "type": "number"
+                            },
+                            "description": [
+                              "lon",
+                              "lat"
+                            ]
+                          },
+                          "location": {
+                            "type": "array",
+                            "minItems": 2,
+                            "maxItems": 2,
+                            "items": {
+                              "type": "number"
+                            },
+                            "description": "matched [lon, lat]"
+                          }
+                        }
+                      }
+                    },
+                    "targets": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "original_location",
+                          "location"
+                        ],
+                        "properties": {
+                          "original_location": {
+                            "type": "array",
+                            "minItems": 2,
+                            "maxItems": 2,
+                            "items": {
+                              "type": "number"
+                            },
+                            "description": [
+                              "lon",
+                              "lat"
+                            ]
+                          },
+                          "location": {
+                            "type": "array",
+                            "minItems": 2,
+                            "maxItems": 2,
+                            "items": {
+                              "type": "number"
+                            },
+                            "description": "matched [lon, lat]"
+                          }
+                        }
+                      }
+                    },
+                    "sources_to_targets": {
+                      "type": "array",
+                      "description": "2D matrix [sources][targets]",
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "distance",
+                            "time",
+                            "source_index",
+                            "target_index"
+                          ],
+                          "properties": {
+                            "distance": {
+                              "type": "number",
+                              "description": "Distance in meters"
+                            },
+                            "time": {
+                              "type": "number",
+                              "description": "Time in seconds"
+                            },
+                            "source_index": {
+                              "type": "integer"
+                            },
+                            "target_index": {
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "units": {
+                      "type": "string"
+                    },
+                    "distance_units": {
+                      "type": "string"
+                    },
+                    "mode": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "traffic": {
+                      "type": "string"
+                    },
+                    "max_speed": {
+                      "type": "number"
+                    },
+                    "avoid": {
+                      "type": "array"
+                    }
+                  }
+                }
+              },
+              "examples": {
+                "minimal": {
+                  "value": {
+                    "sources": [
+                      {
+                        "original_location": [
+                          9.2365012333,
+                          47.7912588621
+                        ],
+                        "location": [
+                          9.238094,
+                          47.792033
+                        ]
+                      }
+                    ],
+                    "targets": [
+                      {
+                        "original_location": [
+                          9.049297671,
+                          47.5722360474
+                        ],
+                        "location": [
+                          9.049953,
+                          47.572671
+                        ]
+                      }
+                    ],
+                    "sources_to_targets": [
+                      [
+                        {
+                          "distance": 71016,
+                          "time": 7002,
+                          "source_index": 0,
+                          "target_index": 0
+                        }
+                      ]
+                    ],
+                    "units": "metric",
+                    "distance_units": "meters",
+                    "mode": "drive"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "GeoapifyApiKey": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "apiKey",
+        "description": "API key used to authenticate requests to Geoapify services."
+      }
+    },
+    "schemas": {
+      "RoutingGeoJsonResponse": {
+        "type": "object",
+        "required": [
+          "type",
+          "features"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "FeatureCollection"
+            ]
+          },
+          "features": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoutingGeoJsonFeature"
+            }
+          },
+          "properties": {
+            "$ref": "#/components/schemas/RoutingRequestProperties"
+          }
+        }
+      },
+      "RoutingRequestProperties": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "mode": {
+            "type": "string"
+          },
+          "waypoints": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "lat": {
+                  "type": "number"
+                },
+                "lon": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "units": {
+            "type": "string"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "RoutingGeoJsonFeature": {
+        "type": "object",
+        "required": [
+          "type",
+          "geometry",
+          "properties"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "Feature"
+            ]
+          },
+          "geometry": {
+            "type": "object",
+            "required": [
+              "type",
+              "coordinates"
+            ],
+            "additionalProperties": true,
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "MultiLineString"
+                ]
+              },
+              "coordinates": {
+                "type": "array",
+                "description": "MultiLineString coordinates [[ [lon, lat], ... ], ...]",
+                "items": {
+                  "type": "array",
+                  "description": "A LineString (array of positions)",
+                  "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "items": {
+                      "type": "number"
+                    },
+                    "description": "Position [lon, lat]"
+                  }
+                }
+              }
+            }
+          },
+          "properties": {
+            "$ref": "#/components/schemas/RoutingResult"
+          }
+        }
+      },
+      "RoutingResult": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string"
+          },
+          "waypoints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoutingWaypoint"
+            }
+          },
+          "units": {
+            "type": "string"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "distance": {
+            "type": "number"
+          },
+          "distance_units": {
+            "type": "string"
+          },
+          "time": {
+            "type": "number"
+          },
+          "legs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoutingLeg"
+            }
+          },
+          "country_code": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "LonLat": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "type": "number"
+        },
+        "description": "Coordinate in [lon, lat] order"
+      },
+      "RoutingWaypoint": {
+        "type": "object",
+        "required": [
+          "location",
+          "original_index"
+        ],
+        "properties": {
+          "location": {
+            "$ref": "#/components/schemas/LonLat"
+          },
+          "original_index": {
+            "type": "integer",
+            "description": "Index of this waypoint in the input"
+          }
+        }
+      },
+      "RoutingInstruction": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Human-readable navigation instruction"
+          },
+          "type": {
+            "type": "string",
+            "description": "Maneuver type (optional)"
+          }
+        }
+      },
+      "RoutingStep": {
+        "type": "object",
+        "properties": {
+          "distance": {
+            "type": "number"
+          },
+          "time": {
+            "type": "number"
+          },
+          "instruction": {
+            "$ref": "#/components/schemas/RoutingInstruction"
+          }
+        }
+      },
+      "RoutingLeg": {
+        "type": "object",
+        "properties": {
+          "distance": {
+            "type": "number"
+          },
+          "time": {
+            "type": "number"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoutingStep"
+            }
+          }
+        }
+      }
+    }
+  }
+}

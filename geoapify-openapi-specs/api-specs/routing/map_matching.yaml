@@ -1,0 +1,491 @@
+openapi: 3.0.0
+info:
+  title: Map Matching API
+  description: The Map Matching API allows you to align raw geographic coordinates, such as GPS tracks, to the nearest roads and pathways on the map. This is useful for improving the accuracy of location data, especially for routes and paths that follow the road network. The API supports various transportation modes, including cars, buses, delivery trucks, bicycles, and walking, ensuring accurate results for different types of travel.
+  version: 1.0.0
+  contact:
+    name: Geoapify
+    url: https://geoapify.com
+    email: info@geoapify.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.geoapify.com/v1
+    description: Primary Geoapify API endpoint
+
+tags:
+  - name: Map Matching API
+    description: Matches geographical coordinates, such as GPS tracks, to the closest roads and pathways in the existing road network, improving the accuracy of location data for various transportation modes.
+
+paths:
+  /mapmatching:
+    post:
+      tags:
+        - Map Matching API
+      summary: Match GPS coordinates to the road network
+      description: Aligns geographical coordinates, such as GPS tracks, to the nearest roads and pathways on the existing road network. This endpoint supports various travel modes, including driving, walking, and cycling, to ensure accurate route matching based on the mode of transportation.
+      operationId: mapMatching
+      parameters:
+        - name: apiKey
+          in: query
+          required: true
+          description: Your Geoapify API key to authenticate the request. You can sign up and obtain an API key for free at [https://myprojects.geoapify.com/](https://myprojects.geoapify.com/). The Free plan includes up to 3,000 requests per day.
+          schema:
+            type: string
+            example: "YOUR_API_KEY"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mode:
+                  type: string
+                  description: |
+                    Specifies the transportation mode for matching the GPS coordinates to the road network. Different modes reflect the travel type and optimize the mapping accordingly. Available options include:
+
+                    - `drive`: Standard car or automobile.
+                    - `light_truck`: Light-duty truck.
+                    - `medium_truck`: Medium-duty truck.
+                    - `truck`: General truck.
+                    - `heavy_truck`: Heavy-duty truck.
+                    - `truck_dangerous_goods`: Truck carrying hazardous materials.
+                    - `long_truck`: Long or articulated truck.
+                    - `bus`: Public or private bus.
+                    - `scooter`: Motorized scooter.
+                    - `motorcycle`: Motorbike.
+                    - `bicycle`: Standard bicycle.
+                    - `mountain_bike`: Mountain bike, optimized for off-road cycling.
+                    - `road_bike`: Road bicycle, optimized for paved roads.
+                    - `walk`: Walking on foot.
+                    - `hike`: Hiking on trails or rugged terrain.
+                    - `transit`: Public transit routes (based on real-time data).
+                    - `approximated_transit`: Estimated public transit routes without real-time data.
+
+                  example: drive
+                waypoints:
+                  type: array
+                  description: An array of waypoints to be matched to the road network. Each waypoint includes coordinates, a timestamp, and an optional bearing.
+                  items:
+                    type: object
+                    properties:
+                      location:
+                        type: array
+                        items:
+                          type: number
+                        description: The coordinates of the waypoint in [longitude, latitude] format.
+                        example: [10.694703, 47.567028]
+                      timestamp:
+                        type: string
+                        format: date-time
+                        description: The timestamp of the waypoint in ISO 8601 format, indicating the precise time when the waypoint was recorded.
+                        example: "2019-11-04T07:09:34.000Z"
+                      bearing:
+                        type: number
+                        description: The bearing (in degrees) of the waypoint, indicating the compass direction of travel, ranging from 0 to 360 degrees.
+                        example: 90
+            example:
+              mode: drive
+              waypoints:
+                - location: [ 10.694703, 47.567028 ]
+                  timestamp: "2019-11-04T07:09:34.000Z"
+                - location: [ 10.6950319, 47.567783 ]
+                  timestamp: "2019-11-04T07:09:45.000Z"
+      responses:
+        '200':
+          description: A successful response containing the matched route and its properties.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MapMatchingResponse'
+              example: |
+                {
+                  "type": "FeatureCollection",
+                  "features": [
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "distance": 87,
+                        "time": 8,
+                        "legs": [
+                          {
+                            "time": 8,
+                            "distance": 87,
+                            "steps": [
+                              {
+                                "osm_way_id": 150185120,
+                                "speed": 40,
+                                "speed_limit": 100,
+                                "surface": "paved_smooth",
+                                "lane_count": 1,
+                                "road_class": "unclassified",
+                                "from_index": 0,
+                                "to_index": 2,
+                                "name": "Morisse",
+                                "toll": false,
+                                "tunnel": false,
+                                "bridge": false,
+                                "roundabout": false,
+                                "traversability": "both",
+                                "time": 3,
+                                "distance": 31,
+                                "begin_bearing": 17,
+                                "end_bearing": 16
+                              },
+                              {
+                                "osm_way_id": 150185120,
+                                "speed": 40,
+                                "speed_limit": 100,
+                                "surface": "paved_smooth",
+                                "lane_count": 1,
+                                "road_class": "unclassified",
+                                "from_index": 2,
+                                "to_index": 3,
+                                "name": "Morisse",
+                                "toll": false,
+                                "tunnel": false,
+                                "bridge": false,
+                                "roundabout": false,
+                                "traversability": "both",
+                                "time": 2,
+                                "distance": 24,
+                                "begin_bearing": 14,
+                                "end_bearing": 14
+                              },
+                              {
+                                "osm_way_id": 150185120,
+                                "speed": 40,
+                                "speed_limit": 100,
+                                "surface": "paved_smooth",
+                                "lane_count": 1,
+                                "road_class": "unclassified",
+                                "from_index": 3,
+                                "to_index": 4,
+                                "name": "Morisse",
+                                "toll": false,
+                                "tunnel": false,
+                                "bridge": false,
+                                "roundabout": false,
+                                "traversability": "both",
+                                "time": 1,
+                                "distance": 15,
+                                "begin_bearing": 17,
+                                "end_bearing": 17
+                              },
+                              {
+                                "osm_way_id": 150185120,
+                                "speed": 40,
+                                "speed_limit": 100,
+                                "surface": "paved_smooth",
+                                "lane_count": 1,
+                                "road_class": "unclassified",
+                                "from_index": 4,
+                                "to_index": 6,
+                                "name": "Morisse",
+                                "toll": false,
+                                "tunnel": false,
+                                "bridge": false,
+                                "roundabout": false,
+                                "traversability": "both",
+                                "time": 1,
+                                "distance": 13,
+                                "begin_bearing": 18,
+                                "end_bearing": 18
+                              },
+                              {
+                                "osm_way_id": 498012707,
+                                "speed": 40,
+                                "speed_limit": 100,
+                                "surface": "paved_smooth",
+                                "lane_count": 1,
+                                "road_class": "unclassified",
+                                "from_index": 6,
+                                "to_index": 8,
+                                "name": "Morisse",
+                                "toll": false,
+                                "tunnel": false,
+                                "bridge": false,
+                                "roundabout": false,
+                                "traversability": "both",
+                                "time": 1,
+                                "distance": 4,
+                                "begin_bearing": 19,
+                                "end_bearing": 19
+                              }
+                            ]
+                          }
+                        ],
+                        "mode": "drive",
+                        "waypoints": [
+                          {
+                            "original_index": 0,
+                            "location": [
+                              10.694689,
+                              47.56703
+                            ],
+                            "original_location": [
+                              10.694703,
+                              47.567028
+                            ],
+                            "match_type": "matched",
+                            "match_distance": 1.022797,
+                            "leg_index": 0,
+                            "step_index": 0
+                          },
+                          {
+                            "original_index": 1,
+                            "location": [
+                              10.695019,
+                              47.567789
+                            ],
+                            "original_location": [
+                              10.6950319,
+                              47.567783
+                            ],
+                            "match_type": "matched",
+                            "match_distance": 1.234974,
+                            "leg_index": 0,
+                            "step_index": 4
+                          }
+                        ]
+                      },
+                      "geometry": {
+                        "type": "MultiLineString",
+                        "coordinates": [
+                          [
+                            [
+                              10.69469,
+                              47.567031
+                            ],
+                            [
+                              10.694792,
+                              47.567251
+                            ],
+                            [
+                              10.694809,
+                              47.567302
+                            ],
+                            [
+                              10.694887,
+                              47.567512
+                            ],
+                            [
+                              10.694947,
+                              47.567644
+                            ],
+                            [
+                              10.694994,
+                              47.56774
+                            ],
+                            [
+                              10.695002,
+                              47.567757
+                            ],
+                            [
+                              10.695019,
+                              47.567789
+                            ],
+                            [
+                              10.695019,
+                              47.56779
+                            ]
+                          ]
+                        ]
+                      }
+                    }
+                  ]
+                }
+        '400':
+          description: Bad Request. The input provided is invalid or improperly formatted. Please verify and correct your request parameters.
+        '401':
+          description: Unauthorized. The API key is missing, incorrect, or invalid. Please provide a valid API key to authenticate the request.
+        '429':
+          description: Request limit exceeded. Too many requests have been sent in a short period, surpassing the allowed rate limits.
+        '500':
+          description: Internal Server Error. The server encountered an unexpected condition that prevented it from fulfilling the request. Please try again later or [contact support](mailto:info@geoapify.com) if the issue persists.
+
+components:
+  schemas:
+    # Main Map Matching Response (GeoJSON FeatureCollection)
+    MapMatchingResponse:
+      allOf:
+        - $ref: '../common/shared-components.yaml#/components/schemas/GeoJsonFeatureCollection'
+        - type: object
+          properties:
+            features:
+              type: array
+              items:
+                $ref: '#/components/schemas/MapMatchingFeature'
+              description: Array of matched route features (typically contains one feature)
+    
+    # Individual map matching feature
+    MapMatchingFeature:
+      allOf:
+        - $ref: '../common/shared-components.yaml#/components/schemas/GeoJsonFeature'
+        - type: object
+          properties:
+            properties:
+              $ref: '#/components/schemas/MapMatchingProperties'
+            geometry:
+              $ref: '#/components/schemas/MapMatchingGeometry'
+    
+    # Feature properties containing route details
+    MapMatchingProperties:
+      type: object
+      properties:
+        distance:
+          type: number
+          description: Distance in meters for the whole route
+        time:
+          type: number
+          description: Time in seconds for the whole route
+        mode:
+          type: string
+          description: Requested transportation or travel mode
+        waypoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/MatchedWaypoint'
+          description: An array of MatchedWaypoint
+        legs:
+          type: array
+          items:
+            $ref: '#/components/schemas/RouteLeg'
+          description: An array of RouteLeg. Each leg represents separate parts of the route
+    
+    # Route geometry as MultiLineString
+    MapMatchingGeometry:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [MultiLineString]
+          description: GeoJSON geometry type
+        coordinates:
+          type: array
+          items:
+            type: array
+            items:
+              type: array
+              items:
+                type: number
+              minItems: 2
+              maxItems: 2
+          description: MultiLineString coordinates representing the matched route
+    
+    # Matched waypoint information
+    MatchedWaypoint:
+      type: object
+      properties:
+        original_index:
+          type: integer
+          description: Original index of the waypoint in request
+        location:
+          type: array
+          items:
+            type: number
+          minItems: 2
+          maxItems: 2
+          description: Matched location. An array of the coordinates [lon, lat]
+        original_location:
+          type: array
+          items:
+            type: number
+          minItems: 2
+          maxItems: 2
+          description: Original location. An array of the coordinates [lon, lat]
+        match_type:
+          type: string
+          enum: [matched, unmatched, interpolated]
+          description: Matched type. Possible values matched, unmatched, interpolated
+        match_distance:
+          type: number
+          description: Distance in meters between matched and original locations
+        leg_index:
+          type: integer
+          description: Leg index, the waypoint belongs to
+        step_index:
+          type: integer
+          description: Step point, the waypoint belongs to
+    
+    # Route leg between locations
+    RouteLeg:
+      type: object
+      properties:
+        distance:
+          type: number
+          description: Length of the route in meters
+        time:
+          type: number
+          description: Time in seconds for the route
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/LegStep'
+          description: An array of LegStep. Steps of the route
+    
+    # Individual step or segment of a route leg
+    LegStep:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Route step name. Usually a street name
+        road_class:
+          type: string
+          enum: [unclassified, motorway, trunk, primary, secondary, tertiary, residential, service_other]
+          description: Road class. Possible values unclassified, motorway, trunk, primary, secondary, tertiary, unclassified, residential, service_other
+        surface:
+          type: string
+          enum: [paved_smooth, paved, paved_rough, compacted, dirt, gravel, path, impassable]
+          description: Type of surface. Possible values paved_smooth, paved, paved_rough, compacted, dirt, gravel, path, impassable
+        traversability:
+          type: string
+          enum: [forward, backward, both]
+          description: Traversability of the road segment. Possible values forward, backward, both
+        speed:
+          type: number
+          description: Actual (calculated) speed
+        speed_limit:
+          type: number
+          description: Speed limit for the road segment
+        lane_count:
+          type: integer
+          description: Number of lanes
+        toll:
+          type: boolean
+          description: Indicates whether the step is a part of a toll route
+        tunnel:
+          type: boolean
+          description: Indicates whether the step is a part of a tunnel
+        bridge:
+          type: boolean
+          description: Indicates whether the step is a part of a bridge
+        time:
+          type: number
+          description: Time in seconds required to pass the road segment
+        distance:
+          type: number
+          description: Length of the route segment in meters
+        begin_bearing:
+          type: number
+          description: Starting bearing
+        end_bearing:
+          type: number
+          description: Final bearing
+        from_index:
+          type: integer
+          description: An index of the starting point for the segment in the corresponding feature coordinates array
+        to_index:
+          type: integer
+          description: An index of the end point for the segment in the corresponding feature coordinates array
+        osm_way_id:
+          type: integer
+          description: OpenStreetMap way id. You can get additional route parameters from the OSM database by using the id parameter. Note that the OpenStreetMap ID is not static and may be changed in the future
+        # Additional fields from examples
+        roundabout:
+          type: boolean
+          description: Indicates whether the step is a part of a roundabout

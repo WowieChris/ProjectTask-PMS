@@ -1,0 +1,45 @@
+{
+  "name": "geoapify-openapi-specs",
+  "version": "1.0.0",
+  "description": "The Geoapify OpenAPI specifications provide an easy and structured way to interact with Geoapify's geolocation services, including routing, geocoding, and map data.",
+  "keywords": [
+    "Geoapify",
+    "OpenAPI",
+    "API specifications",
+    "geolocation",
+    "routing",
+    "geocoding",
+    "maps",
+    "location services",
+    "Swagger",
+    "API documentation"
+  ],
+  "directories": {
+    "api-specs": "api-specs"
+  },
+  "scripts": {
+    "start": "concurrently \"http-server -c-1 --cors\" \"sleep 2 && open http://localhost:8080/docs/index.html\"",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "spectral lint --ruleset=ruleset.spectral.yaml api-specs/**/*.{json,yml,yaml}"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://git@github.com/geoapify/geoapify-openapi-specs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/geoapify/geoapify-openapi-specs/issues"
+  },
+  "homepage": "https://github.com/geoapify/geoapify-openapi-specs#readme",
+  "author": {
+    "name": "Geoapify",
+    "email": "info@geoapify.com",
+    "url": "https://geoapify.com"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@stoplight/spectral-cli": "6.13.1",
+    "http-server": "14.1.1",
+    "concurrently": "9.0.1",
+    "open": "10.1.0"
+  }
+}
