@@ -158,6 +158,10 @@ export function AppSidebar() {
             title: 'RBAC',
             href: '/config-files/technical-support-eng',
           },
+          {
+            title: 'Organizational Chart',
+            href: '/orgchart',
+          },
         ],
       },
       {
