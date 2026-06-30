@@ -54,7 +54,7 @@ public function mapData(): JsonResponse
         }
  
         // Source 1: structured address from org_office_address_setups
-        $fromSetup = DB::table('org_office_address_setups as oa')
+        $fromSetup = DB::table('org_office_address_setup as oa')
             ->join($config['table'] . ' as o', 'o.id', '=', DB::raw('CAST(oa.org_office_id AS UNSIGNED)'))
             ->where('oa.org_office_segment', $segment)
             ->where('oa.active_yn', true)
@@ -126,6 +126,103 @@ public function mapData(): JsonResponse
  
     $offices = $offices->concat($fieldBranches);
  
-    return response()->json($offices->values());
+    return response()->json($offices->values()); 
+}
+private function buildMapAddress(object $row): string
+{
+    $parts = array_filter([
+        $row->org_office_address_1    ?? null,
+        $row->org_office_address_2    ?? null,
+        $row->org_office_barangay     ?? null,
+        $row->org_office_city         ?? $row->org_office_municipality ?? null,
+        $row->org_office_province     ?? null,
+        $row->org_office_region       ?? null,
+    ]);
+
+    return implode(', ', $parts);
+}
+public function movePin(Request $request, string $level, string $id): JsonResponse
+{
+    $data = $request->validate([
+        'latitude'  => 'required|numeric|between:-90,90',
+        'longitude' => 'required|numeric|between:-180,180',
+    ]);
+ 
+    // field_branch records have non-numeric IDs (char(10) like 'FB001').
+    // Standard hierarchy records (branch, area, district, division) have numeric IDs.
+    $isFieldBranch = $level === 'branch' && ! is_numeric($id);
+ 
+    if ($isFieldBranch) {
+        $updated = DB::table('field_branch')
+            ->where('field_branch_id', $id)
+            ->where('active_yn', true)
+            ->update([
+                'latitude'       => $data['latitude'],
+                'longitude'      => $data['longitude'],
+                'record_updated' => now(),
+            ]);
+ 
+        if (! $updated) {
+            return response()->json(['error' => 'Field branch record not found or inactive'], 404);
+        }
+ 
+        $row = DB::table('field_branch')->where('field_branch_id', $id)->first();
+ 
+        return response()->json([
+            'id'      => 'field_branch-' . $id,
+            'db_id'   => $id,
+            'level'   => 'branch',
+            'name'    => $row?->field_branch_name,
+            'address' => $row?->description ?? '',
+            'lat'     => (float) $data['latitude'],
+            'lon'     => (float) $data['longitude'],
+        ]);
+    }
+ 
+    // Standard hierarchy level — map to the correct table
+    $levelTableMap = [
+        'division' => 'divisions',
+        'district' => 'districts',
+        'area'     => 'areas',
+        'branch'   => 'branches',
+    ];
+ 
+    if (! array_key_exists($level, $levelTableMap)) {
+        return response()->json(['error' => 'Invalid level: ' . $level], 422);
+    }
+ 
+    $table = $levelTableMap[$level];
+ 
+    // Update coordinates directly on the office table (for geocoded records)
+    DB::table($table)
+        ->where('id', $id)
+        ->update([
+            'latitude'  => $data['latitude'],
+            'longitude' => $data['longitude'],
+        ]);
+ 
+    // Also update org_office_address_setups if an active record exists for this office
+    DB::table('org_office_address_setup')
+        ->where('org_office_segment', strtoupper($level))
+        ->where('org_office_id', (string) $id)
+        ->where('active_yn', true)
+        ->update([
+            'latitude'       => $data['latitude'],
+            'longitude'      => $data['longitude'],
+            'address_source' => 'MANUAL_PIN',
+            'record_updated' => now(),
+        ]);
+ 
+    $row = DB::table($table)->where('id', $id)->first(['id', 'name', 'address']);
+ 
+    return response()->json([
+        'id'      => $level . '-' . $id,
+        'db_id'   => $id,
+        'level'   => $level,
+        'name'    => $row?->name,
+        'address' => $row?->address ?? '',
+        'lat'     => (float) $data['latitude'],
+        'lon'     => (float) $data['longitude'],
+    ]);
 }
 }

@@ -204,7 +204,7 @@ export function AppSidebar() {
       //geomap
       {
         title: 'Geomap',
-        href: '/officemap',
+        href: '/GeoMap',
         icon: MapPin,
       },
     );
