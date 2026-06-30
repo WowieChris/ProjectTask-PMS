@@ -166,6 +166,10 @@ export function AppSidebar() {
             title: 'RBAC',
             href: '/config-files/technical-support-eng',
           },
+          {
+            title: 'Organizational Chart',
+            href: '/orgchart',
+          },
         ],
       },
       {
@@ -200,7 +204,7 @@ export function AppSidebar() {
       //geomap
       {
         title: 'Geomap',
-        href: '/officemap',
+        href: '/GeoMap',
         icon: MapPin,
       },
     );
