@@ -23,6 +23,9 @@ class FieldArea extends Model
         'active_yn',
         'record_created',
         'record_updated',
+        'latitude',
+        'longitude',
+        'address',
     ];
 
     protected $casts = [

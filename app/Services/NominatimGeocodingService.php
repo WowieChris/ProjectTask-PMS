@@ -51,41 +51,109 @@ class NominatimGeocodingService
      *
      * @return array{lat: float, lon: float, label: string, importance: float|null}|null
      */
-    public function geocode(string $address): ?array
-    {
-        $normalized = $this->normalize($address);
+    public function geocode(string $address, ?string $city = null, ?string $province = null): ?array
+{
+    $address = $this->normalize($address);
 
-        // Attempt 1: full normalized address + Philippines
-        $result = $this->search($normalized);
-        if ($result) return $result;
+    // 1. Structured PSGC city/province lookup, if available
+    if ($city || $province) {
+        $result = $this->query([
+            'city' => $city,
+            'state' => $province,
+            'country' => 'Philippines',
+            'format' => 'jsonv2',
+            'limit' => 1,
+            'addressdetails' => 1,
+        ]);
 
-        // Attempt 2: subdivision/village name + city + province
-        // (strips lot/block numbers but keeps the subdivision name, which may exist in OSM)
-        $subdivisionLevel = $this->subdivisionOnly($normalized);
-        if ($subdivisionLevel && $subdivisionLevel !== $normalized) {
-            $result = $this->search($subdivisionLevel);
-            if ($result) return $result;
+        if ($result !== null) {
+            return $result;
         }
+    }
 
-        // Attempt 3: barangay + city + province
-        // (strips everything up to the barangay name)
-        $barangayLevel = $this->barangayOnly($normalized);
-        if ($barangayLevel && $barangayLevel !== $normalized) {
-            $result = $this->search($barangayLevel);
-            if ($result) return $result;
+    // 2. Full normalized free-text address
+    $result = $this->query([
+        'q' => $address,
+        'format' => 'jsonv2',
+        'limit' => 1,
+        'addressdetails' => 1,
+        'countrycodes' => 'ph',
+    ]);
+    if ($result !== null) {
+        return $result;
+    }
+
+    // 3. Subdivision/village name + city/province (drops lot/block/unit noise)
+    if ($simplified = $this->subdivisionOnly($address)) {
+        $result = $this->query([
+            'q' => $simplified,
+            'format' => 'jsonv2',
+            'limit' => 1,
+            'addressdetails' => 1,
+            'countrycodes' => 'ph',
+        ]);
+        if ($result !== null) {
+            return $result;
         }
+    }
 
-        // Attempt 4: last resort — just city/municipality + province
-        $cityLevel = $this->cityOnly($normalized);
-        if ($cityLevel) {
-            $result = $this->search($cityLevel);
-            if ($result) return $result;
+    // 4. Barangay + city/province
+    if ($simplified = $this->barangayOnly($address)) {
+        $result = $this->query([
+            'q' => $simplified,
+            'format' => 'jsonv2',
+            'limit' => 1,
+            'addressdetails' => 1,
+            'countrycodes' => 'ph',
+        ]);
+        if ($result !== null) {
+            return $result;
         }
+    }
 
-        Log::info('Nominatim: no match after all attempts', ['original' => $address]);
+    // 5. Last resort: city/province only
+    if ($simplified = $this->cityOnly($address)) {
+        $result = $this->query([
+            'q' => $simplified,
+            'format' => 'jsonv2',
+            'limit' => 1,
+            'addressdetails' => 1,
+            'countrycodes' => 'ph',
+        ]);
+        if ($result !== null) {
+            return $result;
+        }
+    }
 
+    return null;
+}
+
+protected function query(array $params): ?array
+{
+    $response = Http::withoutVerifying()
+        ->withHeaders(['User-Agent' => $this->userAgent])
+        ->baseUrl($this->baseUrl)
+        ->get('/search', $params);
+
+    if ($response->failed()) {
+        Log::warning('Nominatim search request failed', ['params' => $params, 'status' => $response->status()]);
         return null;
     }
+
+    $result = $response->json();
+
+    if (empty($result) || isset($result['error'])) {
+        return null;
+    }
+
+    $hit = $result[0];
+
+    return [
+        'address' => $hit['display_name'] ?? null,
+        'lat' => (float) $hit['lat'],
+        'lon' => (float) $hit['lon'],
+    ];
+}
 
     /**
      * Reverse geocode coordinates into a human-readable address.

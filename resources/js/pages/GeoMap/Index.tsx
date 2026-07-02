@@ -791,9 +791,9 @@ export default function Index() {
                                 <LayersControl position="topright">
                                     {Object.entries(LEVEL_CONFIG).map(([level, config]) => (
                                         <LayersControl.Overlay
-                                            key={level}
+                                            key={`${level}-${officesByLevel[level]?.length ?? 0}`}
                                             name={`${config.label} (${officesByLevel[level]?.length ?? 0})`}
-                                            checked={level === 'branch'}
+                                            checked={level === 'division' || level === 'district' || level === 'area' || level === 'branch'}
                                         >
                                             <LayerGroup>
                                                 {officesByLevel[level]?.map(office => {
@@ -801,7 +801,6 @@ export default function Index() {
                                                     const isFrom     = fromOffice?.id === office.id;
                                                     const isTo       = toOffice?.id === office.id;
                                                     const dimmed     = isMovingPin && movingOffice?.id !== office.id;
-                                                    // Hide office dot when it's already shown as From/To colored pin
                                                     if (isFrom || isTo) return null;
                                                     return (
                                                         <Marker
