@@ -70,25 +70,27 @@ class GeocodeOffices extends Command
         $failed = [];
 
         foreach ($records as $record) {
-            $result = $nominatim->geocode($record->address);
+    $result = $nominatim->geocode(
+        $record->address,
+        $record->psgc_city_name ?? null,
+        $record->psgc_province_name ?? null,
+    );
 
-            if ($result === null) {
-                $record->update(['geocode_status' => 'failed', 'geocoded_at' => now()]);
-                $failed[] = $record->id;
-            } else {
-                $record->update([
-                    'latitude' => $result['lat'],
-                    'longitude' => $result['lon'],
-                    'geocode_status' => 'success',
-                    'geocoded_at' => now(),
-                ]);
-            }
+    if ($result === null) {
+        $record->update(['geocode_status' => 'failed', 'geocoded_at' => now()]);
+        $failed[] = $record->id;
+    } else {
+        $record->update([
+            'latitude' => $result['lat'],
+            'longitude' => $result['lon'],
+            'geocode_status' => 'success',
+            'geocoded_at' => now(),
+        ]);
+    }
 
-            $bar->advance();
-
-            // Nominatim's usage policy caps the public instance at 1 request/second.
-            usleep(1_100_000);
-        }
+    $bar->advance();
+    usleep(1_100_000);
+}
 
         $bar->finish();
         $this->newLine();
