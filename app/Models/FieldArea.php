@@ -19,6 +19,7 @@ class FieldArea extends Model
         'field_area_id',
         'field_area_code',
         'field_area_name',
+        'field_district_id',
         'description',
         'active_yn',
         'record_created',

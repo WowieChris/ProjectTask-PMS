@@ -19,6 +19,7 @@ class FieldDistrict extends Model
         'field_district_id',
         'field_district_code',
         'field_district_name',
+        'field_division_id',
         'description',
         'active_yn',
         'record_created',
