@@ -31,6 +31,7 @@ interface Office {
     level: string;
     name: string;
     code: string | null;
+    parent_id: string | null;
     address: string;
     lat: number;
     lon: number;
@@ -107,6 +108,7 @@ function decodePolyline6(encoded: string): [number, number][] {
 function formatOfficeLabel(office: Office): string {
     return office.code ? `${office.code} - ${office.name}` : office.name;
 }
+
 // office href
 const OFFICE_SETUP_ROUTES: Record<string, string> = {
     division:      '###', // e.g. `/division-office-setup/${office.db_id}`
@@ -118,6 +120,34 @@ const OFFICE_SETUP_ROUTES: Record<string, string> = {
 
 function getOfficeSetupHref(office: { level: string }) {
     return OFFICE_SETUP_ROUTES[office.level] ?? '###';
+}
+type OfficeWithParent = Office & { parent_id: string | null };
+
+function getOfficeHierarchy(office: Office, allOffices: Office[]): { area?: Office; district?: Office; division?: Office } {
+    const withParent = allOffices as OfficeWithParent[];
+    const current = office as OfficeWithParent;
+
+    const byLevelId: Record<string, Map<string, Office>> = { area: new Map(), district: new Map(), division: new Map() };
+    for (const o of withParent) {
+        if (byLevelId[o.level]) byLevelId[o.level].set(String(o.db_id), o);
+    }
+
+    let area: Office | undefined;
+    let district: Office | undefined;
+    let division: Office | undefined;
+
+    if (current.level === 'branch') {
+        area     = current.parent_id != null ? byLevelId.area.get(String(current.parent_id)) : undefined;
+        district = area ? byLevelId.district.get(String((area as OfficeWithParent).parent_id)) : undefined;
+        division = district ? byLevelId.division.get(String((district as OfficeWithParent).parent_id)) : undefined;
+    } else if (current.level === 'area') {
+        district = current.parent_id != null ? byLevelId.district.get(String(current.parent_id)) : undefined;
+        division = district ? byLevelId.division.get(String((district as OfficeWithParent).parent_id)) : undefined;
+    } else if (current.level === 'district') {
+        division = current.parent_id != null ? byLevelId.division.get(String(current.parent_id)) : undefined;
+    }
+
+    return { area, district, division };
 }
 
 // ─── Map sub-components ───────────────────────────────────────────────────────
@@ -261,17 +291,27 @@ function OfficePicker({ label, color, Icon, selected, search, onSearch, onSelect
 
 // ─── Office info card (left panel) ───────────────────────────────────────────
 
-function OfficeInfoCard({ office, onGetDirections, onMovePin, onClose }: {
+function OfficeInfoCard({ office, allOffices, onGetDirections, onMovePin, onClose }: {
     office: Office;
+    allOffices: Office[];
     onGetDirections: () => void;
     onMovePin: () => void;
     onClose: () => void;
 }) {
-    const city = extractCity(office.address);
     const levelCfg = LEVEL_CONFIG[office.level];
+    const levelLabel = levelCfg ? levelCfg.label.replace(/s$/, '') : office.level;
+    const { area, district, division } = getOfficeHierarchy(office, allOffices);
+    const addressLines = office.address ? office.address.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+    const hierarchyRows = [
+        { label: 'Area',     value: area?.name },
+        { label: 'District', value: district?.name },
+        { label: 'Division', value: division?.name },
+    ].filter(row => row.value); // only show levels above the current office
+
     return (
         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-3 flex-shrink-0">
-            <div className="flex items-start justify-between gap-2 mb-1">
+            <div className="flex items-start justify-between gap-2 mb-3">
                 <div className="flex items-center gap-2 min-w-0">
                     <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: levelCfg?.color ?? '#374151' }} />
                     <span className="text-xs text-gray-400 dark:text-gray-500 capitalize">{office.level}</span>
@@ -280,36 +320,61 @@ function OfficeInfoCard({ office, onGetDirections, onMovePin, onClose }: {
                     <X className="w-3.5 h-3.5" />
                 </button>
             </div>
-            <p className="font-bold text-gray-900 dark:text-white text-sm leading-tight mb-0.5">{office.name}</p>
-            {city && <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{city}</p>}
-            <hr className="border-gray-100 dark:border-gray-800 mb-2" />
-            <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed mb-3">
-                {office.address || <span className="italic text-gray-400 dark:text-gray-500">No address on file</span>}
-            </p>
 
-            <div className="flex gap-2 mt-3">
-    <a
-        href={getOfficeSetupHref(office)}
-        className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-    >
-        <Eye className="w-3.5 h-3.5" />
-        See More
-    </a>
-    <button
-        onClick={onMovePin}
-        className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-    >
-        <Move className="w-3.5 h-3.5" />
-        Move Pin
-    </button>
-    <button
-        onClick={onGetDirections}
-        className="flex-1 flex items-center justify-center gap-1 text-xs font-medium py-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white transition-colors"
-    >
-        <Navigation className="w-3.5 h-3.5" />
-        Directions
-    </button>
-</div>
+            {/* Office Name */}
+            <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-0.5">Office Name</p>
+            <p className="text-sm font-bold text-gray-900 dark:text-white mb-3">{office.name}</p>
+
+            {/* Hierarchy */}
+            {hierarchyRows.length > 0 && (
+                <>
+                    <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">Hierarchy</p>
+                    <div className="mb-3 space-y-1.5">
+                        {hierarchyRows.map(row => (
+                            <div key={row.label}>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">{row.label}</p>
+                                <p className="text-xs text-gray-700 dark:text-gray-200 pl-3">
+                                    <span className="text-gray-300 dark:text-gray-600">└── </span>{row.value}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </>
+            )}
+
+            {/* Address */}
+            <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">Address</p>
+            {addressLines.length > 0 ? (
+                <div className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed mb-3">
+                    {addressLines.map((line, i) => <p key={i}>{line}</p>)}
+                </div>
+            ) : (
+                <p className="text-xs italic text-gray-400 dark:text-gray-500 mb-3">No address on file</p>
+            )}
+
+            <div className="flex gap-2 mt-1">
+                
+                    <a href={getOfficeSetupHref(office)}
+                    className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
+                    <Eye className="w-3.5 h-3.5" />
+                    See More
+                </a>
+                <button
+                    onClick={onMovePin}
+                    className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
+                    <Move className="w-3.5 h-3.5" />
+                    Move Pin
+                </button>
+                <button
+                    onClick={onGetDirections}
+                    className="flex-1 flex items-center justify-center gap-1 text-xs font-medium py-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white transition-colors"
+                >
+                    <Navigation className="w-3.5 h-3.5" />
+                    Directions
+                </button>
+            </div>
         </div>
     );
 }
@@ -517,6 +582,7 @@ export default function Index() {
                                 {selectedOffice ? (
                                     <OfficeInfoCard
                                         office={selectedOffice}
+                                        allOffices={offices}
                                         onGetDirections={() => openDirections(selectedOffice)}
                                         onMovePin={() => { setMovingOffice(selectedOffice); }}
                                         onClose={() => setSelectedOffice(null)}

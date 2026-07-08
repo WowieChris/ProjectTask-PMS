@@ -28,6 +28,7 @@ class OfficeAddressController extends Controller
                     'level'    => 'division',
                     'name'     => $row->field_division_name,
                     'code'     => $row->field_division_code,
+                    'parent_id'=> null,
                     'address'  => $row->address ?? $row->description ?? '',
                     'lat'      => (float) $row->latitude,
                     'lon'      => (float) $row->longitude,
@@ -40,7 +41,7 @@ class OfficeAddressController extends Controller
                 ->where('active_yn', true)
                 ->whereNotNull('latitude')
                 ->whereNotNull('longitude')
-                ->select(['field_district_id', 'field_district_name', 'field_district_code', 'address', 'description', 'latitude', 'longitude'])
+                ->select(['field_district_id', 'field_district_name', 'field_district_code', 'field_division_id', 'address', 'description', 'latitude', 'longitude'])
                 ->get()
                 ->map(fn ($row) => [
                     'id'       => 'field_district-' . $row->field_district_id,
@@ -49,6 +50,7 @@ class OfficeAddressController extends Controller
                     'level'    => 'district',
                     'name'     => $row->field_district_name,
                     'code'     => $row->field_district_code,
+                    'parent_id'=> $row->field_division_id,
                     'address'  => $row->address ?? $row->description ?? '',
                     'lat'      => (float) $row->latitude,
                     'lon'      => (float) $row->longitude,
@@ -61,7 +63,7 @@ class OfficeAddressController extends Controller
                 ->where('active_yn', true)
                 ->whereNotNull('latitude')
                 ->whereNotNull('longitude')
-                ->select(['field_area_id', 'field_area_name', 'field_area_code', 'address', 'description', 'latitude', 'longitude'])
+                ->select(['field_area_id', 'field_area_name', 'field_area_code', 'field_district_id', 'address', 'description', 'latitude', 'longitude'])
                 ->get()
                 ->map(fn ($row) => [
                     'id'       => 'field_area-' . $row->field_area_id,
@@ -70,6 +72,7 @@ class OfficeAddressController extends Controller
                     'level'    => 'area',
                     'name'     => $row->field_area_name,
                     'code'     => $row->field_area_code,
+                    'parent_id'=> $row->field_district_id,
                     'address'  => $row->address ?? $row->description ?? '',
                     'lat'      => (float) $row->latitude,
                     'lon'      => (float) $row->longitude,
@@ -82,7 +85,7 @@ class OfficeAddressController extends Controller
                 ->where('active_yn', true)
                 ->whereNotNull('latitude')
                 ->whereNotNull('longitude')
-                ->select(['field_branch_id', 'field_branch_name', 'field_branch_code', 'address', 'description', 'latitude', 'longitude'])
+                ->select(['field_branch_id', 'field_branch_name', 'field_branch_code', 'field_area_id', 'address', 'description', 'latitude', 'longitude'])
                 ->get()
                 ->map(fn ($row) => [
                     'id'       => 'field_branch-' . $row->field_branch_id,
@@ -91,6 +94,7 @@ class OfficeAddressController extends Controller
                     'level'    => 'branch',
                     'name'     => $row->field_branch_name,
                     'code'     => $row->field_branch_code,
+                    'parent_id'=> $row->field_area_id,
                     'address'  => $row->address ?? $row->description ?? '',
                     'lat'      => (float) $row->latitude,
                     'lon'      => (float) $row->longitude,
