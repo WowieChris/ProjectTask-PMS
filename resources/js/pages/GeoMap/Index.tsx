@@ -30,6 +30,7 @@ interface Office {
     db_id: number;
     level: string;
     name: string;
+    code: string | null;
     address: string;
     lat: number;
     lon: number;
@@ -43,10 +44,10 @@ type AppMode       = 'browse' | 'save' | 'address';
 // ─── Level config ─────────────────────────────────────────────────────────────
 
 const LEVEL_CONFIG: Record<string, { label: string; color: string; size: number }> = {
-    division: { label: 'Divisions', color: '#1e3a5f', size: 16 },
-    district: { label: 'Districts', color: '#0f766e', size: 14 },
-    area:     { label: 'Areas',     color: '#b45309', size: 12 },
-    branch:   { label: 'Branches',  color: '#15803d', size: 10 },
+    division: { label: 'Divisions', color: '#d9ff00', size: 16 },
+    district: { label: 'Districts', color: '#001aff', size: 14 },
+    area:     { label: 'Areas',     color: '#ff6f00', size: 12 },
+    branch:   { label: 'Branches',  color: '#ff0000', size: 10 },
 };
 
 // ─── Icon factories ───────────────────────────────────────────────────────────
@@ -102,6 +103,9 @@ function decodePolyline6(encoded: string): [number, number][] {
         coordinates.push([lat / factor, lng / factor]);
     }
     return coordinates;
+}
+function formatOfficeLabel(office: Office): string {
+    return office.code ? `${office.code} - ${office.name}` : office.name;
 }
 // office href
 const OFFICE_SETUP_ROUTES: Record<string, string> = {
@@ -217,7 +221,7 @@ function OfficePicker({ label, color, Icon, selected, search, onSearch, onSelect
             {selected ? (
                 <div className="flex items-start justify-between gap-2 bg-gray-50 dark:bg-gray-800 rounded-lg px-3 py-2">
                     <div className="min-w-0">
-                        <p className="text-xs font-medium text-gray-800 dark:text-gray-100 truncate">{selected.name}</p>
+                        <p className="text-xs font-medium text-gray-800 dark:text-gray-100 truncate">{formatOfficeLabel(selected)}</p>
                         <p className="text-xs text-gray-400 dark:text-gray-500 truncate">{extractCity(selected.address)}</p>
                     </div>
                     <button onClick={onClear} className="flex-shrink-0 text-gray-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors mt-0.5">
@@ -237,7 +241,7 @@ function OfficePicker({ label, color, Icon, selected, search, onSearch, onSelect
                             {filtered.map(o => (
                                 <div key={o.id} onClick={() => { onSelect(o); onSearch(''); }}
                                     className="px-3 py-2 cursor-pointer hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
-                                    <p className="text-xs font-medium text-gray-800 dark:text-gray-100">{o.name}</p>
+                                    <p className="text-xs font-medium text-gray-800 dark:text-gray-100">{formatOfficeLabel(o)}</p>  
                                     <p className="text-xs text-gray-400 dark:text-gray-500">{extractCity(o.address)}</p>
                                 </div>
                             ))}
@@ -507,19 +511,6 @@ export default function Index() {
                     {/* ── Left panel — collapses when nothing to show ── */}
                     <div className={`flex flex-col gap-3 min-h-0 overflow-y-auto pr-1 transition-all duration-300 ${showPanel ? 'xl:col-span-1' : 'hidden xl:hidden'}`}>
 
-                        {/* Map legend */}
-                        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-3 flex-shrink-0">
-                            <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2">Map Legend</p>
-                            <div className="flex flex-wrap gap-3">
-                                {Object.entries(LEVEL_CONFIG).map(([level, cfg]) => (
-                                    <div key={level} className="flex items-center gap-1.5">
-                                        <span className="w-2.5 h-2.5 rounded-full border border-white shadow-sm" style={{ background: cfg.color }} />
-                                        <span className="text-xs text-gray-600 dark:text-gray-300">{cfg.label}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
                         {/* ── Browse mode: office info or placeholder ── */}
                         {mode === 'browse' && !showDirections && (
                             <>
@@ -741,6 +732,27 @@ export default function Index() {
                             {isMovingPin && movingOffice && (
                                 <MovePinBanner office={movingOffice} onCancel={() => setMovingOffice(null)} />
                             )}
+
+                            {/* Map legend — floating bottom-right */}
+                            <div
+                               style={{
+                                    position: 'absolute',
+                                    bottom: 12,
+                                    right: 12,
+                                    zIndex: 1000,
+                                }}
+                                className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 shadow-md"
+                            >
+                                <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1.5">Map Legend</p>
+                                <div className="flex flex-col gap-1">
+                                    {Object.entries(LEVEL_CONFIG).map(([level, cfg]) => (
+                                        <div key={level} className="flex items-center gap-1.5">
+                                            <span className="w-2.5 h-2.5 rounded-full border border-white shadow-sm flex-shrink-0" style={{ background: cfg.color }} />
+                                            <span className="text-xs text-gray-600 dark:text-gray-300 whitespace-nowrap">{cfg.label}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
 
                             <MapContainer center={mapCenter} zoom={6} style={{ height: '100%', width: '100%' }}>
                                 <TileLayer
