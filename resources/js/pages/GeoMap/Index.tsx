@@ -213,9 +213,23 @@ function FitBounds({ start, end }: { start: Position; end: Position }) {
     return null;
 }
 
-function PanTo({ point }: { point: Position | null }) {
+function PanTo({ point, offsetXPercent = 0 }: { point: Position | null; offsetXPercent?: number }) {
     const map = useMap();
-    useEffect(() => { if (point) map.panTo([point.lat, point.lng], { animate: true, duration: 0.3 }); }, [point?.lat, point?.lng, map]);
+    useEffect(() => {
+        if (!point) return;
+        if (!offsetXPercent) {
+            map.panTo([point.lat, point.lng], { animate: true, duration: 0.3 });
+            return;
+        }
+        const zoom = map.getZoom();
+        const targetPoint = map.project([point.lat, point.lng], zoom);
+        const offsetPx = map.getSize().x * offsetXPercent;
+        // Shift the map's center point to the right of the pin,
+        // so the pin itself lands to the left of center on screen.
+        const shiftedCenter = targetPoint.add([offsetPx, 0]);
+        const shiftedLatLng = map.unproject(shiftedCenter, zoom);
+        map.panTo(shiftedLatLng, { animate: true, duration: 0.3 });
+    }, [point?.lat, point?.lng, map, offsetXPercent]);
     return null;
 }
 
@@ -291,9 +305,10 @@ function OfficePicker({ label, color, Icon, selected, search, onSearch, onSelect
 
 // ─── Office info card (left panel) ───────────────────────────────────────────
 
-function OfficeInfoCard({ office, allOffices, onGetDirections, onMovePin, onClose }: {
+function OfficeInfoCard({ office, allOffices, onSelectOffice, onGetDirections, onMovePin, onClose }: {
     office: Office;
     allOffices: Office[];
+    onSelectOffice: (o: Office) => void;
     onGetDirections: () => void;
     onMovePin: () => void;
     onClose: () => void;
@@ -304,10 +319,10 @@ function OfficeInfoCard({ office, allOffices, onGetDirections, onMovePin, onClos
     const addressLines = office.address ? office.address.split(',').map(s => s.trim()).filter(Boolean) : [];
 
     const hierarchyRows = [
-        { label: 'Area',     value: area?.name },
-        { label: 'District', value: district?.name },
-        { label: 'Division', value: division?.name },
-    ].filter(row => row.value); // only show levels above the current office
+        { label: 'Area',     office: area },
+        { label: 'District', office: district },
+        { label: 'Division', office: division },
+    ].filter(row => row.office);
 
     return (
         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-3 flex-shrink-0">
@@ -333,9 +348,12 @@ function OfficeInfoCard({ office, allOffices, onGetDirections, onMovePin, onClos
                         {hierarchyRows.map(row => (
                             <div key={row.label}>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">{row.label}</p>
-                                <p className="text-xs text-gray-700 dark:text-gray-200 pl-3">
-                                    <span className="text-gray-300 dark:text-gray-600">└── </span>{row.value}
-                                </p>
+                               <button
+                                    onClick={() => row.office && onSelectOffice(row.office)}
+                                    className="text-xs text-gray-700 dark:text-gray-200 pl-3 hover:text-emerald-600 dark:hover:text-emerald-400 hover:underline transition-colors text-left"
+                                >
+                                    <span className="text-gray-300 dark:text-gray-600">└── </span>{row.office?.name}
+                                </button>
                             </div>
                         ))}
                     </div>
@@ -436,6 +454,7 @@ export default function Index() {
     }, [offices]);
 
     const isMovingPin = !!movingOffice;
+    const focusPoint = selectedOffice ? { lat: selectedOffice.lat, lng: selectedOffice.lon } : null;
 
     // Memoize so Routing useEffect only fires when coordinates actually change,
     // not on every parent re-render (objects compared by reference in useEffect deps).
@@ -583,6 +602,7 @@ export default function Index() {
                                     <OfficeInfoCard
                                         office={selectedOffice}
                                         allOffices={offices}
+                                        onSelectOffice={handleMarkerClick}
                                         onGetDirections={() => openDirections(selectedOffice)}
                                         onMovePin={() => { setMovingOffice(selectedOffice); }}
                                         onClose={() => setSelectedOffice(null)}
@@ -864,6 +884,9 @@ export default function Index() {
                                 {/* Hovered step highlight */}
                                 <PanTo point={hoveredStep} />
                                 {hoveredStep && <Circle center={[hoveredStep.lat, hoveredStep.lng]} radius={50} pathOptions={{ color: '#f59e0b', fillColor: '#f59e0b', fillOpacity: 0.4, weight: 3 }} />}
+
+                                {/* Pan map to the selected office */}
++                                <PanTo point={focusPoint} offsetXPercent={0.15} />
 
                                 {/* ── Office layer control ── */}
                                 <LayersControl position="topright">
