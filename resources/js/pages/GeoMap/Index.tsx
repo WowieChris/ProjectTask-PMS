@@ -947,4 +947,4 @@ export default function Index() {
         </AppLayout>
     );
 }
-//soafer test
+//soafer test, luh ngaa di mag opull
