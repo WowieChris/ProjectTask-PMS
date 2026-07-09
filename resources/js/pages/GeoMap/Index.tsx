@@ -1103,10 +1103,7 @@ export default function Index() {
                                 {/* Pan map to the selected office */}
                                 <PanTo point={focusPoint} offsetXPercent={0.15} />
 
-                                {/* Fit bounds to children when "Show children" is clicked */}
-                                {highlightedChildren.length >  0 && selectedOffice && (
-                                    <FitBoundsToOffices offices={[selectedOffice, ...highlightedChildren]} />
-                                )}
+                                
 
                                 {/* ── Office layer control ── */}
                                 <LayersControl position="topright">
