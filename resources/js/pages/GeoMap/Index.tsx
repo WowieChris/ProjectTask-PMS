@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { router, usePage } from '@inertiajs/react';
 import L from 'leaflet';
-import { ChevronDown, Eye } from 'lucide-react';
+import { ChevronDown, Eye, ChevronLeft, ChevronRight, 
+} from 'lucide-react';
 import {
     Circle,
     LayerGroup,
@@ -40,7 +41,7 @@ interface Office {
 type Position      = { lat: number; lng: number };
 type Step          = { instruction: string; distance: string; lat: number; lng: number };
 type SavedLocation = { id: number; label: string; lat: number; lng: number };
-type AppMode       = 'browse' | 'save' | 'address';
+type AppMode       = 'browse' | 'save' | 'address' | 'unmapped';
 
 // ─── Level config ─────────────────────────────────────────────────────────────
 
@@ -150,6 +151,38 @@ function getOfficeHierarchy(office: Office, allOffices: Office[]): { area?: Offi
     return { area, district, division };
 }
 
+const CHILD_LEVEL: Record<string, string> = {
+    division: 'district',
+    district: 'area',
+    area:     'branch',
+};
+
+// Returns ALL descendants at every level below `office` — e.g. a division
+// returns its districts, their areas, and their branches, all flattened.
+function getDescendantOffices(office: Office, allOffices: Office[]): Office[] {
+    const childLevel = CHILD_LEVEL[office.level];
+    if (!childLevel) return [];
+
+    const directChildren = allOffices.filter(
+        o => o.level === childLevel && (o as OfficeWithParent).parent_id != null
+            && String((o as OfficeWithParent).parent_id) === String(office.db_id)
+    );
+
+    const deeperDescendants = directChildren.flatMap(child => getDescendantOffices(child, allOffices));
+
+    return [...directChildren, ...deeperDescendants];
+}
+
+function InvalidateOnResize({ trigger }: { trigger: unknown }) {
+    const map = useMap();
+    useEffect(() => {
+        // Wait for the CSS grid/width transition to finish before recalculating,
+        // otherwise Leaflet measures the container mid-transition and gets it wrong.
+        const timer = setTimeout(() => map.invalidateSize(), 320);
+        return () => clearTimeout(timer);
+    }, [trigger, map]);
+    return null;
+}
 // ─── Map sub-components ───────────────────────────────────────────────────────
 
 function MapClickHandler({ onClick, disabled }: { onClick: (lat: number, lng: number) => void; disabled: boolean }) {
@@ -210,6 +243,20 @@ function Routing({ start, end, onRouteFound, onError }: {
 function FitBounds({ start, end }: { start: Position; end: Position }) {
     const map = useMap();
     useEffect(() => { map.fitBounds(L.latLngBounds([start.lat, start.lng], [end.lat, end.lng]), { padding: [60, 60] }); }, [map, start?.lat, start?.lng, end?.lat, end?.lng]);
+    return null;
+}
+
+function FitBoundsToOffices({ offices }: { offices: Office[] }) {
+    const map = useMap();
+    useEffect(() => {
+        if (offices.length === 0) return;
+        if (offices.length === 1) {
+            map.setView([offices[0].lat, offices[0].lon], Math.max(map.getZoom(), 11), { animate: true });
+            return;
+        }
+        const bounds = L.latLngBounds(offices.map(o => [o.lat, o.lon] as [number, number]));
+        map.fitBounds(bounds, { padding: [60, 60], animate: true });
+    }, [offices, map]);
     return null;
 }
 
@@ -302,13 +349,69 @@ function OfficePicker({ label, color, Icon, selected, search, onSearch, onSelect
     );
 }
 
+// -- searchbar -------
+function HeaderOfficeSearch({ offices, onSelect }: { offices: Office[]; onSelect: (o: Office) => void }) {
+    const [query, setQuery] = useState('');
+    const [open, setOpen]   = useState(false);
+    const wrapperRef        = useRef<HTMLDivElement>(null);
+
+    const filtered = query.length >= 1
+        ? offices.filter(o => o.name.toLowerCase().includes(query.toLowerCase()) || o.code?.toLowerCase().includes(query.toLowerCase())).slice(0, 8)
+        : [];
+
+    useEffect(() => {
+        function handleClickOutside(e: MouseEvent) {
+            if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) setOpen(false);
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    function handlePick(o: Office) {
+        onSelect(o);
+        setQuery('');
+        setOpen(false);
+    }
+
+    return (
+        <div ref={wrapperRef} className="relative w-64 flex-shrink-0">
+            <input
+                value={query}
+                onChange={e => { setQuery(e.target.value); setOpen(true); }}
+                onFocus={() => setOpen(true)}
+                placeholder="Search offices…"
+                className="w-full text-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-lg px-3 py-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-gray-400"
+            />
+            {open && filtered.length > 0 && (
+                <div className="absolute z-[2000] w-full mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg max-h-56 overflow-y-auto">
+                    {filtered.map(o => (
+                        <div
+                            key={o.id}
+                            onClick={() => handlePick(o)}
+                            className="px-3 py-2 cursor-pointer hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
+                        >
+                            <p className="text-xs font-medium text-gray-800 dark:text-gray-100">{formatOfficeLabel(o)}</p>
+                            <p className="text-xs text-gray-400 dark:text-gray-500 capitalize">{o.level} · {extractCity(o.address)}</p>
+                        </div>
+                    ))}
+                </div>
+            )}
+            {open && query.length > 0 && filtered.length === 0 && (
+                <div className="absolute z-[2000] w-full mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg px-3 py-3 text-xs text-gray-400 dark:text-gray-500 text-center">
+                    No offices found
+                </div>
+            )}
+        </div>
+    );
+}
 
 // ─── Office info card (left panel) ───────────────────────────────────────────
 
-function OfficeInfoCard({ office, allOffices, onSelectOffice, onGetDirections, onMovePin, onClose }: {
+function OfficeInfoCard({ office, allOffices, onSelectOffice, onShowChildren, onGetDirections, onMovePin, onClose }: {
     office: Office;
     allOffices: Office[];
     onSelectOffice: (o: Office) => void;
+    onShowChildren: (office: Office, children: Office[]) => void;
     onGetDirections: () => void;
     onMovePin: () => void;
     onClose: () => void;
@@ -317,6 +420,15 @@ function OfficeInfoCard({ office, allOffices, onSelectOffice, onGetDirections, o
     const levelLabel = levelCfg ? levelCfg.label.replace(/s$/, '') : office.level;
     const { area, district, division } = getOfficeHierarchy(office, allOffices);
     const addressLines = office.address ? office.address.split(',').map(s => s.trim()).filter(Boolean) : [];
+    const descendants = getDescendantOffices(office, allOffices);
+    const descendantCountsByLevel = useMemo(() => {
+        const counts: Record<string, number> = {};
+        for (const d of descendants) counts[d.level] = (counts[d.level] ?? 0) + 1;
+        return counts;
+    }, [descendants]);
+    const descendantSummary = Object.entries(descendantCountsByLevel)
+        .map(([level, count]) => `${count} ${count === 1 ? LEVEL_CONFIG[level].label.replace(/s$/, '') : LEVEL_CONFIG[level].label}`)
+        .join(', ');
 
     const hierarchyRows = [
         { label: 'Area',     office: area },
@@ -338,7 +450,7 @@ function OfficeInfoCard({ office, allOffices, onSelectOffice, onGetDirections, o
 
             {/* Office Name */}
             <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-0.5">Office Name</p>
-            <p className="text-sm font-bold text-gray-900 dark:text-white mb-3">{office.name}</p>
+            <p className="text-sm font-bold text-gray-900 dark:text-white mb-3">{formatOfficeLabel(office)}</p>
 
             {/* Hierarchy */}
             {hierarchyRows.length > 0 && (
@@ -368,6 +480,16 @@ function OfficeInfoCard({ office, allOffices, onSelectOffice, onGetDirections, o
                 </div>
             ) : (
                 <p className="text-xs italic text-gray-400 dark:text-gray-500 mb-3">No address on file</p>
+            )}
+            {office.level !== 'branch' && (
+                <button
+                    onClick={() => onShowChildren(office, descendants)}
+                    disabled={descendants.length === 0}
+                    className="w-full flex items-center justify-center gap-1.5 text-xs font-medium py-2 rounded-lg border border-dashed border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors mb-3"
+                >
+                    <MapPin className="w-3.5 h-3.5" />
+                    Show {descendantSummary || 'no offices'} on map
+                </button>
             )}
 
             <div className="flex gap-2 mt-1">
@@ -404,9 +526,11 @@ export default function Index() {
 
     // App mode
     const [mode, setMode] = useState<AppMode>('browse');
+    const [panelOpen, setPanelOpen] = useState(true);
 
     // Selected office (shown in left panel on marker click)
     const [selectedOffice,  setSelectedOffice]  = useState<Office | null>(null);
+    const [highlightedChildren, setHighlightedChildren] = useState<Office[]>([]);
 
     // Directions panel
     const [showDirections,     setShowDirections]     = useState(false);
@@ -449,12 +573,24 @@ export default function Index() {
 
     const officesByLevel = useMemo(() => {
         const grouped: Record<string, Office[]> = { division: [], district: [], area: [], branch: [] };
-        for (const o of offices) if (grouped[o.level]) grouped[o.level].push(o);
+        for (const o of offices) {
+            const isUnmapped = o.lat === 0 && o.lon === 0;
+            if (grouped[o.level] && !isUnmapped) grouped[o.level].push(o);
+        }
         return grouped;
     }, [offices]);
+    const unmappedOffices = useMemo(
+        () => offices.filter(o => o.lat === 0 && o.lon === 0),
+        [offices]
+    );
 
     const isMovingPin = !!movingOffice;
     const focusPoint = selectedOffice ? { lat: selectedOffice.lat, lng: selectedOffice.lon } : null;
+
+    const highlightedChildIds = useMemo(
+        () => new Set(highlightedChildren.map(o => o.id)),
+        [highlightedChildren]
+    );
 
     // Memoize so Routing useEffect only fires when coordinates actually change,
     // not on every parent re-render (objects compared by reference in useEffect deps).
@@ -470,20 +606,27 @@ export default function Index() {
     );
     const canRoute = !!routeStart && !!routeEnd;
 
-    // Panel is visible whenever there is content to show
-    const showPanel = mode !== 'browse' || showDirections || !!selectedOffice;
-
+    // Panel is visible when there's content to show AND the user hasn't manually hidden it
+    const hasContent = mode !== 'browse' || showDirections || !!selectedOffice;
+    const showPanel = hasContent && panelOpen;
+    
     // Marker click handler
     function handleMarkerClick(office: Office) {
-        if (isMovingPin) return;
-        if (showDirections) {
-            // In directions mode — set as From or To
-            if (routeClickTarget === 'from') { setFromOffice(office); setFromSearch(''); setRouteClickTarget('to'); }
-            else                             { setToOffice(office);   setToSearch('');   setRouteClickTarget('from'); }
-        } else {
-            setSelectedOffice(office);
-            setMode('browse');
-        }
+         if (isMovingPin) return;
+         if (showDirections) {
+             if (routeClickTarget === 'from') { setFromOffice(office); setFromSearch(''); setRouteClickTarget('to'); }
+             else                             { setToOffice(office);   setToSearch('');   setRouteClickTarget('from'); }
+         } else {
+             setSelectedOffice(office);
+             setHighlightedChildren([]);
+             setMode('browse');
+             setPanelOpen(true);
+         }
+     }
+
+    // Show children of a parent office
+    function handleShowChildren(_parent: Office, children: Office[]) {
+        setHighlightedChildren(children);
     }
 
     // Map click (save mode only — directions uses marker clicks)
@@ -515,6 +658,7 @@ export default function Index() {
 
     function openDirections(preFrom?: Office) {
         setShowDirections(true);
+        setPanelOpen(true);
         if (preFrom) { setFromOffice(preFrom); setFromSearch(''); }
         setRouteClickTarget(preFrom ? 'to' : 'from');
         setDistance(''); setDuration(''); setSteps([]); setRouteCoords([]);
@@ -566,21 +710,38 @@ export default function Index() {
                 {/* Header */}
                 <div className="flex items-center justify-between flex-shrink-0">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/30">
+                        {/* <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/30">
                             <Route className="w-5 h-5 text-emerald-700 dark:text-emerald-400" />
-                        </div>
+                        </div> */}
+                        <button
+                        onClick={() => setPanelOpen(prev => !prev)}
+                        className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex-shrink-0"
+                        title={panelOpen ? 'Hide panel' : 'Show panel'}
+                    >
+                        {panelOpen ? <ChevronLeft className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
+                        Panel
+                    </button>
                         <div>
                             <h1 className="text-xl font-bold text-gray-900 dark:text-white">Geo Mapping</h1>
                             <p className="text-xs text-gray-500 dark:text-gray-400">Click a pin to view details · Get directions between offices</p>
                         </div>
                     </div>
-
+                    <HeaderOfficeSearch
+                        offices={offices}
+                        onSelect={(o) => {
+                        setSelectedOffice(o);
+                        setHighlightedChildren([]);
+                        setMode('browse');
+                        setPanelOpen(true);    
+                        }}
+                    />
                     <div className="flex rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 flex-shrink-0">
                         {([
+                            { key: 'unmapped' as const, label: `Unmapped Offices (${unmappedOffices.length})`, Icon: MapPinHouse, active: 'bg-rose-600' },
                             { key: 'save'    as const, label: 'Save Coordinates', Icon: Bookmark,    active: 'bg-amber-600'   },
                             { key: 'address' as const, label: 'Address',          Icon: MapPinHouse, active: 'bg-blue-600'    },
                         ]).map(({ key, label, Icon, active }) => (
-                            <button key={key} onClick={() => setMode(prev => prev === key ? 'browse' : key)}
+                            <button key={key} onClick={() => { setMode(prev => prev === key ? 'browse' : key); setPanelOpen(true); }}
                                 className={`flex items-center gap-2 px-3 py-2 text-sm font-medium transition-colors ${mode === key ? `${active} text-white` : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                                 <Icon className="w-3.5 h-3.5" />
                                 {label}
@@ -594,7 +755,7 @@ export default function Index() {
 
                     {/* ── Left panel — collapses when nothing to show ── */}
                     <div className={`flex flex-col gap-3 min-h-0 overflow-y-auto pr-1 transition-all duration-300 ${showPanel ? 'xl:col-span-1' : 'hidden xl:hidden'}`}>
-
+                        
                         {/* ── Browse mode: office info or placeholder ── */}
                         {mode === 'browse' && !showDirections && (
                             <>
@@ -603,9 +764,10 @@ export default function Index() {
                                         office={selectedOffice}
                                         allOffices={offices}
                                         onSelectOffice={handleMarkerClick}
+                                        onShowChildren={handleShowChildren}
                                         onGetDirections={() => openDirections(selectedOffice)}
                                         onMovePin={() => { setMovingOffice(selectedOffice); }}
-                                        onClose={() => setSelectedOffice(null)}
+                                        onClose={() => { setSelectedOffice(null); setHighlightedChildren([]); }}
                                     />
                                 ) : (
                                     <div className="bg-white dark:bg-gray-900 border border-dashed border-gray-200 dark:border-gray-700 rounded-xl p-6 flex-shrink-0 flex flex-col items-center justify-center text-center gap-2">
@@ -613,6 +775,57 @@ export default function Index() {
                                         <p className="text-xs text-gray-400 dark:text-gray-500">Click any office pin on the map to view its details here</p>
                                     </div>
                                 )}
+                            </>
+                        )}
+                                                
+                        {/* ── Unmapped offices mode ── */}
+                        {mode === 'unmapped' && (
+                            <>
+                                <div className="bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 rounded-xl p-3 flex-shrink-0">
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <MapPinHouse className="w-4 h-4 text-rose-700 dark:text-rose-400" />
+                                        <p className="text-sm font-semibold text-rose-800 dark:text-rose-300">Unmapped Offices</p>
+                                    </div>
+                                    <p className="text-xs text-rose-700 dark:text-rose-400">
+                                        These offices have no coordinates set (0, 0). Click "Move Pin" then click the map to place them.
+                                    </p>
+                                </div>
+
+                                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-3 flex-1 min-h-0 flex flex-col">
+                                    <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2 flex-shrink-0">
+                                        {unmappedOffices.length} Unmapped
+                                    </p>
+                                    {unmappedOffices.length > 0 ? (
+                                        <ul className="space-y-1.5 overflow-y-auto flex-1 min-h-0 pr-1">
+                                            {unmappedOffices.map(office => {
+                                                const levelCfg = LEVEL_CONFIG[office.level];
+                                                return (
+                                                    <li key={office.id} className="flex items-center justify-between gap-2 p-2 rounded-lg bg-gray-50 dark:bg-gray-800">
+                                                        <div className="flex items-center gap-2 min-w-0">
+                                                            <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: levelCfg?.color ?? '#374151' }} />
+                                                            <div className="min-w-0">
+                                                                <p className="text-xs font-medium text-gray-700 dark:text-gray-200 truncate">{formatOfficeLabel(office)}</p>
+                                                                <p className="text-xs text-gray-400 dark:text-gray-500 capitalize">{office.level}</p>
+                                                            </div>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => setMovingOffice(office)}
+                                                            className="flex-shrink-0 flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-md border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                                        >
+                                                            <Move className="w-3 h-3" />
+                                                            Move Pin
+                                                        </button>
+                                                    </li>
+                                                );
+                                            })}
+                                        </ul>
+                                    ) : (
+                                        <div className="flex-1 flex flex-col items-center justify-center text-center px-2 py-6">
+                                            <MapPinHouse className="w-5 h-5 text-gray-300 dark:text-gray-600 mb-1.5" />
+                                            <p className="text-xs text-gray-400 dark:text-gray-500">All offices have coordinates set.</p>
+                                        </div>
+                                    )}
+                                </div>
                             </>
                         )}
 
@@ -849,6 +1062,8 @@ export default function Index() {
                                 <MapClickHandler onClick={handleMapClick} disabled={isMovingPin} />
                                 <MovePinClickHandler active={isMovingPin} onPick={handleMovePinPick} />
 
+                                <InvalidateOnResize trigger={panelOpen} />
+
                                 {/* Fit bounds when both offices selected */}
                                 {canRoute && routeStart && routeEnd && <FitBounds start={routeStart} end={routeEnd} />}
 
@@ -886,7 +1101,12 @@ export default function Index() {
                                 {hoveredStep && <Circle center={[hoveredStep.lat, hoveredStep.lng]} radius={50} pathOptions={{ color: '#f59e0b', fillColor: '#f59e0b', fillOpacity: 0.4, weight: 3 }} />}
 
                                 {/* Pan map to the selected office */}
-+                                <PanTo point={focusPoint} offsetXPercent={0.15} />
+                                <PanTo point={focusPoint} offsetXPercent={0.15} />
+
+                                {/* Fit bounds to children when "Show children" is clicked */}
+                                {highlightedChildren.length >  0 && selectedOffice && (
+                                    <FitBoundsToOffices offices={[selectedOffice, ...highlightedChildren]} />
+                                )}
 
                                 {/* ── Office layer control ── */}
                                 <LayersControl position="topright">
@@ -899,19 +1119,26 @@ export default function Index() {
                                             <LayerGroup>
                                                 {officesByLevel[level]?.map(office => {
                                                     const isSelected = selectedOffice?.id === office.id;
+                                                    const isHighlightedChild = highlightedChildIds.has(office.id);
                                                     const isFrom     = fromOffice?.id === office.id;
                                                     const isTo       = toOffice?.id === office.id;
-                                                    const dimmed     = isMovingPin && movingOffice?.id !== office.id;
-                                                    if (isFrom || isTo) return null;
-                                                    return (
-                                                        <Marker
-                                                            key={office.id}
-                                                            position={[office.lat, office.lon]}
-                                                            icon={createLevelIcon(level, isSelected, dimmed)}
-                                                            eventHandlers={{ click: () => handleMarkerClick(office) }}
-                                                        />
-                                                    );
-                                                })}
+                                                     if (isFrom || isTo) return null;
+
+                                                     // When a "show descendants" filter is active, hide any office
+                                                    // that isn't the focused parent or one of its descendants.
+                                                    const filterActive = highlightedChildren.length > 0;
+                                                    if (filterActive && !isHighlightedChild && !isSelected) return null;
+
+                                                    const dimmed = isMovingPin && movingOffice?.id !== office.id;
+                                                     return (
+                                                         <Marker
+                                                             key={office.id}
+                                                             position={[office.lat, office.lon]}
+                                                             icon={createLevelIcon(level, isSelected || isHighlightedChild, dimmed)}
+                                                             eventHandlers={{ click: () => handleMarkerClick(office) }}
+                                                         />
+                                                     );
+                                                 })}
                                             </LayerGroup>
                                         </LayersControl.Overlay>
                                     ))}
@@ -947,5 +1174,3 @@ export default function Index() {
         </AppLayout>
     );
 }
-//soafer test, luh ngaa di mag opull
-//meow meow wowie 1234
