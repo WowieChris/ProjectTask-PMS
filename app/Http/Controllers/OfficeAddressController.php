@@ -104,6 +104,86 @@ class OfficeAddressController extends Controller
         return response()->json($offices->values());
     }
 
+    public function store(Request $request, string $level): JsonResponse
+    {
+        $levelConfig = [
+            'division' => ['table' => 'field_division', 'pk' => 'field_division_id', 'name_col' => 'field_division_name', 'code_col' => 'field_division_code', 'parent_col' => null,                  'label' => 'Division'],
+            'district' => ['table' => 'field_district', 'pk' => 'field_district_id', 'name_col' => 'field_district_name', 'code_col' => 'field_district_code', 'parent_col' => 'field_division_id', 'label' => 'District'],
+            'area'     => ['table' => 'field_area',     'pk' => 'field_area_id',     'name_col' => 'field_area_name',     'code_col' => 'field_area_code',     'parent_col' => 'field_district_id', 'label' => 'Area'],
+            'branch'   => ['table' => 'field_branch',   'pk' => 'field_branch_id',   'name_col' => 'field_branch_name',   'code_col' => 'field_branch_code',   'parent_col' => 'field_area_id',     'label' => 'Branch'],
+        ];
+
+        if (! array_key_exists($level, $levelConfig)) {
+            return response()->json(['error' => 'Invalid level: ' . $level], 422);
+        }
+
+        ['table' => $table, 'pk' => $pk, 'name_col' => $nameCol, 'code_col' => $codeCol, 'parent_col' => $parentCol, 'label' => $label] = $levelConfig[$level];
+
+        $rules = [
+            'name'      => 'required|string|max:50',
+            'address'   => 'nullable|string|max:255',
+            'latitude'  => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
+        ];
+        if ($parentCol) {
+            $rules['parent_id'] = 'required|string';
+        }
+        $data = $request->validate($rules);
+
+        // Verify the parent actually exists and is active, when applicable
+        if ($parentCol) {
+            // parent_col maps 1:1 to a known table's primary key
+            $parentTableMap = [
+                'field_division_id' => 'field_division',
+                'field_district_id' => 'field_district',
+                'field_area_id'     => 'field_area',
+            ];
+            $parentTableName = $parentTableMap[$parentCol];
+            $parentExists = DB::table($parentTableName)
+                ->where($parentCol, $data['parent_id'])
+                ->where('active_yn', true)
+                ->exists();
+
+            if (! $parentExists) {
+                return response()->json(['error' => 'Selected parent office was not found or is inactive'], 422);
+            }
+        }
+
+        // Generate next numeric ID (stored as plain string, matching existing rows e.g. "34")
+        $maxId = DB::table($table)->max(DB::raw("CAST($pk AS UNSIGNED)"));
+        $newId = (string) (($maxId ?? 0) + 1);
+
+        $code = $label . ' ' . $newId;
+
+        $insert = [
+            $pk       => $newId,
+            $nameCol  => $data['name'],
+            $codeCol  => $code,
+            'address' => $data['address'] ?? null,
+            'latitude'  => $data['latitude'],
+            'longitude' => $data['longitude'],
+            'active_yn' => true,
+        ];
+        if ($parentCol) {
+            $insert[$parentCol] = $data['parent_id'];
+        }
+
+        DB::table($table)->insert($insert);
+
+        return response()->json([
+            'id'        => 'field_' . $level . '-' . $newId,
+            'db_id'     => $newId,
+            'setup_id'  => null,
+            'level'     => $level,
+            'name'      => $data['name'],
+            'code'      => $code,
+            'parent_id' => $parentCol ? $data['parent_id'] : null,
+            'address'   => $data['address'] ?? '',
+            'lat'       => (float) $data['latitude'],
+            'lon'       => (float) $data['longitude'],
+        ], 201);
+    }
+
     public function movePin(Request $request, string $level, string $id): JsonResponse
     {
         $data = $request->validate([
