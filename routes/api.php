@@ -37,3 +37,4 @@ Route::get('/psgc-test', function () {
 
 Route::get('/offices', [OfficeAddressController::class, 'mapData']);
 Route::patch('/offices/{level}/{id}/pin', [OfficeAddressController::class, 'movePin']);
+Route::post('/offices/{level}', [OfficeAddressController::class, 'store']);
